@@ -34,7 +34,10 @@ import javax.swing.SwingUtilities;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 import java.util.prefs.Preferences;
+import java.util.Vector;
 import org.jfree.ui.RefineryUtilities;
+import javax.sound.sampled.Mixer.Info;
+import javax.sound.sampled.Mixer;
 import languagetest.language.test.UserConfig;
 import languagetest.language.test.TestType;
 import languagetest.language.test.LanguageConfig;
@@ -50,12 +53,17 @@ public class UserConfigDialog extends javax.swing.JDialog
     private final static long MS_IN_DAY = 86400000;
     private final static String WINDOWS_EXE = ".exe";
     private JFileChooser exeChooser = null;
+    private MainFrame mf = null;
     /** Creates new form UserConfigDialog */
     public UserConfigDialog(java.awt.Frame parent, boolean modal)
     {
         super(parent, modal);
         initComponents();
-        langPanel = new LanguageSelectionPanel(this);
+        if (parent instanceof MainFrame)
+        {
+            mf = (MainFrame)parent;
+        }
+        langPanel = new LanguageSelectionPanel(this, mf);
         jTabbedPane1.addTab("Language", langPanel);
         testTypeCombo.addItem(TestType.getById(0));
         testTypeCombo.addItem(TestType.getById(1));
@@ -86,6 +94,29 @@ public class UserConfigDialog extends javax.swing.JDialog
         vcField.setText(SystemHandler.getInstance().getVolMixerCommand());
         cmField.setText(SystemHandler.getInstance().getCharMapCommand());
         
+        if (mf != null)
+        {
+            Vector recMixers = mf.getLineControl().getRecMixers();
+            int selectIndex = 0;
+            for (int i = 0; i<recMixers.size(); i++)
+            {
+                Mixer.Info mi = (Mixer.Info)recMixers.get(i);
+                recMixerCombo.addItem(mi.getName() + ": " + mi.getDescription());    
+                if (mi == mf.getLineControl().getRecMixer().getMixerInfo())
+                    selectIndex = i;
+            }
+            recMixerCombo.setSelectedIndex(selectIndex);
+            Vector playMixers = mf.getLineControl().getPlayMixers();
+            selectIndex = 0;
+            for (int i = 0; i<playMixers.size(); i++)
+            {
+                Mixer.Info mi = (Mixer.Info)playMixers.get(i);
+                playMixerCombo.addItem(mi.getName() + ": " + mi.getDescription()); 
+                if (mi == mf.getLineControl().getPlayMixer().getMixerInfo())
+                    selectIndex = i;
+            }
+            playMixerCombo.setSelectedIndex(selectIndex);
+        }
         
         initRevisionParameters(TestType.getById(0));
         pack();
@@ -159,6 +190,16 @@ public class UserConfigDialog extends javax.swing.JDialog
         rcButton = new javax.swing.JButton();
         jPanel16 = new javax.swing.JPanel();
         epOkButton = new javax.swing.JButton();
+        audioPanel = new javax.swing.JPanel();
+        jPanel10 = new javax.swing.JPanel();
+        jPanel17 = new javax.swing.JPanel();
+        playMixerLabel = new javax.swing.JLabel();
+        recMixerLabel = new javax.swing.JLabel();
+        jPanel18 = new javax.swing.JPanel();
+        playMixerCombo = new javax.swing.JComboBox();
+        recMixerCombo = new javax.swing.JComboBox();
+        jPanel19 = new javax.swing.JPanel();
+        audioOkButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter()
@@ -439,10 +480,59 @@ public class UserConfigDialog extends javax.swing.JDialog
 
         jTabbedPane1.addTab("System", systemPanel);
 
+        audioPanel.setLayout(new java.awt.BorderLayout());
+
+        jPanel10.setLayout(new javax.swing.BoxLayout(jPanel10, javax.swing.BoxLayout.X_AXIS));
+
+        jPanel17.setLayout(new java.awt.GridLayout(2, 1));
+
+        playMixerLabel.setText("Playing mixer:");
+        jPanel17.add(playMixerLabel);
+
+        recMixerLabel.setText("Recording mixer:");
+        jPanel17.add(recMixerLabel);
+
+        jPanel10.add(jPanel17);
+
+        jPanel18.setLayout(new java.awt.GridLayout(2, 1));
+
+        jPanel18.add(playMixerCombo);
+
+        jPanel18.add(recMixerCombo);
+
+        jPanel10.add(jPanel18);
+
+        audioPanel.add(jPanel10, java.awt.BorderLayout.NORTH);
+
+        jPanel19.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
+
+        audioOkButton.setText("Ok");
+        audioOkButton.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                audioOkButtonActionPerformed(evt);
+            }
+        });
+
+        jPanel19.add(audioOkButton);
+
+        audioPanel.add(jPanel19, java.awt.BorderLayout.SOUTH);
+
+        jTabbedPane1.addTab("Audio", audioPanel);
+
         getContentPane().add(jTabbedPane1, java.awt.BorderLayout.CENTER);
 
         pack();
     }//GEN-END:initComponents
+
+    private void audioOkButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_audioOkButtonActionPerformed
+    {//GEN-HEADEREND:event_audioOkButtonActionPerformed
+        if (saveConfig())
+        {
+            setVisible(false);
+        }
+    }//GEN-LAST:event_audioOkButtonActionPerformed
 
     private void epOkButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_epOkButtonActionPerformed
     {//GEN-HEADEREND:event_epOkButtonActionPerformed
@@ -581,6 +671,20 @@ public class UserConfigDialog extends javax.swing.JDialog
         packagePref.put(SystemHandler.CHAR_MAP, cmField.getText());
         packagePref.put(SystemHandler.PLAY_MIXER, vcField.getText());
         packagePref.put(SystemHandler.REC_MIXER, rcField.getText());
+        if (mf != null && mf.getLineControl() != null && 
+            mf.getLineControl().getPlayMixer() != null &&
+            mf.getLineControl().getRecMixer() != null )
+        {
+            Object m = mf.getLineControl().getPlayMixers().get(playMixerCombo.getSelectedIndex());
+            if (m instanceof Mixer.Info && 
+                m != mf.getLineControl().getPlayMixer().getMixerInfo())
+                mf.getLineControl().setPlayMixer((Mixer.Info)m);
+            m = mf.getLineControl().getRecMixers().get(recMixerCombo.getSelectedIndex());
+            if (m instanceof Mixer.Info && 
+                m != mf.getLineControl().getRecMixer().getMixerInfo())
+                mf.getLineControl().setRecMixer((Mixer.Info)m);
+        }
+        else System.out.println("Error setting mixers");
         
         TestType type = TestType.getById(testTypeCombo.getSelectedIndex());
         saveRevisionParameters(type);
@@ -700,6 +804,8 @@ public class UserConfigDialog extends javax.swing.JDialog
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton audioOkButton;
+    private javax.swing.JPanel audioPanel;
     private javax.swing.JLabel charMapLabel;
     private javax.swing.JButton cmButton;
     private javax.swing.JTextField cmField;
@@ -725,12 +831,16 @@ public class UserConfigDialog extends javax.swing.JDialog
     private javax.swing.JLabel jLabel81;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel13;
     private javax.swing.JPanel jPanel14;
     private javax.swing.JPanel jPanel15;
     private javax.swing.JPanel jPanel16;
+    private javax.swing.JPanel jPanel17;
+    private javax.swing.JPanel jPanel18;
+    private javax.swing.JPanel jPanel19;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel31;
@@ -745,10 +855,14 @@ public class UserConfigDialog extends javax.swing.JDialog
     private javax.swing.JTextField longTermRevPeriodField;
     private javax.swing.JTextField minNumPassesField;
     private javax.swing.JTextField minTimeBetweenTestsField;
+    private javax.swing.JComboBox playMixerCombo;
+    private javax.swing.JLabel playMixerLabel;
     private javax.swing.JButton rOkButton;
     private javax.swing.JButton rcButton;
     private javax.swing.JTextField rcField;
     private javax.swing.JLabel recLabel;
+    private javax.swing.JComboBox recMixerCombo;
+    private javax.swing.JLabel recMixerLabel;
     private javax.swing.JPanel revisionPanel;
     private javax.swing.JTextField shortTermPeriodField;
     private javax.swing.JTextField shortTermRevPeriodField;

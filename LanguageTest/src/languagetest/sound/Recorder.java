@@ -132,10 +132,11 @@ public class Recorder implements Runnable
         {
             this.targetFile = targetFile;
             new Thread(this).start();
+            // reset error index
+            recordError = false;
+            errorDescription.delete(0, errorDescription.length());
         }
-        // reset error index
-        recordError = false;
-        errorDescription.delete(0, errorDescription.length());
+        
         return formatOk;
     }
     

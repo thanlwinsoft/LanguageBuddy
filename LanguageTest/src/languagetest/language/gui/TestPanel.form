@@ -74,7 +74,7 @@
             <Component class="javax.swing.JButton" name="correctButton">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/uk/co/dabsol/stribley/language/icons/correct.png"/>
+                  <Image iconType="3" name="/languagetest/language/icons/correct.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Correct"/>
                 <Property name="rolloverEnabled" type="boolean" value="false"/>
@@ -86,7 +86,7 @@
             <Component class="javax.swing.JButton" name="wrongButton">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/uk/co/dabsol/stribley/language/icons/wrong.png"/>
+                  <Image iconType="3" name="/languagetest/language/icons/wrong.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Wrong"/>
               </Properties>
@@ -195,7 +195,7 @@
                 <Component class="javax.swing.JButton" name="pauseButton">
                   <Properties>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/uk/co/dabsol/stribley/sound/icons/pauseMini.png"/>
+                      <Image iconType="3" name="/languagetest/sound/icons/pauseMini.png"/>
                     </Property>
                     <Property name="toolTipText" type="java.lang.String" value="Pause"/>
                     <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -213,7 +213,7 @@
                 <Component class="javax.swing.JButton" name="playButton">
                   <Properties>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/uk/co/dabsol/stribley/sound/icons/playMini.png"/>
+                      <Image iconType="3" name="/languagetest/sound/icons/playMini.png"/>
                     </Property>
                     <Property name="toolTipText" type="java.lang.String" value="Play"/>
                     <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -233,7 +233,7 @@
                       <Font name="Dialog" size="12" style="0"/>
                     </Property>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/uk/co/dabsol/stribley/sound/icons/stopMini.png"/>
+                      <Image iconType="3" name="/languagetest/sound/icons/stopMini.png"/>
                     </Property>
                     <Property name="toolTipText" type="java.lang.String" value="Stop"/>
                     <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -521,9 +521,6 @@
                 </Property>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Dialog" size="18" style="1"/>
-                </Property>
-                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="33" green="33" id="InternalFrame.activeTitleForeground" palette="3" red="33" type="palette"/>
                 </Property>
                 <Property name="horizontalAlignment" type="int" value="0"/>
                 <Property name="text" type="java.lang.String" value="Language Test"/>

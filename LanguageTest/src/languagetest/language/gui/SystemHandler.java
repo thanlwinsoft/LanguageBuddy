@@ -6,11 +6,20 @@
 
 package languagetest.language.gui;
 
-
+import java.awt.Font;
+import java.awt.Frame;
+import java.awt.BorderLayout;
 import java.io.IOException;
 import java.util.prefs.Preferences;
 import javax.swing.JOptionPane;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+
+import org.jfree.ui.FontChooserDialog;
+import org.jfree.ui.FontDisplayField;
+import org.jfree.ui.FontChooserPanel;
+import org.jfree.ui.RefineryUtilities;
 
 import languagetest.language.test.UserConfig;
 import languagetest.language.test.UserConfigListener;
@@ -183,6 +192,59 @@ public class SystemHandler implements UserConfigListener
     {
         // force config data to be reloaded
         configDialog = null;
+    }
+    
+    public Font chooseFont(java.awt.Frame parent, Font currentFont, 
+                                  String prompt, JLabel label)
+    {
+        Font newFont = null;
+        final FontChooserDialog chooser = 
+            new FontChooserDialog(parent, 
+                                  prompt, true, currentFont);
+        chooser.setSize(600, 300);
+        final FontDisplayField fdf = new FontDisplayField(currentFont);
+        chooser.getContentPane().add(new JScrollPane(fdf), BorderLayout.NORTH);
+        javax.swing.Timer timer= null;
+        if (chooser.getContentPane().getComponent(0) instanceof FontChooserPanel)
+        {
+            final FontChooserPanel fcp = 
+                    (FontChooserPanel)chooser.getContentPane().getComponent(0);
+                java.awt.event.ActionListener taskPerformer = 
+                        new java.awt.event.ActionListener() {
+                    public void actionPerformed(java.awt.event.ActionEvent evt) 
+                    {
+                        if (fdf.getDisplayFont() != fcp.getSelectedFont())
+                        {
+                            fdf.setDisplayFont(fcp.getSelectedFont());
+                            fdf.setFont(fcp.getSelectedFont());
+                            chooser.pack();
+                            RefineryUtilities.centerDialogInParent(chooser);
+                        }
+                    }
+                };
+            timer = new javax.swing.Timer(300, taskPerformer);
+            timer.start();
+        }
+        chooser.setVisible(true);
+        if (timer != null) timer.stop();
+        if (chooser.isCancelled())
+        {
+            newFont = currentFont;
+        }
+        else
+        {
+            newFont = chooser.getSelectedFont();
+            if (newFont != null && label != null)
+            {
+                    label.setFont(newFont);
+                    label.setText(newFont.getName());
+                    label.setToolTipText(newFont.getName() + 
+                                        " (" + 
+                                        newFont.getSize() + 
+                                        "Pt)");
+            }	
+        }
+        return newFont;
     }
     
 }

@@ -16,6 +16,7 @@ import javax.sound.sampled.DataLine;
 import javax.sound.sampled.DataLine.Info;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.LineUnavailableException;
+import java.util.Vector;
 
 /**
  *
@@ -33,6 +34,9 @@ public class LineController implements Runnable
     private AudioFormat playFormat = null;
     private Mixer recMixer = null;
     private Mixer playMixer = null;
+    
+    private Vector recMixers = null;
+    private Vector playMixers = null;
     private float maxSampleRate = AudioSystem.NOT_SPECIFIED;
     private String error = null;
     /** Creates a new instance of LineController */
@@ -40,6 +44,18 @@ public class LineController implements Runnable
     {
         maxSampleRate = MAX_SAMPLE_RATE; // could be configurable in future
         new Thread(this).start();
+        recMixers = new Vector();
+        playMixers = new Vector();
+    }
+    
+    public Vector getPlayMixers()
+    {
+        return playMixers;
+    }
+    
+    public Vector getRecMixers()
+    {
+        return recMixers;
     }
     
     public void run()
@@ -61,7 +77,8 @@ public class LineController implements Runnable
             // skip this step
             for (i=0; (i<mixers.length); i++)
             {
-                if (count < 2) System.out.println(mixers[i]);
+                if (count < 2) System.out.println("\n" + mixers[i].getName() + " (" + 
+                        mixers[i].getDescription() + ")");
                 mixer = AudioSystem.getMixer(mixers[i]);
                 try
                 {
@@ -78,19 +95,17 @@ public class LineController implements Runnable
                                 if (line instanceof SourceDataLine)
                                 {
                                     testLi = getLineInfo(line);
-                                    System.out.println("PLine: " + testLi);
+                                    System.out.println("Play Line: " + testLi);
                                     if (testLi != null) 
                                     {
                                         // compare with existing recFormat to see
                                         // whether we prefer the one from this line
-                                        if (playFormat == null ||
-                                            (testFormat.getFrameRate() > 
-                                             playFormat.getFrameRate()) ||
-                                            (testFormat.getChannels() >
-                                             playFormat.getChannels()))
+                                        playFormat = compareFormats(playFormat, testFormat);
+                                        if (playFormat == testFormat)
                                         {
+                                            System.out.println("chose FR" + testFormat.getSampleRate() + 
+                                                    " Ch" + testFormat.getChannels());
                                             playIndex = i;
-                                            playFormat = testFormat;
                                             playLineInfo = testLi;
                                         }
                                     }
@@ -101,6 +116,7 @@ public class LineController implements Runnable
                                 System.out.println(e);
                             }
                         }
+                        if (li.length > 0) playMixers.add(mixer.getMixerInfo());
                     }
                     // check for recording lines
                     li = mixer.getTargetLineInfo();
@@ -117,20 +133,18 @@ public class LineController implements Runnable
                             if (line instanceof TargetDataLine)
                             {
                                 testLi = getLineInfo(line);
-                                System.out.println("RLine: " + testLi);
+                                System.out.println("Rec Line: " + testLi);
                                 if (testLi != null) 
                                 {
                                     // compare with existing recFormat to see
                                     // whether we prefer the one from this line
-                                    if (recFormat == null ||
-                                        (testFormat.getFrameRate() > 
-                                         recFormat.getFrameRate()) ||
-                                        (testFormat.getChannels() >
-                                         recFormat.getChannels()))
+                                    recFormat = compareFormats(recFormat, testFormat);
+                                    
+                                    if (recFormat == testFormat)
                                     {
                                         recIndex = i;
-                                        recFormat = testFormat;
                                         recLineInfo = testLi;
+                                        System.out.println("chose " + testFormat);
                                     }
                                 }
                             }
@@ -140,12 +154,13 @@ public class LineController implements Runnable
                                 System.out.println(e);
                             }
                         }
+                        if (li.length > 0) recMixers.add(mixer.getMixerInfo());
                     }
                     // it is best to use the same mixer for recording and
                     // playback, so if that is the case break now
                     if (playIndex == i && recIndex == i)
                     {                    
-                        break;
+                        //break;
                     }
                                         
                 }
@@ -170,7 +185,7 @@ public class LineController implements Runnable
                             (SourceDataLine) playMixer.getLine(playLineInfo);
                     }
                     System.out.println("" + 
-                        playMixer + "\n" + playLineInfo + "\n" +
+                        playMixer.getMixerInfo().getName() + "\n" + playLineInfo + "\n" +
                         playFormat);
                     
                     if (recIndex > -1)
@@ -182,7 +197,7 @@ public class LineController implements Runnable
                                 (TargetDataLine) recMixer.getLine(recLineInfo);
                         }
                         System.out.println("" + 
-                            recMixer + "\n" + recLineInfo + "\n" +
+                            recMixer.getMixerInfo().getName() + "\n" + recLineInfo + "\n" +
                             recFormat);
                         synchronized (this) 
                         {
@@ -215,6 +230,119 @@ public class LineController implements Runnable
             }
         }
     }
+    
+    public synchronized void setPlayMixer(Mixer.Info mi)
+    {
+        playMixer = AudioSystem.getMixer(mi);
+        Line.Info [] li = playMixer.getSourceLineInfo();
+        Line.Info testLi, playLineInfo = null;
+        if (sourceDataLine != null && sourceDataLine.isOpen()) 
+        {
+            sourceDataLine.close();
+            sourceDataLine = null;
+        }
+        if (li != null)
+        {
+            playFormat = null;
+            for (int l=0; l<li.length; l++)
+            {
+                try
+                {
+                    Line line = playMixer.getLine(li[l]);
+                    if (line instanceof SourceDataLine)
+                    {
+                        testLi = getLineInfo(line);
+                        playFormat = compareFormats(playFormat, testFormat);
+                        playLineInfo = testLi;
+                    }
+                }
+                catch (IllegalArgumentException e)
+                {
+                    System.out.println(e);
+                }
+                catch (LineUnavailableException e)
+                {
+                    System.out.println(e);
+                }
+                
+            }
+            try
+            {
+                sourceDataLine = 
+                    (SourceDataLine) playMixer.getLine(playLineInfo);
+            }
+            catch (LineUnavailableException e)
+            {
+                System.out.println(e);
+                playMixer = null;
+            }
+        }
+        else sourceDataLine = null;
+    }
+    
+    public synchronized void setRecMixer(Mixer.Info mi)
+    {
+        recMixer = AudioSystem.getMixer(mi);
+        Line.Info [] li = recMixer.getTargetLineInfo();
+        Line.Info testLi, recLineInfo = null;
+        if (targetDataLine != null && targetDataLine.isOpen()) 
+        {
+            targetDataLine.close();
+            targetDataLine = null;
+        }
+        if (li != null)
+        {
+            recFormat = null;
+            for (int l=0; l<li.length; l++)
+            {
+                try
+                {
+                    Line line = recMixer.getLine(li[l]);
+                    if (line instanceof TargetDataLine)
+                    {
+                        testLi = getLineInfo(line);
+                        recFormat = compareFormats(recFormat, testFormat);
+                        recLineInfo = testLi;
+                    }
+                }
+                catch (IllegalArgumentException e)
+                {
+                    System.out.println(e);
+                }
+                catch (LineUnavailableException e)
+                {
+                    System.out.println(e);
+                }
+            }
+            try
+            {
+                targetDataLine = 
+                    (TargetDataLine) recMixer.getLine(recLineInfo);
+            }
+            catch (LineUnavailableException e)
+            {
+                System.out.println(e);
+                recMixer = null;
+            }
+        }
+        else targetDataLine = null;
+    }
+    
+    protected AudioFormat compareFormats(AudioFormat bestSoFar, AudioFormat test)
+    {
+        
+        if (bestSoFar == null ||
+            (test.getSampleRate() > 
+             bestSoFar.getSampleRate()) ||
+            (test.getChannels() >
+             bestSoFar.getChannels()))
+        {
+            bestSoFar = test;
+            System.out.println("chose " + test);
+        }
+        return bestSoFar;
+    }
+    
     /**
      * Examines the formats available for the given line and chooses the one
      * closest to what we want.

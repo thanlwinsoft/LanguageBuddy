@@ -239,7 +239,7 @@ public class TestItemEditorPanel extends javax.swing.JPanel
 
         jPanel10.add(markStartButton);
 
-        decrementStartButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/uk/co/dabsol/stribley/sound/icons/rewind.png")));
+        decrementStartButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/languagetest/sound/icons/rewind.png")));
         decrementStartButton.setToolTipText("Move start back");
         decrementStartButton.setEnabled(false);
         decrementStartButton.addActionListener(new java.awt.event.ActionListener()
@@ -264,7 +264,7 @@ public class TestItemEditorPanel extends javax.swing.JPanel
 
         jPanel10.add(startField);
 
-        incrementStartButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/uk/co/dabsol/stribley/sound/icons/fastforward.png")));
+        incrementStartButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/languagetest/sound/icons/fastforward.png")));
         incrementStartButton.setToolTipText("Move start forward");
         incrementStartButton.setEnabled(false);
         incrementStartButton.addActionListener(new java.awt.event.ActionListener()
@@ -277,7 +277,7 @@ public class TestItemEditorPanel extends javax.swing.JPanel
 
         jPanel10.add(incrementStartButton);
 
-        decrementEndButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/uk/co/dabsol/stribley/sound/icons/rewind.png")));
+        decrementEndButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/languagetest/sound/icons/rewind.png")));
         decrementEndButton.setToolTipText("Move end back");
         decrementEndButton.setEnabled(false);
         decrementEndButton.addActionListener(new java.awt.event.ActionListener()
@@ -301,7 +301,7 @@ public class TestItemEditorPanel extends javax.swing.JPanel
 
         jPanel10.add(endField);
 
-        incrementEndButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/uk/co/dabsol/stribley/sound/icons/fastforward.png")));
+        incrementEndButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/languagetest/sound/icons/fastforward.png")));
         incrementEndButton.setToolTipText("Move end forward");
         incrementEndButton.setEnabled(false);
         incrementEndButton.addActionListener(new java.awt.event.ActionListener()
@@ -331,7 +331,7 @@ public class TestItemEditorPanel extends javax.swing.JPanel
 
         audioControlPanel.setLayout(new java.awt.GridLayout(1, 0));
 
-        playButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/uk/co/dabsol/stribley/sound/icons/play.png")));
+        playButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/languagetest/sound/icons/play.png")));
         playButton.setToolTipText("Play audio clip");
         playButton.setEnabled(false);
         playButton.addActionListener(new java.awt.event.ActionListener()
@@ -344,7 +344,7 @@ public class TestItemEditorPanel extends javax.swing.JPanel
 
         audioControlPanel.add(playButton);
 
-        pauseButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/uk/co/dabsol/stribley/sound/icons/pause.png")));
+        pauseButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/languagetest/sound/icons/pause.png")));
         pauseButton.setToolTipText("Pause playback/recording at current position");
         pauseButton.setEnabled(false);
         pauseButton.addActionListener(new java.awt.event.ActionListener()
@@ -357,7 +357,7 @@ public class TestItemEditorPanel extends javax.swing.JPanel
 
         audioControlPanel.add(pauseButton);
 
-        stopButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/uk/co/dabsol/stribley/sound/icons/stop.png")));
+        stopButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/languagetest/sound/icons/stop.png")));
         stopButton.setToolTipText("Stop playback/recording and rewind");
         stopButton.setEnabled(false);
         stopButton.addActionListener(new java.awt.event.ActionListener()
@@ -370,10 +370,11 @@ public class TestItemEditorPanel extends javax.swing.JPanel
 
         audioControlPanel.add(stopButton);
 
-        recordButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/uk/co/dabsol/stribley/sound/icons/recordLock.png")));
+        recordButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/languagetest/sound/icons/recordLock.png")));
         recordButton.setToolTipText("Start recording");
-        recordButton.setDisabledSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/uk/co/dabsol/stribley/sound/icons/recordLock.png")));
-        recordButton.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/uk/co/dabsol/stribley/sound/icons/record.png")));
+        recordButton.setContentAreaFilled(false);
+        recordButton.setDisabledSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/languagetest/sound/icons/recordLock.png")));
+        recordButton.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/languagetest/sound/icons/record.png")));
         recordButton.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)

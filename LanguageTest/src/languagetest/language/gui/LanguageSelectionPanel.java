@@ -35,10 +35,12 @@ public class LanguageSelectionPanel extends javax.swing.JPanel
     JDialog parentDialog;
     DefaultListModel nativeModel = null;
     DefaultListModel foreignModel = null;
+    MainFrame mf = null;
     /** Creates new form LanguageSelectionPanel */
-    public LanguageSelectionPanel(JDialog jDialog)
+    public LanguageSelectionPanel(JDialog jDialog, MainFrame frame)
     {
         parentDialog = jDialog;
+        this.mf = frame;
         initComponents();
         UserConfig config = UserConfig.getCurrent();
         // populate the lists
@@ -297,19 +299,16 @@ public class LanguageSelectionPanel extends javax.swing.JPanel
         {
             UniversalLanguage ul = (UniversalLanguage)
                 foreignModel.getElementAt(foreignList.getSelectedIndex());
-            FontChooserDialog chooser = 
-                new FontChooserDialog(parentDialog, 
-                                     "Select Default Font for "
-                                      + ul.getDescription(), true, 
-                                      UserConfig.getCurrent()
-                                      .getForeignDefaultFont(ul));
-            chooser.setSize(400, 400);
-            chooser.setVisible(true);
-            if (!chooser.isCancelled())
+            Font newFont = 
+                SystemHandler.getInstance().chooseFont(mf, 
+                    UserConfig.getCurrent().getForeignDefaultFont(ul),
+                    "Select Default Font for " + ul.getDescription(), 
+                    fFontName);
+                    
+            if (newFont != null)
             {
                 UserConfig.getCurrent().addForeignLanguage
-                    (ul, chooser.getSelectedFont());
-                setFontDetails(fFontName, chooser.getSelectedFont());
+                    (ul, newFont);
             }
         }
     }//GEN-LAST:event_fFontActionPerformed
@@ -320,19 +319,15 @@ public class LanguageSelectionPanel extends javax.swing.JPanel
         {
             UniversalLanguage ul = (UniversalLanguage)
                 nativeModel.getElementAt(nativeList.getSelectedIndex());
-            FontChooserDialog chooser = 
-                new FontChooserDialog(parentDialog, 
-                                     "Select Default Font for "
-                                      + ul.getDescription(), true, 
-                                      UserConfig.getCurrent()
-                                      .getNativeDefaultFont(ul));
-            chooser.setSize(400, 400);
-            chooser.setVisible(true);
-            if (!chooser.isCancelled())
+            Font newFont = 
+                SystemHandler.getInstance().chooseFont(mf, 
+                    UserConfig.getCurrent().getNativeDefaultFont(ul),
+                    "Select Default Font for " + ul.getDescription(), 
+                    nFontName);
+            if (newFont != null)
             {
                 UserConfig.getCurrent().addNativeLanguage
-                    (ul, chooser.getSelectedFont());
-                setFontDetails(nFontName, chooser.getSelectedFont());
+                    (ul, newFont);
             }
         }
     }//GEN-LAST:event_nFontActionPerformed

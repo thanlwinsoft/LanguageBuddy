@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Class-Path: jcommon-0.9.1.jar .
 Created-By: NetBeans IDE
-Main-Class: uk.co.dabsol.stribley.language.gui.MainFrame
+Main-Class: languagetest.language.gui.MainFrame
 Implementation-Title: Language Test
 Implementation-Version: 0.2.4
 Implementation-Vendor: Keith Stribley

@@ -54,7 +54,7 @@ public class SwitchUser extends javax.swing.JDialog
         try 
         {
             promptText.addPropertyChangeListener(this);
-            URL url = getClass().getResource("/uk/co/dabsol/stribley/language/text/SwitchUserPrompt.html");
+            URL url = getClass().getResource("/languagetest/language/text/SwitchUserPrompt.html");
             promptText.setPage(url);
             String [] users = UserConfig.getUsers();
             if (users == null)
@@ -81,13 +81,13 @@ public class SwitchUser extends javax.swing.JDialog
                 "Unable to read configuration information\n" +
                 "This will prevent test results being saved.\n"+
                 "Detailed info follows:\n" + bse.getMessage() ,
-                "User Preferences", JOptionPane.ERROR);
+                "User Preferences", JOptionPane.ERROR_MESSAGE);
         }
         catch (IOException ioe)
         {
             JOptionPane.showMessageDialog(this, 
                 ioe.getMessage(),
-                "User Preferences", JOptionPane.ERROR);
+                "User Preferences", JOptionPane.ERROR_MESSAGE);
         }
     }
     
@@ -210,7 +210,16 @@ public class SwitchUser extends javax.swing.JDialog
                     new RecentFilesList(mainFrame));
                 ListModel model = userList.getModel();
             }
-            userList.setListData(UserConfig.getUsers());
+            String [] userNames = UserConfig.getUsers();
+            userList.setListData(userNames);
+            for (int i = 0; i<userNames.length; i++)
+            {
+                if ( userNames[i].equalsIgnoreCase(newUser))
+                {
+                    userList.setSelectedValue(userNames[i],true);
+                    break;
+                }
+            }
         }
         catch (BackingStoreException bse)
         {

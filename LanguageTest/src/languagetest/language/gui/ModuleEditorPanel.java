@@ -25,7 +25,6 @@
 package languagetest.language.gui;
 
 
-import org.jfree.ui.FontChooserDialog;
 
 import javax.swing.JLabel;
 import java.awt.Font;
@@ -35,6 +34,7 @@ import java.util.Iterator;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 import languagetest.language.test.UserConfig;
 import languagetest.language.test.TestItem;
 import languagetest.language.test.TestModule;
@@ -621,7 +621,9 @@ public class ModuleEditorPanel extends javax.swing.JPanel implements EditorSubPa
             UniversalLanguage ul = (UniversalLanguage)
                 fLangList.getSelectedValue();
             currentModule.setForeignFont
-        		(chooseFont(currentModule.getForeignFont(ul),
+        		(SystemHandler.getInstance()
+                 .chooseFont(mainEditorPanel.getMainFrame(),
+                 currentModule.getForeignFont(ul),
         		 "Choose font for " + ul.getDescription(), 
                          fFontLabel));
             if (currentModule.getForeignFont(ul) != null)
@@ -660,7 +662,9 @@ public class ModuleEditorPanel extends javax.swing.JPanel implements EditorSubPa
             UniversalLanguage ul = (UniversalLanguage)
                 nLangList.getSelectedValue();
             currentModule.setNativeFont
-        		(chooseFont(currentModule.getNativeFont(ul),
+        		(SystemHandler.getInstance()
+                .chooseFont(mainEditorPanel.getMainFrame(),
+                    currentModule.getNativeFont(ul),
         		 "Choose font for " + ul.getDescription(), 
                          nFontLabel));
             if (currentModule.getNativeFont(ul) != null)
@@ -692,33 +696,7 @@ public class ModuleEditorPanel extends javax.swing.JPanel implements EditorSubPa
         storeChanges();
     }//GEN-LAST:event_moduleNameFieldFocusLost
 
-    protected Font chooseFont(Font currentFont, String prompt, JLabel label)
-    {
-        Font newFont = null;
-        FontChooserDialog chooser = 
-            new FontChooserDialog(mainEditorPanel.getMainFrame(), 
-                                  prompt, true, currentFont);
-        chooser.setSize(400, 400);
-        chooser.setVisible(true);
-        if (chooser.isCancelled())
-        {
-            newFont = currentFont;
-        }
-        else
-        {
-            newFont = chooser.getSelectedFont();
-            if (newFont != null)
-            {
-                    label.setFont(newFont);
-                    label.setText(newFont.getName());
-                    label.setToolTipText(newFont.getName() + 
-                                        " (" + 
-                                        newFont.getSize() + 
-                                        "Pt)");
-            }	
-        }
-        return newFont;
-    }    
+        
     
     private void newCatActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_newCatActionPerformed
     {//GEN-HEADEREND:event_newCatActionPerformed

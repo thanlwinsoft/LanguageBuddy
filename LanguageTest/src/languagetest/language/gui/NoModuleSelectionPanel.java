@@ -43,13 +43,12 @@ public class NoModuleSelectionPanel extends javax.swing.JPanel
         try
         {
             welcomePane.addPropertyChangeListener(this);
-            welcomePane.setPage(getClass().getResource("/uk/co/dabsol/stribley/language/text/LanguageModuleEditorWelcome.html"));
+            welcomePane.setPage(getClass().getResource("/languagetest/language/text/LanguageModuleEditorWelcome.html"));
         }
         catch (IOException ioe)
         {
             System.out.println(ioe.getMessage());
         }
-        
     }
     
     public void propertyChange(java.beans.PropertyChangeEvent evt)

@@ -44,7 +44,7 @@ import javax.sound.sampled.AudioSystem;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
 import languagetest.sound.AudioFileExtractor;
-import languagetest.sound.Listener;
+//import languagetest.sound.Listener;
 import languagetest.language.test.TestModule;
 import languagetest.language.test.TestItem;
 import javax.sound.sampled.UnsupportedAudioFileException;
@@ -87,7 +87,7 @@ public class ModuleCleanUpManager
         JScrollPane msgPane = null;
         try 
         {
-            message.setPage(getClass().getResource("/uk/co/dabsol/stribley/language/text/ModuleCleanup.html"));
+            message.setPage(getClass().getResource("/languagetest/language/text/ModuleCleanup.html"));
             message.setEditable(false);
             msgPane = new JScrollPane(message);
             msgPane.setPreferredSize(new Dimension(450, 300));

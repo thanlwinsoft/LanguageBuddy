@@ -78,7 +78,7 @@ public class TestItemTable extends org.jfree.ui.SortableTable
         editButton = new ButtonRenderer("Edit");
         editButton.setToolTipText("Edit Test Item");
         playIcon = new javax.swing.ImageIcon(getClass()
-            .getResource("/uk/co/dabsol/stribley/sound/icons/play.png"));
+            .getResource("/languagetest/sound/icons/play.png"));
         playButton = new ButtonRenderer(playIcon);
         
         langText.setOpaque(true);

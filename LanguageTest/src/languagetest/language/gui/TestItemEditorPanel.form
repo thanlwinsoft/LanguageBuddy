@@ -83,7 +83,7 @@
             <Component class="javax.swing.JButton" name="decrementStartButton">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/uk/co/dabsol/stribley/sound/icons/rewind.png"/>
+                  <Image iconType="3" name="/languagetest/sound/icons/rewind.png"/>
                 </Property>
                 <Property name="toolTipText" type="java.lang.String" value="Move start back"/>
                 <Property name="enabled" type="boolean" value="false"/>
@@ -104,7 +104,7 @@
             <Component class="javax.swing.JButton" name="incrementStartButton">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/uk/co/dabsol/stribley/sound/icons/fastforward.png"/>
+                  <Image iconType="3" name="/languagetest/sound/icons/fastforward.png"/>
                 </Property>
                 <Property name="toolTipText" type="java.lang.String" value="Move start forward"/>
                 <Property name="enabled" type="boolean" value="false"/>
@@ -116,7 +116,7 @@
             <Component class="javax.swing.JButton" name="decrementEndButton">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/uk/co/dabsol/stribley/sound/icons/rewind.png"/>
+                  <Image iconType="3" name="/languagetest/sound/icons/rewind.png"/>
                 </Property>
                 <Property name="toolTipText" type="java.lang.String" value="Move end back"/>
                 <Property name="enabled" type="boolean" value="false"/>
@@ -136,7 +136,7 @@
             <Component class="javax.swing.JButton" name="incrementEndButton">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/uk/co/dabsol/stribley/sound/icons/fastforward.png"/>
+                  <Image iconType="3" name="/languagetest/sound/icons/fastforward.png"/>
                 </Property>
                 <Property name="toolTipText" type="java.lang.String" value="Move end forward"/>
                 <Property name="enabled" type="boolean" value="false"/>
@@ -167,7 +167,7 @@
             <Component class="javax.swing.JButton" name="playButton">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/uk/co/dabsol/stribley/sound/icons/play.png"/>
+                  <Image iconType="3" name="/languagetest/sound/icons/play.png"/>
                 </Property>
                 <Property name="toolTipText" type="java.lang.String" value="Play audio clip"/>
                 <Property name="enabled" type="boolean" value="false"/>
@@ -179,7 +179,7 @@
             <Component class="javax.swing.JButton" name="pauseButton">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/uk/co/dabsol/stribley/sound/icons/pause.png"/>
+                  <Image iconType="3" name="/languagetest/sound/icons/pause.png"/>
                 </Property>
                 <Property name="toolTipText" type="java.lang.String" value="Pause playback/recording at current position"/>
                 <Property name="enabled" type="boolean" value="false"/>
@@ -191,7 +191,7 @@
             <Component class="javax.swing.JButton" name="stopButton">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/uk/co/dabsol/stribley/sound/icons/stop.png"/>
+                  <Image iconType="3" name="/languagetest/sound/icons/stop.png"/>
                 </Property>
                 <Property name="toolTipText" type="java.lang.String" value="Stop playback/recording and rewind"/>
                 <Property name="enabled" type="boolean" value="false"/>
@@ -203,14 +203,15 @@
             <Component class="javax.swing.JToggleButton" name="recordButton">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/uk/co/dabsol/stribley/sound/icons/recordLock.png"/>
+                  <Image iconType="3" name="/languagetest/sound/icons/recordLock.png"/>
                 </Property>
                 <Property name="toolTipText" type="java.lang.String" value="Start recording"/>
+                <Property name="contentAreaFilled" type="boolean" value="false"/>
                 <Property name="disabledSelectedIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/uk/co/dabsol/stribley/sound/icons/recordLock.png"/>
+                  <Image iconType="3" name="/languagetest/sound/icons/recordLock.png"/>
                 </Property>
                 <Property name="selectedIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/uk/co/dabsol/stribley/sound/icons/record.png"/>
+                  <Image iconType="3" name="/languagetest/sound/icons/record.png"/>
                 </Property>
               </Properties>
               <Events>

@@ -194,7 +194,7 @@ public class TestPanel extends javax.swing.JPanel implements ActionListener
         markPanel.setBorder(new javax.swing.border.TitledBorder("Mark yourself:"));
         markPanel.setAlignmentX(0.0F);
         markPanel.setMaximumSize(new java.awt.Dimension(130, 89));
-        correctButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/uk/co/dabsol/stribley/language/icons/correct.png")));
+        correctButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/languagetest/language/icons/correct.png")));
         correctButton.setText("Correct");
         correctButton.setRolloverEnabled(false);
         correctButton.addActionListener(new java.awt.event.ActionListener()
@@ -207,7 +207,7 @@ public class TestPanel extends javax.swing.JPanel implements ActionListener
 
         markPanel.add(correctButton);
 
-        wrongButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/uk/co/dabsol/stribley/language/icons/wrong.png")));
+        wrongButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/languagetest/language/icons/wrong.png")));
         wrongButton.setText("Wrong");
         wrongButton.addActionListener(new java.awt.event.ActionListener()
         {
@@ -253,7 +253,7 @@ public class TestPanel extends javax.swing.JPanel implements ActionListener
         jPanel6.setMaximumSize(new java.awt.Dimension(120, 20));
         jPanel6.setMinimumSize(new java.awt.Dimension(60, 16));
         jPanel6.setPreferredSize(new java.awt.Dimension(100, 20));
-        pauseButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/uk/co/dabsol/stribley/sound/icons/pauseMini.png")));
+        pauseButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/languagetest/sound/icons/pauseMini.png")));
         pauseButton.setToolTipText("Pause");
         pauseButton.setMinimumSize(new java.awt.Dimension(16, 16));
         pauseButton.setOpaque(false);
@@ -268,7 +268,7 @@ public class TestPanel extends javax.swing.JPanel implements ActionListener
 
         jPanel6.add(pauseButton);
 
-        playButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/uk/co/dabsol/stribley/sound/icons/playMini.png")));
+        playButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/languagetest/sound/icons/playMini.png")));
         playButton.setToolTipText("Play");
         playButton.setMinimumSize(new java.awt.Dimension(16, 16));
         playButton.setPreferredSize(new java.awt.Dimension(16, 16));
@@ -283,7 +283,7 @@ public class TestPanel extends javax.swing.JPanel implements ActionListener
         jPanel6.add(playButton);
 
         stopButton.setFont(new java.awt.Font("Dialog", 0, 12));
-        stopButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/uk/co/dabsol/stribley/sound/icons/stopMini.png")));
+        stopButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/languagetest/sound/icons/stopMini.png")));
         stopButton.setToolTipText("Stop");
         stopButton.setMaximumSize(new java.awt.Dimension(20, 20));
         stopButton.setMinimumSize(new java.awt.Dimension(16, 16));
@@ -441,7 +441,6 @@ public class TestPanel extends javax.swing.JPanel implements ActionListener
         titlePanel.setBorder(new javax.swing.border.EtchedBorder());
         titleLabel.setBackground(new java.awt.Color(102, 204, 255));
         titleLabel.setFont(new java.awt.Font("Dialog", 1, 18));
-        titleLabel.setForeground(javax.swing.UIManager.getDefaults().getColor("InternalFrame.activeTitleForeground"));
         titleLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         titleLabel.setText("Language Test");
         titlePanel.add(titleLabel);

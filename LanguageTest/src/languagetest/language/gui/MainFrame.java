@@ -154,7 +154,7 @@ public class MainFrame extends javax.swing.JFrame
         getContentPane().add(tablePanel,TABLE_PANEL);
         layout.show(getContentPane(),TEST_SELECTION_PANEL);
         currentPanel = selectionPanel;
-        setIconImage(new javax.swing.ImageIcon(getClass().getResource("/uk/co/dabsol/stribley/language/icons/languageTest.png")).getImage());
+        setIconImage(new javax.swing.ImageIcon(getClass().getResource("/languagetest/language/icons/languageTest.png")).getImage());
         
         RenderingHints rHint = new RenderingHints(RenderingHints.KEY_TEXT_ANTIALIASING,
             RenderingHints.VALUE_TEXT_ANTIALIAS_ON);

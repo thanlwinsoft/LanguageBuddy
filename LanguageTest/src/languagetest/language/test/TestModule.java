@@ -963,7 +963,7 @@ public class TestModule implements Comparable, TestComponent
             {
                 InputStreamReader xslInputStream = 
                     new InputStreamReader(getClass().getResourceAsStream
-                    ("/uk/co/dabsol/stribley/language/text/" + XSL_FILE));
+                    ("/languagetest/language/text/" + XSL_FILE));
                 BufferedReader reader = new BufferedReader(xslInputStream);
                 BufferedWriter writer = new BufferedWriter(new FileWriter(xslPath));
                 IOUtils.getInstance().copyWriter(reader, writer);

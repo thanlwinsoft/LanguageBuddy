@@ -23,7 +23,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import languagetest.language.test.TestModule;
-import languagetest.language.test.ParseException;
+import languagetest.language.test.TestModule.ParseException;
 /**
  *
  * @author  keith

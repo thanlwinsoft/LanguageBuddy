@@ -54,7 +54,7 @@ import org.jfree.ui.about.ProjectInfo;
 import org.jfree.ui.about.AboutFrame;
 import org.jfree.ui.about.Licences;
 import org.jfree.ui.about.Contributor;
-import org.jfree.ui.about.Library;
+import org.jfree.base.Library;
 import languagetest.language.test.UserConfig;
 import languagetest.language.test.DelimitedTestImport;
 import languagetest.language.test.TestItem;
@@ -685,7 +685,7 @@ public class MainEditorPanel extends javax.swing.JPanel implements TreeSelection
     private void csvExportActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_csvExportActionPerformed
     {//GEN-HEADEREND:event_csvExportActionPerformed
         // Add your handling code here:
-        URL xslUrl = getClass().getResource("/uk/co/dabsol/stribley/language/text/LanguageExportCsv.xsl");
+        URL xslUrl = getClass().getResource("/languagetest/language/text/LanguageExportCsv.xsl");
         
         export(csvTransformer, xslUrl, CSV_EXT, true);
     }//GEN-LAST:event_csvExportActionPerformed
@@ -693,7 +693,7 @@ public class MainEditorPanel extends javax.swing.JPanel implements TreeSelection
     private void htmlExportActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_htmlExportActionPerformed
     {//GEN-HEADEREND:event_htmlExportActionPerformed
         // Add your handling code here:
-        URL xslUrl = getClass().getResource("/uk/co/dabsol/stribley/language/text/LanguageTest.xsl");
+        URL xslUrl = getClass().getResource("/languagetest/language/text/LanguageTest.xsl");
         export(htmlTransformer, xslUrl, HTML_EXT, false);
     }//GEN-LAST:event_htmlExportActionPerformed
 
@@ -776,7 +776,7 @@ public class MainEditorPanel extends javax.swing.JPanel implements TreeSelection
     {//GEN-HEADEREND:event_aboutActionPerformed
         // Add your handling code here:
         URL url = this.getClass().getResource(
-            "/uk/co/dabsol/stribley/language/icons/languageTest.png");
+            "/languagetest/language/icons/languageTest.png");
         // if this was checked out with a tag then it should be substituted here
         String cvsVersion = "$Name:  $";
         String jarVersion = this.getClass().getPackage().getImplementationVersion();
@@ -801,18 +801,16 @@ public class MainEditorPanel extends javax.swing.JPanel implements TreeSelection
             Licences.GPL);                                       //String licenceText
         List contributors = new Vector();
         contributors.add(new Contributor("Keith Stribley","keith@snc.co.uk"));
-        List libraries = new Vector();
-        Library lib = new Library("jcommon", "0.9.1 (modified)", 
+        Library lib = new Library("jcommon", "1.0.0-pre2)", 
             Licences.LGPL, "http://www.jfree.org/");
-        libraries.add(lib);
+        pInfo.addLibrary(lib);
         lib = new Library("Tritonus", "", 
             Licences.LGPL, "http://www.tritonus.org/");
-        libraries.add(lib);
+        pInfo.addLibrary(lib);
         lib = new Library("Lame", "3.95.1", 
             Licences.LGPL, "http://www.mp3dev.org/ (Optional install)");
-        libraries.add(lib);
+        pInfo.addLibrary(lib);
         pInfo.setContributors(contributors);
-        pInfo.setLibraries(libraries);
         AboutFrame aboutFrame = new AboutFrame("About Language Test", pInfo);
         aboutFrame.setVisible(true);
     }//GEN-LAST:event_aboutActionPerformed
