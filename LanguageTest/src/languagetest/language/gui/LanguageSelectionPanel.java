@@ -61,6 +61,10 @@ public class LanguageSelectionPanel extends javax.swing.JPanel
         }
         nativeList.setModel(nativeModel);
         foreignList.setModel(foreignModel);
+        if (nativeModel.getSize()>0)
+            nativeList.setSelectedIndex(0);
+        if (foreignModel.getSize()>0)
+            foreignList.setSelectedIndex(0);
         jDialog.pack();
         inited = true;
     }

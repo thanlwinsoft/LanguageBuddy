@@ -200,18 +200,10 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="stopButtonActionPerformed"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JToggleButton" name="recordButton">
+            <Component class="javax.swing.JButton" name="recordButton">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/languagetest/sound/icons/recordLock.png"/>
-                </Property>
-                <Property name="toolTipText" type="java.lang.String" value="Start recording"/>
-                <Property name="contentAreaFilled" type="boolean" value="false"/>
-                <Property name="disabledSelectedIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/languagetest/sound/icons/recordLock.png"/>
-                </Property>
-                <Property name="selectedIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/languagetest/sound/icons/record.png"/>
                 </Property>
               </Properties>
               <Events>

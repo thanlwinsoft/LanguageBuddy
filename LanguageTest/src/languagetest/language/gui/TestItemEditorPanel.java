@@ -103,7 +103,12 @@ public class TestItemEditorPanel extends javax.swing.JPanel
     private UniversalLanguage nativeLang = null;
     private UniversalLanguage foreignLang = null;
     private boolean nameChanged = false;
-    
+    private final javax.swing.ImageIcon recordIcon = 
+            new javax.swing.ImageIcon(getClass()
+            .getResource("/languagetest/sound/icons/record.png"));
+    private final javax.swing.ImageIcon recordLockedIcon = 
+            new javax.swing.ImageIcon(getClass()
+            .getResource("/languagetest/sound/icons/recordLock.png"));
     /** Creates new form ModuleEditorPanel */
     public TestItemEditorPanel(MainEditorPanel mainEditorPanel) 
     {
@@ -160,7 +165,7 @@ public class TestItemEditorPanel extends javax.swing.JPanel
         playButton = new javax.swing.JButton();
         pauseButton = new javax.swing.JButton();
         stopButton = new javax.swing.JButton();
-        recordButton = new javax.swing.JToggleButton();
+        recordButton = new javax.swing.JButton();
         playProgressBar = new javax.swing.JProgressBar();
         catScrollPane = new javax.swing.JScrollPane();
         jPanel1 = new javax.swing.JPanel();
@@ -371,10 +376,6 @@ public class TestItemEditorPanel extends javax.swing.JPanel
         audioControlPanel.add(stopButton);
 
         recordButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/languagetest/sound/icons/recordLock.png")));
-        recordButton.setToolTipText("Start recording");
-        recordButton.setContentAreaFilled(false);
-        recordButton.setDisabledSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/languagetest/sound/icons/recordLock.png")));
-        recordButton.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/languagetest/sound/icons/record.png")));
         recordButton.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -549,6 +550,72 @@ public class TestItemEditorPanel extends javax.swing.JPanel
 
     }//GEN-END:initComponents
 
+    private void recordButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_recordButtonActionPerformed
+    {//GEN-HEADEREND:event_recordButtonActionPerformed
+        // Add your handling code here:
+        
+        if (recording)
+        {
+            recorder.start();
+            
+            recordButton.setIcon(recordIcon);
+        }
+        else
+        {
+            // stop existing audio play
+            audio.stop();
+            audio.close();
+            if (currentTestItem.getSoundFile() == null)
+            {
+                // prime file dialog with a reasonable suggestion
+                audioPath = TestModuleUtilities.createSoundForTestItem(currentTestItem);
+                // may need to create directories
+                if ((!audioPath.getParentFile().exists() &&
+                    audioPath.getParentFile().mkdirs() == false)||
+                    audioPath.getParentFile().isFile())
+                {
+                    audioPath = null;
+                }
+                // choose a file
+                chooseFile(false);
+            }
+            // no point proceeding if file not writable
+            if (currentTestItem.getSoundFile() == null ||
+                (currentTestItem.getSoundFile().exists() &&
+                 !currentTestItem.getSoundFile().canWrite()))
+            {
+                JOptionPane.showMessageDialog(this,
+                    "You must choose a sound file which can be written to.");
+                currentTestItem.setSoundFile(null);
+                audioFileField.setText("");
+                recording = false;
+                //recordButton.setSelected(false);
+                recordButton.setIcon(recordLockedIcon);
+            }
+            else if (currentTestItem.getSoundFile().exists())
+            {
+                if (JOptionPane.showConfirmDialog(this, 
+                    "Do you want to overwrite the existing sound file?") ==
+                    JOptionPane.YES_OPTION)
+                {
+                    initRecorder();
+                    recordButton.setIcon(recordIcon);
+                }
+                else
+                {
+                    recording = false;
+                    //recordButton.setSelected(false);
+                    recordButton.setIcon(recordLockedIcon);
+                }
+            }
+            else // file doesn't exist so OK to proceed
+            {
+                initRecorder();
+                recordButton.setIcon(recordIcon);
+            }
+        }
+    }//GEN-LAST:event_recordButtonActionPerformed
+
     private void nativePanelMouseReleased(java.awt.event.MouseEvent evt)//GEN-FIRST:event_nativePanelMouseReleased
     {//GEN-HEADEREND:event_nativePanelMouseReleased
         showPopupIfTriggered(evt, nativePopup);
@@ -590,74 +657,16 @@ public class TestItemEditorPanel extends javax.swing.JPanel
 
     
     
-    private void recordButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_recordButtonActionPerformed
-    {//GEN-HEADEREND:event_recordButtonActionPerformed
-        // Add your handling code here:
-        if (recording)
-        {
-            recorder.start();
-            recordButton.setSelected(true);
-        }
-        else
-        {
-            // stop existing audio play
-            audio.stop();
-            if (currentTestItem.getSoundFile() == null)
-            {
-                // prime file dialog with a reasonable suggestion
-                audioPath = TestModuleUtilities.createSoundForTestItem(currentTestItem);
-                // may need to create directories
-                if ((!audioPath.getParentFile().exists() &&
-                    audioPath.getParentFile().mkdirs() == false)||
-                    audioPath.getParentFile().isFile())
-                {
-                    audioPath = null;
-                }
-                // choose a file
-                chooseFile(false);
-            }
-            // no point proceeding if file not writable
-            if (currentTestItem.getSoundFile() == null ||
-                (currentTestItem.getSoundFile().exists() &&
-                 !currentTestItem.getSoundFile().canWrite()))
-            {
-                JOptionPane.showMessageDialog(this,
-                    "You must choose a sound file which can be written to.");
-                currentTestItem.setSoundFile(null);
-                audioFileField.setText("");
-                recording = false;
-                recordButton.setSelected(false);
-            }
-            else if (currentTestItem.getSoundFile().exists())
-            {
-                if (JOptionPane.showConfirmDialog(this, 
-                    "Do you want to overwrite the existing sound file?") ==
-                    JOptionPane.YES_OPTION)
-                {
-                    initRecorder();
-                }
-                else
-                {
-                    recording = false;
-                    recordButton.setSelected(false);
-                }
-            }
-            else // file doesn't exist so OK to proceed
-            {
-                initRecorder();
-            }
-        }
-            
-    }//GEN-LAST:event_recordButtonActionPerformed
-
     protected void initRecorder()
     {
         recording = true;
         mainEditorPanel.setMsgText("Openning recorder...");
         disableAudioPlayer();
         // record status needs to be changed from disable
+        
+        recordButton.setIcon(recordIcon);
         recordButton.setEnabled(false);
-        recordButton.setSelected(true);
+        //recordButton.setSelected(true);
         recordTimer.start();
         // check file type is valid
         if (!recorder.initialise(currentTestItem.getSoundFile()))
@@ -666,8 +675,10 @@ public class TestItemEditorPanel extends javax.swing.JPanel
                  "Initialisation error\n" + recorder.getErrorDescription(), 
                  "Recorder", JOptionPane.WARNING_MESSAGE);
             recording = false;
-            recordButton.setSelected(false);
-            recordButton.setEnabled(true);        
+            //recordButton.setSelected(false);
+            recordButton.setIcon(recordLockedIcon);
+            recordButton.setEnabled(true);  
+            
             mainEditorPanel.setMsgText("");
         }
     }
@@ -1013,10 +1024,11 @@ public class TestItemEditorPanel extends javax.swing.JPanel
             recorder.stop();
             recordTimer.start();
             recorder.finish();
-            recordButton.setSelected(false);
+            //recordButton.setSelected(false);
+            recordButton.setIcon(recordLockedIcon);
             recording = false;
             disableAudioPlayer();
-            recordButton.setEnabled(false);
+            //recordButton.setEnabled(false);
         }
         else
         {
@@ -1690,7 +1702,7 @@ public class TestItemEditorPanel extends javax.swing.JPanel
     private javax.swing.JScrollPane picturePane;
     private javax.swing.JButton playButton;
     private javax.swing.JProgressBar playProgressBar;
-    private javax.swing.JToggleButton recordButton;
+    private javax.swing.JButton recordButton;
     private javax.swing.JComboBox speaker;
     private javax.swing.JTextField startField;
     private javax.swing.JButton stopButton;

@@ -201,7 +201,7 @@ public class SystemHandler implements UserConfigListener
         final FontChooserDialog chooser = 
             new FontChooserDialog(parent, 
                                   prompt, true, currentFont);
-        chooser.setSize(600, 300);
+        //chooser.setSize(600, 300);
         final FontDisplayField fdf = new FontDisplayField(currentFont);
         chooser.getContentPane().add(new JScrollPane(fdf), BorderLayout.NORTH);
         javax.swing.Timer timer= null;
@@ -218,13 +218,14 @@ public class SystemHandler implements UserConfigListener
                             fdf.setDisplayFont(fcp.getSelectedFont());
                             fdf.setFont(fcp.getSelectedFont());
                             chooser.pack();
-                            RefineryUtilities.centerDialogInParent(chooser);
                         }
                     }
                 };
             timer = new javax.swing.Timer(300, taskPerformer);
             timer.start();
-        }
+        }        
+        chooser.pack();
+        RefineryUtilities.centerDialogInParent(chooser);
         chooser.setVisible(true);
         if (timer != null) timer.stop();
         if (chooser.isCancelled())

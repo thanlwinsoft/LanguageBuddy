@@ -17,7 +17,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 
 /**
- *
+ * Handles input into the java program i.e. playback of sound files
  * @author  keith
  */
 public class InputLineController implements Runnable
@@ -184,6 +184,7 @@ public class InputLineController implements Runnable
                 int frameSize = 
                     lineController.getPlayLineFormat().getSampleSizeInBits() *
                     audioFormat.getChannels() / 8;
+                frameSize = lineController.getPlayLineFormat().getFrameSize();
                 outputFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 
                     audioFormat.getSampleRate(), 
                     lineController.getPlayLineFormat().getSampleSizeInBits(), // not sure about this one
