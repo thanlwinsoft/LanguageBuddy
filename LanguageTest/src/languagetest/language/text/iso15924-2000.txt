@@ -1,0 +1,99 @@
+Arab	160	Arabic
+Aram	130	Aramaic
+Armn	230	Armenian
+Aves	151	Avestan
+Batk	365	Batak
+Beng	325	Bengali
+Blis	550	Blissymbols
+Bopo	285	Bopomofo
+Brah	300	Brāhmī
+Brai	570	Braille
+Bugi	367	Buginese
+Buhd	372	Buhid
+Cans	440	Unified Canadian Aboriginal Syllabics
+Cham	358	Cham
+Cher	445	Cherokee
+Cirt	291	Cirth
+Cpmn	402	Cypro-Minoan
+Cprt	403	Cypriot syllabary
+Cyrl	220	Cyrillic
+Cyrs	221	Cyrillic (Old Church Slavonic variant)
+Deva	315	Devanāgarī(Nāgarī)
+Dsrt	250	Deseret (Mormon)
+Egyd	70	Egyptian demotic
+Egyh	60	Egyptian hieratic
+Egyp	50	Egyptian hieroglyphs
+Ethi	430	Ethiopic (Ge‘ez)
+Geoa	240	Georgian (Asomtavruli)
+Geon	241	Georgian (Nuskhuri)
+Geor	242	Georgian (Mkhedruli)
+Glag	225	Glagolitic
+Goth	206	Gothic
+Grek	200	Greek
+Gujr	320	Gujarātī
+Guru	310	Gurmukhī
+Hang	286	Hangul (Hangǔl,Hangeul)
+Hani	500	Han ideographs
+Hano	371	Hanunóo
+Hebr	125	Hebrew
+Hira	410	Hiragana
+Hmng	450	Pahawh Hmong
+Hrkt	412	(alias for Hiragana + Katakana)
+Hung	176	Old Hungarian
+Inds	610	Indus (Harappan)
+Ital	210	Old Italic (Etruscan, Oscan, etc.)
+Java	360	Javanese
+Jpan	930	(alias for Han + Hiragana + Katakana)
+Kali	357	Kayah Li
+Kana	411	Katakana
+Khar	305	Kharoṣṭhi
+Khmr	354	Khmer
+Knda	345	Kannada
+Laoo	356	Lao
+Latf	217	Latin (Fraktur variant)
+Latg	216	Latin (Gaelic variant)
+Latn	215	Latin
+Lepc	335	Lepcha (Róng)
+Lina	400	Linear A
+Linb	401	Linear B
+Mand	140	Mandaean
+Maya	90	Mayan hieroglyphs
+Mero	100	Meroitic
+Mlym	347	Malayālam
+Mong	145	Mongolian
+Mymr	350	Myanmar (Burmese)
+Ogam	212	Ogham
+Orkh	175	Orkhon
+Orya	327	Oṛiyā
+Osma	260	Osmanya
+Palv	150	Pahlavi
+Perm	227	Old Permic
+Phnx	115	Phoenician
+Phst	600	Phaistos
+Plrd	282	Pollard Phonetic
+Roro	620	Rongorongo
+Runr	211	Runic
+Shaw	281	Shavian (Shaw)
+Sinh	348	Sinhāla
+Syrc	135	Syriac
+Syrj	137	Syriac (Western variant)
+Syrn	136	Syriac (Eastern variant)
+Syre	138	Syriac (Estrangelo variant)
+Tagb	373	Tagbanwa
+Taml	346	Tamil
+Telu	340	Telugu
+Teng	290	Tengwar
+Tfng	120	Tifinagh (Berber)
+Tglg	370	Tagalog
+Thaa	170	Thaana
+Thai	352	Thai
+Tibt	330	Tibetan
+Vaii	470	Vai
+Visp	280	Visible Speech
+Xpeo	105	Cuneiform, Old Persian
+Xsux	20	Cuneiform, Sumero-Akkadian
+Xuga	106	Cuneiform, Ugaritic
+Yiii	460	Yi
+Zxxx	997	Code for unwritten languages
+Zyyy	998	Code for undetermined script
+Zzzz	999	Code for uncoded script
