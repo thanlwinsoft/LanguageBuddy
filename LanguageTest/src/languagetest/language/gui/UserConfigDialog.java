@@ -108,7 +108,7 @@ public class UserConfigDialog extends javax.swing.JDialog
                 if (mi == mf.getLineControl().getRecMixer().getMixerInfo())
                     selectIndex = i;
             }
-            recMixerCombo.setSelectedIndex(selectIndex);
+            if (recMixers.size() > 0) recMixerCombo.setSelectedIndex(selectIndex);
             Vector playMixers = mf.getLineControl().getPlayMixers();
             selectIndex = 0;
             for (int i = 0; i<playMixers.size(); i++)
@@ -118,7 +118,7 @@ public class UserConfigDialog extends javax.swing.JDialog
                 if (mi == mf.getLineControl().getPlayMixer().getMixerInfo())
                     selectIndex = i;
             }
-            playMixerCombo.setSelectedIndex(selectIndex);
+            if (playMixers.size() > 0) playMixerCombo.setSelectedIndex(selectIndex);
         }
         String soundExt = UserConfig.getCurrent().getDefaultSoundExtension();
         if (soundExt.equals(WAV_EXT)) recFormatCombo.setSelectedIndex(0);
