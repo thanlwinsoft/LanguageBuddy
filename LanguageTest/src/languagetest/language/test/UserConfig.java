@@ -58,6 +58,7 @@ import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import languagetest.language.gui.RecentFilesList;
+import languagetest.sound.LineController;
 
 /**
  *
@@ -77,7 +78,7 @@ public class UserConfig
     public static final String LANG_XML_COMMENT = 
         "Language Configuration for LanguageTest Program\nCreated on";
     private static final int DEFAULT_FONT_SIZE = 12;
-    private static String DEFAULT_SOUND_EXT = ".mp3";
+    private static String DEFAULT_SOUND_EXT = ".wav";
     private String userName = "Unknown";
     private TestHistory testHistory = null;
     private static UserConfig currentConfig = null; 
@@ -315,6 +316,21 @@ public class UserConfig
     public boolean containsForeignLanguage(UniversalLanguage ul)
     {
         return foreignLanguages.containsKey(ul);
+    }
+    
+    public void setDefaultSoundExtension(String format)
+    {
+        defaultSoundExtension = format;
+    }
+    
+    public javax.sound.sampled.Mixer.Info getRecordingMixer(LineController lc)
+    {
+        return null;        
+    }
+    
+    public javax.sound.sampled.Mixer.Info getPlayingMixer(LineController lc)
+    {
+        return null;
     }
     
     protected void parseLanguageConfig(InputStream xmlIs) 

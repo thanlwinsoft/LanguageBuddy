@@ -676,11 +676,12 @@ public class TestItemEditorPanel extends javax.swing.JPanel
                  "Recorder", JOptionPane.WARNING_MESSAGE);
             recording = false;
             //recordButton.setSelected(false);
-            recordButton.setIcon(recordLockedIcon);
             recordButton.setEnabled(true);  
+            recordButton.setIcon(recordLockedIcon);
             
             mainEditorPanel.setMsgText("");
         }
+        
     }
     
     private void picturePaneComponentResized(java.awt.event.ComponentEvent evt)//GEN-FIRST:event_picturePaneComponentResized

@@ -52,6 +52,9 @@ public class UserConfigDialog extends javax.swing.JDialog
     private final static long MS_IN_HOUR = 3600000;
     private final static long MS_IN_DAY = 86400000;
     private final static String WINDOWS_EXE = ".exe";
+    private final static String WAV_EXT = ".wav";
+    private final static String MP3_EXT = ".mp3";
+    private final static String OGG_EXT = ".ogg";
     private JFileChooser exeChooser = null;
     private MainFrame mf = null;
     /** Creates new form UserConfigDialog */
@@ -117,7 +120,9 @@ public class UserConfigDialog extends javax.swing.JDialog
             }
             playMixerCombo.setSelectedIndex(selectIndex);
         }
-        
+        String soundExt = UserConfig.getCurrent().getDefaultSoundExtension();
+        if (soundExt.equals(WAV_EXT)) recFormatCombo.setSelectedIndex(0);
+        else if (soundExt.equals(MP3_EXT)) recFormatCombo.setSelectedIndex(1);
         initRevisionParameters(TestType.getById(0));
         pack();
         RefineryUtilities.centerDialogInParent(this);
@@ -195,11 +200,15 @@ public class UserConfigDialog extends javax.swing.JDialog
         jPanel17 = new javax.swing.JPanel();
         playMixerLabel = new javax.swing.JLabel();
         recMixerLabel = new javax.swing.JLabel();
+        recFormatLabel = new javax.swing.JLabel();
         jPanel18 = new javax.swing.JPanel();
         playMixerCombo = new javax.swing.JComboBox();
         recMixerCombo = new javax.swing.JComboBox();
+        recFormatCombo = new javax.swing.JComboBox();
         jPanel19 = new javax.swing.JPanel();
         audioOkButton = new javax.swing.JButton();
+        jPanel20 = new javax.swing.JPanel();
+        jTextArea1 = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter()
@@ -484,7 +493,8 @@ public class UserConfigDialog extends javax.swing.JDialog
 
         jPanel10.setLayout(new javax.swing.BoxLayout(jPanel10, javax.swing.BoxLayout.X_AXIS));
 
-        jPanel17.setLayout(new java.awt.GridLayout(2, 1));
+        jPanel10.setBorder(new javax.swing.border.TitledBorder("Audio Settings"));
+        jPanel17.setLayout(new java.awt.GridLayout(3, 1));
 
         playMixerLabel.setText("Playing mixer:");
         jPanel17.add(playMixerLabel);
@@ -492,13 +502,27 @@ public class UserConfigDialog extends javax.swing.JDialog
         recMixerLabel.setText("Recording mixer:");
         jPanel17.add(recMixerLabel);
 
+        recFormatLabel.setText("Recording format:");
+        jPanel17.add(recFormatLabel);
+
         jPanel10.add(jPanel17);
 
-        jPanel18.setLayout(new java.awt.GridLayout(2, 1));
+        jPanel18.setLayout(new java.awt.GridLayout(3, 1));
 
         jPanel18.add(playMixerCombo);
 
         jPanel18.add(recMixerCombo);
+
+        recFormatCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "WAV", "MP3" }));
+        recFormatCombo.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                recFormatComboActionPerformed(evt);
+            }
+        });
+
+        jPanel18.add(recFormatCombo);
 
         jPanel10.add(jPanel18);
 
@@ -519,12 +543,27 @@ public class UserConfigDialog extends javax.swing.JDialog
 
         audioPanel.add(jPanel19, java.awt.BorderLayout.SOUTH);
 
+        jPanel20.setLayout(new java.awt.BorderLayout());
+
+        jTextArea1.setEditable(false);
+        jTextArea1.setLineWrap(true);
+        jTextArea1.setText("Warning: changing mixers is an experimental feature. The mixer is set for the current session only.");
+        jTextArea1.setWrapStyleWord(true);
+        jPanel20.add(jTextArea1, java.awt.BorderLayout.CENTER);
+
+        audioPanel.add(jPanel20, java.awt.BorderLayout.CENTER);
+
         jTabbedPane1.addTab("Audio", audioPanel);
 
         getContentPane().add(jTabbedPane1, java.awt.BorderLayout.CENTER);
 
         pack();
     }//GEN-END:initComponents
+
+    private void recFormatComboActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_recFormatComboActionPerformed
+    {//GEN-HEADEREND:event_recFormatComboActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_recFormatComboActionPerformed
 
     private void audioOkButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_audioOkButtonActionPerformed
     {//GEN-HEADEREND:event_audioOkButtonActionPerformed
@@ -685,7 +724,18 @@ public class UserConfigDialog extends javax.swing.JDialog
                 mf.getLineControl().setRecMixer((Mixer.Info)m);
         }
         else System.out.println("Error setting mixers");
-        
+        switch (recFormatCombo.getSelectedIndex())
+        {
+            case 0:
+                UserConfig.getCurrent().setDefaultSoundExtension(WAV_EXT);
+                break;
+            case 1:
+                UserConfig.getCurrent().setDefaultSoundExtension(MP3_EXT);
+                break;
+            case 2:
+                UserConfig.getCurrent().setDefaultSoundExtension(OGG_EXT);
+                break;
+        }
         TestType type = TestType.getById(testTypeCombo.getSelectedIndex());
         saveRevisionParameters(type);
         return langPanel.checkLocale();
@@ -842,6 +892,7 @@ public class UserConfigDialog extends javax.swing.JDialog
     private javax.swing.JPanel jPanel18;
     private javax.swing.JPanel jPanel19;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel20;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel31;
     private javax.swing.JPanel jPanel4;
@@ -851,6 +902,7 @@ public class UserConfigDialog extends javax.swing.JDialog
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField longTermPeriodField;
     private javax.swing.JTextField longTermRevPeriodField;
     private javax.swing.JTextField minNumPassesField;
@@ -860,6 +912,8 @@ public class UserConfigDialog extends javax.swing.JDialog
     private javax.swing.JButton rOkButton;
     private javax.swing.JButton rcButton;
     private javax.swing.JTextField rcField;
+    private javax.swing.JComboBox recFormatCombo;
+    private javax.swing.JLabel recFormatLabel;
     private javax.swing.JLabel recLabel;
     private javax.swing.JComboBox recMixerCombo;
     private javax.swing.JLabel recMixerLabel;

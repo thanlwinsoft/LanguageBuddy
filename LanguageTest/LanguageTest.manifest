@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Class-Path: jcommon-0.9.1.jar .
+Class-Path: jcommon-1.0.0-pre2.jar .
 Created-By: NetBeans IDE
 Main-Class: languagetest.language.gui.MainFrame
 Implementation-Title: Language Test
