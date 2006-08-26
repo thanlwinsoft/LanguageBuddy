@@ -16,7 +16,11 @@ import languagetest.language.test.UniversalLanguage;
  */
 public class LanguageChooser extends javax.swing.JDialog
 {
-    private LanguagePanel langPanel = null;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -7151255355611832882L;
+	private LanguagePanel langPanel = null;
     private boolean ok = false;
     /** Creates new form LanguageChooser */
     public LanguageChooser(java.awt.Frame parent, String title)

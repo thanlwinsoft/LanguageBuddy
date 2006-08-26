@@ -36,7 +36,11 @@ import javax.swing.JTable;
  */
 public class ButtonCellEditor extends javax.swing.DefaultCellEditor
 {
-    private int currentRow;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 5082026255715102601L;
+	private int currentRow;
     private int currentCol;
     /** Creates a new instance of ButtonCellEditor */
     public ButtonCellEditor(JButton b)

@@ -40,7 +40,7 @@ public class ClipPlayer implements LineListener, AudioPlayer
     private int endFrame = -1;
     private long microSecPerFrame;
     private File currentFile = null;
-    private static final long STEP_SIZE = 100000; // 0.1sec
+    //private static final long STEP_SIZE = 100000; // 0.1sec
     private LineListener listener = null;
     boolean userStop = false;
     /** Creates a new instance of ClipPlayer */
@@ -184,17 +184,17 @@ public class ClipPlayer implements LineListener, AudioPlayer
     public void pause()
     {
         if (clip == null) return ;
-        long position = 0;
+        //long position = 0;
         if (clip.isRunning())
         {
             userStop = true;
             clip.stop();
             //clip.flush();
-            position = clip.getMicrosecondPosition();
+            //position = clip.getMicrosecondPosition();
         }
         else
         {
-            position = clip.getMicrosecondPosition();
+            //position = clip.getMicrosecondPosition();
             clip.start();
         }
         //return position;

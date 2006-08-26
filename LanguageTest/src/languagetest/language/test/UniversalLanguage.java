@@ -6,8 +6,6 @@
 
 package languagetest.language.test;
 
-import java.util.Locale;
-
 import languagetest.language.text.Iso15924;
 import languagetest.language.text.Iso3166;
 import languagetest.language.text.Iso639;

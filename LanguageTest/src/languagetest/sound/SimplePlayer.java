@@ -35,7 +35,7 @@ import java.util.Iterator;
 public class SimplePlayer implements AudioPlayer, Runnable, LineListener
 {
     private static int BUFFER_SIZE = 8820;       //44100 kbit/s
-    private static int SKIP_BUFFER_SIZE = 1048576;       //44100 kbit/s
+    //private static int SKIP_BUFFER_SIZE = 1048576;       //44100 kbit/s
     private static int SOURCE_LINE_BUFFER = 44100;
     private static int MARK_INVALID_SIZE = 16777216;
     private float framesPerSec = 44100; // set properly later
@@ -58,7 +58,6 @@ public class SimplePlayer implements AudioPlayer, Runnable, LineListener
     private Thread playThread = null;
     private Vector listeners = null;
     private long totalLength = -1;
-    private long pseudoLength = 0;
     private boolean initialised = false;
     private boolean boundsChanged = false;
     /** Creates a new instance of SimplePlayer */
@@ -736,7 +735,7 @@ public class SimplePlayer implements AudioPlayer, Runnable, LineListener
     
     private void skip(long targetOffset) throws IOException
     {
-         byte buffer[] = new byte[SKIP_BUFFER_SIZE];
+         //byte buffer[] = new byte[SKIP_BUFFER_SIZE];
          int zeroSkips = 0;
          double skipDistance = (double)(targetOffset - getOffset());
          long skipProgress = 0;

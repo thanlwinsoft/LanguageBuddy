@@ -80,7 +80,7 @@ public class TextActionHandler implements UndoableEditListener
     protected void addKeymapBindings() 
     {
         //Add a new key map to the keymap hierarchy.
-        Keymap keymap = textComponent.addKeymap("UndoRedoBindings",
+        Keymap keymap = JTextComponent.addKeymap("UndoRedoBindings",
                                            textComponent.getKeymap());
 
         //Ctrl-z for undo
@@ -103,7 +103,12 @@ public class TextActionHandler implements UndoableEditListener
 
     class UndoAction extends AbstractAction 
     {
-        public UndoAction() 
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = -2232814767609191452L;
+
+		public UndoAction() 
         {
             super(UNDO);
             setEnabled(false);
@@ -144,7 +149,12 @@ public class TextActionHandler implements UndoableEditListener
 
     class RedoAction extends AbstractAction 
     {
-        public RedoAction() 
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 4571376857997127027L;
+
+		public RedoAction() 
         {
             super(REDO);
             setEnabled(false);

@@ -35,7 +35,7 @@ import java.util.NoSuchElementException;
  */
 public class RelativePath
 {
-    
+    static final String dirSeparator = new String("/");
         /** Method to determine the path of a relative to b */
     static public String aToB(File a, File b)
     {
@@ -45,6 +45,9 @@ public class RelativePath
         String pathFromBase = "";
         int upLevels = 0;
         int commonTokens = 0;
+        // always use the same character so files can be used on all 
+        // platforms
+        
         if (File.listRoots().length > 1) minTokens = 1;
         try
         {
@@ -61,7 +64,7 @@ public class RelativePath
                     pathFromBase = aToken;
                     if (aTokens.hasMoreTokens())
                     {
-                        pathFromBase += File.separator;
+                        pathFromBase += dirSeparator;
                     }
                     break;
                 }
@@ -83,14 +86,14 @@ public class RelativePath
                 if (!b.isDirectory()) upLevels--;
                 for (int i=0; i<upLevels; i++)
                 {
-                    relativePath += ".." + File.separator;
+                    relativePath += ".." + dirSeparator;
                 }
                 // add the additional levels that a has above the shared base path
                 while (aTokens.hasMoreTokens())
                 {
                     pathFromBase += aTokens.nextToken();
                     // don't want to add path separator if this is last token
-                    if (aTokens.hasMoreTokens()) pathFromBase += File.separator;
+                    if (aTokens.hasMoreTokens()) pathFromBase += dirSeparator;
                 }
                 relativePath += pathFromBase;
             }

@@ -32,8 +32,6 @@ import java.util.TreeSet;
 import java.util.Iterator;
 import java.util.Vector;
 import java.util.TreeMap;
-import java.util.Enumeration;
-import java.util.Locale;
 import java.util.Hashtable;
 import java.util.Set;
 import java.util.Date;
@@ -41,17 +39,11 @@ import java.text.DateFormat;
 import java.util.prefs.Preferences;
 import java.util.prefs.PreferenceChangeListener;
 import java.io.File;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import javax.swing.UIManager;
-import javax.swing.LookAndFeel;
 import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileFilter;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.UnsupportedLookAndFeelException;
 import org.jfree.ui.RefineryUtilities;
 import languagetest.language.test.UserConfig;
 import languagetest.language.test.TestHistoryStorageException;
@@ -71,7 +63,11 @@ import languagetest.sound.LineController;
 public class MainFrame extends javax.swing.JFrame 
     implements PreferenceChangeListener
 {
-    private final String TEST_SELECTION_PANEL = "TestSelectionPanel";
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -8309872984125554091L;
+	private final String TEST_SELECTION_PANEL = "TestSelectionPanel";
     private final String TEST_PANEL = "TestPanel";
     private final String RESULTS_PANEL = "ResultsPanel";
     private final String EDIT_PANEL = "EditPanel";
@@ -92,10 +88,10 @@ public class MainFrame extends javax.swing.JFrame
     private AudioPlayer audio = null;
     private Hashtable moduleIdTable = null;
     private SwitchUser switchUser = null;
-    private static LanguageConfig langConfig = null;
-    private static UserConfig userConfig = null;
+    //private static LanguageConfig langConfig = null;
+    //private static UserConfig userConfig = null;
     private LineController lineControl = null;
-    private FileFilter moduleFileFilter = null;
+    //private FileFilter moduleFileFilter = null;
     /** Creates new form MainFrame */
     public MainFrame(SortedSet modules)
     {

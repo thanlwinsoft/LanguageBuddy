@@ -7,7 +7,6 @@
 package languagetest.language.gui;
 
 import java.awt.Font;
-import java.awt.Frame;
 import java.awt.BorderLayout;
 import java.io.IOException;
 import java.util.prefs.Preferences;
@@ -128,13 +127,13 @@ public class SystemHandler implements UserConfigListener
     protected Process openCommand(String command, Process oldProcess) 
     {
         Process process = oldProcess;
-        boolean open = false;
+        //boolean open = false;
         try
         {
             if (process == null)
             {
                 process = Runtime.getRuntime().exec(command);
-                open = true;
+                //open = true;
             }
             else
             {
@@ -143,7 +142,7 @@ public class SystemHandler implements UserConfigListener
                     // previous instance has terminated, so load another
                     process.exitValue();
                     process = Runtime.getRuntime().exec(command);
-                    open = true;
+                    //open = true;
                 }
                 catch (IllegalThreadStateException e)
                 {

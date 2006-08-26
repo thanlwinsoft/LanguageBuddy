@@ -91,7 +91,7 @@ public class XmlTestHistory implements TestHistory, UserConfigListener
         }
         setHistoryPath(userConfig);
         // register for config changes
-        userConfig.addListener(this);
+        UserConfig.addListener(this);
 
         filter = new FileFilter()
         {

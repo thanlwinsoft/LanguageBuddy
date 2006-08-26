@@ -29,26 +29,16 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.DefaultTreeModel;
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.Vector;
 import java.util.List;
-import java.util.Hashtable;
-import java.awt.Font;
-import java.awt.event.KeyEvent;
 import java.awt.CardLayout;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
-import javax.swing.SwingUtilities;
 import javax.swing.JOptionPane;
-import javax.swing.JLabel;
-import javax.swing.ProgressMonitor;
 import javax.swing.JPanel;
 import javax.swing.ImageIcon;
-import java.util.prefs.Preferences;
 
 import org.jfree.ui.about.ProjectInfo;
 import org.jfree.ui.about.AboutFrame;
@@ -67,7 +57,11 @@ import languagetest.util.XsltTransformer;
  */
 public class MainEditorPanel extends javax.swing.JPanel implements TreeSelectionListener
 {
-    //private static long ADJUST_TIME = 250; // ms
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -5686556876612548049L;
+	//private static long ADJUST_TIME = 250; // ms
     private static String NO_MODULE_CARD = "NoModulePanel";
     private static String MODULE_CARD = "ModulePanel";
     private static String TEST_ITEM_CARD = "TestItemPanel";
@@ -702,7 +696,7 @@ public class MainEditorPanel extends javax.swing.JPanel implements TreeSelection
         // Add your handling code here:
         if (currentModule != null)
         {
-            File chosenFile = null;
+            //File chosenFile = null;
             JFileChooser chooser = new JFileChooser();
             FileFilter filter = new FileFilter() 
             {

@@ -26,21 +26,17 @@ package languagetest.language.gui;
 
 import java.util.SortedSet;
 import java.util.Iterator;
-import java.awt.Rectangle;
-import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.JTable;
 import java.awt.Component;
 import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import javax.swing.border.EmptyBorder;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.Icon;
-import javax.swing.event.ListSelectionListener;
 import languagetest.language.test.TestItem;
 import languagetest.language.test.TestModule;
 /**
@@ -50,7 +46,11 @@ import languagetest.language.test.TestModule;
 public class TestItemTable extends org.jfree.ui.SortableTable
     implements TableCellRenderer 
 {
-    public static final int MODULE_COL = 0;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 135073931381198742L;
+	public static final int MODULE_COL = 0;
     public static final int NATIVE_COL = 1;
     public static final int FOREIGN_COL = 2;
     public static final int PLAY_COL = 3;
@@ -314,7 +314,11 @@ public class TestItemTable extends org.jfree.ui.SortableTable
     
    protected class ButtonRenderer extends JButton     
    {
-        ButtonRenderer(String text)
+        /**
+	 * 
+	 */
+	private static final long serialVersionUID = -4345862300857074210L;
+		ButtonRenderer(String text)
         {
             super(text);
         }

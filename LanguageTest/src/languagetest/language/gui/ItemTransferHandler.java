@@ -33,15 +33,12 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.InputEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import javax.swing.JTree;
 import javax.swing.JComponent;
 import javax.swing.TransferHandler;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 
@@ -59,7 +56,11 @@ import languagetest.language.test.ItemHistory;
  */
 public class ItemTransferHandler extends javax.swing.TransferHandler 
 {
-    public final static DataFlavor FLAVOR = 
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 781035976803227564L;
+	public final static DataFlavor FLAVOR = 
             new DataFlavor(TestItemTransferable.class,
             "TestItems");
     Vector items = null;

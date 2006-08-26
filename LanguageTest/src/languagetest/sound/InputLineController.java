@@ -49,7 +49,7 @@ public class InputLineController implements Runnable
     private long totalLength = -1;
     private long boundsBegin = 0;
     private long boundsDuration = -1;
-    private long preBuffer = 0;
+    //private long preBuffer = 0;
     private File audioFile = null;
     private AudioInputStream input = null;
     private AudioInputStream fileStream = null;
@@ -141,10 +141,10 @@ public class InputLineController implements Runnable
             state = PAUSED;
         }
         this.outputController = c;
-        if (c != null)
-        {
-            this.preBuffer = c.getBufferSize() / 2;
-        }
+//        if (c != null)
+//        {
+//            this.preBuffer = c.getBufferSize() / 2;
+//        }
     }
     
     
@@ -493,7 +493,7 @@ public class InputLineController implements Runnable
     protected void seekWithMark() 
         throws IOException, UnsupportedAudioFileException
     {
-        boolean seekFinished = false;
+        //boolean seekFinished = false;
         long thisSeek = seekTarget - playPosition;
         if (thisSeek == 0)
         {
@@ -575,7 +575,7 @@ public class InputLineController implements Runnable
     protected void seekWithCache() 
         throws IOException, UnsupportedAudioFileException
     {
-        boolean seekFinished = false;
+        //boolean seekFinished = false;
         int thisSeek = (int)(seekTarget - playPosition);
         thisSeek = roundOffsetToFrame(thisSeek);
         if (thisSeek == 0)

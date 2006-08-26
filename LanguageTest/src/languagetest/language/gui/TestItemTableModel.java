@@ -45,7 +45,11 @@ import languagetest.language.test.LanguageConfig;
 public class TestItemTableModel extends org.jfree.ui.SortableTableModel
     implements ListSelectionListener
 {
-    public final static String MODULE_COL_NAME = "Module";
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1081601588492338715L;
+	public final static String MODULE_COL_NAME = "Module";
     public final static String NATIVE_COL_NAME = "English";
     public final static String FOREIGN_COL_NAME = "Burmese";
     public final static String EDIT_COL_NAME = "Edit";

@@ -32,6 +32,10 @@ public class TestHistoryStorageException extends java.lang.Exception
 {
     
     /**
+	 * 
+	 */
+	private static final long serialVersionUID = -1613205654091920607L;
+	/**
      * Creates a new instance of <code>TestHistoryStorageException</code> without detail message.
      */
     public TestHistoryStorageException()

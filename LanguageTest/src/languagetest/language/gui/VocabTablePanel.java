@@ -35,7 +35,11 @@ import languagetest.sound.AudioPlayer;
  */
 public class VocabTablePanel extends javax.swing.JPanel
 {
-    private MainFrame mainFrame = null;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -4171591637859439642L;
+	private MainFrame mainFrame = null;
     private TestItemTable table = null;
     private FindDialog findDialog = null;
     /** Creates new form VocabTablePanel */

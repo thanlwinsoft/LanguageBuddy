@@ -24,9 +24,6 @@
 
 package languagetest.language.gui;
 
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreePath;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -35,29 +32,19 @@ import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.awt.Font;
-import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.Image;
-import java.awt.event.KeyEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.awt.event.MouseEvent;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
-import javax.swing.SwingUtilities;
 import javax.swing.JOptionPane;
 import javax.swing.JLabel;
-import javax.swing.ProgressMonitor;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 import javax.swing.JPopupMenu;
 import javax.swing.JMenuItem;
 import javax.swing.text.DefaultEditorKit;
 import javax.swing.border.TitledBorder;
-import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioSystem;
 
 
@@ -76,7 +63,11 @@ import languagetest.sound.Recorder;
 public class TestItemEditorPanel extends javax.swing.JPanel 
     implements EditorSubPanel, javax.swing.event.DocumentListener
 {
-    private static long ADJUST_TIME = 250; // ms
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -7010060844657094747L;
+	private static long ADJUST_TIME = 250; // ms
     private boolean changing = false;
     private MainEditorPanel mainEditorPanel = null;
     private MainFrame mainFrame = null;
@@ -85,7 +76,7 @@ public class TestItemEditorPanel extends javax.swing.JPanel
     private AudioPlayer audio = null;
     private File audioPath = null;
     private AudioProgressListener audioListener = null;
-    private JPanel returnPanel = null;
+    //private JPanel returnPanel = null;
     private DecimalFormat df2 = null;
     private DecimalFormat df3 = null;
     private DateFormat dateFormat = null;
@@ -799,7 +790,6 @@ public class TestItemEditorPanel extends javax.swing.JPanel
         //saveTestItemChanges();
         if (nameChanged)
         {
-            TestModule oldMod = currentModule;
             TestComponent oldComponent = mainEditorPanel.getSelected();
             if (currentModule != null)
             {
@@ -1297,7 +1287,7 @@ public class TestItemEditorPanel extends javax.swing.JPanel
         if (currentTestItem != null && currentModule != null)
         {
             // integrity check
-            assert (currentModule == currentTestItem.getModule());
+            //assert (currentModule == currentTestItem.getModule());
             
             String oldName = currentTestItem.getName();
             

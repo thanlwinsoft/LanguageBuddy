@@ -25,11 +25,8 @@
 package languagetest.language.gui;
 
 
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.prefs.BackingStoreException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import javax.swing.event.TreeSelectionListener;
@@ -40,7 +37,6 @@ import javax.swing.ProgressMonitor;
 import javax.swing.SwingUtilities;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPopupMenu;
-import javax.swing.JMenu;
 import languagetest.language.test.UserConfig;
 import languagetest.language.test.TestHistoryStorageException;
 import languagetest.language.test.TestItem;
@@ -59,8 +55,11 @@ import languagetest.language.test.ItemHistory;
 public class TestSelectionPanel extends javax.swing.JPanel 
     implements TreeSelectionListener
 {
-    private MainFrame mainFrame = null;
-    private TestModule selectedModule = null;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 8845801644245266826L;
+	private MainFrame mainFrame = null;
     private TestHistoryParser historyParser = null;
     private int removedId = 0;
     /** Creates new form TestSelectionPanel */
@@ -1063,24 +1062,24 @@ public class TestSelectionPanel extends javax.swing.JPanel
         
             if (node == null)
             {
-                selectedModule = null;
+                //selectedModule = null;
                 unloadModuleButton.setEnabled(false);
                 return;
             }
             Object nodeInfo = node.getUserObject();
             if (nodeInfo.getClass() == TestModule.class) 
             {
-                selectedModule = (TestModule)nodeInfo;
+                //selectedModule = (TestModule)nodeInfo;
                 unloadModuleButton.setEnabled(true);
             }
             else if (nodeInfo.getClass() == TestItem.class)
             {
-                selectedModule = ((TestItem)nodeInfo).getModule();
+                //selectedModule = ((TestItem)nodeInfo).getModule();
                 unloadModuleButton.setEnabled(true);
             }
             else
             {
-                selectedModule = null;
+                //selectedModule = null;
                 unloadModuleButton.setEnabled(false);
             }                
         }

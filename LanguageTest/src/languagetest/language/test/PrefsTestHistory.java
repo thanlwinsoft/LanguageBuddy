@@ -33,7 +33,6 @@ import java.util.Iterator;
 import java.util.prefs.BackingStoreException;
 import java.text.DecimalFormat;
 import java.io.IOException;
-import javax.swing.JOptionPane;
 /**
  *
  * @author  keith
@@ -44,13 +43,13 @@ public class PrefsTestHistory implements TestHistory
     private DecimalFormat testIndexFormat = null;
     private static final String HISTORY_NODE = "TestHistory";
     private static final String MODULE_PATH = "modulePath";
-    private static final String ITEMS = "Items";
-    private static final String CREATION_TIME = "creationTime";
+    //private static final String ITEMS = "Items";
+    //private static final String CREATION_TIME = "creationTime";
     private static final String TEST_COUNT = "testCount";
     private static final String PASS_COUNT = "passCount";
     private static final String TEST_DATE = "date";
     private static final String TEST_RESULT = "pass";
-    private static final long MS_IN_DAY = 24*3600000;
+    //private static final long MS_IN_DAY = 24*3600000;
     /** Creates a new instance of TestHistory */
     public PrefsTestHistory(String userName) 
     {
@@ -288,7 +287,6 @@ public class PrefsTestHistory implements TestHistory
         }
         public boolean hasNext()
         {
-            boolean hasNext = true;
             if (testNode != null) return true; // has already been called
             while (testNode == null)
             {

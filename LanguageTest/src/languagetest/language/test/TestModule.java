@@ -31,7 +31,6 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.Date;
 import java.util.TreeSet;
 import java.util.TreeMap;
@@ -72,7 +71,7 @@ public class TestModule implements Comparable, TestComponent
     private final static String NAME_ATTRIB = "name";
     private final static String UNIQUE_ID = "id";
     private final static String TEST_TAG = "TestItem";
-    private final static String TEST_NAME_ATTRIB = "name";
+    //private final static String TEST_NAME_ATTRIB = "name";
     private final static String NATIVE_TAG = "NativeLang";
     private final static String FOREIGN_TAG = "ForeignLang";
     private final static String SOUND_TAG = "SoundFile";
@@ -213,6 +212,9 @@ public class TestModule implements Comparable, TestComponent
     }
     public void setFont(Font newFont, UniversalLanguage ul, int langType)
     {
+        if (readOnly) 
+            throw new IllegalArgumentException("TestModule is readonly");
+        
         if (langType == UniversalLanguage.NATIVE_LANG)
         {
             setNativeFont(newFont, ul);
@@ -224,19 +226,30 @@ public class TestModule implements Comparable, TestComponent
     }
     public void setNativeFont(Font newFont, UniversalLanguage ul) 
     { 
+        if (readOnly) 
+            throw new IllegalArgumentException("TestModule is readonly");
+        
         nativeFonts.put(ul,newFont); 
     }
     public void setForeignFont(Font newFont, UniversalLanguage ul) 
     { 
+        if (readOnly) 
+            throw new IllegalArgumentException("TestModule is readonly");
+        
         foreignFonts.put(ul, newFont); 
     }
     public void setNativeFont(Font newFont) 
     { 
+        if (readOnly) 
+            throw new IllegalArgumentException("TestModule is readonly");
+        
         nativeFonts.put(LanguageConfig.getCurrent().getNativeLanguage(),
                         newFont); 
     }
     public void setForeignFont(Font newFont) 
     { 
+        if (readOnly)
+            throw new IllegalArgumentException("TestModule is readonly");
         foreignFonts.put(LanguageConfig.getCurrent().getForeignLanguage(), 
                          newFont); 
     }
@@ -245,6 +258,8 @@ public class TestModule implements Comparable, TestComponent
      */
     public void removeNativeLanguage(UniversalLanguage ul)
     {
+        if (readOnly) 
+            throw new IllegalArgumentException("TestModule is readonly");
         if (nativeFonts.containsKey(ul))
         {
             nativeFonts.remove(ul);
@@ -256,6 +271,8 @@ public class TestModule implements Comparable, TestComponent
     }
     public void removeForeignLanguage(UniversalLanguage ul)
     {
+        if (readOnly) 
+            throw new IllegalArgumentException("TestModule is readonly");
         if (foreignFonts.containsKey(ul))
         {
             foreignFonts.remove(ul);
@@ -290,11 +307,17 @@ public class TestModule implements Comparable, TestComponent
         return ""; // default to empty string
     }
     public void setName(String newName, UniversalLanguage ul) 
-    { 
+    {
+        if (readOnly) 
+            throw new IllegalArgumentException("TestModule is readonly");
+        
         names.put(ul, newName); 
     }
     public void setName(String newName) 
     { 
+        if (readOnly) 
+            throw new IllegalArgumentException("TestModule is readonly");
+        
         names.put(LanguageConfig.getCurrent().getNativeLanguage(), newName); 
     }
     public MutableTreeNode getTreeNode() { return moduleNode; }
@@ -450,8 +473,10 @@ public class TestModule implements Comparable, TestComponent
             {
                 setName(file.getName());
             }
-            setForeignFont(new Font("CECLASSIC", Font.PLAIN, FOREIGN_FONT_SIZE));
-            setNativeFont(new Font("dialog", Font.PLAIN, NATIVE_FONT_SIZE));
+            LanguageConfig lc = LanguageConfig.getCurrent();
+            UserConfig uc = UserConfig.getCurrent();
+            setForeignFont(uc.getForeignDefaultFont(lc.getForeignLanguage()));
+            setNativeFont(uc.getNativeDefaultFont(lc.getNativeLanguage()));
             creationTime = new Date().getTime();
         }
     }
@@ -497,8 +522,8 @@ public class TestModule implements Comparable, TestComponent
     protected void readTestItem(org.w3c.dom.Element testElement, 
                                 long defaultTime)
     {
-        String testName = UNKNOWN;
-        testName = testElement.getAttribute(TEST_NAME_ATTRIB);
+        //String testName = UNKNOWN;
+        //testName = testElement.getAttribute(TEST_NAME_ATTRIB);
         TestItem newTest = new TestItem(this);
         long itemTime = defaultTime;
         if (testElement.hasAttribute(CREATION_TIME))
@@ -875,7 +900,7 @@ public class TestModule implements Comparable, TestComponent
                 if (item.getNativeText(ul).length()>0)
                 {
                     element = doc.createElement(NATIVE_TAG);
-                    element.setAttribute(this.LANG_CODE_ATTRIB, ul.getCode());
+                    element.setAttribute(TestModule.LANG_CODE_ATTRIB, ul.getCode());
                     text = doc.createTextNode(item.getNativeText(ul));
                     element.insertBefore(text,null);
                     itemElement.insertBefore(element,null);
@@ -892,7 +917,7 @@ public class TestModule implements Comparable, TestComponent
                 if (item.getForeignText(ul).length()>0)
                 {
                     element = doc.createElement(FOREIGN_TAG);
-                    element.setAttribute(this.LANG_CODE_ATTRIB, ul.getCode());
+                    element.setAttribute(TestModule.LANG_CODE_ATTRIB, ul.getCode());
                     text = doc.createTextNode(item.getForeignText(ul));
                     element.insertBefore(text,null);
                     itemElement.insertBefore(element,null);
@@ -1067,7 +1092,12 @@ public class TestModule implements Comparable, TestComponent
     
     public class ParseException extends IOException
     {
-        ParseException(String details)
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 4112174696681423446L;
+
+		ParseException(String details)
         {
             super(details);
         }

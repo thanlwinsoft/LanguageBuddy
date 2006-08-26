@@ -91,7 +91,7 @@ public class ImageScaler extends ComponentAdapter implements ActionListener
     {
         if (picture == null) return; // only relevant if picture present
         Dimension viewDim = scrollPane.getViewport().getExtentSize();
-        int count = 0;
+        //int count = 0;
         // if image hasn't yet loaded, then dimensions will be wrong
         if (viewDim == null || 
             picture.getHeight() == -1 || picture.getWidth() == -1)
@@ -139,7 +139,6 @@ public class ImageScaler extends ComponentAdapter implements ActionListener
             System.out.println("Scaling picture " + width + "x" + height);
             Image image = picture.getScaledInstance(width, height, 
                 java.awt.Image.SCALE_SMOOTH);
-            ImageIcon icon = null;
             // reuse icon if possible to save memory
             Icon oldIcon = null;
             if (label != null) oldIcon = label.getIcon();

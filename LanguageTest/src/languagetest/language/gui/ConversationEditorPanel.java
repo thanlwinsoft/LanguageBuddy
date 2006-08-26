@@ -30,12 +30,16 @@ package languagetest.language.gui;
  */
 public class ConversationEditorPanel extends javax.swing.JPanel
 {
-    private MainEditorPanel mainEditorPanel = null;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -7900979552132953417L;
+	//private MainEditorPanel mainEditorPanel = null;
     
     /** Creates new form ConversationEditorPanel */
     public ConversationEditorPanel(MainEditorPanel mainEditorPanel)
     {
-        this.mainEditorPanel = mainEditorPanel;
+        //this.mainEditorPanel = mainEditorPanel;
         initComponents();
     }
     
@@ -99,7 +103,11 @@ public class ConversationEditorPanel extends javax.swing.JPanel
         speakerList.setBorder(new javax.swing.border.TitledBorder("Speakers"));
         speakerList.setModel(new javax.swing.AbstractListModel()
         {
-            String[] strings = { "Question", "Answer" };
+            /**
+			 * 
+			 */
+			private static final long serialVersionUID = -5649718884822012260L;
+			String[] strings = { "Question", "Answer" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });

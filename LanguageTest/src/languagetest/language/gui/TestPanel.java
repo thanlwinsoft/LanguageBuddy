@@ -24,32 +24,21 @@
 
 package languagetest.language.gui;
 
-import java.util.Enumeration;
 import java.io.File;
 import java.io.StringReader;
 import java.io.IOException;
 import java.awt.Font;
 import java.awt.event.ActionListener;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
-import javax.sound.sampled.LineListener;
-import javax.sound.sampled.LineEvent;
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.Timer;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.border.TitledBorder;
-import javax.swing.text.Style;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyleContext;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.html.StyleSheet;
 import javax.swing.text.html.HTMLEditorKit;
-import javax.swing.text.html.HTMLDocument;
 import languagetest.language.test.UserConfig;
 import languagetest.language.test.TestHistoryStorageException;
 import languagetest.language.test.TestItem;
@@ -63,13 +52,17 @@ import languagetest.sound.AudioPlayer;
  */
 public class TestPanel extends javax.swing.JPanel implements ActionListener
 {
-    private static final int MAX_FLIP_REPEATS = 99;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1626039314058235194L;
+	private static final int MAX_FLIP_REPEATS = 99;
     private static final int MAX_FLIP_TIMEOUT = 60; // secs
     private MainFrame mainFrame = null;
     private Test test = null;
     private AudioPlayer clipPlayer = null;
     private AudioProgressListener audioListener = null;
-    private static final long STEP_SIZE = 1000; // 1sec
+    //private static final long STEP_SIZE = 1000; // 1sec
     private TestItem item = null;
     private String foreignAnswer = null;
     private String nativeAnswer = null;

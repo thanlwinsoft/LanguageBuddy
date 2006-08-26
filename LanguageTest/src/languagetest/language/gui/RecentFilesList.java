@@ -10,7 +10,6 @@ package languagetest.language.gui;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Iterator;
 import java.util.Vector;
 import javax.swing.JMenu;
 import javax.swing.AbstractAction;
@@ -18,7 +17,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import org.w3c.dom.Element;
 import org.w3c.dom.Document;
-import org.w3c.dom.Text;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -201,7 +199,11 @@ public class RecentFilesList
     
     public class FileAction extends AbstractAction
     {
-        ModuleParam moduleParam = null;
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = -6277458388124252018L;
+		ModuleParam moduleParam = null;
         public FileAction(ModuleParam moduleParam)
         {
             super(moduleParam.getName());

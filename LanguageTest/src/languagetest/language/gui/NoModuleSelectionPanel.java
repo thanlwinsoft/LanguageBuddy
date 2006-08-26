@@ -25,7 +25,6 @@
 package languagetest.language.gui;
 
 import java.io.IOException;
-import java.awt.Window;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 /**
@@ -36,7 +35,13 @@ public class NoModuleSelectionPanel extends javax.swing.JPanel
     implements EditorSubPanel, java.beans.PropertyChangeListener
 {
     
-    /** Creates new form NoModuleSelectionPanel */
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 4406992111905292969L;
+
+
+	/** Creates new form NoModuleSelectionPanel */
     public NoModuleSelectionPanel() 
     {
         initComponents();

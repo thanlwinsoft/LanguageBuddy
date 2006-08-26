@@ -17,23 +17,15 @@ import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.FileNotFoundException;
-import javax.sound.sampled.Mixer;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioFormat.Encoding;
-import javax.sound.sampled.Line;
-import javax.sound.sampled.Line.Info;
-import javax.sound.sampled.DataLine;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioFileFormat;
-import javax.sound.sampled.AudioFileFormat.Type;
 import javax.sound.sampled.TargetDataLine;
-import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import org.tritonus.sampled.convert.javalayer.MpegFormatConversionProvider;
 import org.tritonus.share.sampled.AudioFileTypes;
-import org.tritonus.sampled.convert.jorbis.JorbisFormatConversionProvider;
 
 /**
  *

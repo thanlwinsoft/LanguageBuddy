@@ -32,7 +32,11 @@ import javax.swing.JOptionPane;
  */
 public class DoubleProgressDialog extends javax.swing.JDialog
 {
-    private boolean cancelRequested = false;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -5245538193171974866L;
+	private boolean cancelRequested = false;
     /** Creates new form DoubleProgressDialog */
     public DoubleProgressDialog(java.awt.Frame parent, boolean modal)
     {

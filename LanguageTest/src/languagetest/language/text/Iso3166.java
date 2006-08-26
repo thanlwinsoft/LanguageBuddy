@@ -9,7 +9,6 @@ package languagetest.language.text;
 import java.util.Locale;
 import java.util.TreeSet;
 import java.util.HashMap;
-import java.util.Collection;
 /**
  *
  * @author  keith

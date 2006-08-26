@@ -9,10 +9,6 @@ package languagetest.sound;
 import java.util.Vector;
 import java.util.Iterator;
 
-import java.io.IOException;
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.sound.sampled.AudioSystem;
 /**
  *
@@ -166,7 +162,7 @@ public class RepeatingPlayer implements AudioPlayer, AudioPlayListener
             while (l.hasNext())
             {
                 ((AudioPlayListener)l.next())
-                    .initialisationProgress(percent);
+                    .initialisationProgress(percentToShow);
             }
         }
     }

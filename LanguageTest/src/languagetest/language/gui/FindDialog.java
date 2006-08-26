@@ -28,10 +28,11 @@ import java.awt.Font;
 import java.awt.Rectangle;
 import java.awt.Point;
 import javax.swing.table.TableModel;
-import javax.swing.JScrollPane;
 import javax.swing.JViewport;
 import javax.swing.JOptionPane;
-
+import languagetest.language.test.UserConfig;
+import languagetest.language.test.LanguageConfig;
+import languagetest.language.test.UniversalLanguage;
 
 import languagetest.language.test.TestItem;
 /**
@@ -40,7 +41,11 @@ import languagetest.language.test.TestItem;
  */
 public class FindDialog extends javax.swing.JDialog
 {
-    private VocabTablePanel vocabPanel = null;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -5399786891975933646L;
+	private VocabTablePanel vocabPanel = null;
     /** Creates new form FindDialog */
     public FindDialog(java.awt.Frame parent, boolean modal, 
                       VocabTablePanel panel)
@@ -167,13 +172,18 @@ public class FindDialog extends javax.swing.JDialog
 
     private void setFindTextFont()
     {
+        LanguageConfig lc = LanguageConfig.getCurrent();
         if (foreignRadioButton.isSelected())
         {
-            searchText.setFont(new Font("CECLASSIC",Font.PLAIN,20));
+            UniversalLanguage ful = lc.getForeignLanguage();
+            Font f = UserConfig.getCurrent().getForeignDefaultFont(ful);
+            searchText.setFont(f);
         }
         else
         {
-            searchText.setFont(new Font("Default",Font.PLAIN,16));
+            UniversalLanguage nul = lc.getNativeLanguage();
+            Font f = UserConfig.getCurrent().getNativeDefaultFont(nul);
+            searchText.setFont(f);
         }
     }
     
@@ -192,7 +202,7 @@ public class FindDialog extends javax.swing.JDialog
 
     private void find(boolean direction)
     {
-        boolean wrapped = false;
+        //boolean wrapped = false;
         boolean found = false;
         int step = (direction) ? 1 : -1;
         int startRow = 0;
@@ -233,12 +243,12 @@ public class FindDialog extends javax.swing.JDialog
             if (row >= model.getRowCount()) 
             {
                 row = 0;
-                wrapped = true;
+                //wrapped = true;
             }
             if (row < 0) 
             {
                 row = model.getRowCount() - 1;
-                wrapped = true;
+                //wrapped = true;
             }
         } while (row != startRow);
         if (!found)

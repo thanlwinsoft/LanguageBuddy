@@ -26,15 +26,12 @@ package languagetest.language.gui;
 
 
 
-import javax.swing.JLabel;
-import java.awt.Font;
 import java.util.TreeSet;
 import java.util.Set;
 import java.util.Iterator;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
 import languagetest.language.test.UserConfig;
 import languagetest.language.test.TestItem;
 import languagetest.language.test.TestModule;
@@ -48,7 +45,11 @@ import languagetest.language.test.UniversalLanguage;
  */
 public class ModuleEditorPanel extends javax.swing.JPanel implements EditorSubPanel
 {
-    private TestModule currentModule = null;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -4371581277533648527L;
+	private TestModule currentModule = null;
     private MainEditorPanel mainEditorPanel = null;
     private UniversalLanguage nativeLanguage = null;
     /** Creates new form ModuleEditorPanel */
@@ -170,7 +171,7 @@ public class ModuleEditorPanel extends javax.swing.JPanel implements EditorSubPa
      */
     private void initComponents()//GEN-BEGIN:initComponents
     {
-        jPanel2 = new javax.swing.JPanel();
+        //jPanel2 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         modNameLabel = new javax.swing.JLabel();
@@ -782,7 +783,7 @@ public class ModuleEditorPanel extends javax.swing.JPanel implements EditorSubPa
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel13;
-    private javax.swing.JPanel jPanel2;
+    //private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;

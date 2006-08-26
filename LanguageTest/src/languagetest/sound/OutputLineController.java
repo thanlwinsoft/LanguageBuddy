@@ -30,12 +30,8 @@ package languagetest.sound;
 
 import java.util.BitSet;
 
-import javax.sound.sampled.Mixer;
 import javax.sound.sampled.SourceDataLine;
-import javax.sound.sampled.TargetDataLine;
 import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Line.Info;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineEvent;
 import javax.sound.sampled.LineUnavailableException;
@@ -81,7 +77,7 @@ public class OutputLineController implements javax.sound.sampled.LineListener,
     private AudioPlayListener listener = null;
     private LineController lineController;
     private int idleCount = 0;
-    private final static int SLEEP_TIME = 10; //ms 
+    //private final static int SLEEP_TIME = 10; //ms 
     // multiple of sleep time before line times out and closes
     private final static int MAX_IDLE_BEFORE_CLOSE = 3000; 
     /** Creates a new instance of OutputLineController */

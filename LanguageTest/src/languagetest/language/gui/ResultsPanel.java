@@ -41,7 +41,11 @@ import languagetest.language.test.Test;
  */
 public class ResultsPanel extends javax.swing.JPanel
 {
-    private MainFrame mainFrame = null;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 5139574408396326252L;
+	private MainFrame mainFrame = null;
     private Test lastTest = null;
     /** Creates new form ResultsPanel */
     public ResultsPanel(MainFrame mainFrame)

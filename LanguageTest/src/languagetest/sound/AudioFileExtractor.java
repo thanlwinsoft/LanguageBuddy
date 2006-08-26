@@ -35,14 +35,10 @@ import java.io.BufferedOutputStream;
 import java.io.BufferedInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioFormat.Encoding;
-import javax.sound.sampled.AudioFileFormat;
-import javax.sound.sampled.AudioFileFormat.Type;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.SwingUtilities;
 import org.tritonus.share.sampled.AudioUtils;
-import languagetest.language.gui.TestModuleUtilities;
 /**
  *
  * @author  keith
@@ -357,7 +353,7 @@ public class AudioFileExtractor implements Runnable
         private File newFile;
         private long startByteOffset;
         private long byteLength;
-        private long extractedLength = AudioSystem.NOT_SPECIFIED;
+        //private long extractedLength = AudioSystem.NOT_SPECIFIED;
         ExtractionParameters(File newFile, File oldFile, 
                              long startByteOffset, long byteLength)
         {
@@ -370,13 +366,18 @@ public class AudioFileExtractor implements Runnable
         public File getNewFile() { return newFile; }
         public long getStartByteOffset() { return startByteOffset; }
         public long getByteLength() { return byteLength; }
-        public void setExtractedLength(long length) { extractedLength = length;}
+        //public void setExtractedLength(long length) { extractedLength = length;}
         public void setByteLength(long newLength) { byteLength = newLength; }
     }
     public class PreviousExtractionNotFinishedException 
         extends java.lang.Exception
     {
-        PreviousExtractionNotFinishedException()
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 8945418933344598071L;
+
+		PreviousExtractionNotFinishedException()
         {
             super();
         }

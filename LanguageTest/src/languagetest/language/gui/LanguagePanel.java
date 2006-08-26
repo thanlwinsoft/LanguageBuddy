@@ -23,7 +23,14 @@ import languagetest.language.text.Iso639;
  */
 public class LanguagePanel extends javax.swing.JPanel
 {
-    private UniversalLanguage language = null;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 8643119471025607017L;
+	/**
+	 * 
+	 */
+	private UniversalLanguage language = null;
     
     /** Creates new form LanguagePanel */
     public LanguagePanel(String title)

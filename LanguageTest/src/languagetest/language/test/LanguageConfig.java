@@ -24,7 +24,6 @@
 
 package languagetest.language.test;
 
-import java.util.Locale;
 /**
  *
  * @author  keith

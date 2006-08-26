@@ -28,8 +28,6 @@ package languagetest.language.gui;
 import java.io.IOException;
 import java.net.URL;
 import javax.swing.JOptionPane;
-import javax.swing.ListModel;
-import javax.swing.DefaultListModel;
 import java.util.prefs.BackingStoreException;
 import languagetest.language.test.UserConfig;
 import languagetest.language.test.TestHistoryStorageException;
@@ -42,13 +40,17 @@ import languagetest.language.test.LanguageConfig;
 public class SwitchUser extends javax.swing.JDialog
     implements java.beans.PropertyChangeListener
 {
-    private MainFrame mainFrame = null;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -8682683895983750800L;
+	private MainFrame mainFrame = null;
     private boolean loaded = false;
     /** Creates new form SwitchUser */
     public SwitchUser(java.awt.Frame parent, boolean modal)
     {
         super(parent, modal);
-        assert(parent instanceof MainFrame);
+        //assert(parent instanceof MainFrame);
         mainFrame = (MainFrame)parent;
         initComponents();
         try 
@@ -64,8 +66,7 @@ public class SwitchUser extends javax.swing.JDialog
                 // initialise config data
                 try
                 {
-                    UserConfig newConfig = new UserConfig(users[0], 
-                        new RecentFilesList(mainFrame));
+                    new UserConfig(users[0], new RecentFilesList(mainFrame));
                 }
                 catch (TestHistoryStorageException e)
                 {
@@ -206,9 +207,8 @@ public class SwitchUser extends javax.swing.JDialog
             String newUser = newUser("");
             if (newUser != null)
             {
-                UserConfig newConfig = new UserConfig(newUser,
-                    new RecentFilesList(mainFrame));
-                ListModel model = userList.getModel();
+                new UserConfig(newUser, new RecentFilesList(mainFrame));
+                //ListModel model = userList.getModel();
             }
             String [] userNames = UserConfig.getUsers();
             userList.setListData(userNames);

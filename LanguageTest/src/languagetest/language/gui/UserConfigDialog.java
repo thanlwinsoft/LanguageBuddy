@@ -36,7 +36,6 @@ import javax.swing.filechooser.FileFilter;
 import java.util.prefs.Preferences;
 import java.util.Vector;
 import org.jfree.ui.RefineryUtilities;
-import javax.sound.sampled.Mixer.Info;
 import javax.sound.sampled.Mixer;
 import languagetest.language.test.UserConfig;
 import languagetest.language.test.TestType;
@@ -47,7 +46,11 @@ import languagetest.language.test.LanguageConfig;
  */
 public class UserConfigDialog extends javax.swing.JDialog
 {
-    private UserConfig config = null;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 8106925942113069899L;
+	private UserConfig config = null;
     private LanguageSelectionPanel langPanel = null;
     private final static long MS_IN_HOUR = 3600000;
     private final static long MS_IN_DAY = 86400000;

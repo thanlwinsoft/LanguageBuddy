@@ -38,7 +38,11 @@ import languagetest.language.test.ItemHistory;
  */
 public class TestItemStats extends javax.swing.JDialog
 {
-    private static final Object [] COLUMN_NAMES = new String []
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 8784601867113773553L;
+	private static final Object [] COLUMN_NAMES = new String []
     {
         "Test Date", "Result"
     } ;
@@ -110,7 +114,11 @@ public class TestItemStats extends javax.swing.JDialog
             }
         )
         {
-            Class[] types = new Class []
+            /**
+			 * 
+			 */
+			private static final long serialVersionUID = -4923248823465087421L;
+			Class[] types = new Class []
             {
                 java.lang.Object.class, java.lang.Boolean.class
             };

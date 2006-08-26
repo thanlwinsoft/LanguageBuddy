@@ -13,7 +13,6 @@ import javax.sound.sampled.TargetDataLine;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.Line;
 import javax.sound.sampled.DataLine;
-import javax.sound.sampled.DataLine.Info;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.LineUnavailableException;
 import java.util.Vector;
@@ -353,7 +352,7 @@ public class LineController implements Runnable
     {
         AudioFormat refFormat = null;
         DataLine.Info supportedInfo = null;
-        Line.Info classInfo = line.getLineInfo();
+        //Line.Info classInfo = line.getLineInfo();
         DataLine dl = (DataLine)line;
         AudioFormat [] formats = 
             ((DataLine.Info)dl.getLineInfo()).getFormats();

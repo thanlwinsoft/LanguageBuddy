@@ -6,20 +6,12 @@
 
 package languagetest.language.gui;
 
-import java.util.Locale;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Iterator;
 import java.awt.Font;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComboBox;
-import javax.swing.JTextField;
 import javax.swing.JOptionPane;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.DefaultListModel;
-import org.jfree.ui.FontChooserDialog;
 import languagetest.language.test.UserConfig;
 import languagetest.language.test.LanguageConfig;
 import languagetest.language.test.UniversalLanguage;
@@ -30,7 +22,11 @@ import languagetest.language.test.TestHistoryStorageException;
  */
 public class LanguageSelectionPanel extends javax.swing.JPanel
 {
-    boolean inited = false;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 912374243007355323L;
+	boolean inited = false;
     final Font defaultFont = new Font(null, Font.PLAIN, 12);
     JDialog parentDialog;
     DefaultListModel nativeModel = null;
