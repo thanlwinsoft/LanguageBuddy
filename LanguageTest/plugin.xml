@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         id="org.thanlwinsoft.languagetest"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="org.thanlwinsoft.languagetest.eclipse.Application">
+         </run>
+      </application>
+   </extension>
+   <extension
+         id="LanguageTest"
+         name="%LanguageTest.name"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.thanlwinsoft.languagetest"
+            description="%LanguageTest.desc"
+            name="%LanguageTest.name">
+         <property
+               name="aboutText"
+               value="%LanguageTest.about"/>
+         <property
+               name="aboutImage"
+               value="icons/languageBuddy64.png"/>
+         <property
+               name="windowImages"
+               value="icons/languageBuddy16.png"/>
+      </product>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.thanlwinsoft.languagetest.eclipse.Perspective"
+            icon="icons/languageBuddy16.png"
+            id="org.thanlwinsoft.languagetest.perspective"
+            name="%LanguageTest.perspective"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            class="org.thanlwinsoft.languagetest.eclipse.views.TestView"
+            icon="icons/languageBuddy16.png"
+            id="org.thanlwinsoft.languagetest.TestView"
+            name="%LanguageTest.TestView"/>
+      <view
+            allowMultiple="false"
+            class="org.eclipse.ui.views.navigator.ResourceNavigator"
+            id="org.thanlwinsoft.languagetest.Navigator"
+            name="%LanguageTest.navigator"/>
+   </extension>
+   <extension
+         point="org.eclipse.core.resources.natures"
+         id="org.thanlwinsoft.languagetest.eclipse.natures.LanguageModuleNature">
+      <one-of-nature id="org.thanlwinsoft.languagetest.one-of-nature"/>
+      <runtime>
+         <run class="org.thanlwinsoft.languagetest.eclipse.natures.LanguageModuleNature"/>
+      </runtime>
+   </extension>
+   <extension
+         point="org.eclipse.core.resources.natures"
+         id="org.thanlwinsoft.languagetest.eclipse.natures.LanguageUserNature">
+      <one-of-nature id="org.thanlwinsoft.languagetest.one-of-nature"/>
+      <runtime>
+         <run class="org.thanlwinsoft.languagetest.eclipse.natures.LanguageUserNature"/>
+      </runtime>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <wizard
+            category="org.thanlwinsoft.languagetest.newWizardCategory"
+            class="org.thanlwinsoft.languagetest.eclipse.wizards.NewModuleProjectWizard"
+            finalPerspective="org.thanlwinsoft.languagetest.perspective"
+            hasPages="true"
+            icon="icons/languageBuddy16.png"
+            id="org.thanlwinsoft.languagetest.eclipse.wizards.NewModuleWizard"
+            name="%NewModuleProjectWizard"
+            preferredPerspectives="org.thanlwinsoft.languagetest.perspective"
+            project="true"/>
+      <category
+            id="org.thanlwinsoft.languagetest.newWizardCategory"
+            name="%LanguageTest.newWizardCategory"/>
+      <wizard
+            category="org.thanlwinsoft.languagetest.newWizardCategory"
+            class="org.thanlwinsoft.languagetest.eclipse.wizards.NewLangModuleWizard"
+            icon="icons/languageBuddy16.png"
+            id="org.thanlwinsoft.languagetest.wizards.NewLangModuleWizard"
+            name="New Language Module Wizard"/>
+      <primaryWizard id="org.thanlwinsoft.languagetest.wizards.NewLangModuleWizard"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            id="LanguageTest.actionSet1"
+            label="LanguageTest.actionSet1"
+            visible="true">
+         <action
+               class="org.thanlwinsoft.languagetest.eclipse.wizards.NewModuleProjectAction"
+               icon="icons/languageBuddy16.png"
+               id="org.thanlwinsoft.languagetest.newModuleProjectAction"
+               label="%LanguageTest.newModuleProjectAction"
+               menubarPath="File/additions"
+               style="push"
+               toolbarPath="Bar/additions"
+               tooltip="%LanguageTest.newModuleProjectActionDesc"/>
+      </actionSet>
+   </extension>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <file-association
+            content-type="org.eclipse.core.runtime.xml"
+            file-extensions="lm.xml"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.ide.resourceFilters">
+      <filter
+            pattern="*.project"
+            selected="true">
+      </filter>
+   </extension>
+   <extension point=
+"org.eclipse.ui.navigator.navigatorContent"
+>
+<commonWizard type="new"
+wizardId="org.eclipse.ui.wizards.new.folder"
+>
+<enablement>
+<or>
+<adapt type=
+"org.eclipse.core.resources.IFile"
+/>
+<adapt type=
+"org.eclipse.core.resources.IFolder"
+/>
+<adapt type=
+"org.eclipse.core.resources.IProject"
+/>
+<adapt type=
+"org.eclipse.core.resources.IWorkspaceRoot"
+/>
+</or>
+</enablement>
+</commonWizard>
+<commonWizard type=
+"new"
+wizardId=
+"org.eclipse.ui.wizards.new.file"
+>
+<enablement>
+<or>
+<adapt type=
+"org.eclipse.core.resources.IFile"
+/>
+<adapt type=
+"org.eclipse.core.resources.IFolder"
+/>
+<adapt type=
+"org.eclipse.core.resources.IProject"
+/>
+<adapt type=
+"org.eclipse.core.resources.IWorkspaceRoot"
+/>
+</or>
+</enablement>
+
+ 
+
+</commonWizard>
+<navigatorContent
+      activeByDefault="true"
+      contentProvider="org.thanlwinsoft.languagetest.eclipse.FileContentProvider"
+      id="org.eclipse.ui.views.navigator"
+      labelProvider="org.thanlwinsoft.languagetest.eclipse.ProjectFileLabelProvider"
+      name="LanguageTest.navigatorContent1"/>
+
+</extension>
+ <extension point=
+"org.eclipse.ui.navigator.navigatorContent"
+>
+
+</extension>
+ <extension
+         id="org.eclipse.ui.ide.resourceMappingAdapters"
+         point="org.eclipse.core.runtime.adapters">
+       <factory
+            class="org.eclipse.ui.internal.ide.model.WorkingSetAdapterFactory"
+            adaptableType="org.eclipse.ui.IWorkingSet">
+            <adapter type="org.eclipse.ui.IContributorResourceAdapter"/>
+       </factory>
+       <factory
+            class="org.eclipse.ui.internal.ide.model.WorkingSetAdapterFactory"
+            adaptableType="org.eclipse.ui.IWorkingSet">
+            <adapter type="org.eclipse.ui.model.IWorkbenchAdapter"/>
+       </factory>
+       <factory
+            class="org.eclipse.ui.internal.ide.model.WorkingSetAdapterFactory"
+            adaptableType="org.eclipse.ui.IWorkingSet">
+            <adapter type="org.eclipse.core.resources.mapping.ResourceMapping"/>
+       </factory>
+   </extension>
+ <extension
+         point="org.eclipse.ui.elementFactories">
+      <factory
+            class="org.eclipse.ui.internal.model.ResourceFactory"
+            id="org.eclipse.ui.internal.model.ResourceFactory">
+      </factory>
+      <factory
+            class="org.eclipse.ui.internal.model.WorkspaceFactory"
+            id="org.eclipse.ui.internal.model.WorkspaceFactory">
+      </factory>
+      <factory
+            class="org.eclipse.ui.part.FileEditorInputFactory"
+            id="org.eclipse.ui.part.FileEditorInputFactory">
+      </factory>
+      <factory
+            class="org.eclipse.ui.internal.dialogs.WelcomeEditorInputFactory"
+            id="org.eclipse.ui.internal.dialogs.WelcomeEditorInputFactory">
+      </factory>
+      <factory
+            class="org.eclipse.ui.internal.WorkingSetFactory"
+            id="org.eclipse.ui.internal.WorkingSetFactory">
+      </factory>
+</extension>
+<extension point="org.eclipse.core.runtime.adapters">
+<factory
+			class="org.thanlwinsoft.eclipse.WorkbenchAdapterFactory"
+			adaptableType="org.eclipse.core.resources.IResource">
+			<adapter type="org.eclipse.ui.model.IWorkbenchAdapter" />
+		</factory>
+</extension>
+<extension
+      point="org.eclipse.ui.editors">
+   <editor
+         class="org.thanlwinsoft.languagetest.eclipse.editors.TestModuleEditor"
+         default="true"
+         extensions="lm.xml, xml"
+         filenames="*.lm.xml"
+         icon="icons/languageBuddy16.png"
+         id="org.thanlwinsoft.languagetest.eclipse.editors.TestModuleEditor"
+         matchingStrategy="org.thanlwinsoft.languagetest.eclipse.editors.TestModuleMatchingStrategy"
+         name="%LanguageTest.moduleEditor"/>
+</extension>		
+ 
+</plugin>
