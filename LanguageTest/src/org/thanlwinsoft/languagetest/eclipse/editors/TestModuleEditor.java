@@ -100,6 +100,7 @@ public class TestModuleEditor extends MultiPageEditorPart
     {
         setSite(site);
         setInput(input);
+        setPartName(input.getName());
         //super.init(site, input);
     }
 
@@ -143,6 +144,7 @@ public class TestModuleEditor extends MultiPageEditorPart
         {
             testItemEditor = new TestItemEditor(this);
             addPage(testItemEditor, this.getEditorInput());
+            this.setPageText(0, MessageUtil.getString("TestItemEditor"));
         }
         catch (PartInitException e)
         {
@@ -171,6 +173,7 @@ public class TestModuleEditor extends MultiPageEditorPart
                 {
                     testItemEditor.setModule(currentDoc);
                 }
+                setPartName(input.getName());
             }
             else
             {

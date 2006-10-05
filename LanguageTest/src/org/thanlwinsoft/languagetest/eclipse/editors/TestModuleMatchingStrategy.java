@@ -4,6 +4,8 @@
 package org.thanlwinsoft.languagetest.eclipse.editors;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.content.IContentDescription;
+import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorMatchingStrategy;
 import org.eclipse.ui.IEditorReference;
@@ -27,8 +29,10 @@ public class TestModuleMatchingStrategy implements IEditorMatchingStrategy
             {
                 IFileEditorInput fileInput = (IFileEditorInput)input;
                 if (fileInput.getFile().getContentDescription().getContentType()
-                        .getId().equals("org.eclipse.core.runtime.xml"))
+                    .getId().equals("org.eclipse.core.runtime.xml"))
                 {
+                	IContentDescription cd = fileInput.getFile().getContentDescription();
+                    IContentType ct = cd.getContentType();
                     return true;
                 }
             }

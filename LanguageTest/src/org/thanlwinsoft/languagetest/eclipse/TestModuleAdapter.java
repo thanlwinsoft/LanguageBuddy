@@ -31,6 +31,7 @@ public class TestModuleAdapter
                 String faceName = langs[i].getFont(); 
                 int size = langs[i].getFontSize().intValue();
                 Display display = PlatformUI.getWorkbench().getDisplay();
+                size = display.getSystemFont().getFontData()[0].getHeight();
                 font = new Font(display, faceName, size, SWT.NORMAL);
             }
         }

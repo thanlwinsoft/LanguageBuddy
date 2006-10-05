@@ -3,18 +3,31 @@
  */
 package org.thanlwinsoft.languagetest.eclipse.views;
 
+import java.util.HashSet;
+
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.TextViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -22,9 +35,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.ViewPart;
 import org.thanlwinsoft.languagetest.MessageUtil;
+import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.thanlwinsoft.schemas.languagetest.ForeignLangType;
 import org.thanlwinsoft.schemas.languagetest.LangType;
 import org.thanlwinsoft.schemas.languagetest.LangTypeType;
@@ -46,13 +62,15 @@ public class TestView extends ViewPart implements ISelectionChangedListener
     private Label picture = null;
     private TestControlPanel controlPanel = null;
     private Action copyAction = null;
-    public final static int NATIVE_ID = 0;
-    public final static int FOREIGN_ID = 1;
+    public final static int HIDE_BOTH = 0;
+    public final static int NATIVE_ID = 1;
+    public final static int FOREIGN_ID = 2;
     private Font nativeFont = null;
     private Font foreignFont = null;
+    private HashSet itemEditors = null;
     public TestView()
     {
-        
+        itemEditors = new HashSet();
     }
     /* (non-Javadoc)
      * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
@@ -64,29 +82,12 @@ public class TestView extends ViewPart implements ISelectionChangedListener
         SashForm horizontalSash = new SashForm(mainControl, SWT.HORIZONTAL);
         
         SashForm phraseForm = new SashForm(horizontalSash, SWT.VERTICAL);
-        picture = new Label(horizontalSash, SWT.CENTER);
-        
-        // phrase viewers top: native, bottom: foreign
-        nativeViewer = new TextViewer(phraseForm, SWT.CENTER | SWT.WRAP | SWT.H_SCROLL 
-                | SWT.V_SCROLL);
-        nativeDoc = new Document();
-        nativeViewer.setDocument(nativeDoc);
-        nativeViewer.setEditable(false);
-        
-        foreignViewer = new TextViewer(phraseForm, SWT.CENTER | SWT.WRAP | 
-                SWT.H_SCROLL | SWT.V_SCROLL);
-        foreignDoc = new Document();
-        foreignViewer.setDocument(foreignDoc);
-        foreignViewer.setEditable(false);
-        
-        phraseForm.setWeights(new int[]{1,1});
-        horizontalSash.setWeights(new int[]{99,1});
-        // control panel should not be resized
-        controlPanel = new TestControlPanel(mainControl, SWT.NONE);
         
         FormLayout mainLayout = new FormLayout();
         mainControl.setLayout(mainLayout);
-
+//      control panel should not be resized
+        controlPanel = new TestControlPanel(mainControl, SWT.NONE);
+        
         // layout data
         FormData controlFD = new FormData();
         controlFD.top = new FormAttachment(0,0);
@@ -96,9 +97,41 @@ public class TestView extends ViewPart implements ISelectionChangedListener
         FormData horizontalFD = new FormData();
         horizontalFD.top = new FormAttachment(0,0);
         horizontalFD.bottom = new FormAttachment(100,0);
-        //horizontalFD.left = new FormAttachment(0,0);
+        horizontalFD.left = new FormAttachment(0,0);
         horizontalFD.right = new FormAttachment(controlPanel);
         horizontalSash.setLayoutData(horizontalFD);
+        
+        
+        picture = new Label(horizontalSash, SWT.CENTER);
+        //picture.setText(MessageUtil.getString("No picture"));
+        // phrase viewers top: native, bottom: foreign
+        Group nativeGroup = new Group(phraseForm, SWT.SHADOW_ETCHED_IN);
+        nativeGroup.setLayout(new FillLayout());
+        nativeViewer = new TextViewer(nativeGroup, SWT.WRAP | SWT.H_SCROLL 
+                | SWT.V_SCROLL);
+        nativeViewer.getTextWidget().setAlignment(SWT.CENTER);
+        nativeDoc = new Document();
+        nativeViewer.setDocument(nativeDoc);
+        nativeViewer.setEditable(false);
+        nativeViewer.getTextWidget().setVisible(true);
+        //Color color = getViewSite().getShell().getDisplay()
+        //    .getSystemColor(SWT.COLOR_DARK_BLUE);
+        //nativeViewer.getTextWidget().setBackground(color);
+        
+        //Composite foreignComposite = new Composite(phraseForm, SWT.NONE);
+        //foreignComposite.setLayout(new FillLayout());
+        Group foreignGroup = new Group(phraseForm, SWT.SHADOW_ETCHED_IN);
+        foreignGroup.setLayout(new FillLayout());
+        foreignViewer = new TextViewer(foreignGroup, SWT.WRAP | 
+                SWT.H_SCROLL | SWT.V_SCROLL);
+        foreignViewer.getTextWidget().setAlignment(SWT.CENTER);
+        foreignDoc = new Document();
+        foreignViewer.setDocument(foreignDoc);
+        foreignViewer.setEditable(false);
+        
+        phraseForm.setWeights(new int[]{1,1});
+        horizontalSash.setWeights(new int[]{99,1});
+        
         
         
         makeActions();
@@ -128,7 +161,6 @@ public class TestView extends ViewPart implements ISelectionChangedListener
      */
     public void setFocus()
     {
-        // TODO Auto-generated method stub
         
     }
     
@@ -146,6 +178,7 @@ public class TestView extends ViewPart implements ISelectionChangedListener
     {
         if (font != null) viewer.getTextWidget().setFont(font);
         doc.set(text);
+        viewer.setDocument(doc);
     }
     public void hide(int type)
     {
@@ -165,10 +198,20 @@ public class TestView extends ViewPart implements ISelectionChangedListener
     {
         switch (type)
         {
+        case HIDE_BOTH:
+            nativeViewer.getTextWidget().setVisible(false);
+            foreignViewer.getTextWidget().setVisible(false);
+            break;
         case NATIVE_ID:
             nativeViewer.getTextWidget().setVisible(true);
+            foreignViewer.getTextWidget().setVisible(false);
             break;
         case FOREIGN_ID:
+            foreignViewer.getTextWidget().setVisible(true);
+            nativeViewer.getTextWidget().setVisible(false);
+            break;
+        case (NATIVE_ID | FOREIGN_ID):
+            nativeViewer.getTextWidget().setVisible(true);
             foreignViewer.getTextWidget().setVisible(true);
             break;
         default:
@@ -184,10 +227,19 @@ public class TestView extends ViewPart implements ISelectionChangedListener
      */
     public void selectionChanged(SelectionChangedEvent event)
     {
-        // TODO Auto-generated method stub
-        if (event.getSource() instanceof TestItemType)
+        if (event.getSource() instanceof TableViewer)
         {
-            TestItemType ti = (TestItemType)event.getSource();
+            show(NATIVE_ID | FOREIGN_ID);
+        }
+        //System.out.println(event.getSource().getClass().getName());
+        if (event.getSelection() instanceof StructuredSelection)
+        {
+            StructuredSelection ss = (StructuredSelection)event.getSelection();
+            if (ss.getFirstElement() instanceof TestItemType)
+            {
+                TestItemType ti = (TestItemType)ss.getFirstElement();
+                setTestItem(ti);
+            }
         }
     }
     protected Font getFont(String faceName, int size)
@@ -197,12 +249,15 @@ public class TestView extends ViewPart implements ISelectionChangedListener
     }
     public void setTestModule(LanguageModuleType module)
     {
+        if (module == null)
+            return;
         LangType [] langs = module.getLangArray();
         for (int i = 0; i < langs.length; i++)
         {
             if (langs[i].getType().equals(LangTypeType.NATIVE))
             {
-                if (nativeFont.getFontData()[0].getName()
+                if (nativeFont == null ||
+                    nativeFont.getFontData()[0].getName()
                         .equals(langs[i].getFont()) == false)
                 {
                     if (nativeFont != null) nativeFont.dispose();
@@ -214,7 +269,8 @@ public class TestView extends ViewPart implements ISelectionChangedListener
             }
             else if (langs[i].getType().equals(LangTypeType.FOREIGN))
             {
-                if (foreignFont.getFontData()[0].getName()
+                if (foreignFont == null ||
+                        foreignFont.getFontData()[0].getName()
                         .equals(langs[i].getFont()) == false)
                 {
                     if (foreignFont != null) foreignFont.dispose();
@@ -240,14 +296,58 @@ public class TestView extends ViewPart implements ISelectionChangedListener
         {
             Display display = getSite().getShell().getDisplay();
             
-            ImageLoader loader = new ImageLoader();
-            ImageData [] imageData = loader.load(ti.getImg());
-            if (imageData != null)
+            IEditorInput editorInput = getSite().getPage().getActiveEditor().getEditorInput();
+            if (editorInput instanceof FileEditorInput)
             {
-                Image image = new Image(display, imageData[0]);
-                picture.setImage(image);
+                FileEditorInput fei = (FileEditorInput)editorInput;
+                IContainer basePath = fei.getFile().getParent();
+                ImageLoader loader = new ImageLoader();
+                try
+                {
+                    IFile imgFile = null;
+                    if (basePath instanceof IFolder)
+                    {
+                        imgFile = ((IFolder)basePath).getFile(ti.getImg());
+                    }
+                    else if (basePath instanceof IProject)
+                    {
+                        imgFile = ((IFolder)basePath).getFile(ti.getImg());
+                    }
+                    if (imgFile != null && imgFile.exists())
+                    {
+                        ImageData [] imageData = loader.load(imgFile.getLocation().toOSString());
+                        if (imageData != null)
+                        {
+                            Image image = new Image(display, imageData[0]);
+                            picture.setImage(image);
+                        }
+                    }
+                    else
+                    {
+                        picture.setText(MessageUtil.getString("FileNotFound",
+                                imgFile.toString()));
+                    }
+                    picture.setToolTipText(imgFile.toString());
+                }
+                catch (SWTException e)
+                {
+                    LanguageTestPlugin.log(IStatus.WARNING, 
+                            e.getLocalizedMessage(), e);
+                }
             }
         }
-            
+        nativeViewer.refresh();
+        foreignViewer.refresh();
+        nativeViewer.getTextWidget().redraw();
+        picture.redraw();
+    }
+    public void addSelection
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.part.WorkbenchPart#dispose()
+     */
+    public void dispose()
+    {
+        // TODO Auto-generated method stub
+        super.dispose();
     }
 }
