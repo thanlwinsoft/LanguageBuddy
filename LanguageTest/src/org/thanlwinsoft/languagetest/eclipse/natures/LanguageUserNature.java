@@ -14,7 +14,8 @@ import org.eclipse.core.runtime.CoreException;
 public class LanguageUserNature implements IProjectNature
 {
     private IProject project = null;
-    
+    public final static String ID = 
+    	"org.thanlwinsoft.languagetest.eclipse.natures.LanguageUserNature";
     public LanguageUserNature()
     {
         

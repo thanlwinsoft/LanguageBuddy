@@ -33,7 +33,7 @@ public final class Iso639
     public Iso639()
     {
         URL isoDataUrl = 
-            this.getClass().getResource("/org.thanlwinsoft.languagetest/language/text/iso639-2.txt");
+            this.getClass().getResource("/org/thanlwinsoft/languagetest/language/text/iso639-2.txt");
         langMap = new HashMap();
         langList = new Vector();
         try

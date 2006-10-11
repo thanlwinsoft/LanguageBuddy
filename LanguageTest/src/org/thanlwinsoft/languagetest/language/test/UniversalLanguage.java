@@ -6,6 +6,9 @@
 
 package org.thanlwinsoft.languagetest.language.test;
 
+import java.util.regex.Pattern;
+
+import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.language.text.Iso15924;
 import org.thanlwinsoft.languagetest.language.text.Iso3166;
 import org.thanlwinsoft.languagetest.language.text.Iso639;
@@ -21,8 +24,15 @@ public class UniversalLanguage
     private String countryCode = "";
     private String variant = "";
     private String script = "";
+    private String encoding = "";
     private String description = "";
     private String completeCode = "";
+    private static final Pattern langPattern = Pattern.compile("[a-z]{2,3}");
+    private static final Pattern countryPattern = Pattern.compile("[A-Z]{2}");
+    private static final Pattern variantPattern = Pattern.compile("[A-Za-z]*");
+    private static final Pattern scriptPattern = Pattern.compile("[A-Z][a-z]{3}");
+    private static final Pattern encodingPattern = Pattern.compile("[A-Za-z-]*");
+    
     public static final int NATIVE_LANG = 0;
     public static final int FOREIGN_LANG = 1;
     private boolean valid = false;
@@ -34,7 +44,14 @@ public class UniversalLanguage
         int scriptStop = code.indexOf(']');
         if (scriptStart > -1 && scriptStop > scriptStart)
         {
-            this.script = code.substring(scriptStart + 1, scriptStop);
+        	String fullScript = code.substring(scriptStart + 1, scriptStop);
+        	int dotIndex = fullScript.indexOf('.');
+        	if (dotIndex > -1)
+        	{
+        		this.script = fullScript.substring(0, dotIndex);
+        		this.encoding = fullScript.substring(dotIndex + 1);
+        	}
+        	else this.script = fullScript;            
         }
         else
         {
@@ -62,17 +79,37 @@ public class UniversalLanguage
             this.langCode = code.substring(0, scriptStart);
         }
         this.description = generateDescription();
-        this.valid = Iso639.isValidCode(langCode);
+        validate();
     }
     
     public UniversalLanguage(String language, String country, 
-                             String variant, String script)
+                             String variant, String script, String encoding)
+    	throws IllegalArgumentException
+    {
+    	createFromParts(language, country, variant, script, encoding);
+    }
+    public UniversalLanguage(String [] parts)
+    	throws IllegalArgumentException
+	{
+    	if (parts.length > 0) langCode = parts[0];
+    	if (parts.length > 1) countryCode = parts[1];
+    	if (parts.length > 2) variant = parts[2];
+    	if (parts.length > 3) script = parts[3];
+    	if (parts.length > 4) encoding = parts[4];
+
+    	createFromParts(langCode, countryCode, variant, script, encoding);
+	}
+    
+    protected void createFromParts(String language, String country, 
+            String variant, String script, String encoding)
     {
         this.langCode = language;
         this.countryCode = country;
         this.variant = variant;
         this.script = script;
-        this.valid = Iso639.isValidCode(langCode);
+        this.encoding = encoding;
+        
+        validate();
         
         this.description = generateDescription();
         StringBuffer b = new StringBuffer();
@@ -93,10 +130,57 @@ public class UniversalLanguage
         {
             b.append('[');
             b.append(script);
+            if (encoding.length() > 0)
+            {
+            	b.append('.');
+            	b.append(encoding);
+            }
             b.append(']');
         }
         completeCode = b.toString();
         b.delete(0, b.length());
+    }
+    
+    private boolean validate() throws IllegalArgumentException
+    {
+    	valid = langPattern.matcher(langCode).matches();
+    	valid &= Iso639.isValidCode(langCode);
+    	if (!valid)
+    	{
+    		throw new IllegalArgumentException(MessageUtil.getString("InvalidLanguage", 
+    				toString()));
+    	}
+    	if (countryCode.length() > 0)
+    	{
+    		valid &= countryPattern.matcher(countryCode).matches();
+    		if (!valid)
+        	{
+        		throw new IllegalArgumentException(MessageUtil.getString("InvalidCountry", 
+        				countryCode));
+        	}
+    	}
+    	valid &= variantPattern.matcher(variant).matches();
+    	if (!valid)
+    	{
+    		throw new IllegalArgumentException(MessageUtil.getString("InvalidVariant", 
+    				variant));
+    	}
+        if (script.length() > 0)
+        {
+        	valid &= scriptPattern.matcher(script).matches();
+        	if (!valid)
+        	{
+        		throw new IllegalArgumentException(MessageUtil.getString("InvalidScript", 
+        				script));
+        	}
+        	valid &= encodingPattern.matcher(encoding).matches();
+        	if (!valid)
+        	{
+        		throw new IllegalArgumentException(MessageUtil.getString("InvalidEncoding", 
+        				encoding));
+        	}
+        }
+    	return valid;
     }
     
     protected String generateDescription()
@@ -123,6 +207,11 @@ public class UniversalLanguage
         {
             b.append(" [Script: ");
             b.append(Iso15924.getDescription(script));
+            if (encoding.length() > 0)
+            {
+            	b.append(", ");
+            	b.append(encoding);
+            }
             b.append(']');
         }
         return b.toString();
@@ -182,5 +271,9 @@ public class UniversalLanguage
     public String toString()
     {
         return description;
+    }
+    public String [] toArray()
+    {
+    	return new String[] { langCode, countryCode, variant, script, encoding };
     }
 }

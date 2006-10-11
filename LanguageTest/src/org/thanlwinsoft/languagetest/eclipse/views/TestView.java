@@ -3,7 +3,9 @@
  */
 package org.thanlwinsoft.languagetest.eclipse.views;
 
+import java.io.File;
 import java.util.HashSet;
+import java.util.Iterator;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -15,12 +17,15 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.TextViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
@@ -61,16 +66,20 @@ public class TestView extends ViewPart implements ISelectionChangedListener
     private Document foreignDoc = null;
     private Label picture = null;
     private TestControlPanel controlPanel = null;
+    private SashForm horizontalSash = null;
     private Action copyAction = null;
     public final static int HIDE_BOTH = 0;
     public final static int NATIVE_ID = 1;
     public final static int FOREIGN_ID = 2;
     private Font nativeFont = null;
     private Font foreignFont = null;
-    private HashSet itemEditors = null;
+    private HashSet selectionProviders = null;
+    private final static int [] NO_PICTURE_WEIGHTS = new int [] {99,1};
+    private int [] pictureWeights = new int [] {50,50};
+    private ImageData imageData = null;
     public TestView()
     {
-        itemEditors = new HashSet();
+        selectionProviders = new HashSet();
     }
     /* (non-Javadoc)
      * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
@@ -79,7 +88,7 @@ public class TestView extends ViewPart implements ISelectionChangedListener
     {
         Group mainControl  = new Group(parent, SWT.SHADOW_ETCHED_IN);
         // horizontally: phraseForm | picture | controlPanel
-        SashForm horizontalSash = new SashForm(mainControl, SWT.HORIZONTAL);
+        horizontalSash = new SashForm(mainControl, SWT.HORIZONTAL);
         
         SashForm phraseForm = new SashForm(horizontalSash, SWT.VERTICAL);
         
@@ -102,7 +111,20 @@ public class TestView extends ViewPart implements ISelectionChangedListener
         horizontalSash.setLayoutData(horizontalFD);
         
         
-        picture = new Label(horizontalSash, SWT.CENTER);
+        picture = new Label(horizontalSash, SWT.CENTER | SWT.WRAP);
+        picture.addControlListener(new ControlListener(){
+
+			public void controlMoved(ControlEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			public void controlResized(ControlEvent e) {
+				// TODO Auto-generated method stub
+				setPicture();
+			}
+        	
+        });
         //picture.setText(MessageUtil.getString("No picture"));
         // phrase viewers top: native, bottom: foreign
         Group nativeGroup = new Group(phraseForm, SWT.SHADOW_ETCHED_IN);
@@ -130,7 +152,7 @@ public class TestView extends ViewPart implements ISelectionChangedListener
         foreignViewer.setEditable(false);
         
         phraseForm.setWeights(new int[]{1,1});
-        horizontalSash.setWeights(new int[]{99,1});
+        horizontalSash.setWeights(NO_PICTURE_WEIGHTS);
         
         
         
@@ -222,6 +244,26 @@ public class TestView extends ViewPart implements ISelectionChangedListener
     {
         picture.setImage(image);
     }
+    protected void setPicture()
+    {
+    	if (imageData == null) return;
+    	ImageData id = imageData;
+    	float ratio = ((float)imageData.width) /((float)imageData.height);
+    	if (picture.getSize().x < id.height)
+    	{
+    		id = imageData.scaledTo(picture.getSize().x, 
+    				(int)Math.round((float)picture.getSize().x / ratio));
+    	}
+    	if (picture.getSize().y < id.width)
+    	{
+    		
+    		id = imageData.scaledTo((int)Math.round((float)picture.getSize().y * ratio), 
+    				                picture.getSize().y);
+    	}
+    	Display display = getSite().getShell().getDisplay();
+    	Image image = new Image(display, id);
+        picture.setImage(image);
+    }
     /* (non-Javadoc)
      * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
      */
@@ -291,7 +333,11 @@ public class TestView extends ViewPart implements ISelectionChangedListener
             controlPanel.player().setFile(ti.getSoundFile().getStringValue());
         else
             controlPanel.player().setFile(null);
-        picture.setImage(null);
+        // cache old weights before we remove the picture
+        if (picture.getImage() != null)
+        {
+        	pictureWeights = horizontalSash.getWeights();
+        }
         if (ti.isSetImg())
         {
             Display display = getSite().getShell().getDisplay();
@@ -305,49 +351,82 @@ public class TestView extends ViewPart implements ISelectionChangedListener
                 try
                 {
                     IFile imgFile = null;
-                    if (basePath instanceof IFolder)
+                    try
                     {
-                        imgFile = ((IFolder)basePath).getFile(ti.getImg());
+	                    if (basePath instanceof IFolder)
+	                    {
+	                        imgFile = ((IFolder)basePath).getFile(ti.getImg());
+	                    }
+	                    else if (basePath instanceof IProject)
+	                    {
+	                        imgFile = ((IProject)basePath).getFile(ti.getImg());
+	                    }
                     }
-                    else if (basePath instanceof IProject)
-                    {
-                        imgFile = ((IFolder)basePath).getFile(ti.getImg());
-                    }
+                    catch (IllegalArgumentException e) {}
+                    ImageData [] imageDatas = null;
                     if (imgFile != null && imgFile.exists())
                     {
-                        ImageData [] imageData = loader.load(imgFile.getLocation().toOSString());
-                        if (imageData != null)
-                        {
-                            Image image = new Image(display, imageData[0]);
-                            picture.setImage(image);
-                        }
+                        imageDatas = loader.load(imgFile.getLocation().toOSString());
+                        
                     }
                     else
                     {
-                        picture.setText(MessageUtil.getString("FileNotFound",
-                                imgFile.toString()));
+                        //picture.setText(MessageUtil.getString("FileNotFound",
+                        //        imgFile.toString()));
+                    	File file = new File(ti.getImg());
+                    	if (file.exists())
+                    		imageDatas = loader.load(ti.getImg());
                     }
-                    picture.setToolTipText(imgFile.toString());
+                    if (imageDatas != null)
+                    {
+                        horizontalSash.setWeights(pictureWeights);
+                        //Image image = new Image(display, imageData[0]);
+                    	imageData = imageDatas[0];
+                        setPicture();
+                    }
+                    if (nativeViewer.getTextWidget().isVisible())
+                    	picture.setToolTipText(ti.getImg());
+                    else
+                    	picture.setToolTipText("");
                 }
                 catch (SWTException e)
                 {
+                	picture.setImage(null);
+                	picture.setToolTipText(e.getLocalizedMessage());
+                	horizontalSash.setWeights(NO_PICTURE_WEIGHTS);
                     LanguageTestPlugin.log(IStatus.WARNING, 
                             e.getLocalizedMessage(), e);
                 }
             }
+        }
+        else
+        {
+        	picture.setImage(null);
+        	picture.setToolTipText("");
+        	horizontalSash.setWeights(NO_PICTURE_WEIGHTS);
         }
         nativeViewer.refresh();
         foreignViewer.refresh();
         nativeViewer.getTextWidget().redraw();
         picture.redraw();
     }
-    public void addSelection
+    public void addSelectionProvider(ISelectionProvider provider)
+    {
+        provider.addSelectionChangedListener(this);
+        selectionProviders.add(provider);
+    }
     /* (non-Javadoc)
      * @see org.eclipse.ui.part.WorkbenchPart#dispose()
      */
     public void dispose()
     {
-        // TODO Auto-generated method stub
+        Iterator i = selectionProviders.iterator();
+        while (i.hasNext())
+        {
+            ISelectionProvider p = (ISelectionProvider)i.next();
+            if (p != null)
+                p.removeSelectionChangedListener(this);
+        }
         super.dispose();
     }
 }

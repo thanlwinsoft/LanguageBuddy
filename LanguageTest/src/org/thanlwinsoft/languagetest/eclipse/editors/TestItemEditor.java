@@ -6,13 +6,17 @@ package org.thanlwinsoft.languagetest.eclipse.editors;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Vector;
 
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourceAttributes;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.ICellEditorValidator;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -26,11 +30,17 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IShowEditorInput;
 import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
 import org.thanlwinsoft.languagetest.MessageUtil;
@@ -38,6 +48,7 @@ import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.thanlwinsoft.languagetest.eclipse.Perspective;
 import org.thanlwinsoft.languagetest.eclipse.TestModuleAdapter;
 import org.thanlwinsoft.languagetest.eclipse.views.TestView;
+import org.thanlwinsoft.languagetest.language.test.UniversalLanguage;
 import org.thanlwinsoft.schemas.languagetest.ForeignLangType;
 import org.thanlwinsoft.schemas.languagetest.LangType;
 import org.thanlwinsoft.schemas.languagetest.LanguageModuleDocument;
@@ -49,7 +60,7 @@ import org.thanlwinsoft.schemas.languagetest.TestItemType;
  * @author keith
  *
  */
-public class TestItemEditor extends EditorPart
+public class TestItemEditor extends EditorPart 
 {
     private TestModuleEditor parent = null;
     private TableViewer tableViewer = null;
@@ -70,7 +81,10 @@ public class TestItemEditor extends EditorPart
     private TableColumn creatorCol = null;
     private TableColumn cDateCol = null;
     private TableColumn [] langCols = null;
-    private String [] langIds = null;
+    private Vector langIds = null;
+    
+    private TestItemCellModifier cellModifier = null;
+    private TestItemLabelProvider labelProvider = null;
     
     public TestItemEditor(TestModuleEditor parent)
     {
@@ -78,7 +92,7 @@ public class TestItemEditor extends EditorPart
         this.parent = parent;
         this.setPartName(MessageUtil.getString("TestItemEditor"));
         this.setContentDescription(MessageUtil.getString("TestItemEditor"));
-        
+        langIds = new Vector(2,2);// lang size may grow, but 2 is minimum
     }
     /* (non-Javadoc)
      * @see org.eclipse.ui.part.EditorPart#doSave(org.eclipse.core.runtime.IProgressMonitor)
@@ -132,14 +146,17 @@ public class TestItemEditor extends EditorPart
         FillLayout layout = new FillLayout();
         parentControl.setLayout(layout);
         
-        tableViewer = new TableViewer(parentControl, SWT.H_SCROLL | SWT.V_SCROLL);
+        tableViewer = new TableViewer(parentControl, SWT.H_SCROLL | SWT.V_SCROLL
+        		| SWT.SINGLE | SWT.FULL_SELECTION);
         tableViewer.setContentProvider(new TestItemContentProvider());
-        tableViewer.setLabelProvider(new TestItemLabelProvider());
+        labelProvider = new TestItemLabelProvider();
+        tableViewer.setLabelProvider(labelProvider);
         tableViewer.getTable().setHeaderVisible(true);
-        tableViewer.setCellModifier(new TestItemCellModifier());
+        cellModifier = new TestItemCellModifier();
+        tableViewer.setCellModifier(cellModifier);
         IViewPart testView = getEditorSite().getPage().findView(Perspective.TEST_VIEW);
         if (testView != null)
-            tableViewer.addSelectionChangedListener((TestView)testView);
+            ((TestView)testView).addSelectionProvider(tableViewer);
         soundCol = new TableColumn(tableViewer.getTable(), SWT.LEFT);
         soundCol.setText(MessageUtil.getString("SoundColumn"));
         soundCol.setToolTipText(MessageUtil.getString("SoundColumn"));
@@ -174,6 +191,7 @@ public class TestItemEditor extends EditorPart
     {
         if (tableViewer != null)
         {
+        	tableViewer.setInput(doc);
             tableViewer.getTable().setData(doc);
             IEditorInput ei =parent.getEditorInput(); 
             if (ei instanceof FileEditorInput)
@@ -193,20 +211,28 @@ public class TestItemEditor extends EditorPart
      */
     public void setFocus()
     {
-        // TODO Auto-generated method stub
-
+    	tableViewer.getTable().setFocus();
     }
     
     protected void setupLangColumns()
     {
         if (parent.getDocument() == null || tableViewer == null) return;
         LangType [] langs = parent.getDocument().getLanguageModule().getLangArray();
-        if (langCols != null)
+        // remove old langs
+        if (langCols == null)
         {
-            for (int i = 0; i < langs.length; i++)
-            {
-                langCols[i].dispose();
-            }
+        	langCols = new TableColumn[langs.length];
+        }
+        else
+        {
+        	if (langCols.length != langs.length)
+        	{
+	            for (int i = 0; i < langCols.length; i++)
+	            {
+	                langCols[i].dispose();
+	            }
+            	langCols = new TableColumn[langs.length];
+        	}
         }
         String [] colProperties = new String[NUM_NON_LANG_COL + langs.length];
         colProperties[PICTURE_COL_ID] = PICTURE_COL;
@@ -214,24 +240,53 @@ public class TestItemEditor extends EditorPart
         colProperties[CREATOR_COL_ID + langs.length] = CREATOR_COL;
         colProperties[CREATION_DATE_ID + langs.length] = CREATION_DATE;
         CellEditor [] editors = new CellEditor[NUM_NON_LANG_COL + langs.length];
-        editors[PICTURE_COL_ID] = null;
-        editors[SOUND_COL_ID] = null;
+        IEditorInput input = parent.getEditorInput();
+        IFile moduleFile = null;
+        if (input instanceof IFileEditorInput)
+        {
+            moduleFile = ((IFileEditorInput)input).getFile();
+        }
+        editors[PICTURE_COL_ID] = new PictureCellEditor(tableViewer.getTable(),
+        		SWT.LEFT, moduleFile);
+        editors[SOUND_COL_ID] = new SoundCellEditor(tableViewer.getTable(),
+        		SWT.LEFT, moduleFile);
         editors[CREATOR_COL_ID + langs.length] = null;
         editors[CREATION_DATE_ID + langs.length] = null;
         
-        langCols = new TableColumn[langs.length];
-        langIds = new String[langs.length];
+        langIds.clear();
+        
         for (int i = 0; i < langs.length; i++)
         {
             LangType lang = langs[i];
-            langCols[i] = new TableColumn(tableViewer.getTable(), SWT.LEFT,
-                                          LANG_COL_OFFSET + i);
-            langCols[i].setText(lang.getLang());
+            try
+            {
+            	if (langCols[i] == null)
+            	{
+            		langCols[i] = new TableColumn(tableViewer.getTable(), SWT.LEFT,
+                                                  LANG_COL_OFFSET + i);
+            	}
+            }
+            catch (ArrayIndexOutOfBoundsException e)
+            {
+                System.out.println(e);
+            }
+            try
+            {
+            	UniversalLanguage ul = new UniversalLanguage(lang.getLang());
+                langCols[i].setText(ul.getDescription());
+            }
+            catch(IllegalArgumentException e)
+            {
+            	
+            	langCols[i].setText(lang.getLang());
+            }
             langCols[i].setResizable(true);
             langCols[i].setWidth(200);
-            langIds[i] = lang.getLang();
+            langIds.add(i, lang.getLang());
             colProperties[i + LANG_COL_OFFSET] = lang.getLang();
-            editors[i + LANG_COL_OFFSET] = new TextCellEditor();
+            
+            editors[i + LANG_COL_OFFSET] = new TextCellEditor(tableViewer.getTable());
+            editors[i + LANG_COL_OFFSET].setValidator(cellModifier);
         }
         tableViewer.setColumnProperties(colProperties);
         tableViewer.setCellEditors(editors);
@@ -247,10 +302,10 @@ public class TestItemEditor extends EditorPart
         {
             if (inputElement instanceof LanguageModuleDocument)
             {
-                LanguageModuleDocument doc = (LanguageModuleDocument)inputElement;
+                LanguageModuleDocument doc = 
+                    (LanguageModuleDocument)inputElement;
                 return doc.getLanguageModule().getTestItemArray();
             }
-            // TODO Auto-generated method stub
             return null;
         }
 
@@ -259,7 +314,6 @@ public class TestItemEditor extends EditorPart
          */
         public void dispose()
         {
-            // TODO Auto-generated method stub
             
         }
 
@@ -272,7 +326,7 @@ public class TestItemEditor extends EditorPart
             {
                 setupLangColumns();
                 tableViewer.refresh();
-                tableViewer.getTable().pack();
+                //tableViewer.getTable().pack();
                 IViewPart testViewPart = getEditorSite().getPage()
                     .findView(Perspective.TEST_VIEW);
                 if (testViewPart != null)
@@ -291,7 +345,11 @@ public class TestItemEditor extends EditorPart
     protected class TestItemLabelProvider implements ITableLabelProvider,  
         ITableFontProvider
     {
-
+    	private HashSet listeners = null;
+    	public TestItemLabelProvider()
+    	{
+    		listeners = new HashSet();
+    	}
         /* (non-Javadoc)
          * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int)
          */
@@ -306,8 +364,9 @@ public class TestItemEditor extends EditorPart
          */
         public String getColumnText(Object element, int columnIndex)
         {
-            // TODO Auto-generated method stub
             int numLangs = langCols.length;
+            try
+            {
             if (element instanceof TestItemType)
             {
                 TestItemType testItem = (TestItemType)element;
@@ -352,6 +411,12 @@ public class TestItemEditor extends EditorPart
                             "Unexpected column index " + columnIndex);
                 }
             }
+            }
+            catch (IllegalArgumentException e)
+            {
+            	LanguageTestPlugin.log(IStatus.WARNING, 
+            			e.getLocalizedMessage(), e);
+            }
             return null;
         }
 
@@ -360,8 +425,7 @@ public class TestItemEditor extends EditorPart
          */
         public void addListener(ILabelProviderListener listener)
         {
-            // TODO Auto-generated method stub
-            
+        	listeners.add(listener);
         }
 
         /* (non-Javadoc)
@@ -369,7 +433,6 @@ public class TestItemEditor extends EditorPart
          */
         public void dispose()
         {
-            // TODO Auto-generated method stub
             
         }
 
@@ -378,8 +441,8 @@ public class TestItemEditor extends EditorPart
          */
         public boolean isLabelProperty(Object element, String property)
         {
-            // TODO Auto-generated method stub
-            return false;
+            
+            return true;
         }
 
         /* (non-Javadoc)
@@ -387,8 +450,7 @@ public class TestItemEditor extends EditorPart
          */
         public void removeListener(ILabelProviderListener listener)
         {
-            // TODO Auto-generated method stub
-            
+        	listeners.remove(listener);
         }
         /* (non-Javadoc)
          * @see org.eclipse.jface.viewers.ITableFontProvider#getFont(java.lang.Object, int)
@@ -396,7 +458,7 @@ public class TestItemEditor extends EditorPart
         public Font getFont(Object element, int columnIndex)
         {
             if (columnIndex < LANG_COL_OFFSET || 
-                columnIndex >= LANG_COL_OFFSET + langIds.length)
+                columnIndex >= LANG_COL_OFFSET + langIds.size())
             {
                 return getSite().getShell().getDisplay().getSystemFont();
             }
@@ -404,9 +466,8 @@ public class TestItemEditor extends EditorPart
             {
                 int id = columnIndex - LANG_COL_OFFSET;
                 return TestModuleAdapter.getFont(parent.getDocument().getLanguageModule(),
-                        langIds[id]);
+                        langIds.elementAt(id).toString());
             }
-            // TODO Auto-generated method stub
             return null;
         }
     }
@@ -428,7 +489,8 @@ public class TestItemEditor extends EditorPart
         super.dispose();
     }
     
-    public class TestItemCellModifier implements ICellModifier
+    public class TestItemCellModifier implements ICellModifier, 
+        ICellEditorValidator
     {
 
         /* (non-Javadoc)
@@ -466,14 +528,27 @@ public class TestItemEditor extends EditorPart
                 }
                 else if (property.equals(SOUND_COL))
                 {
-                    return testItem.getSoundFile().getStringValue();
+                	if (testItem.isSetSoundFile())
+                		return testItem.getSoundFile().getStringValue();
+                	else return new String("");
                 }
                 else if (property.equals(PICTURE_COL))
                 {
-                    return testItem.getImg();
+                	if (testItem.isSetImg())
+                		return testItem.getImg();
+                	else return new String("");
                 }
                 else
                 {
+                    // set the font
+                    int col = LANG_COL_OFFSET + langIds.indexOf(property);
+                    Control control = tableViewer.getCellEditors()[col].getControl();
+                    if (control != null)
+                    {
+                        Font font = labelProvider.getFont(element, col);
+                        control.setFont(font);
+                    }
+                    
                     for (int i = 0; i <testItem.sizeOfNativeLangArray(); i++)
                     {
                         NativeLangType lang = testItem.getNativeLangArray(i);
@@ -500,9 +575,26 @@ public class TestItemEditor extends EditorPart
          */
         public void modify(Object element, String property, Object value)
         {
-            if (element instanceof TestItemType)
+        	Object data = element;
+        	if (element instanceof TableItem)
+        	{
+        		TableItem tableItem = (TableItem)element;
+        		data = tableItem.getData();
+        	}
+        	
+            if (data instanceof TestItemType)
             {
-                TestItemType testItem = (TestItemType)element;
+            	Object oldValue = getValue(data, property);
+            	if (oldValue != null)
+            	{
+            		if (oldValue.equals(value))
+            			return;// no change
+            	}
+            	else if (value == null)
+            	{
+            		return; // still null
+            	}
+                TestItemType testItem = (TestItemType)data;
                 if (property.equals(CREATION_DATE))
                 {
                     
@@ -514,12 +606,13 @@ public class TestItemEditor extends EditorPart
                 else if (property.equals(SOUND_COL))
                 {
                     SoundFileType sft = SoundFileType.Factory.newInstance();
-                    sft.set(value.toString());
+                    sft.setStringValue(value.toString());
                     testItem.setSoundFile(sft);
                 }
                 else if (property.equals(PICTURE_COL))
                 {
-                    testItem.setImg(value.toString());
+                	if (value != null)
+                		testItem.setImg(value.toString());
                 }
                 else
                 {
@@ -540,8 +633,19 @@ public class TestItemEditor extends EditorPart
                         }
                     }
                 }
+                parent.setDirty(true);
+                tableViewer.update(data, new String[] {property});
             }
+        }
+
+        /* (non-Javadoc)
+         * @see org.eclipse.jface.viewers.ICellEditorValidator#isValid(java.lang.Object)
+         */
+        public String isValid(Object value)
+        {
+            return null;
         }
         
     }
+    
 }

@@ -27,11 +27,10 @@ public class Perspective implements IPerspectiveFactory
         
         IFolderLayout folderBottom = layout.createFolder(FOLDER_BOTTOM, 
                 IPageLayout.BOTTOM, 0.7f, editorArea);
-        //folderA.addView(CONVERSION_RESULT);
-        folderBottom.addPlaceholder(RECORDING);
+        //folderBottom.addPlaceholder(RECORDING);
         folderBottom.addView(TEST_VIEW);
-        layout.addStandaloneViewPlaceholder(USER_RESULTS,  
-                IPageLayout.RIGHT, 0.8f, editorArea, true);
+        //layout.addStandaloneViewPlaceholder(USER_RESULTS,  
+        //        IPageLayout.RIGHT, 0.8f, editorArea, true);
         IFolderLayout folderLeft = layout.createFolder(FOLDER_LEFT,
                 IPageLayout.LEFT, 0.25f, editorArea);
         folderLeft.addView("org.eclipse.ui.views.ResourceNavigator");

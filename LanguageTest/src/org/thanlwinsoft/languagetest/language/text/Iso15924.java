@@ -33,7 +33,7 @@ public final class Iso15924
     public Iso15924()
     {
         URL isoDataUrl = 
-            this.getClass().getResource("/org.thanlwinsoft.languagetest/language/text/iso15924-2000.txt");
+            this.getClass().getResource("/org/thanlwinsoft/languagetest/language/text/iso15924-2000.txt");
         codeMap = new HashMap();
         idMap = new HashMap();
         scriptList = new Vector();

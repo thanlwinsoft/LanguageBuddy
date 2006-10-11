@@ -17,6 +17,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IReusableEditor;
+import org.eclipse.ui.IShowEditorInput;
 import org.eclipse.ui.IStorageEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.MultiPageEditorPart;
@@ -29,11 +30,12 @@ import org.thanlwinsoft.schemas.languagetest.LanguageModuleDocument;
  *
  */
 public class TestModuleEditor extends MultiPageEditorPart
-    implements IReusableEditor
+    implements IReusableEditor, IShowEditorInput
 {
     private boolean isDirty = false;
     private LanguageModuleDocument currentDoc = null;
     private TestItemEditor testItemEditor = null;
+    private ModuleLanguagePart languagePart = null;
     
     public TestModuleEditor()
     {
@@ -44,7 +46,6 @@ public class TestModuleEditor extends MultiPageEditorPart
      */
     public void doSave(IProgressMonitor monitor)
     {
-        // TODO Auto-generated method stub
         if (getEditorInput() instanceof IFileEditorInput && currentDoc != null)
         {
             IFileEditorInput input = (IFileEditorInput)getEditorInput();
@@ -100,7 +101,7 @@ public class TestModuleEditor extends MultiPageEditorPart
     {
         setSite(site);
         setInput(input);
-        setPartName(input.getName());
+        
         //super.init(site, input);
     }
 
@@ -131,7 +132,7 @@ public class TestModuleEditor extends MultiPageEditorPart
      */
     public void setFocus()
     {
-        // TODO Auto-generated method stub
+        
 
     }
 
@@ -143,8 +144,17 @@ public class TestModuleEditor extends MultiPageEditorPart
         try
         {
             testItemEditor = new TestItemEditor(this);
-            addPage(testItemEditor, this.getEditorInput());
-            this.setPageText(0, MessageUtil.getString("TestItemEditor"));
+            languagePart = new ModuleLanguagePart(this);
+            addPage(languagePart, getEditorInput());
+            addPage(testItemEditor, getEditorInput());
+            setPageText(0, MessageUtil.getString("LanguagesTab"));
+            setPageText(1, MessageUtil.getString("TestItemEditor"));
+            if (getEditorInput() != null)
+            {
+                languagePart.setInput(getEditorInput());
+                testItemEditor.setModule(currentDoc);
+            }
+            //setActivePage(1);
         }
         catch (PartInitException e)
         {
@@ -156,6 +166,7 @@ public class TestModuleEditor extends MultiPageEditorPart
     {
         //if (input.equals(getEditorInput())) return;
         super.setInput(input);
+        setPartName(input.getName());
         String errorMsg = "";
         try
         {
@@ -172,6 +183,10 @@ public class TestModuleEditor extends MultiPageEditorPart
                 if (testItemEditor != null)
                 {
                     testItemEditor.setModule(currentDoc);
+                }
+                if (languagePart != null)
+                {
+                    languagePart.setInput(input);
                 }
                 setPartName(input.getName());
             }
@@ -213,5 +228,15 @@ public class TestModuleEditor extends MultiPageEditorPart
             }
         }
     }
-
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IShowEditorInput#showEditorInput(org.eclipse.ui.IEditorInput)
+     */
+    public void showEditorInput(IEditorInput editorInput)
+    {
+        if (editorInput.equals(getEditorInput()) == false)
+        {
+            if (isDirty()) doSave(null);
+            setInput(editorInput);
+        }
+    }
 }

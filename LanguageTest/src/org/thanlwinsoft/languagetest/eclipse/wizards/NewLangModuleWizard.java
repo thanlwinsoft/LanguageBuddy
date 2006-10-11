@@ -16,6 +16,8 @@ import org.eclipse.core.runtime.CoreException;
 import java.io.*;
 import org.eclipse.ui.*;
 import org.eclipse.ui.ide.IDE;
+import org.thanlwinsoft.languagetest.eclipse.WorkspaceLanguageManager;
+import org.thanlwinsoft.schemas.languagetest.LangType;
 import org.thanlwinsoft.schemas.languagetest.LanguageModuleDocument;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlOptions;
@@ -124,7 +126,7 @@ public class NewLangModuleWizard extends Wizard implements INewWizard {
 		IContainer container = (IContainer) resource;
 		final IFile file = container.getFile(new Path(fileName));
 		try {
-			InputStream stream = openContentStream();
+			InputStream stream = openContentStream(file.getProject());
 			if (file.exists()) {
 				file.setContents(stream, true, true, monitor);
 			} else {
@@ -155,7 +157,7 @@ public class NewLangModuleWizard extends Wizard implements INewWizard {
 	 * We will initialize file contents with a sample text.
 	 */
 
-	private InputStream openContentStream() 
+	private InputStream openContentStream(IProject project) 
     {
         InputStream is = null;
         try
@@ -167,6 +169,8 @@ public class NewLangModuleWizard extends Wizard implements INewWizard {
                 doc.addNewLanguageModule();
                 doc.getLanguageModule().setCreationTime(new Date().getTime());
                 doc.getLanguageModule().setId(Integer.toHexString(doc.hashCode()));
+                LangType [] langArray = WorkspaceLanguageManager.findLanguages(project);
+                doc.getLanguageModule().setLangArray(langArray);
                 XmlOptions options = new XmlOptions();
                 options.setCharacterEncoding("UTF-8");
                 options.setSavePrettyPrint();
