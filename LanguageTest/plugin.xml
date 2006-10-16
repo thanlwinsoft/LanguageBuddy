@@ -118,6 +118,9 @@
             pattern="*.project"
             selected="true">
       </filter>
+      <filter
+            pattern=".languages.xml"
+            selected="true"/>
    </extension>
    <extension point=
 "org.eclipse.ui.navigator.navigatorContent"

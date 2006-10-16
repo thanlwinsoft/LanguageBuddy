@@ -84,7 +84,6 @@ public class TestModuleEditor extends MultiPageEditorPart
      */
     public void doSaveAs()
     {
-        // TODO Auto-generated method stub
 
     }
     

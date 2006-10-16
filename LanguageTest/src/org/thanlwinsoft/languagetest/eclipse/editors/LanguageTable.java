@@ -5,13 +5,19 @@ package org.thanlwinsoft.languagetest.eclipse.editors;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.math.BigDecimal;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.ICellEditorValidator;
+import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.ITreePathLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TreePath;
@@ -21,8 +27,10 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.thanlwinsoft.languagetest.MessageUtil;
+import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.thanlwinsoft.languagetest.language.test.UniversalLanguage;
 import org.thanlwinsoft.schemas.languagetest.LangType;
 
@@ -40,6 +48,10 @@ public class LanguageTable extends Composite
     private final int IN_USE_COL = 1;
     private final int LANG_FONT_COL = 2;
     private final int FONT_SIZE_COL = 3;
+    private final String LANG_NAME = "Lang";
+    private final String IN_USE = "InUse";
+    private final String LANG_FONT = "Font";
+    private final String FONT_SIZE = "FontSize";
     
     private LanguageLabelProvider labelProvider = null;
     private LanguageContentProvider contentProvider = null;
@@ -61,6 +73,8 @@ public class LanguageTable extends Composite
         contentProvider = new LanguageContentProvider();
         tableViewer.setContentProvider(contentProvider);
         tableViewer.setLabelProvider(labelProvider);
+        LanguageCellModifier modifier = new LanguageCellModifier();
+        tableViewer.setCellModifier(modifier);
         tableViewer.getTree().setHeaderVisible(true);
         tableViewer.getTree().setSize(SWT.DEFAULT, 200);
         TreeColumn col = new TreeColumn(tableViewer.getTree(), SWT.LEFT);
@@ -79,6 +93,11 @@ public class LanguageTable extends Composite
         col.setResizable(true);
         col.setWidth(100);
         col.setText(MessageUtil.getString("FontSize"));
+        CellEditor[] editors = new CellEditor[] {
+                null, null, new FontCellEditor(tableViewer.getTree(), SWT.NONE),
+                new TextCellEditor(tableViewer.getTree())
+        };
+        tableViewer.setCellEditors(editors);
 	}
     
     public void setProjectLangs(LangType [] langs)
@@ -327,4 +346,100 @@ public class LanguageTable extends Composite
 		}
 		
 	}
+    
+    public class LanguageCellModifier implements ICellModifier, 
+        ICellEditorValidator
+    {
+
+        /* (non-Javadoc)
+         * @see org.eclipse.jface.viewers.ICellModifier#canModify(java.lang.Object, java.lang.String)
+         */
+        public boolean canModify(Object element, String property)
+        {
+            if (element instanceof UniversalLanguage)
+            {
+                if (/*property.equals(IN_USE) ||*/
+                    property.equals(LANG_FONT) ||
+                    property.equals(FONT_SIZE))
+                    return true;
+            }
+            return false;
+        }
+
+        /* (non-Javadoc)
+         * @see org.eclipse.jface.viewers.ICellModifier#getValue(java.lang.Object, java.lang.String)
+         */
+        public Object getValue(Object element, String property)
+        {
+            UniversalLanguage ul = null;
+            if (element instanceof TableItem)
+            {
+                TableItem ti = ((TableItem)element);
+                if (ti.getData() instanceof UniversalLanguage)
+                {
+                    ul = (UniversalLanguage)ti.getData();
+                }
+            }
+            else if (element instanceof UniversalLanguage)
+            {
+                ul = (UniversalLanguage)element;
+            }
+            if (ul != null)
+            {
+                TableItem ti = (TableItem)element;
+                if (ti.getData() instanceof UniversalLanguage)
+                {
+                    if (property.equals(LANG_FONT))
+                        return labelProvider.getColumnText(ti.getData(), LANG_FONT_COL);
+                    if (property.equals(FONT_SIZE))
+                        return labelProvider.getColumnText(ti.getData(), FONT_SIZE_COL);
+                }
+            }
+            return null;
+        }
+
+        /* (non-Javadoc)
+         * @see org.eclipse.jface.viewers.ICellModifier#modify(java.lang.Object, java.lang.String, java.lang.Object)
+         */
+        public void modify(Object element, String property, Object value)
+        {
+            if (element instanceof TableItem)
+            {
+                TableItem ti = (TableItem)element;
+                if (ti.getData() instanceof UniversalLanguage)
+                {
+                    
+                    UniversalLanguage ul = (UniversalLanguage)ti.getData();
+                    LangType lt = (LangType)availableTypes.get(ul.getCode());
+                    if (property.equals(LANG_FONT))
+                    {
+                        lt.setFont(value.toString());
+                    }
+                    else if (property.equals(FONT_SIZE))
+                    {
+                        try
+                        {
+                            float size = Float.parseFloat(value.toString());
+                            lt.setFontSize(BigDecimal.valueOf(size));
+                        }
+                        catch (NumberFormatException e)
+                        {
+                            LanguageTestPlugin.log(IStatus.WARNING,
+                                    e.getLocalizedMessage(),e);
+                        }
+                    }
+                }
+            } 
+        }
+
+        /* (non-Javadoc)
+         * @see org.eclipse.jface.viewers.ICellEditorValidator#isValid(java.lang.Object)
+         */
+        public String isValid(Object value)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+        
+    }
 }
