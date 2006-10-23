@@ -340,7 +340,6 @@ public class TestView extends ViewPart implements ISelectionChangedListener
         }
         if (ti.isSetImg())
         {
-            Display display = getSite().getShell().getDisplay();
             
             IEditorInput editorInput = getSite().getPage().getActiveEditor().getEditorInput();
             if (editorInput instanceof FileEditorInput)
