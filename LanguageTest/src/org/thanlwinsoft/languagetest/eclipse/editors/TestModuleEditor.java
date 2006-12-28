@@ -19,11 +19,15 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IReusableEditor;
 import org.eclipse.ui.IShowEditorInput;
 import org.eclipse.ui.IStorageEditorInput;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
+import org.thanlwinsoft.languagetest.eclipse.Perspective;
+import org.thanlwinsoft.languagetest.eclipse.views.TestView;
 import org.thanlwinsoft.schemas.languagetest.LanguageModuleDocument;
+import org.thanlwinsoft.schemas.languagetest.TestItemType;
 
 /**
  * @author keith
@@ -57,6 +61,8 @@ public class TestModuleEditor extends MultiPageEditorPart
             {
                 input.getFile().setContents(currentDoc.newInputStream(options),
                                             0, monitor);
+                setDirty(false);
+                firePropertyChange(PROP_DIRTY);
             }
             catch (CoreException e)
             {
@@ -104,8 +110,15 @@ public class TestModuleEditor extends MultiPageEditorPart
         //super.init(site, input);
     }
 
+    protected void setLanguageChanged()
+    {
+        setDirty(true);
+        testItemEditor.setupLangColumns();
+    }
+    
     protected void setDirty(boolean dirty)
     {
+        if (dirty) updateTestView();
         isDirty = dirty;
     }
     /* (non-Javadoc)
@@ -113,7 +126,6 @@ public class TestModuleEditor extends MultiPageEditorPart
      */
     public boolean isDirty()
     {
-        // TODO Auto-generated method stub
         return isDirty;
     }
 
@@ -122,7 +134,6 @@ public class TestModuleEditor extends MultiPageEditorPart
      */
     public boolean isSaveAsAllowed()
     {
-        // TODO Auto-generated method stub
         return false;
     }
 
@@ -227,6 +238,22 @@ public class TestModuleEditor extends MultiPageEditorPart
             }
         }
     }
+    protected void updateTestView()
+    {
+        IViewPart testViewPart = getEditorSite().getPage()
+            .findView(Perspective.TEST_VIEW);
+        if (testViewPart != null)
+        {
+            TestView testView = (TestView)testViewPart;
+            if (getDocument() != null)
+            {
+                testView.setTestModule(getDocument().getLanguageModule());
+                TestItemType item = testItemEditor.getSelectedItem();
+                if (item != null)
+                    testView.setTestItem(item);
+            }
+        }
+    }
     /* (non-Javadoc)
      * @see org.eclipse.ui.IShowEditorInput#showEditorInput(org.eclipse.ui.IEditorInput)
      */
@@ -237,5 +264,12 @@ public class TestModuleEditor extends MultiPageEditorPart
             if (isDirty()) doSave(null);
             setInput(editorInput);
         }
+    }
+    /*
+     * @see WorkbenchPart#firePropertyChange(int)
+     */
+    protected void firePropertyChange(int property) 
+    {
+        super.firePropertyChange(property);
     }
 }

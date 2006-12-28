@@ -73,7 +73,7 @@
             class="org.thanlwinsoft.languagetest.eclipse.wizards.NewModuleProjectWizard"
             finalPerspective="org.thanlwinsoft.languagetest.perspective"
             hasPages="true"
-            icon="icons/languageBuddy16.png"
+            icon="icons/newModuleProject.png"
             id="org.thanlwinsoft.languagetest.eclipse.wizards.NewModuleWizard"
             name="%NewModuleProjectWizard"
             preferredPerspectives="org.thanlwinsoft.languagetest.perspective"
@@ -84,10 +84,16 @@
       <wizard
             category="org.thanlwinsoft.languagetest.newWizardCategory"
             class="org.thanlwinsoft.languagetest.eclipse.wizards.NewLangModuleWizard"
-            icon="icons/languageBuddy16.png"
+            icon="icons/newModule.png"
             id="org.thanlwinsoft.languagetest.wizards.NewLangModuleWizard"
             name="New Language Module Wizard"/>
       <primaryWizard id="org.thanlwinsoft.languagetest.wizards.NewLangModuleWizard"/>
+      <wizard
+            category="org.thanlwinsoft.languagetest.newWizardCategory"
+            class="org.thanlwinsoft.languagetest.eclipse.wizards.NewUserWizard"
+            icon="icons/newUser.png"
+            id="org.thanlwinsoft.languagetest.wizards.NewUserWizard"
+            name="New User Wizard"/>
    </extension>
    <extension
          point="org.eclipse.ui.actionSets">
@@ -97,13 +103,22 @@
             visible="true">
          <action
                class="org.thanlwinsoft.languagetest.eclipse.wizards.NewModuleProjectAction"
-               icon="icons/languageBuddy16.png"
+               icon="icons/newModuleProject.png"
                id="org.thanlwinsoft.languagetest.newModuleProjectAction"
                label="%LanguageTest.newModuleProjectAction"
                menubarPath="File/additions"
                style="push"
                toolbarPath="Bar/additions"
                tooltip="%LanguageTest.newModuleProjectActionDesc"/>
+         <action
+               class="org.thanlwinsoft.languagetest.eclipse.wizards.NewUserProjectAction"
+               icon="icons/newUser.png"
+               id="org.thanlwinsoft.languagetest.NewUserProjectAction"
+               label="%LanguageTest.newUserProjectAction"
+               menubarPath="File/additions"
+               style="push"
+               toolbarPath="Bar/additions"
+               tooltip="%LanguageTest.newUserProjectActionDesc"/>
       </actionSet>
    </extension>
    <extension
@@ -173,6 +188,7 @@ wizardId=
 <navigatorContent
       activeByDefault="true"
       contentProvider="org.thanlwinsoft.languagetest.eclipse.FileContentProvider"
+      icon="icons/moduleProject.png"
       id="org.eclipse.ui.views.navigator"
       labelProvider="org.thanlwinsoft.languagetest.eclipse.ProjectFileLabelProvider"
       name="LanguageTest.navigatorContent1"/>
@@ -236,13 +252,50 @@ wizardId=
       point="org.eclipse.ui.editors">
    <editor
          class="org.thanlwinsoft.languagetest.eclipse.editors.TestModuleEditor"
+         contributorClass="org.thanlwinsoft.languagetest.eclipse.editors.TestModuleActions"
          default="true"
          extensions="lm.xml, xml"
          filenames="*.lm.xml"
-         icon="icons/languageBuddy16.png"
+         icon="icons/module.png"
          id="org.thanlwinsoft.languagetest.eclipse.editors.TestModuleEditor"
          matchingStrategy="org.thanlwinsoft.languagetest.eclipse.editors.TestModuleMatchingStrategy"
          name="%LanguageTest.moduleEditor"/>
+</extension>
+<extension
+      point="org.eclipse.ui.popupMenus">
+   <objectContribution
+         id="LanguageTest.contribution1"
+         nameFilter="*"
+         objectClass="org.eclipse.core.resources.IFile">
+      <menu
+            id="LanguageTest.menu1"
+            label="New Submenu"
+            path="additions">
+         <separator name="group1"/>
+      </menu>
+      <action
+            class="org.thanlwinsoft.languagetest.popup.actions.NewAction"
+            enablesFor="1"
+            id="LanguageTest.newAction"
+            label="New Action"
+            menubarPath="LanguageTest.menu1/group1"/>
+   </objectContribution>
+   <viewerContribution
+         id="org.thanlwinsoft.languagetest.viewerContribution1"
+         targetID="org.thanlwinsoft.languagetest.eclipse.editors.TestModuleEditor">
+      <menu
+            id="org.thanlwinsoft.languagetest.popupmenu1"
+            label="LanguageTest.menu1">
+         <groupMarker name="moduleEditor1"/>
+      </menu>
+      <action
+            class="org.thanlwinsoft.languagetest.eclipse.editors.InsertTestItemAction"
+            enablesFor="1"
+            icon="icons/module.png"
+            id="LanguageTest.action1"
+            label="LanguageTest.action1"
+            menubarPath="org.thanlwinsoft.languagetest.popupmenu1/moduleEditor1"/>
+   </viewerContribution>
 </extension>		
  
 </plugin>

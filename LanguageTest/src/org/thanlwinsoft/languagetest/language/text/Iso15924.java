@@ -105,7 +105,7 @@ public final class Iso15924
             IsoScript il = (IsoScript)codeMap.get(code);
             return il.getDescription();
         }
-        return "Unknown Language: " + code;
+        return "Unknown Script: " + code;
     }
     
     public static String getDescriptionFromId(int id)

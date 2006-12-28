@@ -35,13 +35,13 @@ public final class Iso3166
         }
     }
     
-    public static Object[] getCountries()
+    public static IsoCountry[] getCountries()
     {
         if (instance == null)
         {
             instance = new Iso3166();
         }
-        return instance.countries.toArray();
+        return (IsoCountry[])instance.countries.toArray(new IsoCountry[instance.countries.size()]);
     }
     
     public static String getDescriptionFromCode(String code)

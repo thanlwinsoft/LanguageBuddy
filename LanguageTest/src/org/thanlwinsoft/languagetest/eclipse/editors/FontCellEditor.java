@@ -31,6 +31,13 @@ public class FontCellEditor extends DialogCellEditor {
 	{
         FontDialog dialog = new FontDialog(cellEditorWindow.getShell());
 		dialog.setText(MessageUtil.getString("FontDialogTitle"));
+        if (getValue() != null)
+        {
+            FontData [] oldFont = new FontData[] { 
+                    new FontData(getValue().toString(), 12, SWT.NORMAL)
+            }; 
+            dialog.setFontList(oldFont);
+        }
 		FontData fontData = dialog.open(); 
 		
 		return fontData.getName();

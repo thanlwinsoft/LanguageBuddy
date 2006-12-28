@@ -31,7 +31,11 @@ import org.thanlwinsoft.schemas.languagetest.LangTypeType;
 import org.thanlwinsoft.schemas.languagetest.LanguageModuleDocument;
 import org.thanlwinsoft.schemas.languagetest.LanguageModuleType;
 
-/**
+/** The WorkspaceLanguageManager stores the languages associated with a project.
+ * Usually one project is used for one Foreign language being learnt. However,
+ * there may be several different scripts used for the same language. The 
+ * languages for a project are stored in a hidden file in the root of the 
+ * project.
  * @author keith
  *
  */
@@ -52,19 +56,23 @@ public class WorkspaceLanguageManager
             instance = new WorkspaceLanguageManager();
         return instance;
     }
-	
+    public static void addLanguage(IProject project, LangTypeType.Enum type, 
+            UniversalLanguage ul, FontData fontData, IProgressMonitor monitor)
+    {
+        LangType lang = LangType.Factory.newInstance();
+        lang.setLang(ul.getCode());
+        lang.setFont(fontData.getName());
+        BigDecimal fontSize = BigDecimal.valueOf(fontData.getHeight());
+        lang.setFontSize(fontSize);
+        lang.setType(type);
+        lang.setStringValue(ul.getDescription());
+        get().setLanguage(project, lang, monitor);
+    }
 	public static void addLanguage(IProject project, LangTypeType.Enum type, 
                     UniversalLanguage ul, Font font, IProgressMonitor monitor)
 	{
-		LangType lang = LangType.Factory.newInstance();
-		lang.setLang(ul.getCode());
-		FontData fontData = font.getFontData()[0];
-		lang.setFont(fontData.getName());
-		BigDecimal fontSize = BigDecimal.valueOf(fontData.getHeight());
-		lang.setFontSize(fontSize);
-		lang.setType(type);
-        lang.setStringValue(ul.getDescription());
-		get().setLanguage(project, lang, monitor);
+        FontData fontData = font.getFontData()[0];
+        addLanguage(project, type, ul, fontData, monitor);
 	}
 	
 	public static void addLanguage(IProject project, LangType lang, IProgressMonitor monitor)
@@ -153,7 +161,13 @@ public class WorkspaceLanguageManager
         }
         return get().userLanguages;
     }
-    
+    /**
+     * Find the active languages of a given type for a project.
+     * User langauges are appended to the project list.
+     * @param project
+     * @param langType
+     * @return mapping of language codes to UniversalLanguage objects
+     */
     public static HashMap findActiveLanguages(IProject project, LangTypeType.Enum langType)
     {
         HashMap langs = new HashMap();
@@ -178,7 +192,6 @@ public class WorkspaceLanguageManager
             }
         }
         return langs;
-        //return (LangType[])langs.values().toArray(new LangType[langs.size()]);
     }
     
 	public static IProject [] findUserProjects()
@@ -191,7 +204,7 @@ public class WorkspaceLanguageManager
 		{
 			try
 			{
-				if (projects[i].hasNature(LanguageUserNature.ID))
+				if (projects[i].isOpen() && projects[i].hasNature(LanguageUserNature.ID))
 				{
 					userProjects.add(projects[i]);
 					if (projects[i].isOpen()) 

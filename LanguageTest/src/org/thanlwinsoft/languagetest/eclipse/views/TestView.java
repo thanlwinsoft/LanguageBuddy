@@ -296,28 +296,31 @@ public class TestView extends ViewPart implements ISelectionChangedListener
         LangType [] langs = module.getLangArray();
         for (int i = 0; i < langs.length; i++)
         {
+            int fontSize = langs[i].getFontSize().intValue();
             if (langs[i].getType().equals(LangTypeType.NATIVE))
             {
                 if (nativeFont == null ||
                     nativeFont.getFontData()[0].getName()
-                        .equals(langs[i].getFont()) == false)
+                        .equals(langs[i].getFont()) == false ||
+                    nativeFont.getFontData()[0].getHeight() != fontSize)
                 {
-                    if (nativeFont != null) nativeFont.dispose();
-                    nativeFont = getFont(langs[i].getFont(), 
-                            langs[i].getFontSize().intValue());
-                    nativeViewer.getTextWidget().setFont(nativeFont);
+                    //if (nativeFont != null) nativeFont.dispose();
+                    nativeFont = getFont(langs[i].getFont(), fontSize);
+                    if (nativeFont != null)
+                        nativeViewer.getTextWidget().setFont(nativeFont);
                 }
-                    
             }
             else if (langs[i].getType().equals(LangTypeType.FOREIGN))
             {
                 if (foreignFont == null ||
                         foreignFont.getFontData()[0].getName()
-                        .equals(langs[i].getFont()) == false)
+                        .equals(langs[i].getFont()) == false ||
+                        foreignFont.getFontData()[0].getHeight() != fontSize)
                 {
-                    if (foreignFont != null) foreignFont.dispose();
-                    foreignFont = getFont(langs[i].getFont(), langs[i].getFontSize().intValue());
-                    foreignViewer.getTextWidget().setFont(foreignFont);
+                    //if (foreignFont != null) foreignFont.dispose();
+                    foreignFont = getFont(langs[i].getFont(), fontSize);
+                    if (foreignFont != null)
+                        foreignViewer.getTextWidget().setFont(foreignFont);
                 }
             }
         }

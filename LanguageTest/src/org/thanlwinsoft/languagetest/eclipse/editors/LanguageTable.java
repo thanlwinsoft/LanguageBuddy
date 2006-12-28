@@ -5,11 +5,13 @@ package org.thanlwinsoft.languagetest.eclipse.editors;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.math.BigDecimal;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.ICellEditorValidator;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -24,11 +26,16 @@ import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerLabel;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.TreeColumn;
+import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.ui.IEditorPart;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.thanlwinsoft.languagetest.language.test.UniversalLanguage;
@@ -44,6 +51,7 @@ public class LanguageTable extends Composite
 	private TreeViewer tableViewer = null;
     private HashMap availableTypes = null;
     private HashMap inUseTypes = null;
+    private HashSet modifyListeners = null;
     private final int LANG_NAME_COL = 0;
     private final int IN_USE_COL = 1;
     private final int LANG_FONT_COL = 2;
@@ -52,10 +60,12 @@ public class LanguageTable extends Composite
     private final String IN_USE = "InUse";
     private final String LANG_FONT = "Font";
     private final String FONT_SIZE = "FontSize";
+    private boolean dirty = false;
     
     private LanguageLabelProvider labelProvider = null;
     private LanguageContentProvider contentProvider = null;
     private UniversalLanguage [] languages = null;
+    private IEditorPart editor = null;
     
 	/**
 	 * @param parent
@@ -64,6 +74,7 @@ public class LanguageTable extends Composite
 	public LanguageTable(Composite parent, int style) 
 	{
 		super(parent, style);
+        modifyListeners = new HashSet();
         this.setLayout(new FillLayout());
         availableTypes = new HashMap();
         inUseTypes = new HashMap();
@@ -94,12 +105,34 @@ public class LanguageTable extends Composite
         col.setWidth(100);
         col.setText(MessageUtil.getString("FontSize"));
         CellEditor[] editors = new CellEditor[] {
-                null, null, new FontCellEditor(tableViewer.getTree(), SWT.NONE),
+                null, new CheckboxCellEditor(tableViewer.getTree(), SWT.NONE), 
+                new FontCellEditor(tableViewer.getTree(), SWT.NONE),
                 new TextCellEditor(tableViewer.getTree())
         };
+        String [] columnProperties = new String [] {
+                LANG_NAME, IN_USE, LANG_FONT, FONT_SIZE
+        };
+        tableViewer.setColumnProperties(columnProperties);
         tableViewer.setCellEditors(editors);
+        for (int i = 0; i < editors.length; i++)
+        {
+            if (editors[i] != null) editors[i].setValidator(modifier);
+        }
+        
 	}
-    
+    public void addModifyListener(ModifyListener ml)
+    {
+        modifyListeners.add(ml);
+    }
+    public void removeModifyListener(ModifyListener ml)
+    {
+        modifyListeners.remove(ml);
+    }
+    /** 
+     * Set the project languages 
+     * The project languages are defined in the root of the project tree.
+     * @param array of languages
+     * */
     public void setProjectLangs(LangType [] langs)
     {
         languages = new UniversalLanguage[langs.length];
@@ -112,6 +145,11 @@ public class LanguageTable extends Composite
         tableViewer.getTree().setData(languages);
         tableViewer.refresh();
     }
+    /** 
+     * Set the project languages 
+     * The project languages are defined in the root of the project tree.
+     * @param array of languages
+     */
     public void setProjectLangs(HashMap langs)
     {
         languages = new UniversalLanguage[langs.size()];
@@ -131,7 +169,10 @@ public class LanguageTable extends Composite
             tableViewer.refresh();
         }
     }
-    
+    /** set the module languages that are defined in the module file
+     * 
+     * @param langs
+     */
     public void setModuleLangs(LangType [] langs)
     {
         inUseTypes.clear();
@@ -139,18 +180,33 @@ public class LanguageTable extends Composite
         {
             inUseTypes.put(langs[i].getLang(), langs[i]);
         }
-        tableViewer.expandAll();
         tableViewer.refresh();
+        tableViewer.expandAll();
+        dirty = false;
     }
-	
+    /** Set the module languages that are defined in the module file
+     * 
+     * @param langs
+     */
     public void setModuleLangs(HashMap langs)
     {
         inUseTypes.clear();
         inUseTypes = langs;
-        tableViewer.expandAll();
         tableViewer.refresh();
+        tableViewer.expandAll();
+        dirty = false;
     }
     
+    public LangType [] getModuleLangs()
+    {
+        LangType [] array = new LangType[inUseTypes.size()];
+        return (LangType [])inUseTypes.values().toArray(array);
+    }
+    /** Provides the labels for the columns in the language table
+     * 
+     * @author keith
+     *
+     */
 	protected class LanguageLabelProvider extends LabelProvider 
         implements ITableLabelProvider 
         
@@ -181,15 +237,27 @@ public class LanguageTable extends Composite
                 ul = new UniversalLanguage(langProps);
                 if (columnIndex > 0) return null;
             }
+            else if (element instanceof String)
+            {
+                ul = new UniversalLanguage(element.toString());
+                if (columnIndex > 0) return null;
+            }
             if (ul != null)
             {
                 LangType lt = (LangType)availableTypes.get(ul.getCode());
+                boolean inUse = false;
+                if (lt != null && inUseTypes.containsKey(ul.getCode()))
+                {
+                    // use the module font, not the project font
+                    lt = (LangType)inUseTypes.get(ul.getCode());
+                    inUse = true;
+                }
                 switch (columnIndex)
                 {
                 case LANG_NAME_COL:
                     return ul.getDescription();
                 case IN_USE_COL:
-                    if (inUseTypes.containsKey(ul.getCode()))
+                    if (inUse)
                         return MessageUtil.getString("yes");
                     else if (lt != null)
                         return MessageUtil.getString("no");
@@ -212,10 +280,16 @@ public class LanguageTable extends Composite
             return null;
         }
 	}
-	
+	/** Provides the content for a Language Table.
+     * A UniversalLanguage is used one per column. The top level tree objects
+     * are raw language IDs. Scripts and sub classifications are the children.
+     * @author keith
+     *
+	 */
 	public class LanguageContentProvider implements ITreeContentProvider
 	{
 		private UniversalLanguage [] langs = null;
+        protected boolean useTree = false;
 		public LanguageContentProvider()
         {
             
@@ -245,7 +319,15 @@ public class LanguageTable extends Composite
 					}
 				}
 			}
-            else System.out.println(parentElement.getClass());
+            else if (parentElement instanceof String)
+            {
+                for (int i = 0; i < langs.length; i++)
+                {
+                    if (langs[i].getLanguageCode().equals(parentElement.toString()))
+                        set.add(langs[i]);
+                }
+            }
+            //else System.out.println(parentElement.getClass());
 			return set.toArray();
 		}
 
@@ -282,7 +364,7 @@ public class LanguageTable extends Composite
 //							langs[i].toArray())) return true;
 //				}
 			}
-            else System.out.println(element.getClass());
+            //else System.out.println(element.getClass());
 			return false;
 		}
 		
@@ -320,10 +402,21 @@ public class LanguageTable extends Composite
             if (inputElement instanceof UniversalLanguage [])
             {
                 UniversalLanguage [] uls = (UniversalLanguage[])inputElement;
+                if (useTree == false)
+                {
+                    return uls;
+                }
+                HashSet langSet = new HashSet(uls.length);
                 
-                Object [] elements = new Object[uls.length];
                 for (int i = 0; i < uls.length; i++)
-                    elements[i] = new String[] { uls[i].getLanguageCode() };//toArray();
+                {
+                    if (!langSet.contains(uls[i].getLanguageCode()))
+                        langSet.add(uls[i].getLanguageCode());
+                }
+                String [] elements = new String[langSet.size()];
+                Iterator ils = langSet.iterator();
+                int i = 0;
+                while (ils.hasNext()) elements[i++] = ils.next().toString();
                 return elements;
             }
 			return null;
@@ -346,7 +439,11 @@ public class LanguageTable extends Composite
 		}
 		
 	}
-    
+    /** Modifier for the language cells. This modifies the entries associated
+     * with a specific UniversalLanguage.
+     * @author keith
+     *
+     */
     public class LanguageCellModifier implements ICellModifier, 
         ICellEditorValidator
     {
@@ -358,7 +455,7 @@ public class LanguageTable extends Composite
         {
             if (element instanceof UniversalLanguage)
             {
-                if (/*property.equals(IN_USE) ||*/
+                if (property.equals(IN_USE) ||
                     property.equals(LANG_FONT) ||
                     property.equals(FONT_SIZE))
                     return true;
@@ -386,14 +483,12 @@ public class LanguageTable extends Composite
             }
             if (ul != null)
             {
-                TableItem ti = (TableItem)element;
-                if (ti.getData() instanceof UniversalLanguage)
-                {
-                    if (property.equals(LANG_FONT))
-                        return labelProvider.getColumnText(ti.getData(), LANG_FONT_COL);
-                    if (property.equals(FONT_SIZE))
-                        return labelProvider.getColumnText(ti.getData(), FONT_SIZE_COL);
-                }
+                if (property.equals(IN_USE))
+                    return (inUseTypes.containsKey(ul.getCode()))? Boolean.TRUE : Boolean.FALSE;
+                if (property.equals(LANG_FONT))
+                    return labelProvider.getColumnText(ul, LANG_FONT_COL);
+                if (property.equals(FONT_SIZE))
+                    return labelProvider.getColumnText(ul, FONT_SIZE_COL);
             }
             return null;
         }
@@ -403,30 +498,70 @@ public class LanguageTable extends Composite
          */
         public void modify(Object element, String property, Object value)
         {
-            if (element instanceof TableItem)
+            if (element instanceof TreeItem)
             {
-                TableItem ti = (TableItem)element;
+                TreeItem ti = (TreeItem)element;
                 if (ti.getData() instanceof UniversalLanguage)
                 {
                     
                     UniversalLanguage ul = (UniversalLanguage)ti.getData();
                     LangType lt = (LangType)availableTypes.get(ul.getCode());
+                    
                     if (property.equals(LANG_FONT))
                     {
-                        lt.setFont(value.toString());
+                        if (!lt.getFont().equals(value))
+                        {
+                            lt.setFont(value.toString());
+                            if (inUseTypes.containsKey(ul.getCode()))
+                            {
+                                lt = (LangType)inUseTypes.get(ul.getCode());
+                                lt.setFont(value.toString());
+                            }
+                            setDirty(true);
+                            tableViewer.refresh(ul, true);
+                        }
                     }
                     else if (property.equals(FONT_SIZE))
                     {
                         try
                         {
                             float size = Float.parseFloat(value.toString());
-                            lt.setFontSize(BigDecimal.valueOf(size));
+                            BigDecimal bdSize = BigDecimal.valueOf(size);
+                            if (!lt.getFontSize().equals(bdSize))
+                            {
+                                lt.setFontSize(bdSize);
+                                if (inUseTypes.containsKey(ul.getCode()))
+                                {
+                                    lt = (LangType)inUseTypes.get(ul.getCode());
+                                    lt.setFontSize(bdSize);
+                                }
+                                setDirty(true);
+                                tableViewer.refresh(ul, true);
+                            }
                         }
                         catch (NumberFormatException e)
                         {
                             LanguageTestPlugin.log(IStatus.WARNING,
                                     e.getLocalizedMessage(),e);
                         }
+                    }
+                    else if (property.equals(IN_USE))
+                    {
+                        if (((Boolean)value).booleanValue())
+                        {
+                            if (!inUseTypes.containsKey(ul.getCode()))
+                            {
+                                LangType lang = 
+                                    ((LangType)availableTypes.get(ul.getCode()));
+                                inUseTypes.put(ul.getCode(), lang.copy());
+                            }
+                        }
+                        else
+                        {
+                            inUseTypes.remove(ul.getCode());
+                        }
+                        setDirty(true);
+                        tableViewer.refresh(ul, true);
                     }
                 }
             } 
@@ -437,9 +572,29 @@ public class LanguageTable extends Composite
          */
         public String isValid(Object value)
         {
-            // TODO Auto-generated method stub
+            // null means valid
             return null;
         }
         
+    }
+    public boolean isDirty() { return dirty; }
+    protected void setDirty(boolean dirtyNow)
+    {
+        if (dirtyNow)
+        {
+            Iterator i = modifyListeners.iterator();
+            while (i.hasNext())
+            {
+                ModifyListener ml = (ModifyListener)i.next();
+                Event e = new Event();
+                e.widget = tableViewer.getTree();
+                
+                ModifyEvent me = new ModifyEvent(e);
+                
+                ml.modifyText(me);
+            }
+            
+        }
+        dirty = dirtyNow;
     }
 }

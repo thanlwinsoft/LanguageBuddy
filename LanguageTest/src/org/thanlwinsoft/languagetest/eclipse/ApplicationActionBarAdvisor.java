@@ -31,6 +31,10 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
     private IWorkbenchAction newWizardAction;
     private IWorkbenchAction preferencesAction;
     private IWorkbenchAction undoAction;
+    private IWorkbenchAction saveAction;
+    private IWorkbenchAction saveAllAction;
+    private IWorkbenchAction closeAction;
+    private IWorkbenchAction closeAllAction;
     
     //private IWorkbenchAction newWindowAction;
     //private OpenViewAction openViewAction;
@@ -72,6 +76,17 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         undoAction = ActionFactory.UNDO.create(window);
         register(undoAction);
         
+        saveAction = ActionFactory.SAVE.create(window);
+        register(saveAction);
+        
+        saveAllAction = ActionFactory.SAVE_ALL.create(window);
+        register(saveAllAction);
+        
+        closeAction = ActionFactory.CLOSE.create(window);
+        register(closeAction);
+        
+        closeAllAction = ActionFactory.CLOSE_ALL.create(window);
+        register(closeAllAction);
         
         preferencesAction = ActionFactory.PREFERENCES.create(window); 
         register(preferencesAction);
@@ -89,6 +104,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         MenuManager fileMenu = 
             new MenuManager(MessageUtil.getString("Menu_File"), 
                             IWorkbenchActionConstants.M_FILE);
+        
         MenuManager editMenu = 
             new MenuManager(MessageUtil.getString("Menu_Edit"), 
                             IWorkbenchActionConstants.M_EDIT);
@@ -114,6 +130,11 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         menuBar.add(helpMenu);
         
         // File
+        fileMenu.add(saveAction);
+        fileMenu.add(saveAllAction);
+        fileMenu.add(closeAction);
+        fileMenu.add(closeAllAction);
+        
         fileMenu.add(new GroupMarker("File/additions"));
         fileMenu.add(new Separator());
         //fileMenu.add(messagePopupAction);
@@ -143,6 +164,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         //CoolBarManager coolBar = new CoolBarManager();
         IToolBarManager toolBar = new ToolBarManager(SWT.FLAT | SWT.RIGHT);
         coolBar.add(new ToolBarContributionItem(toolBar, "main"));
+        toolBar.add(saveAction);
         toolBar.add(undoAction);
         toolBar.add(cutAction);
         toolBar.add(copyAction);

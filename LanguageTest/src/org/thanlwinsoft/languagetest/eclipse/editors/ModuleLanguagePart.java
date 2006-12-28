@@ -3,6 +3,7 @@
  */
 package org.thanlwinsoft.languagetest.eclipse.editors;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -10,6 +11,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -38,7 +41,7 @@ import org.thanlwinsoft.schemas.languagetest.LangTypeType;
  * @author keith
  *
  */
-public class ModuleLanguagePart extends EditorPart {
+public class ModuleLanguagePart extends EditorPart implements ModifyListener {
 
 	private TestModuleEditor parent = null;
     private ScrolledForm form = null;
@@ -81,6 +84,10 @@ public class ModuleLanguagePart extends EditorPart {
 	 * @see org.eclipse.ui.part.EditorPart#isDirty()
 	 */
 	public boolean isDirty() {
+        if (nativeTable.isDirty() || foreignTable.isDirty())
+        {
+            parent.setDirty(true);
+        }
 		return parent.isDirty();
 	}
 
@@ -108,10 +115,8 @@ public class ModuleLanguagePart extends EditorPart {
         nec.setText(MessageUtil.getString("NativeLanguages"));
         nec.setToolTipText(MessageUtil.getString("NativeLanguageDesc"));
         
-        //Composite nc = toolkit.createComposite(form.getBody());
-       // nc.setLayout(new TableWrapLayout());
-        //nec.setClient(nc);
         nativeTable = new LanguageTable(nec, SWT.SHADOW_ETCHED_IN);
+        nativeTable.addModifyListener(this);
         toolkit.adapt(nativeTable);
         nec.setClient(nativeTable);
         
@@ -120,11 +125,8 @@ public class ModuleLanguagePart extends EditorPart {
                         ExpandableComposite.EXPANDED);
         fec.setText(MessageUtil.getString("ForeignLanguages"));
         fec.setToolTipText(MessageUtil.getString("ForeignLanguageDesc"));
-        //Composite fc = toolkit.createComposite(form.getBody(), SWT.WRAP);
-        //fc.setLayout(new TableWrapLayout());
-        //fec.setClient(fc);
-        //fec.setTextClient(null);
         foreignTable = new LanguageTable(fec, SWT.SHADOW_ETCHED_IN);
+        foreignTable.addModifyListener(this);
         toolkit.adapt(foreignTable);
         fec.setClient(foreignTable);
         
@@ -146,7 +148,11 @@ public class ModuleLanguagePart extends EditorPart {
         
         this.form = form;
 	}
-    
+    /**
+     * Set the Input for the Language Tables. The input is expected to be 
+     * a FileEditorInput for a Language Module file.
+     * @param input
+     */
     public void setInput(Object input)
     {
         IProject project = null;
@@ -158,6 +164,8 @@ public class ModuleLanguagePart extends EditorPart {
             LangType[] enabled = parent.getDocument().getLanguageModule().getLangArray();
             HashSet enabledNative = new HashSet();
             HashSet enabledForeign = new HashSet();
+            // TBD: optimise to have one call to find Active languages that
+            // supplies both in one call
             HashMap nLangs = 
                 WorkspaceLanguageManager.findActiveLanguages(project, 
                 LangTypeType.NATIVE);
@@ -165,12 +173,17 @@ public class ModuleLanguagePart extends EditorPart {
             HashMap fLangs = 
                 WorkspaceLanguageManager.findActiveLanguages(project, 
                 LangTypeType.FOREIGN);
+            // Loop over module languages and see which languages are enabled
+            // for this module. Add languages which are not already in the 
+            // project to the project list.
             boolean added = false;
             for (int i = 0; i < enabled.length; i++)
             {
                 if (enabled[i].getType().equals(LangTypeType.NATIVE))
                 {
-                    enabledNative.add(enabled[i]);
+                    // remove link to source file by copying other wise strange
+                    // effects happen
+                    enabledNative.add(enabled[i].copy());
                     if (nLangs.containsKey(enabled[i].getLang()) == false)
                     {
                         WorkspaceLanguageManager.addLanguage(project, enabled[i],
@@ -180,7 +193,7 @@ public class ModuleLanguagePart extends EditorPart {
                 }
                 else
                 {
-                    enabledForeign.add(enabled[i]);
+                    enabledForeign.add(enabled[i].copy());
                     if (fLangs.containsKey(enabled[i].getLang()) == false)
                     {
                         WorkspaceLanguageManager.addLanguage(project, enabled[i],
@@ -204,7 +217,7 @@ public class ModuleLanguagePart extends EditorPart {
             nativeTable.setModuleLangs((LangType[])
                 enabledNative.toArray(new LangType[enabledNative.size()]));
             foreignTable.setModuleLangs((LangType[])
-                enabledNative.toArray(new LangType[enabledForeign.size()]));
+                enabledForeign.toArray(new LangType[enabledForeign.size()]));
         }
         
     }
@@ -216,5 +229,28 @@ public class ModuleLanguagePart extends EditorPart {
 	{
         //form.setFocus();
 	}
+    /* (non-Javadoc)
+     * @see org.eclipse.swt.events.ModifyListener#modifyText(org.eclipse.swt.events.ModifyEvent)
+     */
+    public void modifyText(ModifyEvent e)
+    {
+        LangType [] nLangArray = nativeTable.getModuleLangs();
+        LangType [] fLangArray = foreignTable.getModuleLangs();
+        LangType [] langArray = new LangType[nLangArray.length + fLangArray.length];
+        int i = 0;
+        for (; i < nLangArray.length; i++)
+        {
+            String temp = nLangArray[i].getLang();
+            langArray[i] = nLangArray[i];
+        }
+        for (; i < langArray.length; i++)
+        {
+            String temp = fLangArray[i - nLangArray.length].getLang();
+            langArray[i] = fLangArray[i - nLangArray.length];
+        }
+        parent.getDocument().getLanguageModule().setLangArray(langArray);
+        parent.setLanguageChanged();
+        parent.firePropertyChange(PROP_DIRTY);
+    }
 
 }

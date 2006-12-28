@@ -12,14 +12,18 @@ package org.thanlwinsoft.eclipse;
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-//package org.eclipse.ui.internal.ide.model;
 
 import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
+import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
+import org.thanlwinsoft.languagetest.eclipse.natures.LanguageModuleNature;
+import org.thanlwinsoft.languagetest.eclipse.natures.LanguageUserNature;
 
 /**
  * An IWorkbenchAdapter that represents IFolders.
@@ -30,7 +34,8 @@ public class WorkbenchFolder extends WorkbenchResource {
      *  considering the passed open status as well iff appropriate for the type of
      *  passed resource
      */
-    protected ImageDescriptor getBaseImage(IResource resource) {
+    protected ImageDescriptor getBaseImage(IResource resource) 
+    {
         return PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(
                 ISharedImages.IMG_OBJ_FOLDER);
     }
