@@ -328,89 +328,112 @@ public class TestView extends ViewPart implements ISelectionChangedListener
     
     public void setTestItem(TestItemType ti)
     {
-        NativeLangType [] nLang = ti.getNativeLangArray();
-        setText(NATIVE_ID, nLang[0].getStringValue(), null);
-        ForeignLangType [] fLang = ti.getForeignLangArray();
-        setText(FOREIGN_ID, fLang[0].getStringValue(), null);
-        if (ti.isSetSoundFile())
-            controlPanel.player().setFile(ti.getSoundFile().getStringValue());
-        else
-            controlPanel.player().setFile(null);
-        // cache old weights before we remove the picture
-        if (picture.getImage() != null)
+        if (ti == null) return;
+        try
         {
-        	pictureWeights = horizontalSash.getWeights();
-        }
-        if (ti.isSetImg())
-        {
-            
-            IEditorInput editorInput = getSite().getPage().getActiveEditor().getEditorInput();
-            if (editorInput instanceof FileEditorInput)
+            NativeLangType [] nLang = ti.getNativeLangArray();
+            if (nLang.length > 0)
             {
-                FileEditorInput fei = (FileEditorInput)editorInput;
-                IContainer basePath = fei.getFile().getParent();
-                ImageLoader loader = new ImageLoader();
-                try
+                setText(NATIVE_ID, nLang[0].getStringValue(), null);
+            }
+            else
+            {
+                setText(NATIVE_ID, "", null);
+            }
+            ForeignLangType [] fLang = ti.getForeignLangArray();
+            if (fLang.length > 0)
+            {
+                setText(FOREIGN_ID, fLang[0].getStringValue(), null);
+            }
+            else
+            {
+                setText(FOREIGN_ID, "", null);
+            }
+            if (ti.isSetSoundFile())
+                controlPanel.player().setFile(ti.getSoundFile().getStringValue());
+            else
+                controlPanel.player().setFile(null);
+            // cache old weights before we remove the picture
+            if (picture.getImage() != null)
+            {
+            	pictureWeights = horizontalSash.getWeights();
+            }
+            if (ti.isSetImg())
+            {
+                
+                IEditorInput editorInput = getSite().getPage().getActiveEditor().getEditorInput();
+                if (editorInput instanceof FileEditorInput)
                 {
-                    IFile imgFile = null;
+                    FileEditorInput fei = (FileEditorInput)editorInput;
+                    IContainer basePath = fei.getFile().getParent();
+                    ImageLoader loader = new ImageLoader();
                     try
                     {
-	                    if (basePath instanceof IFolder)
-	                    {
-	                        imgFile = ((IFolder)basePath).getFile(ti.getImg());
-	                    }
-	                    else if (basePath instanceof IProject)
-	                    {
-	                        imgFile = ((IProject)basePath).getFile(ti.getImg());
-	                    }
+                        IFile imgFile = null;
+                        try
+                        {
+    	                    if (basePath instanceof IFolder)
+    	                    {
+    	                        imgFile = ((IFolder)basePath).getFile(ti.getImg());
+    	                    }
+    	                    else if (basePath instanceof IProject)
+    	                    {
+    	                        imgFile = ((IProject)basePath).getFile(ti.getImg());
+    	                    }
+                        }
+                        catch (IllegalArgumentException e) {}
+                        ImageData [] imageDatas = null;
+                        if (imgFile != null && imgFile.exists())
+                        {
+                            imageDatas = loader.load(imgFile.getLocation().toOSString());
+                            
+                        }
+                        else
+                        {
+                            //picture.setText(MessageUtil.getString("FileNotFound",
+                            //        imgFile.toString()));
+                        	File file = new File(ti.getImg());
+                        	if (file.exists())
+                        		imageDatas = loader.load(ti.getImg());
+                        }
+                        if (imageDatas != null)
+                        {
+                            horizontalSash.setWeights(pictureWeights);
+                            //Image image = new Image(display, imageData[0]);
+                        	imageData = imageDatas[0];
+                            setPicture();
+                        }
+                        if (nativeViewer.getTextWidget().isVisible())
+                        	picture.setToolTipText(ti.getImg());
+                        else
+                        	picture.setToolTipText("");
                     }
-                    catch (IllegalArgumentException e) {}
-                    ImageData [] imageDatas = null;
-                    if (imgFile != null && imgFile.exists())
+                    catch (SWTException e)
                     {
-                        imageDatas = loader.load(imgFile.getLocation().toOSString());
-                        
+                    	picture.setImage(null);
+                    	picture.setToolTipText(e.getLocalizedMessage());
+                    	horizontalSash.setWeights(NO_PICTURE_WEIGHTS);
+                        LanguageTestPlugin.log(IStatus.WARNING, 
+                                e.getLocalizedMessage(), e);
                     }
-                    else
-                    {
-                        //picture.setText(MessageUtil.getString("FileNotFound",
-                        //        imgFile.toString()));
-                    	File file = new File(ti.getImg());
-                    	if (file.exists())
-                    		imageDatas = loader.load(ti.getImg());
-                    }
-                    if (imageDatas != null)
-                    {
-                        horizontalSash.setWeights(pictureWeights);
-                        //Image image = new Image(display, imageData[0]);
-                    	imageData = imageDatas[0];
-                        setPicture();
-                    }
-                    if (nativeViewer.getTextWidget().isVisible())
-                    	picture.setToolTipText(ti.getImg());
-                    else
-                    	picture.setToolTipText("");
-                }
-                catch (SWTException e)
-                {
-                	picture.setImage(null);
-                	picture.setToolTipText(e.getLocalizedMessage());
-                	horizontalSash.setWeights(NO_PICTURE_WEIGHTS);
-                    LanguageTestPlugin.log(IStatus.WARNING, 
-                            e.getLocalizedMessage(), e);
                 }
             }
+            else
+            {
+            	picture.setImage(null);
+            	picture.setToolTipText("");
+            	horizontalSash.setWeights(NO_PICTURE_WEIGHTS);
+            }
+            nativeViewer.refresh();
+            foreignViewer.refresh();
+            nativeViewer.getTextWidget().redraw();
+            picture.redraw();
         }
-        else
+        catch (org.apache.xmlbeans.XmlRuntimeException xmlE)
         {
-        	picture.setImage(null);
-        	picture.setToolTipText("");
-        	horizontalSash.setWeights(NO_PICTURE_WEIGHTS);
+            LanguageTestPlugin.log(IStatus.WARNING, 
+                    xmlE.getLocalizedMessage(), xmlE);
         }
-        nativeViewer.refresh();
-        foreignViewer.refresh();
-        nativeViewer.getTextWidget().redraw();
-        picture.redraw();
     }
     public void addSelectionProvider(ISelectionProvider provider)
     {

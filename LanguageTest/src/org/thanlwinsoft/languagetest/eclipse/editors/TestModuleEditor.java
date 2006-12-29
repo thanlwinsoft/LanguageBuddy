@@ -250,7 +250,9 @@ public class TestModuleEditor extends MultiPageEditorPart
                 testView.setTestModule(getDocument().getLanguageModule());
                 TestItemType item = testItemEditor.getSelectedItem();
                 if (item != null)
+                {
                     testView.setTestItem(item);
+                }
             }
         }
     }

@@ -11,6 +11,7 @@ import java.util.Vector;
 
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourceAttributes;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -58,6 +59,7 @@ import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.thanlwinsoft.languagetest.eclipse.Perspective;
 import org.thanlwinsoft.languagetest.eclipse.TestModuleAdapter;
+import org.thanlwinsoft.languagetest.eclipse.WorkspaceLanguageManager;
 import org.thanlwinsoft.languagetest.eclipse.views.TestView;
 import org.thanlwinsoft.languagetest.language.test.UniversalLanguage;
 import org.thanlwinsoft.schemas.languagetest.ForeignLangType;
@@ -217,29 +219,59 @@ public class TestItemEditor extends EditorPart
         makeActions();
         enableActions();
         
+        
         popup = new Menu(tableViewer.getControl());
         MenuItem insertItem = new MenuItem(popup, SWT.PUSH);
         insertItem.setText(MessageUtil.getString("InsertItem"));
-        insertItem.setText(MessageUtil.getString("InsertItemToolTip"));
         
         insertItem.addSelectionListener(new SelectionListener() {
-
-            public void widgetDefaultSelected(SelectionEvent e)
-            {
-                
-            }
-
+            public void widgetDefaultSelected(SelectionEvent e){}
             public void widgetSelected(SelectionEvent e)
             {
-                // TODO Auto-generated method stub
+                TestItemType item = null;
+                int i = tableViewer.getTable().getSelectionIndex();
+                if (i < 0) i = tableViewer.getTable().getItemCount();
+                item = parent.getDocument().getLanguageModule().insertNewTestItem(i);
+                // item = parent.getDocument().getLanguageModule().addNewTestItem();
+                item.setCreationTime((new Date()).getTime());
+                IProject userProject = WorkspaceLanguageManager.getUserProject(); 
+                if (userProject != null)
+                    item.setCreator(userProject.getName());
+                else
+                    item.setCreator(System.getProperty("user.name"));
+                parent.setDirty(true);
+                parent.firePropertyChange(PROP_DIRTY);
+                tableViewer.refresh();
+            }
+        });
+        MenuItem deleteItem = new MenuItem(popup, SWT.PUSH);
+        deleteItem.setText(MessageUtil.getString("DeleteItem"));
+        
+        deleteItem.addSelectionListener(new SelectionListener() {
+            public void widgetDefaultSelected(SelectionEvent e){}
+            public void widgetSelected(SelectionEvent e)
+            {
                 TestItemType item = getSelectedItem();
                 if (item != null)
                 {
-                    
+                    TestItemType [] items = parent.getDocument().getLanguageModule().getTestItemArray();
+                    for (int i = 0; i < items.length; i++)
+                    {
+                        if (item.equals(items[i]))
+                        {
+                            tableViewer.setSelection(null);
+                            parent.getDocument().getLanguageModule().removeTestItem(i);
+                            break;
+                        }
+                    }
+                    parent.setDirty(true);
+                    parent.firePropertyChange(PROP_DIRTY);
+                    tableViewer.refresh();
+                    tableViewer.getTable().redraw();
                 }
             }
-            
         });
+        
         popup.setEnabled(true);
         tableViewer.getTable().addMouseListener(new MouseListener(){
 
