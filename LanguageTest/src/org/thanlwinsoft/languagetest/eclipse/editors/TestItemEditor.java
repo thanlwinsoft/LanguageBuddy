@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.ICellEditorListener;
 import org.eclipse.jface.viewers.ICellEditorValidator;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -30,6 +31,8 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionEvent;
@@ -222,26 +225,27 @@ public class TestItemEditor extends EditorPart
         
         popup = new Menu(tableViewer.getControl());
         MenuItem insertItem = new MenuItem(popup, SWT.PUSH);
-        insertItem.setText(MessageUtil.getString("InsertItem"));
+        insertItem.setText(MessageUtil.getString("InsertItemBefore"));
         
         insertItem.addSelectionListener(new SelectionListener() {
             public void widgetDefaultSelected(SelectionEvent e){}
             public void widgetSelected(SelectionEvent e)
             {
-                TestItemType item = null;
                 int i = tableViewer.getTable().getSelectionIndex();
                 if (i < 0) i = tableViewer.getTable().getItemCount();
-                item = parent.getDocument().getLanguageModule().insertNewTestItem(i);
-                // item = parent.getDocument().getLanguageModule().addNewTestItem();
-                item.setCreationTime((new Date()).getTime());
-                IProject userProject = WorkspaceLanguageManager.getUserProject(); 
-                if (userProject != null)
-                    item.setCreator(userProject.getName());
-                else
-                    item.setCreator(System.getProperty("user.name"));
-                parent.setDirty(true);
-                parent.firePropertyChange(PROP_DIRTY);
-                tableViewer.refresh();
+                insertItem(i);
+            }
+        });
+        MenuItem insertItemAfter = new MenuItem(popup, SWT.PUSH);
+        insertItemAfter.setText(MessageUtil.getString("InsertItemAfter"));
+        
+        insertItemAfter.addSelectionListener(new SelectionListener() {
+            public void widgetDefaultSelected(SelectionEvent e){}
+            public void widgetSelected(SelectionEvent e)
+            {
+                int i = tableViewer.getTable().getSelectionIndex() + 1;
+                if (i < 0) i = tableViewer.getTable().getItemCount();
+                insertItem(i);
             }
         });
         MenuItem deleteItem = new MenuItem(popup, SWT.PUSH);
@@ -288,6 +292,41 @@ public class TestItemEditor extends EditorPart
             public void mouseUp(MouseEvent e)
             {
             }});
+        tableViewer.getTable().addKeyListener(new KeyListener() {
+            public void keyPressed(KeyEvent e)
+            {
+                
+            }
+            public void keyReleased(KeyEvent e)
+            {
+                if (e.keyCode == SWT.F2)
+                {
+                    TestItemType item = getSelectedItem();
+                    if (item != null && langCount > 0)
+                    {
+                        tableViewer.editElement(item, NUM_NON_LANG_COL);
+                    }
+                }
+            }
+        });
+    }
+    
+    private void insertItem(int i)
+    {
+        TestItemType item = parent.getDocument().getLanguageModule().insertNewTestItem(i);
+        // item = parent.getDocument().getLanguageModule().addNewTestItem();
+        item.setCreationTime((new Date()).getTime());
+        IProject userProject = WorkspaceLanguageManager.getUserProject(); 
+        if (userProject != null)
+            item.setCreator(userProject.getName());
+        else
+            item.setCreator(System.getProperty("user.name"));
+        parent.setDirty(true);
+        parent.firePropertyChange(PROP_DIRTY);
+        tableViewer.refresh();
+        tableViewer.getTable().select(i);
+        if (langCount > 0)
+            tableViewer.editElement(item, NUM_NON_LANG_COL);
     }
     
     protected void enableActions()
@@ -414,6 +453,8 @@ public class TestItemEditor extends EditorPart
             
             editors[i + NUM_NON_LANG_COL] = new TextCellEditor(tableViewer.getTable());
             editors[i + NUM_NON_LANG_COL].setValidator(cellModifier);
+            
+
         }
         for (int j = NUM_NON_LANG_COL + langs.length; 
              j < tableViewer.getTable().getColumnCount(); j++)
@@ -677,11 +718,17 @@ public class TestItemEditor extends EditorPart
                 {
                     // set the font
                     int col = NUM_NON_LANG_COL + langIds.indexOf(property);
-                    Control control = tableViewer.getCellEditors()[col].getControl();
+                    CellEditor editor = tableViewer.getCellEditors()[col];
+                    Control control = editor.getControl();
                     if (control != null)
                     {
                         Font font = labelProvider.getFont(element, col);
                         control.setFont(font);
+                        final int nextColumn = col + 1;
+                        if (nextColumn < tableViewer.getTable().getColumnCount())
+                        {
+                            KeyListener kl = new CellKeyListener(editor, nextColumn);
+                        }
                     }
                     
                     for (int i = 0; i <testItem.sizeOfNativeLangArray(); i++)
@@ -853,5 +900,64 @@ public class TestItemEditor extends EditorPart
         insertAction.setEnabled(true);
         insertAction.setText(MessageUtil.getString("InsertRow"));
         insertAction.setToolTipText(MessageUtil.getString("InsertRowToolTip"));
+    }
+    
+    public class CellKeyListener implements KeyListener, ICellEditorListener
+    {
+        private int nextColumn = -1;
+        private CellEditor cellEditor = null;
+        public CellKeyListener(CellEditor editor, int nextCol) 
+        {
+            this.nextColumn = nextCol;
+            this.cellEditor = editor;
+
+            editor.addListener(this);
+            editor.getControl().addKeyListener(this);
+        }
+        public void keyPressed(KeyEvent e)  
+        { 
+            if (e.keyCode == '\r')
+            {
+                tableViewer.editElement(getSelectedItem(), nextColumn);
+            }
+        }
+
+        public void keyReleased(KeyEvent e)
+        {
+            if (e.keyCode == SWT.TAB)
+            {
+                tableViewer.editElement(getSelectedItem(), nextColumn);
+            }
+        }
+        /* (non-Javadoc)
+         * @see org.eclipse.jface.viewers.ICellEditorListener#applyEditorValue()
+         */
+        public void applyEditorValue()
+        {
+            removeListeners();
+        }
+        /* (non-Javadoc)
+         * @see org.eclipse.jface.viewers.ICellEditorListener#cancelEditor()
+         */
+        public void cancelEditor()
+        {
+            removeListeners();
+        }
+        /* (non-Javadoc)
+         * @see org.eclipse.jface.viewers.ICellEditorListener#editorValueChanged(boolean, boolean)
+         */
+        public void editorValueChanged(boolean oldValidState, boolean newValidState)
+        {
+            
+        }
+        private void removeListeners()
+        {
+            if (cellEditor instanceof TextCellEditor)
+            {
+                TextCellEditor tce = (TextCellEditor)cellEditor;
+                tce.getControl().removeKeyListener(this);
+            }
+            cellEditor.removeListener(this);
+        }
     }
 }

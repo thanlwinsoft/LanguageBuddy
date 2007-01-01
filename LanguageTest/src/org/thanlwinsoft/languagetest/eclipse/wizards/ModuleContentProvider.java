@@ -3,9 +3,11 @@
  */
 package org.thanlwinsoft.languagetest.eclipse.wizards;
 
+import java.util.ArrayList;
 import java.util.Vector;
 
 import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
@@ -13,6 +15,7 @@ import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
+import org.thanlwinsoft.languagetest.eclipse.natures.LanguageModuleNature;
 
 /**
  * @author keith
@@ -58,7 +61,8 @@ public class ModuleContentProvider implements ITreeContentProvider
                             foldersModules.add(members[i]);
                         }
                     }
-                    else if (members[i].getName().endsWith(EXTENSION))
+                    else if (members[i].getName().endsWith(EXTENSION) &&
+                             members[i].getName().startsWith(".") == false)
                     {
                         foldersModules.add(members[i]);
                     }
@@ -94,7 +98,8 @@ public class ModuleContentProvider implements ITreeContentProvider
         {
             try
             {
-                if (((IContainer)element).members().length > 0)
+                IContainer c = (IContainer)element; 
+                if (c.isAccessible() && c.members().length > 0)
                     return true;
             }
             catch (CoreException e) 
@@ -117,7 +122,24 @@ public class ModuleContentProvider implements ITreeContentProvider
         {
             try
             {
-                return ((IContainer)inputElement).members();
+                IResource[] members = ((IContainer)inputElement).members();
+                ArrayList l = new ArrayList(members.length);
+                for (int i = 0; i < members.length; i++)
+                {
+                    if (members[i].isAccessible())
+                    {
+                        if (members[i] instanceof IProject)
+                        {
+                            IProject p = (IProject)members[i];
+                            if (p.hasNature(LanguageModuleNature.ID))
+                            {
+                                l.add(p);
+                            }
+                        }
+                        else l.add(members[i]);
+                    }
+                }
+                return l.toArray();
             }
             catch (CoreException e) 
             {

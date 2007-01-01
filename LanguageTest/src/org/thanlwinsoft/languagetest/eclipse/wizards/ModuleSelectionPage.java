@@ -3,12 +3,15 @@
  */
 package org.thanlwinsoft.languagetest.eclipse.wizards;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.WizardPage;
@@ -16,9 +19,11 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.thanlwinsoft.languagetest.MessageUtil;
@@ -49,10 +54,8 @@ public class ModuleSelectionPage extends WizardPage
     private RowLayout rowLayout = null;
     private ScrolledComposite scrolledComposite = null;
     private Tree tree = null;
+    private RowData treeRowData = null;
     private CheckboxTreeViewer viewer = null;
-    private Label maxItemsLabel = null;
-    private Combo maxItemsCombo = null;
-    private final static int [] MAX_ITEMS = { -1, 10, 25, 50, 100, 200, 500 }; 
     /* (non-Javadoc)
      * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
      */
@@ -63,6 +66,8 @@ public class ModuleSelectionPage extends WizardPage
         mainGroup.setText("Choose Test Modules");
         mainGroup.setSize(new Point(138, 47));
         rowLayout = new RowLayout();
+        rowLayout.type = SWT.VERTICAL;
+        rowLayout.fill = true;
         mainGroup.setLayout(rowLayout);
         singleModuleRadioButton = new Button(mainGroup, SWT.RADIO);
         singleModuleRadioButton.setText(MessageUtil.getString("SingleModuleRadio"));
@@ -72,7 +77,9 @@ public class ModuleSelectionPage extends WizardPage
                     public void widgetSelected(org.eclipse.swt.events.SelectionEvent e)
                     {
                         if (singleModuleRadioButton.getSelection())
+                        {
                             tree.setEnabled(true);
+                        }
                     }
                 });
         revisionRadioButton = new Button(mainGroup, SWT.RADIO);
@@ -91,9 +98,30 @@ public class ModuleSelectionPage extends WizardPage
                     }
                 });
         createScrolledComposite();
-        maxItemsLabel = new Label(mainGroup, SWT.NONE);
-        maxItemsLabel.setText(MessageUtil.getString("MaxTestItems"));
-        createMaxItemsCombo();
+        mainGroup.addControlListener(new org.eclipse.swt.events.ControlListener()
+        {
+            private boolean inProgress = false; 
+            public void controlResized(org.eclipse.swt.events.ControlEvent e)
+            {
+                if (inProgress) return;
+                inProgress = true;
+                Rectangle r = mainGroup.getBounds();
+                if (treeRowData != null && r.width > 50 && r.height > 100)
+                {
+                    treeRowData.width = r.width - 50;//Math.max(treeRowData.width, r.width - 20);
+                    treeRowData.height = r.height - 120;//Math.max(treeRowData.height, r.width - 100);
+                    scrolledComposite.setLayoutData(treeRowData);
+                }
+                mainGroup.pack();
+                inProgress = false;
+            }
+            public void controlMoved(org.eclipse.swt.events.ControlEvent e)
+            {
+            }
+        });
+        mainGroup.pack();
+        viewer.expandAll();
+        setControl(mainGroup);
     }
     /**
      * This method initializes scrolledComposite	
@@ -101,15 +129,17 @@ public class ModuleSelectionPage extends WizardPage
      */
     private void createScrolledComposite()
     {
-        scrolledComposite = new ScrolledComposite(mainGroup, SWT.NONE);
-        tree = new Tree(scrolledComposite, SWT.MULTI);
-        tree.setHeaderVisible(true);
+        scrolledComposite = new ScrolledComposite(mainGroup, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+        
+        tree = new Tree(scrolledComposite, SWT.MULTI | SWT.CHECK);
+        tree.setHeaderVisible(false);
         tree.setEnabled(false);
         tree.setLinesVisible(true);
         TreeColumn nameColumn = new TreeColumn(tree, SWT.NONE);
-        nameColumn.setWidth(100);
+        nameColumn.setWidth(300);
         nameColumn.setResizable(true);
         nameColumn.setText(MessageUtil.getString("NameColumn"));
+        /*
         TreeColumn itemsColumn = new TreeColumn(tree, SWT.NONE);
         itemsColumn.setWidth(60);
         itemsColumn.setResizable(true);
@@ -118,11 +148,28 @@ public class ModuleSelectionPage extends WizardPage
         testColumn.setWidth(20);
         testColumn.setResizable(true);
         testColumn.setText(MessageUtil.getString("TestColumn"));
+        */
         viewer = new CheckboxTreeViewer(tree);
-        //viewer.setCellEditors(new CellEditor[] { null, null, 
-        //        new CheckboxCellEditor()});
+        viewer.setCellEditors(new CellEditor[] { 
+                new CheckboxCellEditor()});
+        
         ModuleContentProvider provider = new ModuleContentProvider();
         viewer.setContentProvider(provider);
+        viewer.setLabelProvider(new LabelProvider() {
+
+            /* (non-Javadoc)
+             * @see org.eclipse.jface.viewers.LabelProvider#getText(java.lang.Object)
+             */
+            public String getText(Object element)
+            {
+                if (element instanceof IResource)
+                {
+                    return ((IResource)element).getName();
+                }
+                return super.getText(element);
+            }
+            
+        });
         viewer.setInput(ResourcesPlugin.getWorkspace().getRoot());
         viewer.addPostSelectionChangedListener(new ISelectionChangedListener() {
 
@@ -141,25 +188,15 @@ public class ModuleSelectionPage extends WizardPage
                 }
             }
         });
-        scrolledComposite.setContent(tree);        
-    }
-    /**
-     * This method initializes maxItemsCombo	
-     *
-     */
-    private void createMaxItemsCombo()
-    {
-        maxItemsCombo = new Combo(mainGroup, SWT.NONE);
-        maxItemsCombo.setItems(new String [] {
-                MessageUtil.getString("UnlimitedItems"),
-                MessageUtil.getString(Integer.toString(MAX_ITEMS[1])),
-                MessageUtil.getString(Integer.toString(MAX_ITEMS[2])),
-                MessageUtil.getString(Integer.toString(MAX_ITEMS[3])),
-                MessageUtil.getString(Integer.toString(MAX_ITEMS[4])),
-                MessageUtil.getString(Integer.toString(MAX_ITEMS[5])),
-                MessageUtil.getString(Integer.toString(MAX_ITEMS[6]))
-        }
-        );
-    }
 
+        scrolledComposite.setContent(tree);
+        scrolledComposite.setExpandHorizontal(true);
+        scrolledComposite.setExpandVertical(true);
+        treeRowData = new RowData(SWT.DEFAULT,200);
+        scrolledComposite.setLayoutData(treeRowData);
+        //scrolledComposite.setMinSize(200, 200);
+        //scrolledComposite.setMinSize(tree.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+    }
+    
+    //public class ModuleSelectionModifier extends 
 }

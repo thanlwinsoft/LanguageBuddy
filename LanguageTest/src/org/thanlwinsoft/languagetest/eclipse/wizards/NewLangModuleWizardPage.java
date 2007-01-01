@@ -31,7 +31,7 @@ public class NewLangModuleWizardPage extends WizardPage {
 	private Text containerText;
 
 	private Text fileText;
-	public final static String EXTENSION = ".xml";
+	public final static String EXTENSION = "xml";
     public final String XML = "xml";
 	private ISelection selection;
 
@@ -177,9 +177,13 @@ public class NewLangModuleWizardPage extends WizardPage {
             }
             else
             {
-                updateStatus(MessageUtil.getString("NewLangModule_FileExtension",
+                String ext = fileName.substring(dotLoc + 1);
+                if (ext.equalsIgnoreCase(EXTENSION) == false) 
+                {
+                    updateStatus(MessageUtil.getString("NewLangModule_FileExtension",
                         EXTENSION));
-                return;
+                    return;
+                }
             }
 		}
         else
