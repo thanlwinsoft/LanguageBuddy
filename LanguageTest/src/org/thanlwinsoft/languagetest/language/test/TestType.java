@@ -51,30 +51,31 @@ public class TestType
     public int getId() { return id; }
     public String description() 
     { 
-        StringBuffer description = new StringBuffer(prefix);
-        if (LanguageConfig.getCurrent() != null)
-        {
-            // name is dynamic based on current language
-            if (id == READING_NATIVE_FOREIGN_ID)
-            {
-               description.append(LanguageConfig.getCurrent().getNativeLanguage());
-               description.append(ARROW);
-               description.append(LanguageConfig.getCurrent().getForeignLanguage());
-            }
-            else if (id == FLIP_CARD_ID)
-            {
-               description.append(LanguageConfig.getCurrent().getNativeLanguage());
-               description.append(" + ");
-               description.append(LanguageConfig.getCurrent().getForeignLanguage());
-            }
-            else
-            {
-                description.append(LanguageConfig.getCurrent().getForeignLanguage());
-                description.append(ARROW);
-                description.append(LanguageConfig.getCurrent().getNativeLanguage());
-            }
-        }
-        return description.toString();
+//        StringBuffer description = new StringBuffer(prefix);
+//        if (LanguageConfig.getCurrent() != null)
+//        {
+//            // name is dynamic based on current language
+//            if (id == READING_NATIVE_FOREIGN_ID)
+//            {
+//               description.append(LanguageConfig.getCurrent().getNativeLanguage());
+//               description.append(ARROW);
+//               description.append(LanguageConfig.getCurrent().getForeignLanguage());
+//            }
+//            else if (id == FLIP_CARD_ID)
+//            {
+//               description.append(LanguageConfig.getCurrent().getNativeLanguage());
+//               description.append(" + ");
+//               description.append(LanguageConfig.getCurrent().getForeignLanguage());
+//            }
+//            else
+//            {
+//                description.append(LanguageConfig.getCurrent().getForeignLanguage());
+//                description.append(ARROW);
+//                description.append(LanguageConfig.getCurrent().getNativeLanguage());
+//            }
+//        }
+//        return description.toString();
+        return name;
     }
     public String toString()
     {

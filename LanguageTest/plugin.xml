@@ -86,7 +86,8 @@
             class="org.thanlwinsoft.languagetest.eclipse.wizards.NewLangModuleWizard"
             icon="icons/newModule.png"
             id="org.thanlwinsoft.languagetest.wizards.NewLangModuleWizard"
-            name="New Language Module Wizard"/>
+            name="New Language Module Wizard"
+            project="true"/>
       <primaryWizard id="org.thanlwinsoft.languagetest.wizards.NewLangModuleWizard"/>
       <wizard
             category="org.thanlwinsoft.languagetest.newWizardCategory"
@@ -119,6 +120,15 @@
                style="push"
                toolbarPath="Bar/additions"
                tooltip="%LanguageTest.newUserProjectActionDesc"/>
+         <action
+               class="org.thanlwinsoft.languagetest.eclipse.wizards.StartTestAction"
+               icon="icons/startTest.png"
+               id="org.thanlwinsoft.languagetest.eclipse.wizards.StartTestAction"
+               label="%LanguageTest.startTestAction"
+               menubarPath="File/additions"
+               style="push"
+               toolbarPath="Bar/additions"
+               tooltip="%LanguageTest.startTestActionDesc"/>
       </actionSet>
    </extension>
    <extension

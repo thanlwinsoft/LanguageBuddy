@@ -60,32 +60,32 @@ public class Test
      * from the list of modules. If this is false then all items in the
      * module for the current language configuration will be added.
      */
-    public Test(SortedSet modules, TestType type, boolean repeatTillLearnt, 
-                boolean useHistory)
-    {
-        this.type = type;
-        this.repeatTillLearnt = repeatTillLearnt;
-        this.testList = new LinkedList();
-        TestHistory history = UserConfig.getCurrent().getTestHistory();
-        Iterator i = modules.iterator();
-        boolean useH = useHistory;
-        if (type == TestType.FLIP_CARD) useH = false;
-        while (i.hasNext())
-        {
-            TestModule module = (TestModule)i.next();
-            if (module.isSelected())
-            {
-                Set moduleList = module.getTestList();
-                Iterator t = moduleList.iterator();
-                while (t.hasNext())
-                {
-                    TestItem item = (TestItem)t.next();                    
-                    addItemIfAppropriate(item, history, useH); 
-                }
-            }
-        }
-        finishInit();
-    }
+//    public Test(SortedSet modules, TestType type, boolean repeatTillLearnt, 
+//                boolean useHistory)
+//    {
+//        this.type = type;
+//        this.repeatTillLearnt = repeatTillLearnt;
+//        this.testList = new LinkedList();
+//        TestHistory history = UserConfig.getCurrent().getTestHistory();
+//        Iterator i = modules.iterator();
+//        boolean useH = useHistory;
+//        if (type == TestType.FLIP_CARD) useH = false;
+//        while (i.hasNext())
+//        {
+//            TestModule module = (TestModule)i.next();
+//            if (module.isSelected())
+//            {
+//                Set moduleList = module.getTestList();
+//                Iterator t = moduleList.iterator();
+//                while (t.hasNext())
+//                {
+//                    TestItem item = (TestItem)t.next();                    
+//                    addItemIfAppropriate(item, history, useH); 
+//                }
+//            }
+//        }
+//        finishInit();
+//    }
     
     /**
      * Method to check all the different parameters that deterine whether an 
@@ -94,47 +94,47 @@ public class Test
      * @param history History Object to check for past performance
      * @param useHistory boolean as to whether history should be checked
      */    
-    protected void addItemIfAppropriate(TestItem item, TestHistory history, 
-                                        boolean useHistory)
-    {
-        // check that the item has data for the current language
-        if ((item.getNativeLanguages()
-             .contains(LanguageConfig.getCurrent()
-                       .getNativeLanguage())) &&
-           (item.getForeignLanguages()
-            .contains(LanguageConfig.getCurrent()
-                      .getForeignLanguage())))
-        {
-            if (type == TestType.LISTENING_FOREIGN_NATIVE &&
-                item.getSoundFile() == null)
-            {
-                // can't do listening test if no audio file!
-            }
-            else
-            {
-                // now check test history for the item
-                ItemHistory hItem = null;
-                if (useHistory)
-                {
-                    try
-                    {
-                        hItem = history.getHistoryItem(item, type);
-                    }
-                    catch (TestHistoryStorageException thse)
-                    {
-                        System.out.println(thse.getMessage());
-                        hItem = null;
-                    }
-                }
-                if (hItem == null || (hItem.isTestDue(type) && 
-                                      !hItem.isDisabled()))
-                {
-                    testList.add(item);
-                    item.reset(); // reset pass flags
-                }
-            }
-        }
-    }
+//    protected void addItemIfAppropriate(TestItem item, TestHistory history, 
+//                                        boolean useHistory)
+//    {
+//        // check that the item has data for the current language
+//        if ((item.getNativeLanguages()
+//             .contains(LanguageConfig.getCurrent()
+//                       .getNativeLanguage())) &&
+//           (item.getForeignLanguages()
+//            .contains(LanguageConfig.getCurrent()
+//                      .getForeignLanguage())))
+//        {
+//            if (type == TestType.LISTENING_FOREIGN_NATIVE &&
+//                item.getSoundFile() == null)
+//            {
+//                // can't do listening test if no audio file!
+//            }
+//            else
+//            {
+//                // now check test history for the item
+//                ItemHistory hItem = null;
+//                if (useHistory)
+//                {
+//                    try
+//                    {
+//                        hItem = history.getHistoryItem(item, type);
+//                    }
+//                    catch (TestHistoryStorageException thse)
+//                    {
+//                        System.out.println(thse.getMessage());
+//                        hItem = null;
+//                    }
+//                }
+//                if (hItem == null || (hItem.isTestDue(type) && 
+//                                      !hItem.isDisabled()))
+//                {
+//                    testList.add(item);
+//                    item.reset(); // reset pass flags
+//                }
+//            }
+//        }
+//    }
     
     /** Sets disabled flag to disable playing of audio data even if its exists.
      * @param disabled Boolean flag.
@@ -257,7 +257,7 @@ public class Test
                 firstTimePasses++;
                 untested--;
             }
-            currentTest.pass();
+            currentTest.setPassed(true);
             remainingTests.remove(currentTest);
             passCount++;                        
         }
@@ -267,7 +267,7 @@ public class Test
             {
                 untested--;
             }
-            currentTest.fail();
+            currentTest.setPassed(false);
             if (!repeatTillLearnt || currentTest.getTestCount()>maxRepeats)
             {
                 remainingTests.remove(currentTest);
