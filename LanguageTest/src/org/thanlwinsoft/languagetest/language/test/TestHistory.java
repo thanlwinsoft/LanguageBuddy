@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:          $Source: /home/keith/cvsroot/projects/LanguageAids/uk/co/dabsol/stribley/language/test/TestHistory.java,v $
- *  Version:       $Revision: 1.4 $
- *  Last Modified: $Date: 2004/03/24 04:50:07 $
+ *  Version:       $Revision: 703 $
+ *  Last Modified: $Date: 2007-01-05 05:44:27 +0700 (Fri, 05 Jan 2007) $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2003 Keith Stribley <jungleglacier@snc.co.uk>
  *
@@ -26,7 +26,8 @@ package org.thanlwinsoft.languagetest.language.test;
 
 import java.util.Iterator;
 /**
- *
+ * An implementation of the TestHistory interface represents a user's test
+ * history for one module.
  * @author  keith
  */
 public interface TestHistory
