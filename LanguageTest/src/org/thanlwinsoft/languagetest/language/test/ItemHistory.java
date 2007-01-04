@@ -26,6 +26,8 @@ package org.thanlwinsoft.languagetest.language.test;
 
 import java.io.File;
 import java.util.Date;
+
+import org.eclipse.core.resources.IProject;
 /**
  *
  * @author  keith
@@ -63,9 +65,9 @@ public class ItemHistory implements TestItemProperties
     public int getPassCount() { return passCount; }
     public int getTestCount() { return testCount; }
     public boolean isDisabled() { return disabled; }
-    public boolean isTestDue(TestType type)
+    public boolean isTestDue(TestType type, IProject userProject)
     {
-        UserConfig config = UserConfig.getCurrent();
+        UserConfig config = new UserConfig(userProject);
         long timeNow = new Date().getTime();
         boolean testDue = false;
         // decide whether to include item or not
@@ -110,10 +112,10 @@ public class ItemHistory implements TestItemProperties
         System.out.println("ItemHistory.removeModuleHistory() not implemented");
         throw new UnsupportedOperationException("ItemHistory.removeModuleHistory()");
     }
-    public String getItemStatus(TestType type)
+    public String getItemStatus(TestType type, IProject userProject)
     {
         String status = null;
-        UserConfig config = UserConfig.getCurrent();
+        UserConfig config = new UserConfig(userProject);
         long timeNow = new Date().getTime();
         if (consecutivePassCount >= config.getLearntPassCount(type))
         {
