@@ -4,6 +4,8 @@
 package org.thanlwinsoft.languagetest.language.test;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.thanlwinsoft.schemas.languagetest.ForeignLangType;
 import org.thanlwinsoft.schemas.languagetest.NativeLangType;
 import org.thanlwinsoft.schemas.languagetest.TestItemType;
@@ -21,7 +23,10 @@ public class XmlBeansTestItem implements TestItem
     protected String nativeText;
     protected int testCount = 0;
     protected boolean passed = false;
-    protected IFile soundFile = null;
+    protected IPath soundFile = null;
+    protected int playStart = 0;
+    protected int playEnd = -1;
+    protected IPath imagePath = null;
     
     public XmlBeansTestItem(TestItemType ti, String nativeLang, String foreignLang)
     {
@@ -41,6 +46,16 @@ public class XmlBeansTestItem implements TestItem
             {
                 foreignText = fit[i].getStringValue();
             }
+        }
+        if (ti.isSetSoundFile())
+        {
+            soundFile = new Path(ti.getSoundFile().getStringValue());
+            playStart = ti.getSoundFile().getStart();
+            playEnd = ti.getSoundFile().getEnd();
+        }
+        if (ti.isSetImg())
+        {
+            imagePath = new Path(ti.getImg());
         }
     }
     /* (non-Javadoc)
@@ -79,9 +94,8 @@ public class XmlBeansTestItem implements TestItem
     /* (non-Javadoc)
      * @see org.thanlwinsoft.languagetest.language.test.TestItem#getSoundFile()
      */
-    public IFile getSoundFile()
+    public IPath getSoundFile()
     {
-        
         return soundFile;
     }
 
@@ -118,5 +132,17 @@ public class XmlBeansTestItem implements TestItem
         testCount++;
         passed = pass;
     }
-
+    
+    public int getPlayStart()
+    {
+        return playStart;
+    }
+    public int getPlayEnd()
+    {
+        return playEnd;
+    }
+    public IPath getImagePath()
+    {
+        return imagePath;
+    }
 }

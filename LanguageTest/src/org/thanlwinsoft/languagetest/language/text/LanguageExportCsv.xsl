@@ -2,8 +2,8 @@
 
 <!--
     File:          $Source: /home/keith/cvsroot/projects/LanguageAids/uk/co/dabsol/stribley/language/text/LanguageExportCsv.xsl,v $
-    Version:       $Revision: 1.3 $
-    Last Modified: $Date: 2004/12/18 05:11:26 $
+    Version:       $Revision: 704 $
+    Last Modified: $Date: 2007-01-05 05:50:38 +0700 (Fri, 05 Jan 2007) $
 
     This is the XSLT file to transform the LanguageTest XML format into
     text delimited format for import into other programs.

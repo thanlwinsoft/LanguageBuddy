@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:          $Source: /home/keith/cvsroot/projects/LanguageAids/uk/co/dabsol/stribley/language/test/TestType.java,v $
- *  Version:       $Revision: 1.5 $
- *  Last Modified: $Date: 2004/06/20 11:50:03 $
+ *  Version:       $Revision: 704 $
+ *  Last Modified: $Date: 2007-01-05 05:50:38 +0700 (Fri, 05 Jan 2007) $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2003 Keith Stribley <jungleglacier@snc.co.uk>
  *

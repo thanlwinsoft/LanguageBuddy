@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:          $Source:  $
- *  Version:       $Revision:  $
- *  Last Modified: $Date:  $
+ *  Version:       $Revision: 704 $
+ *  Last Modified: $Date: 2007-01-05 05:50:38 +0700 (Fri, 05 Jan 2007) $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2003 Keith Stribley <jungleglacier@snc.co.uk>
  *

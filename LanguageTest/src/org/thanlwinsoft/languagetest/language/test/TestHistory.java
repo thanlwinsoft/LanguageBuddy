@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
- *  File:          $Source: /home/keith/cvsroot/projects/LanguageAids/uk/co/dabsol/stribley/language/test/TestHistory.java,v $
- *  Version:       $Revision: 703 $
- *  Last Modified: $Date: 2007-01-05 05:44:27 +0700 (Fri, 05 Jan 2007) $
+ *  File:          $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/LanguageTest/src/org/thanlwinsoft/languagetest/language/test/TestHistory.java $
+ *  Version:       $Revision: 704 $
+ *  Last Modified: $Date: 2007-01-05 05:50:38 +0700 (Fri, 05 Jan 2007) $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2003 Keith Stribley <jungleglacier@snc.co.uk>
  *

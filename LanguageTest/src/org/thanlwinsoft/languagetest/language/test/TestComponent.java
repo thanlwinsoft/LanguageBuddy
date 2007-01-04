@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:          $Source: /home/keith/cvsroot/projects/LanguageAids/uk/co/dabsol/stribley/language/test/TestComponent.java,v $
- *  Version:       $Revision: 1.2 $
- *  Last Modified: $Date: 2003/12/26 13:23:49 $
+ *  Version:       $Revision: 704 $
+ *  Last Modified: $Date: 2007-01-05 05:50:38 +0700 (Fri, 05 Jan 2007) $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2003 Keith Stribley <jungleglacier@snc.co.uk>
  *

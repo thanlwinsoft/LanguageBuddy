@@ -3,7 +3,7 @@
  */
 package org.thanlwinsoft.languagetest.language.test;
 
-import java.io.File;
+import org.eclipse.core.runtime.IPath;
 
 /**
  * @author keith
@@ -20,7 +20,7 @@ public interface TestModule
     /**
      * @return
      */
-    File getFile();
+    IPath getPath();
 
     /**
      * @return
