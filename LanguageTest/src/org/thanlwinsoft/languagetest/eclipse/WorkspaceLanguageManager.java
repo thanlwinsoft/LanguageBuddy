@@ -227,6 +227,7 @@ public class WorkspaceLanguageManager
 	
 	protected LanguageModuleDocument getProjectLang(IProject project)
 	{
+        if (project == null) return null;
 		IFile langFile = project.getFile(LANG_FILE);
         synchronized(get())
         {
@@ -273,7 +274,15 @@ public class WorkspaceLanguageManager
 	public static LangType [] findLanguages(IProject project)
 	{
 		//IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		return get().getProjectLang(project).getLanguageModule().getLangArray();
+        LanguageModuleDocument doc = get().getProjectLang(project);
+        if (doc == null)
+        {
+            return new LangType[0];
+        }
+        else
+        {
+            return get().getProjectLang(project).getLanguageModule().getLangArray();
+        }
 	}
 	
 }

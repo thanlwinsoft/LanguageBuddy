@@ -5,7 +5,7 @@ package org.thanlwinsoft.languagetest.eclipse;
 
 import java.io.File;
 
-import org.eclipse.core.resources.IProject;
+//import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ISaveContext;
 import org.eclipse.core.resources.ISaveParticipant;
 import org.eclipse.core.runtime.CoreException;
@@ -65,7 +65,7 @@ public class LangTestWorkspaceSaveParticipant implements ISaveParticipant
            break;
         case ISaveContext.PROJECT_SAVE:
            // get the project related to this save operation
-           IProject project = context.getProject();
+           //IProject project = context.getProject();
            
            // save its information, if necessary
            break;

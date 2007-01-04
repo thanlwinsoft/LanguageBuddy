@@ -22,7 +22,7 @@
  * -----------------------------------------------------------------------
  */
 
-package org.thanlwinsoft.languagetest.language.test;
+package org.thanlwinsoft.languagetest.language.test.old;
 
 import java.io.File;
 import java.io.FileNotFoundException;

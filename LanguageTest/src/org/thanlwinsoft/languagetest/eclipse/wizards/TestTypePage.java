@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
@@ -200,6 +201,12 @@ public class TestTypePage extends WizardPage
         }
         userCombo.setItems(userNames);
         if (userNames.length == 1) userCombo.select(0);
+        if (userNames.length == 0)
+        {
+            MessageDialog.openWarning(group.getShell(), 
+                MessageUtil.getString("NoUsersTitle"),
+                MessageUtil.getString("NoUsersMessage"));
+        }
     }
 
     /**
