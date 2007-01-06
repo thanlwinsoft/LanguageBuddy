@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema  targetNamespace="http://www.thanlwinsoft.org/schemas/languagetest" xmlns="http://www.thanlwinsoft.org/schemas/languagetest" attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="ModuleHistory" type="ModuleHistoryType"/>
+  <xs:complexType name="ResultType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:boolean" name="pass"/>
+        <xs:attribute type="xs:long" name="time"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="ItemType">
+    <xs:sequence>
+      <xs:element type="TestType" name="FR" minOccurs="0"/>
+      <xs:element type="TestType" name="FL" minOccurs="0"/>
+      <xs:element type="TestType" name="NR" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute type="xs:string" name="author" use="optional"/>
+    <xs:attribute type="xs:long" name="created" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="ModuleHistoryType">
+    <xs:sequence>
+      <xs:element type="ItemType" name="Item" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute type="xs:string" name="path" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="TestType" mixed="true">
+    <xs:sequence>
+      <xs:element type="ResultType" name="Result" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute type="xs:boolean" name="disabled" use="optional"/>
+  </xs:complexType>
+</xs:schema>

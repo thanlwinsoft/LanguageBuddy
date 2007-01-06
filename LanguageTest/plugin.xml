@@ -231,24 +231,8 @@ wizardId=
  <extension
          point="org.eclipse.ui.elementFactories">
       <factory
-            class="org.eclipse.ui.internal.model.ResourceFactory"
-            id="org.eclipse.ui.internal.model.ResourceFactory">
-      </factory>
-      <factory
-            class="org.eclipse.ui.internal.model.WorkspaceFactory"
-            id="org.eclipse.ui.internal.model.WorkspaceFactory">
-      </factory>
-      <factory
             class="org.eclipse.ui.part.FileEditorInputFactory"
             id="org.eclipse.ui.part.FileEditorInputFactory">
-      </factory>
-      <factory
-            class="org.eclipse.ui.internal.dialogs.WelcomeEditorInputFactory"
-            id="org.eclipse.ui.internal.dialogs.WelcomeEditorInputFactory">
-      </factory>
-      <factory
-            class="org.eclipse.ui.internal.WorkingSetFactory"
-            id="org.eclipse.ui.internal.WorkingSetFactory">
       </factory>
 </extension>
 <extension point="org.eclipse.core.runtime.adapters">
