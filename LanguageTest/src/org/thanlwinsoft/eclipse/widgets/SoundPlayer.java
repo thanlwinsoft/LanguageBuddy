@@ -59,7 +59,7 @@ public class SoundPlayer extends Composite implements BasicPlayerListener
     private boolean currentIsFile;
     private long lengthInSecond = -1l;
     private boolean isRealLength = false;
-    private long lastBytesRead = 0l;
+    //private long lastBytesRead = 0l;
     // gui
     private Scale slider = null;
     private Display display = null;
@@ -458,7 +458,7 @@ public class SoundPlayer extends Composite implements BasicPlayerListener
         
     }       
     if (secondsAmount < 0) secondsAmount = (long) Math.round(microseconds/1000000);
-    lastBytesRead = bytesread;
+    //lastBytesRead = bytesread;
     
     /*-- Display elapsed time --*/
 //    int secondD=0,second=0,minuteD=0,minute=0;
@@ -679,5 +679,17 @@ public class SoundPlayer extends Composite implements BasicPlayerListener
         super.dispose();
     }
     
+    // KRS: The next 2 methods have not been tested yet
     
+    public long getPosition()
+    {
+        if (posValueJump) return -1l;
+        return secondsAmount;
+    }
+    public long getLengthInSeconds()
+    {
+        if (isRealLength)
+            return lengthInSecond;
+        return -1l;
+    }
 }

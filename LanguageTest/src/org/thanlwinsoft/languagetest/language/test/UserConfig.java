@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:          $Source: /home/keith/cvsroot/projects/LanguageAids/uk/co/dabsol/stribley/language/test/UserConfig.java,v $
- *  Version:       $Revision: 704 $
- *  Last Modified: $Date: 2007-01-05 05:50:38 +0700 (Fri, 05 Jan 2007) $
+ *  Version:       $Revision: 706 $
+ *  Last Modified: $Date: 2007-01-07 06:30:20 +0700 (Sun, 07 Jan 2007) $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2003 Keith Stribley <jungleglacier@snc.co.uk>
  *
@@ -60,7 +60,6 @@ public class UserConfig
     public static final String LANG_LAST_USED_ATTRIB = "lastUsed";
     public static final String LANG_XML_COMMENT = 
         "Language Configuration for LanguageTest Program\nCreated on";
-    private static final int DEFAULT_FONT_SIZE = 12;
     private static String DEFAULT_SOUND_EXT = ".wav";
     private String userName = "Unknown";
     private TestHistory testHistory = null;
@@ -87,13 +86,13 @@ public class UserConfig
     private final static String LONG_TERM_PERIOD = "longTermPeriod";
     private final static String LONG_TERM_REV_PERIOD = "longTermRevPeriod";
     private final static String PREF_DIRECTORY = "LanguageTest"; 
-    private final static String CONFIG_PATH = "ConfigPath";
+    //private final static String CONFIG_PATH = "ConfigPath";
     private final static String MAX_NUM_TEST_ITEMS = "maxNumTestItems";
     private Preferences userNode = null;
     private HashMap [] languages = null;
     private HashMap nativeLanguages = null;
     private HashMap foreignLanguages = null;
-    private IProject userProject = null;
+    //private IProject userProject = null;
 //    private RecentFilesList recentFilesList = null;
     private int maxNumTestItems = -1;
     /** Creates a new instance of UserConfig  - this is only used to
@@ -105,7 +104,7 @@ public class UserConfig
         //, IOException, 
         //TestHistoryStorageException
     {
-        this.userProject = userProject;
+        //this.userProject = userProject;
         this.userName = userProject.getName();
         //this.recentFilesList = rfList;
         IScopeContext projectScope = new ProjectScope(userProject);

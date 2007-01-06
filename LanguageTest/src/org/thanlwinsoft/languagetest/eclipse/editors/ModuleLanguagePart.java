@@ -3,20 +3,15 @@
  */
 package org.thanlwinsoft.languagetest.eclipse.editors;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
@@ -24,12 +19,9 @@ import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.ColumnLayout;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
-import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
-import org.eclipse.ui.forms.widgets.Section;
-import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
 import org.thanlwinsoft.languagetest.MessageUtil;
@@ -44,7 +36,6 @@ import org.thanlwinsoft.schemas.languagetest.LangTypeType;
 public class ModuleLanguagePart extends EditorPart implements ModifyListener {
 
 	private TestModuleEditor parent = null;
-    private ScrolledForm form = null;
     private FormToolkit toolkit = null;
     private LanguageTable nativeTable = null;
     private LanguageTable foreignTable = null;
@@ -146,7 +137,6 @@ public class ModuleLanguagePart extends EditorPart implements ModifyListener {
         introText.setText(MessageUtil.getString("ModuleLanguageIntro"), 
                           true, false);
         
-        this.form = form;
 	}
     /**
      * Set the Input for the Language Tables. The input is expected to be 
@@ -240,12 +230,10 @@ public class ModuleLanguagePart extends EditorPart implements ModifyListener {
         int i = 0;
         for (; i < nLangArray.length; i++)
         {
-            String temp = nLangArray[i].getLang();
             langArray[i] = nLangArray[i];
         }
         for (; i < langArray.length; i++)
         {
-            String temp = fLangArray[i - nLangArray.length].getLang();
             langArray[i] = fLangArray[i - nLangArray.length];
         }
         parent.getDocument().getLanguageModule().setLangArray(langArray);

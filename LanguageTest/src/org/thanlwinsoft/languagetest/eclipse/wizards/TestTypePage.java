@@ -18,9 +18,9 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Combo;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.WorkspaceLanguageManager;
+import org.thanlwinsoft.languagetest.language.test.TestType;
 import org.thanlwinsoft.languagetest.language.test.UniversalLanguage;
 import org.thanlwinsoft.languagetest.language.text.Iso639;
-import org.thanlwinsoft.schemas.languagetest.LangType;
 import org.thanlwinsoft.schemas.languagetest.LangTypeType;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.events.SelectionEvent;
@@ -70,6 +70,7 @@ public class TestTypePage extends WizardPage
         this.parent = parent;
         createGroup();
         setControl(group);
+        checkFields();
     }
 
     /**
@@ -104,6 +105,7 @@ public class TestTypePage extends WizardPage
                     }
                 });
         paddingLabel1 = new Label(group, SWT.NONE);
+        paddingLabel1.setVisible(false);
         readingRadio = new Button(group, SWT.RADIO);
         readingRadio.setEnabled(false);
         readingRadio.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter()
@@ -114,6 +116,7 @@ public class TestTypePage extends WizardPage
             }
         });
         paddingLabel2 = new Label(group, SWT.NONE);
+        paddingLabel2.setVisible(false);
         writingRadio = new Button(group, SWT.RADIO);
         writingRadio.setEnabled(false);
         writingRadio.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter()
@@ -124,6 +127,7 @@ public class TestTypePage extends WizardPage
             }
         });
         paddingLabel3 = new Label(group, SWT.NONE);
+        paddingLabel3.setVisible(false);
         listeningRadio = new Button(group, SWT.RADIO);
         listeningRadio.setEnabled(false);
         listeningRadio.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter()
@@ -184,7 +188,11 @@ public class TestTypePage extends WizardPage
         {
             setPageComplete(true);
         }
-        else setPageComplete(false);
+        else 
+        {
+            setMessage(MessageUtil.getString("IncompleteTestType"));
+            setPageComplete(false);
+        }
     }
     /**
      * This method initializes userCombo	
@@ -303,5 +311,54 @@ public class TestTypePage extends WizardPage
             }
         );
         maxItemsCombo.select(0);// default to unlimited
+    }
+
+    /**
+     * @return
+     */
+    public IProject getUser()
+    {
+        int userIndex = userCombo.getSelectionIndex();
+        if (userIndex > -1)
+        {
+            return WorkspaceLanguageManager.findUserProjects()[userIndex];
+        }
+        return null;
+    }
+
+    /**
+     * @return
+     */
+    public UniversalLanguage getNativeLanguage()
+    {
+        return nativeLangs[nativeCombo.getSelectionIndex()];
+    }
+    /**
+     * @return
+     */
+    public UniversalLanguage getForeignLanguage()
+    {
+        return foreignLangs[foreignCombo.getSelectionIndex()];
+    }
+    
+    public TestType getTestType()
+    {
+        if (flashCardRadio.getSelection())
+        {
+            return TestType.FLIP_CARD;
+        }
+        else if (readingRadio.getSelection())
+        {
+            return TestType.READING_FOREIGN_NATIVE;
+        }
+        else if (writingRadio.getSelection())
+        {
+            return TestType.READING_NATIVE_FOREIGN;
+        }
+        else if (listeningRadio.getSelection())
+        {
+            return TestType.LISTENING_FOREIGN_NATIVE;
+        }
+        return null;
     }
 }

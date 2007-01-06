@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:          $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/LanguageTest/src/org/thanlwinsoft/languagetest/language/test/TestHistory.java $
- *  Version:       $Revision: 704 $
- *  Last Modified: $Date: 2007-01-05 05:50:38 +0700 (Fri, 05 Jan 2007) $
+ *  Version:       $Revision: 706 $
+ *  Last Modified: $Date: 2007-01-07 06:30:20 +0700 (Sun, 07 Jan 2007) $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2003 Keith Stribley <jungleglacier@snc.co.uk>
  *
@@ -24,7 +24,6 @@
 
 package org.thanlwinsoft.languagetest.language.test;
 
-import java.util.Iterator;
 /**
  * An implementation of the TestHistory interface represents a user's test
  * history for one module.
@@ -35,15 +34,15 @@ public interface TestHistory
     
     public ItemHistory getHistoryItem(TestItem item, TestType type) throws
         TestHistoryStorageException;
-    public int getModuleCount();
-    public Iterator iterator(TestType type);
+    //public int getModuleCount();
+    //public Iterator iterator(TestType type);
     public void saveResult(TestItem item, TestType type, 
                            long testTime, boolean pass) 
                            throws TestHistoryStorageException;
     public void ignoreItem(TestItemProperties item, TestType type, boolean ignore)
         throws TestHistoryStorageException;
     public void savePermanent() throws TestHistoryStorageException;
-    public void deleteItemType(TestItemProperties item, TestType type) throws TestHistoryStorageException;
-    public void deleteItem(TestItemProperties item) throws TestHistoryStorageException;
+    //public void deleteItemType(TestItemProperties item, TestType type) throws TestHistoryStorageException;
+    //public void deleteItem(TestItemProperties item) throws TestHistoryStorageException;
     
 }

@@ -4,6 +4,7 @@
 package org.thanlwinsoft.languagetest.eclipse.views;
 
 import java.io.File;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 
@@ -11,9 +12,9 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.TextViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -26,9 +27,7 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
@@ -46,13 +45,18 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.ViewPart;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
+import org.thanlwinsoft.languagetest.language.test.Test;
+import org.thanlwinsoft.languagetest.language.test.TestHistory;
+import org.thanlwinsoft.languagetest.language.test.TestHistoryStorageException;
+import org.thanlwinsoft.languagetest.language.test.TestItem;
+import org.thanlwinsoft.languagetest.language.test.TestManager;
+import org.thanlwinsoft.languagetest.language.test.TestType;
 import org.thanlwinsoft.schemas.languagetest.ForeignLangType;
 import org.thanlwinsoft.schemas.languagetest.LangType;
 import org.thanlwinsoft.schemas.languagetest.LangTypeType;
 import org.thanlwinsoft.schemas.languagetest.LanguageModuleType;
 import org.thanlwinsoft.schemas.languagetest.NativeLangType;
 import org.thanlwinsoft.schemas.languagetest.TestItemType;
-import org.w3c.dom.Node;
 
 /**
  * @author keith
@@ -71,12 +75,17 @@ public class TestView extends ViewPart implements ISelectionChangedListener
     public final static int HIDE_BOTH = 0;
     public final static int NATIVE_ID = 1;
     public final static int FOREIGN_ID = 2;
-    private Font nativeFont = null;
+    public final static int SHOW_BOTH = NATIVE_ID | FOREIGN_ID;
+    private int promptView = 0;
+    private Font nativeFont = null;  //  @jve:decl-index=0:
     private Font foreignFont = null;
     private HashSet selectionProviders = null;
     private final static int [] NO_PICTURE_WEIGHTS = new int [] {99,1};
     private int [] pictureWeights = new int [] {50,50};
     private ImageData imageData = null;
+    private Test test = null;  //  @jve:decl-index=0:
+    private TestItem currentItem = null;  //  @jve:decl-index=0:
+    private TestManager manager = null;
     public TestView()
     {
         selectionProviders = new HashSet();
@@ -95,7 +104,7 @@ public class TestView extends ViewPart implements ISelectionChangedListener
         FormLayout mainLayout = new FormLayout();
         mainControl.setLayout(mainLayout);
 //      control panel should not be resized
-        controlPanel = new TestControlPanel(mainControl, SWT.NONE);
+        controlPanel = new TestControlPanel(this, mainControl, SWT.NONE);
         
         // layout data
         FormData controlFD = new FormData();
@@ -206,6 +215,10 @@ public class TestView extends ViewPart implements ISelectionChangedListener
     {
         switch (type)
         {
+        case HIDE_BOTH:
+            nativeViewer.getTextWidget().setVisible(false);
+            foreignViewer.getTextWidget().setVisible(false);
+            break;
         case NATIVE_ID:
             nativeViewer.getTextWidget().setVisible(false);
             break;
@@ -453,5 +466,109 @@ public class TestView extends ViewPart implements ISelectionChangedListener
                 p.removeSelectionChangedListener(this);
         }
         super.dispose();
+    }
+    /**
+     * @param test
+     */
+    public void startTest(TestManager manager, Test test)
+    {
+        this.manager = manager;
+        this.test = test;
+        if (test.getType().equals(TestType.LISTENING_FOREIGN_NATIVE))
+        {
+            promptView = HIDE_BOTH;
+            showAnswer(false);
+            controlPanel.setTestControlVisible(true);
+        }
+        else if (test.getType().equals(TestType.READING_FOREIGN_NATIVE))
+        {
+            promptView = FOREIGN_ID;
+            showAnswer(false);
+            controlPanel.setTestControlVisible(true);
+        }
+        else if (test.getType().equals(TestType.READING_NATIVE_FOREIGN))
+        {
+            promptView = NATIVE_ID;
+            showAnswer(false);
+            controlPanel.setTestControlVisible(true);
+        }
+        else if (test.getType().equals(TestType.FLIP_CARD))
+        {
+            promptView = NATIVE_ID | FOREIGN_ID;
+            showAnswer(true);
+            controlPanel.setFlipControlVisible(true);
+        }
+        // shouldn't happen
+        else throw new IllegalArgumentException("Unknown test type:" + test);
+
+        currentItem = test.getNextItem();
+        setTestItem(currentItem);
+    }
+    protected void testFinished()
+    {
+        // TODO something useful
+        
+        test = null;
+        controlPanel.setTestControlVisible(false);
+        controlPanel.setFlipControlVisible(false);
+    }
+    protected void setTestItem(TestItem ti)
+    {
+        if (ti == null) 
+        {
+            testFinished();
+            return;
+        }
+        Display display = getSite().getShell().getDisplay();
+        //if (nativeFont != null) nativeFont.dispose();
+        nativeFont = null;
+        if (ti.getNativeFontData() != null)
+            nativeFont = new Font(display, ti.getNativeFontData());
+        //if (foreignFont != null) foreignFont.dispose();
+        foreignFont = null;
+        if (ti.getForeignFontData() != null)
+            foreignFont = new Font(display, ti.getForeignFontData());
+        
+        setText(nativeViewer, nativeDoc, ti.getNativeText(), nativeFont);
+        setText(foreignViewer, foreignDoc, ti.getForeignText(), foreignFont);
+        
+        // TODO picture and sound 
+    }
+    public void markTest(boolean pass)
+    {
+        test.setPassStatus(pass);
+        if (test.isRetest() == false)
+        {
+            TestHistory history = 
+                manager.getTestHistory(Integer.toHexString(currentItem.getModuleId()),
+                    currentItem.getModuleCreationTime(), currentItem.getModulePath());
+            try
+            {
+                history.saveResult(currentItem, test.getType(), 
+                                   new Date().getTime(), pass);
+            }
+            catch (TestHistoryStorageException e)
+            {
+                MessageDialog.openWarning(this.getSite().getShell(),
+                        MessageUtil.getString("SaveHistoryFailTitle"),
+                        MessageUtil.getString("SaveHistoryFailMessage", e.getLocalizedMessage()));
+                LanguageTestPlugin.log(IStatus.WARNING, 
+                        e.getLocalizedMessage(), e);
+            }
+        }
+        showAnswer(false);
+        currentItem = test.getNextItem();
+        setTestItem(currentItem);
+    }
+    public void showAnswer(boolean showAns)
+    {
+        if (showAns)
+        {
+            show(SHOW_BOTH);
+        }
+        else 
+        {
+            show(promptView);
+        }
     }
 }

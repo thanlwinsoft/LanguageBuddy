@@ -38,9 +38,6 @@ public class NewModuleProjectAction implements IWorkbenchWindowActionDelegate
             new WizardDialog(window.getWorkbench().getActiveWorkbenchWindow().getShell(), 
                 wizard);
         wizardDialog.setMinimumPageSize(400, 300);
-        wizard.setDialog(wizardDialog);
-        //wizardDialog.getWizard().init(window.getWorkbench(), 
-        //                              window.getActivePage().getSelection());
         wizardDialog.open();
     }
 

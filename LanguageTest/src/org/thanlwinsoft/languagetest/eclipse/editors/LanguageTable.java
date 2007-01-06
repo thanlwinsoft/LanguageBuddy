@@ -8,23 +8,17 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.math.BigDecimal;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.ICellEditorValidator;
 import org.eclipse.jface.viewers.ICellModifier;
-import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.ITreePathLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerLabel;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -35,7 +29,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.ui.IEditorPart;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.thanlwinsoft.languagetest.language.test.UniversalLanguage;
@@ -47,7 +40,7 @@ import org.thanlwinsoft.schemas.languagetest.LangType;
  */
 public class LanguageTable extends Composite 
 {
-	private final static int LANG_DEPTH = 5;
+	//private final static int LANG_DEPTH = 5;
 	private TreeViewer tableViewer = null;
     private HashMap availableTypes = null;
     private HashMap inUseTypes = null;
@@ -65,7 +58,7 @@ public class LanguageTable extends Composite
     private LanguageLabelProvider labelProvider = null;
     private LanguageContentProvider contentProvider = null;
     private UniversalLanguage [] languages = null;
-    private IEditorPart editor = null;
+    //private IEditorPart editor = null;
     
 	/**
 	 * @param parent
@@ -217,7 +210,6 @@ public class LanguageTable extends Composite
          */
         public Image getColumnImage(Object element, int columnIndex)
         {
-            // TODO Auto-generated method stub
             return null;
         }
 
@@ -393,9 +385,9 @@ public class LanguageTable extends Composite
 		/* (non-Javadoc)
 		 * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
 		 */
-		public Object[] getElements(Object inputElement) {
-			// TODO Auto-generated method stub
-            if (inputElement instanceof String[])
+		public Object[] getElements(Object inputElement) 
+        {
+			if (inputElement instanceof String[])
             {
                 return (Object[])inputElement;
             }
@@ -425,9 +417,8 @@ public class LanguageTable extends Composite
 		/* (non-Javadoc)
 		 * @see org.eclipse.jface.viewers.IContentProvider#dispose()
 		 */
-		public void dispose() {
-			// TODO Auto-generated method stub
-			
+		public void dispose() 
+        {
 		}
 
 		/* (non-Javadoc)

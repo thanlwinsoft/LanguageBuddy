@@ -3,8 +3,10 @@
  */
 package org.thanlwinsoft.languagetest.eclipse.wizards;
 
+import java.util.Vector;
+
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
@@ -13,16 +15,13 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
@@ -30,8 +29,6 @@ import org.thanlwinsoft.languagetest.MessageUtil;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Combo;
 
 /**
  * @author keith
@@ -46,7 +43,6 @@ public class ModuleSelectionPage extends WizardPage
     {
         super(pageName);
     }
-    private Composite parent = null;
     private Group mainGroup = null;  //  @jve:decl-index=0:visual-constraint="10,0"
     private Button singleModuleRadioButton = null;
     private Button revisionRadioButton = null;
@@ -61,7 +57,8 @@ public class ModuleSelectionPage extends WizardPage
      */
     public void createControl(Composite parent)
     {
-        this.parent = parent;
+        this.setDescription(MessageUtil.getString("SelectTestItems"));
+        this.setErrorMessage(MessageUtil.getString("NoTestItemsSelection"));
         mainGroup = new Group(parent, SWT.CENTER);
         mainGroup.setText("Choose Test Modules");
         mainGroup.setSize(new Point(138, 47));
@@ -69,6 +66,42 @@ public class ModuleSelectionPage extends WizardPage
         rowLayout.type = SWT.VERTICAL;
         rowLayout.fill = true;
         mainGroup.setLayout(rowLayout);
+        revisionRadioButton = new Button(mainGroup, SWT.RADIO);
+        revisionRadioButton.setText(MessageUtil.getString("RevisionModulesRadio"));
+        revisionRadioButton
+                .addSelectionListener(new org.eclipse.swt.events.SelectionAdapter()
+                {
+                    public void widgetSelected(org.eclipse.swt.events.SelectionEvent e)
+                    {
+                        setPageComplete(revisionRadioButton.getSelection());
+                        if (revisionRadioButton.getSelection())
+                            setErrorMessage(null);
+                    }
+                });
+        
+        selectModuleRadioButton = new Button(mainGroup, SWT.RADIO);
+        selectModuleRadioButton.setText(MessageUtil.getString("SelectModuleRadio"));
+        selectModuleRadioButton
+                .addSelectionListener(new org.eclipse.swt.events.SelectionAdapter()
+                {
+                    public void widgetSelected(org.eclipse.swt.events.SelectionEvent e)
+                    {
+                        if (selectModuleRadioButton.getSelection())
+                        {
+                            tree.setEnabled(true);
+                            if (tree.getSelectionCount() > 0)
+                            {
+                                setPageComplete(true);
+                                setErrorMessage(null);
+                            }
+                            else
+                            {
+                                setErrorMessage(MessageUtil.getString("SelectModulesMessage"));
+                                setPageComplete(false);
+                            }
+                        }
+                    }
+                });
         singleModuleRadioButton = new Button(mainGroup, SWT.RADIO);
         singleModuleRadioButton.setText(MessageUtil.getString("SingleModuleRadio"));
         singleModuleRadioButton
@@ -82,21 +115,7 @@ public class ModuleSelectionPage extends WizardPage
                         }
                     }
                 });
-        revisionRadioButton = new Button(mainGroup, SWT.RADIO);
-        revisionRadioButton.setText(MessageUtil.getString("RevisionModulesRadio"));
-        selectModuleRadioButton = new Button(mainGroup, SWT.RADIO);
-        selectModuleRadioButton.setText(MessageUtil.getString("SelectModuleRadio"));
-        selectModuleRadioButton
-                .addSelectionListener(new org.eclipse.swt.events.SelectionAdapter()
-                {
-                    public void widgetSelected(org.eclipse.swt.events.SelectionEvent e)
-                    {
-                        if (selectModuleRadioButton.getSelection())
-                        {
-                            tree.setEnabled(true);
-                        }
-                    }
-                });
+        singleModuleRadioButton.setVisible(false);
         createScrolledComposite();
         mainGroup.addControlListener(new org.eclipse.swt.events.ControlListener()
         {
@@ -121,6 +140,7 @@ public class ModuleSelectionPage extends WizardPage
         });
         mainGroup.pack();
         viewer.expandAll();
+        setPageComplete(false);
         setControl(mainGroup);
     }
     /**
@@ -179,6 +199,7 @@ public class ModuleSelectionPage extends WizardPage
                 {
                     if (viewer.getCheckedElements().length > 0)
                     {
+                        setErrorMessage(null);
                         setPageComplete(true);
                     }
                     else
@@ -198,5 +219,22 @@ public class ModuleSelectionPage extends WizardPage
         //scrolledComposite.setMinSize(tree.computeSize(SWT.DEFAULT, SWT.DEFAULT));
     }
     
+    public boolean isRevisionTest()
+    {
+        return revisionRadioButton.getSelection();
+    }
+    public Object [] getSelectedModules()
+    {
+        TreeItem [] treeItems = tree.getSelection();
+        Vector v = new Vector(treeItems.length);
+        for (int i = 0; i < treeItems.length; i++)
+        {
+            if (treeItems[i].getData() instanceof IFile)
+            {
+                v.add(treeItems[i].getData());
+            }
+        }    
+        return v.toArray();
+    }
     //public class ModuleSelectionModifier extends 
 }

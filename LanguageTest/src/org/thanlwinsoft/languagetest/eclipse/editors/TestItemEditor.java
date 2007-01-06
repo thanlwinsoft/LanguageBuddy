@@ -15,7 +15,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourceAttributes;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ICellEditorListener;
@@ -50,11 +49,8 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
-import org.eclipse.ui.IShowEditorInput;
 import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
@@ -115,8 +111,8 @@ public class TestItemEditor extends EditorPart
     private TestItemLabelProvider labelProvider = null;
     
     private Action copyAction = null;
-    private Action cutAction = null;
-    private Action pasteAction = null;
+    //private Action cutAction = null;
+    //private Action pasteAction = null;
     private Action insertAction = null;
     private Menu popup = null;
     public TestItemEditor(TestModuleEditor parent)
@@ -728,6 +724,7 @@ public class TestItemEditor extends EditorPart
                         if (nextColumn < tableViewer.getTable().getColumnCount())
                         {
                             KeyListener kl = new CellKeyListener(editor, nextColumn);
+                            control.addKeyListener(kl);
                         }
                     }
                     
@@ -893,8 +890,7 @@ public class TestItemEditor extends EditorPart
         insertAction = new Action() {
             public void run()
             {
-                TestItemType item = getSelectedItem();
-                
+                insertItem(tableViewer.getTable().getSelectionIndex());
             }
         };
         insertAction.setEnabled(true);

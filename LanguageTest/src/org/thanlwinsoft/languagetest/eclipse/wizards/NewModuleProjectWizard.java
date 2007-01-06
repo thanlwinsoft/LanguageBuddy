@@ -19,18 +19,15 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.ui.views.navigator.ResourceNavigator;
-import org.thanlwinsoft.languagetest.MessageUtil;
-import org.thanlwinsoft.languagetest.eclipse.FileContentProvider;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.thanlwinsoft.languagetest.eclipse.Perspective;
-import org.thanlwinsoft.languagetest.eclipse.ProjectFileLabelProvider;
+
 /**
  * @author keith
  *
@@ -38,9 +35,6 @@ import org.thanlwinsoft.languagetest.eclipse.ProjectFileLabelProvider;
 public class NewModuleProjectWizard extends Wizard implements INewWizard
 {
     private NewModuleProjectPage moduleProjectPage = null;
-    private WizardDialog dialog = null;
-    private IWorkbench workbench = null;
-    private IStructuredSelection selection = null;
     public NewModuleProjectWizard()
     {
         super();
@@ -142,16 +136,11 @@ public class NewModuleProjectWizard extends Wizard implements INewWizard
         }
         
     }
-    public void setDialog(WizardDialog dialog)
-    {
-        this.dialog = dialog;
-    }
     /* (non-Javadoc)
      * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench, org.eclipse.jface.viewers.IStructuredSelection)
      */
     public void init(IWorkbench workbench, IStructuredSelection selection)
     {
-        this.workbench = workbench;
-        this.selection = selection;
+        
     }
 }

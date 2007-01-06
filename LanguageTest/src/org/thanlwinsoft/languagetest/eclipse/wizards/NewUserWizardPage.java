@@ -14,7 +14,6 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.thanlwinsoft.languagetest.MessageUtil;
 
@@ -24,8 +23,6 @@ import org.thanlwinsoft.languagetest.MessageUtil;
  */
 public class NewUserWizardPage extends WizardPage implements ModifyListener
 {
-    private Shell shell = null;
-    
     private Text userName = null;
 
     public NewUserWizardPage()
@@ -39,7 +36,6 @@ public class NewUserWizardPage extends WizardPage implements ModifyListener
     {
         setTitle(MessageUtil.getString("NewUserPageTitle"));
         setDescription(MessageUtil.getString("NewUserPageDesc"));
-        shell = parent.getShell();
         Group mainControl  = new Group(parent, SWT.SHADOW_ETCHED_IN);
         RowLayout mainLayout = new RowLayout();
         

@@ -4,6 +4,7 @@
 package org.thanlwinsoft.languagetest.eclipse.wizards;
 
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewReference;
@@ -11,8 +12,14 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.thanlwinsoft.languagetest.eclipse.Perspective;
+import org.thanlwinsoft.languagetest.eclipse.views.TestView;
+import org.thanlwinsoft.languagetest.language.test.Test;
+import org.thanlwinsoft.languagetest.language.test.TestManager;
+import org.thanlwinsoft.languagetest.language.test.TestType;
+import org.thanlwinsoft.languagetest.language.test.TestOptions;
 
 /**
  * @author keith
@@ -53,17 +60,44 @@ public class StartTestWizard extends Wizard
     {
         IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow(); 
         IWorkbenchPage page = window.getActivePage(); 
-        IViewPart testView = page.findView(Perspective.TEST_VIEW);
+        TestView testView = (TestView)page.findView(Perspective.TEST_VIEW);
         try
         {
-            page.showView(Perspective.TEST_VIEW);
-            IViewReference viewRef = (IViewReference)page.getReference(testView);
-            
-            if (page.isPageZoomed() == false)
+            TestManager manager = new TestManager(
+                    testTypePage.getUser(),
+                    testTypePage.getNativeLanguage().getCode(),
+                    testTypePage.getForeignLanguage().getCode());
+            Test test = null;
+            TestType testType = testTypePage.getTestType();
+            TestOptions options = new TestOptions(testType);
+            if (moduleSelectionPage.isRevisionTest())
             {
-                // should we add a page listener to watch for when the zoom is lost?
-                page.toggleZoom(viewRef);
+                test = manager.revisionTest(options);
             }
+            else
+            {
+                test = manager.createTestFromModuleList
+                    (moduleSelectionPage.getSelectedModules(), options);
+            }
+            if (test != null)
+            {
+                page.showView(Perspective.TEST_VIEW);
+                IViewReference viewRef = (IViewReference)page.getReference(testView);
+                if (viewRef != null && page.isPageZoomed() == false)
+                {
+                    // should we add a page listener to watch for when the zoom is lost?
+                    page.toggleZoom(viewRef);
+                }
+                testView.startTest(manager, test);
+            }
+            else
+            {
+                MessageDialog.openInformation(window.getShell(),
+                        MessageUtil.getString("NoTestItemsTitle"),
+                        MessageUtil.getString("NoTestItemsDesc"));
+                return false;
+            }
+           
         }
         catch (PartInitException e)
         {

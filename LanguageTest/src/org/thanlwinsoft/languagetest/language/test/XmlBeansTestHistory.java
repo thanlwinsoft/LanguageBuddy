@@ -5,15 +5,19 @@ package org.thanlwinsoft.languagetest.language.test;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Iterator;
 
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlOptions;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.thanlwinsoft.schemas.languagetest.ItemType;
-import org.thanlwinsoft.schemas.languagetest.LanguageModuleDocument;
 import org.thanlwinsoft.schemas.languagetest.ModuleHistoryDocument;
 import org.thanlwinsoft.schemas.languagetest.ModuleHistoryType;
 import org.thanlwinsoft.schemas.languagetest.ResultType;
@@ -24,18 +28,24 @@ import org.thanlwinsoft.schemas.languagetest.ResultType;
  */
 public class XmlBeansTestHistory implements TestHistory
 {
-    private IPath path = null;
+    private IFile file = null;
     private ModuleHistoryDocument doc = null;
     
-    public XmlBeansTestHistory(IPath path) throws XmlException, IOException
+    public XmlBeansTestHistory(IFile file) throws XmlException, IOException, CoreException
     {
-        this.path = path;
-        if (path.toFile().exists())
+        construct(file, null);
+    }
+    
+    public XmlBeansTestHistory(IFile file, IPath modulePath) throws XmlException, IOException, CoreException
+    {
+        construct(file, modulePath);
+    }
+    private void construct(IFile file, IPath modulePath) throws XmlException, IOException, CoreException
+    {
+        this.file = file;
+        if (file.isAccessible())
         {
-        BufferedInputStream is = 
-            new BufferedInputStream(new FileInputStream(path.toFile()));
-        doc = ModuleHistoryDocument.Factory.parse(is);
-        ModuleHistoryType history = doc.getModuleHistory();
+            doc = ModuleHistoryDocument.Factory.parse(file.getContents());
         }
         else
         {
@@ -43,38 +53,45 @@ public class XmlBeansTestHistory implements TestHistory
             options.setCharacterEncoding("UTF-8");
             options.setSavePrettyPrint();
             doc = ModuleHistoryDocument.Factory.newInstance(options);
+            ModuleHistoryType history = doc.addNewModuleHistory();
+            if (modulePath == null) 
+                throw new IllegalArgumentException("TestHistory cannot be created witout a module path");
+            
+            history.setPath(modulePath.toPortableString());
         }
     }
     
-    /* (non-Javadoc)
-     * @see org.thanlwinsoft.languagetest.language.test.TestHistory#deleteItem(org.thanlwinsoft.languagetest.language.test.TestItemProperties)
-     */
-    public void deleteItem(TestItemProperties item)
-            throws TestHistoryStorageException
-    {
-        throw new TestHistoryStorageException("Not implemented");
-    }
+//    /* (non-Javadoc)
+//     * @see org.thanlwinsoft.languagetest.language.test.TestHistory#deleteItem(org.thanlwinsoft.languagetest.language.test.TestItemProperties)
+//     */
+//    public void deleteItem(TestItemProperties item)
+//            throws TestHistoryStorageException
+//    {
+//        throw new TestHistoryStorageException("Not implemented");
+//    }
 
-    /* (non-Javadoc)
-     * @see org.thanlwinsoft.languagetest.language.test.TestHistory#deleteItemType(org.thanlwinsoft.languagetest.language.test.TestItemProperties, org.thanlwinsoft.languagetest.language.test.TestType)
-     */
-    public void deleteItemType(TestItemProperties item, TestType type)
-            throws TestHistoryStorageException
-    {
-        throw new TestHistoryStorageException("Not implemented");
-    }
+//    /* (non-Javadoc)
+//     * @see org.thanlwinsoft.languagetest.language.test.TestHistory#deleteItemType(org.thanlwinsoft.languagetest.language.test.TestItemProperties, org.thanlwinsoft.languagetest.language.test.TestType)
+//     */
+//    public void deleteItemType(TestItemProperties item, TestType type)
+//            throws TestHistoryStorageException
+//    {
+//        throw new TestHistoryStorageException("Not implemented");
+//    }
     
+    /** 
+     * find the results for the specified TestType
+     * 
+     */
     private org.thanlwinsoft.schemas.languagetest.TestType 
         findItem(TestItemProperties item, TestType type)
     {
-        ItemType ti = null;
         ItemType [] items = doc.getModuleHistory().getItemArray();
         for (int i = 0; i < items.length; i++)
         {
             if (items[i].getCreated() == item.getCreationTime() &&
                 items[i].getAuthor() == item.getCreator())
             {
-                ti = items[i];
                 org.thanlwinsoft.schemas.languagetest.TestType testType = null;
                 if (type.equals(TestType.READING_FOREIGN_NATIVE))
                 {
@@ -98,28 +115,34 @@ public class XmlBeansTestHistory implements TestHistory
     private org.thanlwinsoft.schemas.languagetest.TestType 
     findItem(TestItem item, TestType type)
     {
-        ItemType ti = null;
-        ItemType [] items = doc.getModuleHistory().getItemArray();
+        ModuleHistoryType history = doc.getModuleHistory();
+        ItemType [] items = history.getItemArray();
         for (int i = 0; i < items.length; i++)
         {
             if (items[i].getCreated() == item.getCreationTime() &&
                 items[i].getAuthor() == item.getCreator())
             {
-                ti = items[i];
                 org.thanlwinsoft.schemas.languagetest.TestType testType = null;
                 if (type.equals(TestType.READING_FOREIGN_NATIVE))
                 {
                     testType = items[i].getFR();
+                    if (testType == null)
+                        testType = items[i].addNewFR();
                 }
                 else if (type.equals(TestType.LISTENING_FOREIGN_NATIVE))
                 {
                     testType = items[i].getFL();
+                    if (testType == null)
+                        testType = items[i].addNewFL();
                 }
                 else  if (type.equals(TestType.READING_NATIVE_FOREIGN))
                 {
                     testType = items[i].getNR();
+                    if (testType == null)
+                        testType = items[i].addNewNR();
                 }
                 else return null;
+                
                 return testType;
             }
         }
@@ -135,7 +158,7 @@ public class XmlBeansTestHistory implements TestHistory
     {
         org.thanlwinsoft.schemas.languagetest.TestType testType = 
             findItem(item, type);
-        
+        if (testType == null) return null;
         ItemHistory ih = new ItemHistory();
         ih.author = item.getCreator();
         ih.creationTime = item.getCreationTime();
@@ -173,11 +196,11 @@ public class XmlBeansTestHistory implements TestHistory
     /* (non-Javadoc)
      * @see org.thanlwinsoft.languagetest.language.test.TestHistory#getModuleCount()
      */
-    public int getModuleCount()
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
+//    public int getModuleCount()
+//    {
+//        // TODO Auto-generated method stub
+//        return 0;
+//    }
 
     /* (non-Javadoc)
      * @see org.thanlwinsoft.languagetest.language.test.TestHistory#ignoreItem(org.thanlwinsoft.languagetest.language.test.TestItemProperties, org.thanlwinsoft.languagetest.language.test.TestType, boolean)
@@ -205,12 +228,25 @@ public class XmlBeansTestHistory implements TestHistory
     {
         try
         {
-        XmlOptions options = new XmlOptions();
-        options.setCharacterEncoding("UTF-8");
-        options.setSavePrettyPrint();
-        doc.save(path.toFile(), options);
+            XmlOptions options = new XmlOptions();
+            options.setCharacterEncoding("UTF-8");
+            options.setSavePrettyPrint();
+            IContainer parent = file.getParent();
+            if (!(parent.exists()) || !(parent.isAccessible()))
+            {
+                if (file.getParent() instanceof IFolder)
+                {
+                    IFolder folder = (IFolder)file.getParent();
+                    folder.create(true, true, null);
+                }
+            }
+            doc.save(file.getRawLocation().toFile(), options);
         }
         catch (IOException e)
+        {
+            throw new TestHistoryStorageException(e);
+        } 
+        catch (CoreException e)
         {
             throw new TestHistoryStorageException(e);
         }
@@ -223,9 +259,31 @@ public class XmlBeansTestHistory implements TestHistory
             boolean pass) throws TestHistoryStorageException
     {
         org.thanlwinsoft.schemas.languagetest.TestType t = findItem(item, type);
+        if (t == null)
+        {
+            ModuleHistoryType history = doc.getModuleHistory();
+            ItemType itemResult = history.addNewItem();
+            if (type.equals(TestType.LISTENING_FOREIGN_NATIVE))
+            {
+                t = itemResult.addNewFL();
+            }
+            else if (type.equals(TestType.READING_FOREIGN_NATIVE))
+            {
+                t = itemResult.addNewFR();
+            }
+            else if (type.equals(TestType.READING_NATIVE_FOREIGN))
+            {
+                t = itemResult.addNewNR();
+            }
+            else return; // nothing to save
+        }
         ResultType r = t.addNewResult();
         r.setPass(pass);
         r.setTime(testTime);
+        savePermanent();
     }
-
+    public IPath getModulePath() 
+    {
+        return new Path(doc.getModuleHistory().getPath());
+    }
 }

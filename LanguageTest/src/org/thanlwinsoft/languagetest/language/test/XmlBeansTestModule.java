@@ -45,7 +45,7 @@ public class XmlBeansTestModule implements TestModule
         creationTime = module.getCreationTime();
         try
         {
-            uniqueId = Integer.parseInt(module.getId());
+            uniqueId = Integer.parseInt(module.getId(),16);
         }
         catch (NumberFormatException e)
         {
@@ -76,5 +76,6 @@ public class XmlBeansTestModule implements TestModule
     {
         return uniqueId;
     }
-
+    
+    
 }

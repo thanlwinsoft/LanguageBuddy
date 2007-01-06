@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:          $Source: /home/keith/cvsroot/projects/LanguageAids/uk/co/dabsol/stribley/language/test/TestType.java,v $
- *  Version:       $Revision: 704 $
- *  Last Modified: $Date: 2007-01-05 05:50:38 +0700 (Fri, 05 Jan 2007) $
+ *  Version:       $Revision: 706 $
+ *  Last Modified: $Date: 2007-01-07 06:30:20 +0700 (Sun, 07 Jan 2007) $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2003 Keith Stribley <jungleglacier@snc.co.uk>
  *
@@ -30,15 +30,13 @@ package org.thanlwinsoft.languagetest.language.test;
  */
 public class TestType
 {
-    private String prefix = "";
     private int id = -1;
     private String name = "";
     private String code = "";
     /** Creates a new instance of TestType */
-    private TestType(String name, String prefix, int id, String code)
+    private TestType(String name, int id, String code)
     {
         this.name = name;
-        this.prefix = prefix;
         this.id = id;
         this.code = code;
     }
@@ -86,19 +84,19 @@ public class TestType
         return new String(code);
     }
     public static final TestType LISTENING_FOREIGN_NATIVE = 
-        new TestType("Listening","Listening: ",
+        new TestType("Listening",
                       LISTENING_FOREIGN_NATIVE_ID, 
                       "FL");
     public static final TestType READING_FOREIGN_NATIVE = 
-        new TestType("Reading","Reading: ",
+        new TestType("Reading",
                      READING_FOREIGN_NATIVE_ID,
                      "FR");
     public static final TestType READING_NATIVE_FOREIGN = 
-        new TestType("Speaking / Writing","Speaking / Writing: ",
+        new TestType("Speaking / Writing",
                      READING_NATIVE_FOREIGN_ID,
                      "NR");
     public static final TestType FLIP_CARD = 
-        new TestType("Flip Cards","Flip Cards: ",
+        new TestType("Flip Cards",
                      FLIP_CARD_ID,
                      "FC");
     /** method to get type from ID. Returns null if ID invalid */

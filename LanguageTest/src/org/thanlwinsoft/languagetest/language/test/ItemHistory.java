@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:          $Source: /home/keith/cvsroot/projects/LanguageAids/uk/co/dabsol/stribley/language/test/ItemHistory.java,v $
- *  Version:       $Revision: 704 $
- *  Last Modified: $Date: 2007-01-05 05:50:38 +0700 (Fri, 05 Jan 2007) $
+ *  Version:       $Revision: 706 $
+ *  Last Modified: $Date: 2007-01-07 06:30:20 +0700 (Sun, 07 Jan 2007) $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2003 Keith Stribley <jungleglacier@snc.co.uk>
  *
@@ -65,9 +65,8 @@ public class ItemHistory implements TestItemProperties
     public int getPassCount() { return passCount; }
     public int getTestCount() { return testCount; }
     public boolean isDisabled() { return disabled; }
-    public boolean isTestDue(TestType type, IProject userProject)
+    public boolean isTestDue(TestType type, UserConfig config)
     {
-        UserConfig config = new UserConfig(userProject);
         long timeNow = new Date().getTime();
         boolean testDue = false;
         // decide whether to include item or not

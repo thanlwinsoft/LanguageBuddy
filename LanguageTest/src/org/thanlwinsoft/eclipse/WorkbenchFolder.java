@@ -14,16 +14,11 @@ package org.thanlwinsoft.eclipse;
  *******************************************************************************/
 
 import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
-import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
-import org.thanlwinsoft.languagetest.eclipse.natures.LanguageModuleNature;
-import org.thanlwinsoft.languagetest.eclipse.natures.LanguageUserNature;
 
 /**
  * An IWorkbenchAdapter that represents IFolders.

@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:          $Source: /home/keith/cvsroot/projects/LanguageAids/uk/co/dabsol/stribley/language/test/Test.java,v $
- *  Version:       $Revision: 704 $
- *  Last Modified: $Date: 2007-01-05 05:50:38 +0700 (Fri, 05 Jan 2007) $
+ *  Version:       $Revision: 706 $
+ *  Last Modified: $Date: 2007-01-07 06:30:20 +0700 (Sun, 07 Jan 2007) $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2003 Keith Stribley <jungleglacier@snc.co.uk>
  *
@@ -28,8 +28,6 @@ import java.util.List;
 import java.util.LinkedList;
 import java.util.Iterator;
 import java.util.Random;
-import java.util.Set;
-import java.util.SortedSet;
 
 /** Class to hold all the items for a test. It holds all the properties
  * applied to the test.
