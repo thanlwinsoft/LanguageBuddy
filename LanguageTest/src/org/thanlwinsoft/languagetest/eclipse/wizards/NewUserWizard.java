@@ -46,9 +46,11 @@ public class NewUserWizard extends Wizard
         userPage = new NewUserWizardPage();
         addPage(userPage);
         nativeLanguagePage = new NewLanguagePage(MessageUtil.getString("NewNativeLangPageTitle"),
-                MessageUtil.getString("NewNativeLangPageDesc"));
+                MessageUtil.getString("NewNativeLangPageDesc"),
+                LangTypeType.NATIVE);
         foreignLanguagePage = new NewLanguagePage(MessageUtil.getString("NewForeignLangPageTitle"),
-                MessageUtil.getString("NewForeignLangPageDesc"));
+                MessageUtil.getString("NewForeignLangPageDesc"),
+                LangTypeType.FOREIGN);
         
         addPage(nativeLanguagePage);
         addPage(foreignLanguagePage);

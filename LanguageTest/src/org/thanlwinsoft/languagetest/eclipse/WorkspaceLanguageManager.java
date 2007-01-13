@@ -79,6 +79,21 @@ public class WorkspaceLanguageManager
 	{
         get().setLanguage(project, lang, monitor);
     }
+    public static synchronized void removeLanguage(IProject project, LangType lang, IProgressMonitor monitor)
+    {
+        LanguageModuleDocument doc = get().getProjectLang(project);
+        LanguageModuleType module = doc.getLanguageModule();
+        for (int j = 0; j < module.sizeOfLangArray(); j++)
+        {
+            LangType trialLang = module.getLangArray(j);
+            if (trialLang.getLang().equals(lang.getLang()))
+            {
+                module.removeLang(j);
+                get().saveLang(project, doc, monitor);
+                return;
+            }
+        }
+    }
     protected synchronized void setLanguage(IProject project, LangType lang, IProgressMonitor monitor)
     {
 		LanguageModuleDocument doc = getProjectLang(project);
@@ -100,6 +115,7 @@ public class WorkspaceLanguageManager
         }
         // there is no entry for this language, so we need t create one
 		int i = module.sizeOfLangArray();
+        // insert native before the foreign languages
 		if (lang.getType().equals(LangTypeType.NATIVE))
 		{
 			for (i = 0; i < module.sizeOfLangArray() && 
@@ -125,6 +141,7 @@ public class WorkspaceLanguageManager
             else
                 langFile.setContents(doc.newInputStream(options),
                                  0, monitor);
+            langFile.refreshLocal(0, monitor);
         }
         catch (CoreException e)
         {

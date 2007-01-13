@@ -39,6 +39,7 @@ public class ModuleLanguagePart extends EditorPart implements ModifyListener {
     private FormToolkit toolkit = null;
     private LanguageTable nativeTable = null;
     private LanguageTable foreignTable = null;
+    private IProject project = null;
 	public ModuleLanguagePart(TestModuleEditor parent)
     {
         super();
@@ -145,7 +146,7 @@ public class ModuleLanguagePart extends EditorPart implements ModifyListener {
      */
     public void setInput(Object input)
     {
-        IProject project = null;
+        project = null;
         if (input instanceof FileEditorInput)
         {
             FileEditorInput fei = (FileEditorInput)input;
@@ -237,6 +238,8 @@ public class ModuleLanguagePart extends EditorPart implements ModifyListener {
             langArray[i] = fLangArray[i - nLangArray.length];
         }
         parent.getDocument().getLanguageModule().setLangArray(langArray);
+        nativeTable.saveProjectLangs(project, null, true);
+        foreignTable.saveProjectLangs(project, null, true);
         parent.setLanguageChanged();
         parent.firePropertyChange(PROP_DIRTY);
     }

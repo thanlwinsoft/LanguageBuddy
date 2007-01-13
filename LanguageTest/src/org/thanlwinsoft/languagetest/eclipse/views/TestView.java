@@ -4,6 +4,8 @@
 package org.thanlwinsoft.languagetest.eclipse.views;
 
 import java.io.File;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -40,11 +42,17 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IViewReference;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.ViewPart;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
+import org.thanlwinsoft.languagetest.eclipse.Perspective;
 import org.thanlwinsoft.languagetest.language.test.Test;
 import org.thanlwinsoft.languagetest.language.test.TestHistory;
 import org.thanlwinsoft.languagetest.language.test.TestHistoryStorageException;
@@ -500,17 +508,63 @@ public class TestView extends ViewPart implements ISelectionChangedListener
         }
         // shouldn't happen
         else throw new IllegalArgumentException("Unknown test type:" + test);
-
+        
+        controlPanel.setStatusVisible(true);
         currentItem = test.getNextItem();
         setTestItem(currentItem);
     }
     protected void testFinished()
     {
-        // TODO something useful
+        float percent = Math.round(test.getNumFirstTimePasses() * 1.0f / 
+                        test.getNumTests());
+        NumberFormat nf = new DecimalFormat("0%");
+        if (test.getNumRetests() == 0)
+        {
+            MessageDialog.openInformation(getSite().getShell(), 
+                    MessageUtil.getString("TestFinishedTitle"), 
+                    MessageUtil.getString("TestFinishedMessage",
+                            Integer.toString(test.getNumFirstTimePasses()),
+                            Integer.toString(test.getNumTests()),
+                            nf.format(percent)));
+        }
+        else if (MessageDialog.openConfirm(this.getSite().getShell(), 
+                MessageUtil.getString("RetestConfirmTitle"), 
+                MessageUtil.getString("RetestConfirmMessage",
+                        Integer.toString(test.getNumFirstTimePasses()),
+                        Integer.toString(test.getNumTests()),
+                        nf.format(percent),
+                        Integer.toString(test.getNumTests() - test.getNumFirstTimePasses())
+                        )))
+        {
+            test.retestUnknown();
+            setTestItem(test.getNextItem());
+            return;
+        }
+        setText(nativeViewer, nativeDoc, "", null);
+        setText(foreignViewer, foreignDoc, "", null);
+        show(SHOW_BOTH);
+        
+        IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow(); 
+        IWorkbenchPage page = window.getActivePage(); 
+        try
+        {
+            page.showView(Perspective.TEST_VIEW);
+            IViewReference viewRef = (IViewReference)page.getReference(this);
+            if (viewRef != null && page.isPageZoomed() == true)
+            {
+                // should we add a page listener to watch for when the zoom is lost?
+                page.toggleZoom(viewRef);
+            }
+        } 
+        catch (PartInitException e)
+        {
+            e.printStackTrace();
+        }
         
         test = null;
         controlPanel.setTestControlVisible(false);
         controlPanel.setFlipControlVisible(false);
+        controlPanel.setStatusVisible(false);
     }
     protected void setTestItem(TestItem ti)
     {

@@ -67,4 +67,38 @@ public class MessageUtil
             return id + " " + argA + " " + argB;
         }
     }
+    static public String getString(String id, String argA, 
+                    String argB, String argC)
+    {
+        ResourceBundle r = getMsgResource();
+        if (r == null) return id + " " + argA + " " + argB + " " + argC;
+        Object [] args = {argA, argB, argC };
+        try
+        {
+            String baseString = r.getString(id);
+            return MessageFormat.format(baseString, args);
+        }
+        catch (MissingResourceException mre)
+        {
+            LanguageTestPlugin.log(IStatus.WARNING, mre.getLocalizedMessage(), mre);
+            return id + " " + argA + " " + argB + " " + argC;
+        }
+    }
+    static public String getString(String id, String argA, 
+                    String argB, String argC, String argD)
+    {
+        ResourceBundle r = getMsgResource();
+        if (r == null) return id + " " + argA + " " + argB + " " + argC + " " + argD;
+        Object [] args = {argA, argB, argC, argD };
+        try
+        {
+            String baseString = r.getString(id);
+            return MessageFormat.format(baseString, args);
+        }
+        catch (MissingResourceException mre)
+        {
+            LanguageTestPlugin.log(IStatus.WARNING, mre.getLocalizedMessage(), mre);
+            return id + " " + argA + " " + argB + " " + argC + " " + argD;
+        }
+    }
 }

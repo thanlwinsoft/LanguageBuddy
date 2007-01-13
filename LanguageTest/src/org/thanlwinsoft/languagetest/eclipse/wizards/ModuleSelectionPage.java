@@ -3,6 +3,12 @@
  */
 package org.thanlwinsoft.languagetest.eclipse.wizards;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.Vector;
 
 import org.eclipse.core.resources.IFile;
@@ -44,7 +50,7 @@ public class ModuleSelectionPage extends WizardPage
         super(pageName);
     }
     private Group mainGroup = null;  //  @jve:decl-index=0:visual-constraint="10,0"
-    private Button singleModuleRadioButton = null;
+    
     private Button revisionRadioButton = null;
     private Button selectModuleRadioButton = null;
     private RowLayout rowLayout = null;
@@ -58,7 +64,7 @@ public class ModuleSelectionPage extends WizardPage
     public void createControl(Composite parent)
     {
         this.setDescription(MessageUtil.getString("SelectTestItems"));
-        this.setErrorMessage(MessageUtil.getString("NoTestItemsSelection"));
+        
         mainGroup = new Group(parent, SWT.CENTER);
         mainGroup.setText("Choose Test Modules");
         mainGroup.setSize(new Point(138, 47));
@@ -73,9 +79,7 @@ public class ModuleSelectionPage extends WizardPage
                 {
                     public void widgetSelected(org.eclipse.swt.events.SelectionEvent e)
                     {
-                        setPageComplete(revisionRadioButton.getSelection());
-                        if (revisionRadioButton.getSelection())
-                            setErrorMessage(null);
+                        validate();
                     }
                 });
         
@@ -89,33 +93,11 @@ public class ModuleSelectionPage extends WizardPage
                         if (selectModuleRadioButton.getSelection())
                         {
                             tree.setEnabled(true);
-                            if (tree.getSelectionCount() > 0)
-                            {
-                                setPageComplete(true);
-                                setErrorMessage(null);
-                            }
-                            else
-                            {
-                                setErrorMessage(MessageUtil.getString("SelectModulesMessage"));
-                                setPageComplete(false);
-                            }
+                            validate();
                         }
                     }
                 });
-        singleModuleRadioButton = new Button(mainGroup, SWT.RADIO);
-        singleModuleRadioButton.setText(MessageUtil.getString("SingleModuleRadio"));
-        singleModuleRadioButton
-                .addSelectionListener(new org.eclipse.swt.events.SelectionAdapter()
-                {
-                    public void widgetSelected(org.eclipse.swt.events.SelectionEvent e)
-                    {
-                        if (singleModuleRadioButton.getSelection())
-                        {
-                            tree.setEnabled(true);
-                        }
-                    }
-                });
-        singleModuleRadioButton.setVisible(false);
+        
         createScrolledComposite();
         mainGroup.addControlListener(new org.eclipse.swt.events.ControlListener()
         {
@@ -140,8 +122,30 @@ public class ModuleSelectionPage extends WizardPage
         });
         mainGroup.pack();
         viewer.expandAll();
-        setPageComplete(false);
+        viewer.refresh();
+        
+        validate();
         setControl(mainGroup);
+    }
+    private void validate()
+    {
+        boolean isValid = false;
+        if (revisionRadioButton.getSelection())
+        {
+            isValid = true;
+            setErrorMessage(null);
+        }
+        else if (selectModuleRadioButton.getSelection())
+        {
+            if (viewer.getCheckedElements().length > 0) 
+            {
+                isValid = true;
+                setErrorMessage(null);
+            }
+            else setErrorMessage(MessageUtil.getString("SelectModulesMessage"));
+        }
+        else setErrorMessage(MessageUtil.getString("NoTestItemsSelection"));
+        setPageComplete(isValid);
     }
     /**
      * This method initializes scrolledComposite	
@@ -159,16 +163,7 @@ public class ModuleSelectionPage extends WizardPage
         nameColumn.setWidth(300);
         nameColumn.setResizable(true);
         nameColumn.setText(MessageUtil.getString("NameColumn"));
-        /*
-        TreeColumn itemsColumn = new TreeColumn(tree, SWT.NONE);
-        itemsColumn.setWidth(60);
-        itemsColumn.setResizable(true);
-        itemsColumn.setText(MessageUtil.getString("ItemsColumn"));
-        TreeColumn testColumn = new TreeColumn(tree, SWT.NONE);
-        testColumn.setWidth(20);
-        testColumn.setResizable(true);
-        testColumn.setText(MessageUtil.getString("TestColumn"));
-        */
+        
         viewer = new CheckboxTreeViewer(tree);
         viewer.setCellEditors(new CellEditor[] { 
                 new CheckboxCellEditor()});
@@ -225,16 +220,65 @@ public class ModuleSelectionPage extends WizardPage
     }
     public Object [] getSelectedModules()
     {
-        TreeItem [] treeItems = tree.getSelection();
-        Vector v = new Vector(treeItems.length);
-        for (int i = 0; i < treeItems.length; i++)
+        return viewer.getCheckedElements();
+//        TreeItem [] treeItems = tree.getSelection();
+//        Vector v = new Vector(treeItems.length);
+//        for (int i = 0; i < treeItems.length; i++)
+//        {
+//            if (treeItems[i].getData() instanceof IFile)
+//            {
+//                v.add(treeItems[i].getData());
+//            }
+//        }    
+//        return v.toArray();
+    }
+    
+//    private void findChildren(Map map, TreeItem ti)
+//    {
+//        for (int j = 0; j < ti.getItemCount(); j++)
+//        {
+//            if (ti.getItem(j).getData() instanceof IFile)
+//            {
+//                map.put(ti.getItem(j).getData(), ti.getItem(j));
+//            }
+//            else if (ti.getItem(j).getItemCount() > 0)
+//            {
+//                findChildren(map, ti);
+//            }
+//        }
+//    }
+    
+    public void select(Object [] files)
+    {
+        
+//        HashMap map = new HashMap();
+//        Vector v = new Vector(files.length);
+//        try
+//        {
+//            findChildren(map, tree.getTopItem());
+//        }
+//        catch (Exception e)
+//        {
+//            e.printStackTrace();
+//        }
+//        for (int i = 0; i < files.length; i++)
+//        {
+//            if (files[i] instanceof IFile)
+//            {
+//                if (map.containsKey(files[i]))
+//                {
+//                    v.add(map.get(files[i]));
+//                }
+//            }
+//        }
+        if (files.length > 0)
         {
-            if (treeItems[i].getData() instanceof IFile)
-            {
-                v.add(treeItems[i].getData());
-            }
-        }    
-        return v.toArray();
+            selectModuleRadioButton.setSelection(true);
+            tree.setEnabled(true);
+            viewer.setCheckedElements(files);
+        }
+        
+        validate();
     }
     //public class ModuleSelectionModifier extends 
 }

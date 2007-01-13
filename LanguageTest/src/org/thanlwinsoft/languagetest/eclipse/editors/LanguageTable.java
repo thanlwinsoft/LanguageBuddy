@@ -3,11 +3,14 @@
  */
 package org.thanlwinsoft.languagetest.eclipse.editors;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.math.BigDecimal;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
@@ -15,11 +18,13 @@ import org.eclipse.jface.viewers.ICellEditorValidator;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Image;
@@ -31,6 +36,7 @@ import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
+import org.thanlwinsoft.languagetest.eclipse.WorkspaceLanguageManager;
 import org.thanlwinsoft.languagetest.language.test.UniversalLanguage;
 import org.thanlwinsoft.schemas.languagetest.LangType;
 
@@ -42,8 +48,8 @@ public class LanguageTable extends Composite
 {
 	//private final static int LANG_DEPTH = 5;
 	private TreeViewer tableViewer = null;
-    private HashMap availableTypes = null;
-    private HashMap inUseTypes = null;
+    private HashMap availableTypes = null;// String, LangType
+    private HashMap inUseTypes = null;// String, LangType
     private HashSet modifyListeners = null;
     private final int LANG_NAME_COL = 0;
     private final int IN_USE_COL = 1;
@@ -113,6 +119,26 @@ public class LanguageTable extends Composite
         }
         
 	}
+    
+    /* (non-Javadoc)
+     * @see org.eclipse.swt.widgets.Control#addFocusListener(org.eclipse.swt.events.FocusListener)
+     */
+    public void addFocusListener(FocusListener listener)
+    {
+        tableViewer.getTree().addFocusListener(listener);
+        super.addFocusListener(listener);
+    }
+    
+
+    /* (non-Javadoc)
+     * @see org.eclipse.swt.widgets.Control#removeFocusListener(org.eclipse.swt.events.FocusListener)
+     */
+    public void removeFocusListener(FocusListener listener)
+    {
+        tableViewer.getTree().removeFocusListener(listener);
+        super.removeFocusListener(listener);
+    }
+
     public void addModifyListener(ModifyListener ml)
     {
         modifyListeners.add(ml);
@@ -133,9 +159,12 @@ public class LanguageTable extends Composite
         for (int i = 0; i < langs.length; i++)
         {
             availableTypes.put(langs[i].getLang(), langs[i]);
+            languages[i] = new UniversalLanguage(langs[i].getLang());
         }
+        contentProvider.setLanguages(languages);
         tableViewer.setInput(languages);
         tableViewer.getTree().setData(languages);
+        tableViewer.expandAll();
         tableViewer.refresh();
     }
     /** 
@@ -178,7 +207,7 @@ public class LanguageTable extends Composite
         dirty = false;
     }
     /** Set the module languages that are defined in the module file
-     * 
+     *  Keys are String language codes, Values are LangType
      * @param langs
      */
     public void setModuleLangs(HashMap langs)
@@ -195,6 +224,36 @@ public class LanguageTable extends Composite
         LangType [] array = new LangType[inUseTypes.size()];
         return (LangType [])inUseTypes.values().toArray(array);
     }
+    
+    public LangType [] getProjectLangs()
+    {
+        LangType [] array = new LangType[availableTypes.size()];
+        return (LangType [])availableTypes.values().toArray(array);
+    }
+    
+    public void saveProjectLangs(IProject project, IProgressMonitor monitor, boolean notInUseOnly)
+    {
+        Iterator it = availableTypes.keySet().iterator();
+        while (it.hasNext())
+        {
+            String key = it.next().toString();
+            if (notInUseOnly && inUseTypes.containsKey(key)) continue;
+            LangType lt = (LangType)availableTypes.get(key);
+            WorkspaceLanguageManager.addLanguage(project, lt, monitor);
+        }
+    }
+    
+    public LangType getSelectedLang()
+    {
+        ITreeSelection s = (ITreeSelection)tableViewer.getSelection();
+        if (s.getFirstElement() instanceof UniversalLanguage)
+        {
+            UniversalLanguage ul = (UniversalLanguage)s.getFirstElement();
+            return (LangType)availableTypes.get(ul.getCode());
+        }
+        return null;
+    }
+    
     /** Provides the labels for the columns in the language table
      * 
      * @author keith
@@ -588,4 +647,5 @@ public class LanguageTable extends Composite
         }
         dirty = dirtyNow;
     }
+    
 }

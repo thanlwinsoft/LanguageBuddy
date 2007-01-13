@@ -28,6 +28,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
     private IWorkbenchAction cutAction;
     private IWorkbenchAction copyAction;
     private IWorkbenchAction pasteAction;
+    private IWorkbenchAction newAction;
     private IWorkbenchAction newWizardAction;
     private IWorkbenchAction preferencesAction;
     private IWorkbenchAction undoAction;
@@ -72,6 +73,8 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         newWizardAction = ActionFactory.NEW_WIZARD_DROP_DOWN.create(window);
         register(newWizardAction);
         
+        newAction = ActionFactory.NEW.create(window);
+        register(newAction);
         
         undoAction = ActionFactory.UNDO.create(window);
         register(undoAction);
@@ -140,6 +143,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         //fileMenu.add(messagePopupAction);
         //fileMenu.add(openViewAction);
         fileMenu.add(newWizardAction);
+        fileMenu.add(newAction);
         fileMenu.add(new Separator());
         fileMenu.add(exitAction);
         

@@ -9,6 +9,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * @author keith
@@ -46,6 +47,10 @@ public class StartTestAction extends Action implements IWorkbenchWindowActionDel
      */
     public void run(IAction action)
     {
+        if (window == null)
+        {
+            window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+        }
         StartTestWizard wizard = new StartTestWizard(); 
         WizardDialog wizardDialog = 
             new WizardDialog(window.getWorkbench().getActiveWorkbenchWindow().getShell(), 

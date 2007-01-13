@@ -4,6 +4,10 @@
 package org.thanlwinsoft.languagetest.eclipse.views;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.thanlwinsoft.eclipse.widgets.SoundPlayer;
@@ -11,6 +15,7 @@ import org.thanlwinsoft.languagetest.MessageUtil;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Slider;
@@ -38,12 +43,34 @@ public class TestControlPanel extends Composite
     {
         super(parent, style);
         this.testView = view;
-        RowLayout layout = new RowLayout();
-        layout.type = SWT.VERTICAL;
-        layout.pack = true;
-        setLayout(layout);
+        //RowLayout layout = new RowLayout();
+        FormLayout layout = new FormLayout();
+        //layout.type = SWT.VERTICAL;
+        //layout.pack = true;
+        
+        initialize();
         player = new SoundPlayer(this);
-		initialize();
+        FormData fd = new FormData();
+        fd.top = new FormAttachment(0, 0);
+        fd.left = new FormAttachment(0, 0);
+        fd.right = new FormAttachment(100, 0);
+        player.setLayoutData(fd);
+        setLayout(layout);
+        fd = new FormData();
+        fd.top = new FormAttachment(player);
+        fd.left = new FormAttachment(0, 0);
+        fd.right = new FormAttachment(100, 0);
+        testControlGroup.setLayoutData(fd);
+        fd = new FormData();
+        fd.top = new FormAttachment(player);
+        fd.left = new FormAttachment(0, 0);
+        fd.right = new FormAttachment(100, 0);
+        flipGroup.setLayoutData(fd);
+        fd = new FormData();
+        fd.bottom = new FormAttachment(100, 0);
+        fd.left = new FormAttachment(0, 0);
+        fd.right = new FormAttachment(100, 0);
+        statusGroup.setLayoutData(fd);
     }
     /**
      * This method initializes this
@@ -53,8 +80,10 @@ public class TestControlPanel extends Composite
         createTestControlGroup();
         createFlipGroup();
         createStatusGroup();
-        setFlipControlVisible(false);
-        setTestControlVisible(false);
+        setGroupVisible(testControlGroup, false);
+        setGroupVisible(flipGroup, false);
+        setStatusVisible(false);
+        pack();
     }
     public SoundPlayer player()
     {
@@ -135,7 +164,7 @@ public class TestControlPanel extends Composite
             }
         });
         pauseButton.setText(MessageUtil.getString("Pause"));
-        pauseButton.setText(MessageUtil.getString("PauseTooltip"));
+        pauseButton.setText(MessageUtil.getString("PauseToolTip"));
         
         flipInterval = new Slider(flipGroup, SWT.NONE);
         flipInterval.setToolTipText(MessageUtil.getString("FlipIntervalTooltip"));
@@ -154,28 +183,38 @@ public class TestControlPanel extends Composite
     
     protected void setTestControlVisible(boolean visible)
     {
-        testControlGroup.setVisible(visible);
-        testControlGroup.setLayoutDeferred(!visible);
-        if (visible)
-            testControlGroup.pack();
-        else
-            testControlGroup.setBounds(0, 0, 0, 0);
-        statusGroup.setVisible(visible);
-        statusGroup.setLayoutDeferred(!visible);
+        setGroupVisible(testControlGroup,visible);
+        //setGroupVisible(statusGroup, visible);
+        //setGroupVisible(flipGroup, visible);
     }
     protected void setFlipControlVisible(boolean visible)
     {
-        flipGroup.setVisible(visible);
-        flipGroup.setLayoutDeferred(!visible);
-        if (visible)
-            flipGroup.pack();
-        else
-        {
-            flipGroup.setSize(flipGroup.getSize().x, 0);
-        }
+        setGroupVisible(flipGroup, visible);
+        //setGroupVisible(statusGroup, visible);
+        //setGroupVisible(testControlGroup,visible);
+    }
+    protected void setStatusVisible(boolean visible)
+    {
+        //setGroupVisible(statusGroup,visible, flipGroup);
         
-        statusGroup.setVisible(visible);
-        //statusGroup.setLayoutDeferred(!visible);
+    }
+    private void setGroupVisible(Group group, boolean visible)
+    {
+//        FormData fd = new FormData();
+//        if (attach == null)
+//            fd.top = new FormAttachment(0, 0);
+//        else
+//            fd.top = new FormAttachment(attach, 0);
+//        group.setLayoutData(fd);
+        
+        group.setVisible(visible);
+        group.setLayoutDeferred(!visible);
+//        RowData rd = new RowData(SWT.DEFAULT, 1);
+//        if (visible)
+//            rd = new RowData(SWT.DEFAULT, SWT.DEFAULT);
+//        group.setLayoutData(rd);
+        pack();
+        redraw();
     }
     
 }

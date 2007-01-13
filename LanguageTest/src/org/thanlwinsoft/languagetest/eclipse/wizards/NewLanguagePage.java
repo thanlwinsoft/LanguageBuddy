@@ -30,6 +30,7 @@ import org.thanlwinsoft.languagetest.language.text.Iso15924;
 import org.thanlwinsoft.languagetest.language.text.Iso3166;
 import org.thanlwinsoft.languagetest.language.text.Iso639;
 import org.thanlwinsoft.languagetest.language.text.Iso3166.IsoCountry;
+import org.thanlwinsoft.schemas.languagetest.LangTypeType;
 
 /** Wizard page to define a language in terms of the main Language name,
  * Country of use, dialect if necessary, Script that is used and encoding if 
@@ -41,6 +42,8 @@ public class NewLanguagePage extends WizardPage implements ModifyListener, Selec
 {
     private Shell shell = null;
     private UniversalLanguage ul = null;
+    private Label typeLabel = null;
+    private Combo typeCombo = null;
     private Combo langCombo = null;
     private Combo countryCombo = null;
     private Combo scriptCombo = null;
@@ -50,13 +53,14 @@ public class NewLanguagePage extends WizardPage implements ModifyListener, Selec
     private FontData fontData = null;
     private String title = null;
     private String desc = null;
+    private LangTypeType.Enum langType = null;
 
-
-    public NewLanguagePage(String title, String desc) 
+    public NewLanguagePage(String title, String desc, LangTypeType.Enum type) 
     {
         super(title);
         this.title = title;
         this.desc = desc;
+        this.langType = type;
     }
     public NewLanguagePage()
     {
@@ -79,6 +83,14 @@ public class NewLanguagePage extends WizardPage implements ModifyListener, Selec
         mainLayout.type = SWT.VERTICAL;
         mainLayout.fill = true;
         mainControl.setLayout(mainLayout);
+        if (langType == null)
+        {
+            typeLabel = new Label(mainControl, SWT.LEFT);
+            typeLabel.setText(MessageUtil.getString("LangTypeLabel"));
+            typeCombo = new Combo(mainControl, SWT.DROP_DOWN | SWT.READ_ONLY);
+            typeCombo.add(MessageUtil.getString("NativeLanguage"));
+            typeCombo.add(MessageUtil.getString("ForeignLanguage"));
+        }
         final Label instructionsLabel = new Label(mainControl, SWT.LEFT | SWT.WRAP);
         instructionsLabel.setText(MessageUtil.getString("NewLangInstructions"));
         final Label langLabel = new Label(mainControl, SWT.LEFT | SWT.WRAP);
@@ -276,5 +288,16 @@ public class NewLanguagePage extends WizardPage implements ModifyListener, Selec
     public FontData getFontData()
     {
         return fontData;
+    }
+    public LangTypeType.Enum getLangType()
+    {
+        if (typeCombo != null)
+        {
+            if (typeCombo.getSelectionIndex() == 0)
+                langType = LangTypeType.NATIVE;
+            else 
+                langType = LangTypeType.FOREIGN;
+        }
+        return langType;
     }
 }
