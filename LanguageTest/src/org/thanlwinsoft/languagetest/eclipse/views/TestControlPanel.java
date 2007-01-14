@@ -167,7 +167,7 @@ public class TestControlPanel extends Composite
         pauseButton.setText(MessageUtil.getString("PauseToolTip"));
         
         flipInterval = new Slider(flipGroup, SWT.NONE);
-        flipInterval.setToolTipText(MessageUtil.getString("FlipIntervalTooltip"));
+        flipInterval.setToolTipText(MessageUtil.getString("FlipIntervalToolTip"));
     }
     /**
      * This method initializes statusGroup	

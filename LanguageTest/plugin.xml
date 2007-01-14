@@ -49,6 +49,12 @@
             class="org.eclipse.ui.views.navigator.ResourceNavigator"
             id="org.thanlwinsoft.languagetest.Navigator"
             name="%LanguageTest.navigator"/>
+      <view
+            allowMultiple="false"
+            class="org.thanlwinsoft.languagetest.eclipse.views.TestHistoryView"
+            icon="icons/correct.png"
+            id="org.thanlwinsoft.languagetest.TestHistoryView"
+            name="%LanguageTest.testHistoryView"/>
    </extension>
    <extension
          point="org.eclipse.core.resources.natures"
@@ -77,7 +83,9 @@
             id="org.thanlwinsoft.languagetest.eclipse.wizards.NewModuleWizard"
             name="%NewModuleProjectWizard"
             preferredPerspectives="org.thanlwinsoft.languagetest.perspective"
-            project="true"/>
+            project="true">
+         <selection class="org.eclipse.core.resources.IContainer"/>
+      </wizard>
       <category
             id="org.thanlwinsoft.languagetest.newWizardCategory"
             name="%LanguageTest.newWizardCategory"/>
@@ -87,14 +95,21 @@
             icon="icons/newModule.png"
             id="org.thanlwinsoft.languagetest.wizards.NewLangModuleWizard"
             name="New Language Module Wizard"
-            project="true"/>
+            project="false">
+         <selection class="org.eclipse.core.resources.IContainer"/>
+      </wizard>
       <primaryWizard id="org.thanlwinsoft.languagetest.wizards.NewLangModuleWizard"/>
       <wizard
             category="org.thanlwinsoft.languagetest.newWizardCategory"
             class="org.thanlwinsoft.languagetest.eclipse.wizards.NewUserWizard"
             icon="icons/newUser.png"
             id="org.thanlwinsoft.languagetest.wizards.NewUserWizard"
-            name="New User Wizard"/>
+            name="New User Wizard"
+            project="true">
+         <selection class="org.eclipse.core.resources.IContainer"/>
+      </wizard>
+      <primaryWizard id="org.thanlwinsoft.languagetest.eclipse.wizards.NewModuleWizard"/>
+      <primaryWizard id="org.thanlwinsoft.languagetest.wizards.NewUserWizard"/>
    </extension>
    <extension
          point="org.eclipse.ui.actionSets">
@@ -107,7 +122,7 @@
                icon="icons/newModuleProject.png"
                id="org.thanlwinsoft.languagetest.newModuleProjectAction"
                label="%LanguageTest.newModuleProjectAction"
-               menubarPath="File/additions"
+               menubarPath="File/new"
                style="push"
                toolbarPath="Bar/additions"
                tooltip="%LanguageTest.newModuleProjectActionDesc"/>
@@ -116,7 +131,7 @@
                icon="icons/newUser.png"
                id="org.thanlwinsoft.languagetest.NewUserProjectAction"
                label="%LanguageTest.newUserProjectAction"
-               menubarPath="File/additions"
+               menubarPath="File/new"
                style="push"
                toolbarPath="Bar/additions"
                tooltip="%LanguageTest.newUserProjectActionDesc"/>
@@ -125,10 +140,17 @@
                icon="icons/startTest.png"
                id="org.thanlwinsoft.languagetest.eclipse.wizards.StartTestAction"
                label="%LanguageTest.startTestAction"
-               menubarPath="File/additions"
+               menubarPath="File"
                style="push"
-               toolbarPath="Bar/additions"
+               toolbarPath="Bar/new"
                tooltip="%LanguageTest.startTestActionDesc"/>
+         <action
+               icon="icons/newModule.png"
+               id="org.thanlwinsoft.languagetest.newLangModuleAction"
+               label="%LanguageTest.newLangModule"
+               menubarPath="File/new"
+               style="push"
+               toolbarPath="Bar/additions"/>
       </actionSet>
    </extension>
    <extension
@@ -173,7 +195,7 @@ wizardId="org.eclipse.ui.wizards.new.folder"
 <commonWizard type=
 "new"
 wizardId=
-"org.eclipse.ui.wizards.new.file"
+"org.thanlwinsoft.languagetest.wizards.NewLangModuleWizard"
 >
 <enablement>
 <or>
@@ -202,6 +224,17 @@ wizardId=
       id="org.eclipse.ui.views.navigator"
       labelProvider="org.thanlwinsoft.languagetest.eclipse.ProjectFileLabelProvider"
       name="LanguageTest.navigatorContent1"/>
+<commonWizard
+      menuGroupId="additions"
+      type="new"
+      wizardId="org.thanlwinsoft.languagetest.wizards.NewUserWizard">
+   <enablement>
+      <or>
+         <adapt type="org.eclipse.core.resources.IWorkspaceRoot"/>
+         <adapt type="org.eclipse.core.resources.IProject"/>
+      </or>
+   </enablement>
+</commonWizard>
 
 </extension>
  <extension point=
@@ -262,24 +295,26 @@ wizardId=
          nameFilter="*"
          objectClass="org.eclipse.core.resources.IFile">
       <menu
-            id="LanguageTest.menu1"
-            label="New Submenu"
+            id="LanguageTest.testMenu"
+            label="%LanguageTest.testMenu"
             path="additions">
-         <separator name="group1"/>
+         <separator name="testGroup"/>
       </menu>
       <action
-            class="org.thanlwinsoft.languagetest.popup.actions.NewAction"
+            class="org.thanlwinsoft.languagetest.eclipse.wizards.StartTestAction"
             enablesFor="1"
-            id="LanguageTest.newAction"
-            label="New Action"
-            menubarPath="LanguageTest.menu1/group1"/>
+            icon="icons/startTest.png"
+            id="LanguageTest.startTestAction"
+            label="%LanguageTest.startTestAction"
+            menubarPath="LanguageTest.testMenu/testGroup"/>
    </objectContribution>
    <viewerContribution
          id="org.thanlwinsoft.languagetest.viewerContribution1"
          targetID="org.thanlwinsoft.languagetest.eclipse.editors.TestModuleEditor">
       <menu
             id="org.thanlwinsoft.languagetest.popupmenu1"
-            label="LanguageTest.menu1">
+            label="LanguageTest.menu1"
+            path="additions">
          <groupMarker name="moduleEditor1"/>
       </menu>
       <action
@@ -290,6 +325,27 @@ wizardId=
             label="LanguageTest.action1"
             menubarPath="org.thanlwinsoft.languagetest.popupmenu1/moduleEditor1"/>
    </viewerContribution>
+   <objectContribution
+         adaptable="false"
+         id="LanguageTest.objectContribution1"
+         objectClass="org.eclipse.core.resources.IProject">
+      <action
+            class="org.thanlwinsoft.languagetest.eclipse.wizards.AddLanguageAction"
+            enablesFor="1"
+            icon="icons/FlagOutline16.png"
+            id="org.thanlwinsoft.languagetest.AddLanguageAction"
+            label="%LanguageTest.addLanguageAction"
+            menubarPath="additions"/>
+   </objectContribution>
+</extension>
+<extension
+      point="org.eclipse.ui.propertyPages">
+   <page
+         class="org.thanlwinsoft.languagetest.eclipse.views.LangPropertyPage"
+         icon="icons/FlagOutline16.png"
+         id="org.thanlwinsoft.languagetest.eclipse.views.LangPropertyPage"
+         name="%LanguageTest.langPropertyPage"
+         objectClass="org.eclipse.core.resources.IResource"/>
 </extension>		
  
 </plugin>

@@ -19,6 +19,8 @@ public class Perspective implements IPerspectiveFactory
         "org.thanlwinsoft.languagetest.UserResults";
     public final static String NAVIGATOR = 
         "org.thanlwinsoft.languagetest.Navigator";
+    public final static String TEST_HISTORY_VIEW = 
+        "org.thanlwinsoft.languagetest.TestHistoryView";
     public void createInitialLayout(IPageLayout layout) 
     {
         String editorArea = layout.getEditorArea();
@@ -34,6 +36,7 @@ public class Perspective implements IPerspectiveFactory
         IFolderLayout folderLeft = layout.createFolder(FOLDER_LEFT,
                 IPageLayout.LEFT, 0.25f, editorArea);
         folderLeft.addView("org.eclipse.ui.views.ResourceNavigator");
+        folderLeft.addView(TEST_HISTORY_VIEW);
 	}
     
     

@@ -241,6 +241,7 @@ public class XmlBeansTestHistory implements TestHistory
                 }
             }
             doc.save(file.getRawLocation().toFile(), options);
+            file.refreshLocal(0, null);
         }
         catch (IOException e)
         {
@@ -263,6 +264,9 @@ public class XmlBeansTestHistory implements TestHistory
         {
             ModuleHistoryType history = doc.getModuleHistory();
             ItemType itemResult = history.addNewItem();
+            itemResult.setAuthor(item.getCreator());
+            itemResult.setCreated(item.getCreationTime());
+            
             if (type.equals(TestType.LISTENING_FOREIGN_NATIVE))
             {
                 t = itemResult.addNewFL();

@@ -36,6 +36,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
     private IWorkbenchAction saveAllAction;
     private IWorkbenchAction closeAction;
     private IWorkbenchAction closeAllAction;
+    private IWorkbenchAction showViewAction;
     
     //private IWorkbenchAction newWindowAction;
     //private OpenViewAction openViewAction;
@@ -93,6 +94,9 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         
         preferencesAction = ActionFactory.PREFERENCES.create(window); 
         register(preferencesAction);
+        
+        showViewAction = ActionFactory.SHOW_VIEW_MENU.create(window);
+        register(showViewAction);
         //newWindowAction = ActionFactory.OPEN_NEW_WINDOW.create(window);
         //register(newWindowAction);
         
@@ -153,6 +157,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         editMenu.add(pasteAction);
         
         windowMenu.add(preferencesAction);
+        windowMenu.add(showViewAction);
         
         //editMenu.add(new GroupMarker("org.eclipse.ui.edit.text.gotoLastEditPosition"));
         // Help

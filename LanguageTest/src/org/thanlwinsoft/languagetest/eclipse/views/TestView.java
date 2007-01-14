@@ -596,10 +596,20 @@ public class TestView extends ViewPart implements ISelectionChangedListener
             TestHistory history = 
                 manager.getTestHistory(Integer.toHexString(currentItem.getModuleId()),
                     currentItem.getModuleCreationTime(), currentItem.getModulePath());
+            
             try
             {
-                history.saveResult(currentItem, test.getType(), 
+                if (history == null)
+                {
+                    MessageDialog.openWarning(this.getSite().getShell(),
+                                MessageUtil.getString("SaveHistoryFailTitle"),
+                                MessageUtil.getString("SaveHistoryFailMessage", ""));
+                }
+                else
+                {
+                    history.saveResult(currentItem, test.getType(), 
                                    new Date().getTime(), pass);
+                }
             }
             catch (TestHistoryStorageException e)
             {

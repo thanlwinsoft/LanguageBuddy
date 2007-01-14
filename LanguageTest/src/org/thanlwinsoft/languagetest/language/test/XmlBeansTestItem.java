@@ -35,6 +35,7 @@ public class XmlBeansTestItem implements TestItem
     public XmlBeansTestItem(TestItemType ti, String nativeLang, String foreignLang)
     {
         creationTime = ti.getCreationTime();
+        creator = ti.getCreator();
         NativeLangType [] nit = ti.getNativeLangArray();
         for (int i = 0; i < nit.length; i++)
         {
