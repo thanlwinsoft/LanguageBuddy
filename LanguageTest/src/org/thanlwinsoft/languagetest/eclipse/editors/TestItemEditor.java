@@ -37,6 +37,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
@@ -71,6 +72,7 @@ import org.thanlwinsoft.languagetest.eclipse.WorkspaceLanguageManager;
 import org.thanlwinsoft.languagetest.eclipse.views.TestView;
 import org.thanlwinsoft.languagetest.language.test.UniversalLanguage;
 import org.thanlwinsoft.schemas.languagetest.ForeignLangType;
+import org.thanlwinsoft.schemas.languagetest.LangEntryType;
 import org.thanlwinsoft.schemas.languagetest.LangType;
 import org.thanlwinsoft.schemas.languagetest.LangTypeType;
 import org.thanlwinsoft.schemas.languagetest.LanguageModuleDocument;
@@ -331,6 +333,7 @@ public class TestItemEditor extends EditorPart
                 }
             }
         });
+        tableViewer.setComparator(new ViewerSorter());
     }
     
     private void insertItem(int i)
@@ -401,9 +404,9 @@ public class TestItemEditor extends EditorPart
                 {
                     target.setSoundFile(items[i].getSoundFile());
                 }
-                else if (langIndex < nativeLangCount)
+                else 
                 {
-                    NativeLangType ltp = null;
+                    LangEntryType let = null;
                     int k;
                     // this should get the entry that matches the requested 
                     // language if that isn't found, then default to whatever
@@ -411,66 +414,157 @@ public class TestItemEditor extends EditorPart
                     // languages
                     for (k = 0; k < items[i].sizeOfNativeLangArray(); k++)
                     {
-                        ltp = items[i].getNativeLangArray(k);
-                        if (ltp.getLang().equals(langCode))
+                        let = items[i].getNativeLangArray(k);
+                        if (let.getLang().equals(langCode))
                             break;
                     }
-                    // was anything found? If not go to next item
-                    if (ltp == null) continue;
-                    ltp.setLang(langCode); // the language may have changed
-                    // look for existing entry in target item
-                    int j;
-                    for (j = 0; j < target.sizeOfNativeLangArray(); j++)
+                    if (let == null || !let.getLang().equals(langCode))
                     {
-                        
-                        NativeLangType lt = target.getNativeLangArray(j);
-                        if (lt.getLang().equals(langCode))
+                        for (k = 0; k < items[i].sizeOfForeignLangArray(); k++)
                         {
-                            target.setNativeLangArray(j, ltp);
-                            break;
+                            let = items[i].getForeignLangArray(k);
+                            if (let.getLang().equals(langCode))
+                                break;
                         }
                     }
-                    // if an existing entry has been set, this check will fail
-                    if (j == target.sizeOfNativeLangArray())
+                    // was anything found? If not go to next item
+                    if (let == null) continue;
+                    
+                    if (langIndex < nativeLangCount)
                     {
-                        // there is no item yet, so create one now
-                        NativeLangType nlt = target.addNewNativeLang();
-                        nlt.set(ltp);
+                        // look for existing entry in target item
+                        int j;
+                        for (j = 0; j < target.sizeOfNativeLangArray(); j++)
+                        {
+                            
+                            NativeLangType lt = target.getNativeLangArray(j);
+                            if (lt.getLang().equals(langCode))
+                            {
+                                lt.setStringValue(let.getStringValue());
+                                break;
+                            }
+                        }
+                        // if an existing entry has been set, this check will fail
+                        if (j == target.sizeOfNativeLangArray())
+                        {
+                            // there is no item yet, so create one now
+                            NativeLangType nlt = target.addNewNativeLang();
+                            nlt.setLang(langCode);
+                            nlt.setStringValue(let.getStringValue());
+                        }
+                    }
+                    else // foreign
+                    {
+                        // look for existing entry in target item
+                        int j;
+                        for (j = 0; j < target.sizeOfForeignLangArray(); j++)
+                        {
+                            
+                            ForeignLangType lt = target.getForeignLangArray(j);
+                            if (lt.getLang().equals(langCode))
+                            {
+                                lt.setStringValue(let.getStringValue());
+                                break;
+                            }
+                        }
+                        if (j == target.sizeOfForeignLangArray())
+                        {
+                            // there is no item yet, so create one now
+                            ForeignLangType nlt = target.addNewForeignLang();
+                            nlt.setLang(langCode);
+                            nlt.setStringValue(let.getStringValue());
+                        }
                     }
                 }
-                else
+            }
+            parent.setDirty(true);
+            parent.firePropertyChange(PROP_DIRTY);
+            tableViewer.refresh();
+        }
+        else
+        {
+            MessageDialog.openInformation(this.getSite().getShell(), 
+                    MessageUtil.getString("PasteSelectionMismatchTitle"), 
+                    MessageUtil.getString("PasteSelectionMismatchDesc",
+                            Integer.toString(selection.length), 
+                            Integer.toString(items.length)));
+        }
+    }
+    
+    public void pasteItems(String [] items, String langCode)
+    {
+        int [] selection = tableViewer.getTable().getSelectionIndices(); 
+        int langIndex = langIds.indexOf(langCode);
+        
+        if (selection.length == items.length)
+        {
+            LanguageModuleType lm = parent.getDocument().getLanguageModule();
+            for (int i = 0; i < items.length; i++)
+            {
+                TestItemType target = lm.getTestItemArray(selection[i]);
+                if (langCode.equals(PICTURE_COL))
                 {
-                    ForeignLangType ltp = null;
-                    int k;
-                    // this should get the entry that matches the requested 
-                    // language if that isn't found, then default to whatever
-                    // is left - the user may want to copy and paste between
-                    // languages
-                    for (k = 0; k < items[i].sizeOfForeignLangArray(); k++)
+                    target.setImg(items[i]);
+                }
+                else if (langCode.equals(SOUND_COL))
+                {
+                    if (target.isSetSoundFile())
                     {
-                        ltp = items[i].getForeignLangArray(k);
-                        if (ltp.getLang().equals(langCode))
-                            break;
+                        target.getSoundFile().setStringValue(items[i]);
                     }
-                    // was anything found? If not go to next item
-                    if (k == items[i].sizeOfForeignLangArray()) continue;
-                    // look for existing entry in target item
-                    int j;
-                    for (j = 0; j < target.sizeOfForeignLangArray(); j++)
+                    else
                     {
-                        
-                        ForeignLangType lt = target.getForeignLangArray(j);
-                        if (lt.getLang().equals(langCode))
+                        SoundFileType sft = target.addNewSoundFile();
+                        sft.setStringValue(items[i]);
+                    }
+                }
+                else 
+                {
+                    
+                    if (langIndex < nativeLangCount)
+                    {
+                        // look for existing entry in target item
+                        int j;
+                        for (j = 0; j < target.sizeOfNativeLangArray(); j++)
                         {
-                            target.setForeignLangArray(j, ltp);
-                            break;
+                            
+                            NativeLangType lt = target.getNativeLangArray(j);
+                            if (lt.getLang().equals(langCode))
+                            {
+                                lt.setStringValue(items[i]);
+                                break;
+                            }
+                        }
+                        // if an existing entry has been set, this check will fail
+                        if (j == target.sizeOfNativeLangArray())
+                        {
+                            // there is no item yet, so create one now
+                            NativeLangType nlt = target.addNewNativeLang();
+                            nlt.setLang(langCode);
+                            nlt.setStringValue(items[i]);
                         }
                     }
-                    if (j == target.sizeOfForeignLangArray())
+                    else // foreign
                     {
-                        // there is no item yet, so create one now
-                        ForeignLangType nlt = target.addNewForeignLang();
-                        nlt.set(ltp);
+                        // look for existing entry in target item
+                        int j;
+                        for (j = 0; j < target.sizeOfForeignLangArray(); j++)
+                        {
+                            
+                            ForeignLangType lt = target.getForeignLangArray(j);
+                            if (lt.getLang().equals(langCode))
+                            {
+                                lt.setStringValue(items[i]);
+                                break;
+                            }
+                        }
+                        if (j == target.sizeOfForeignLangArray())
+                        {
+                            // there is no item yet, so create one now
+                            ForeignLangType nlt = target.addNewForeignLang();
+                            nlt.setLang(langCode);
+                            nlt.setStringValue(items[i]);
+                        }
                     }
                 }
             }
@@ -682,22 +776,56 @@ public class TestItemEditor extends EditorPart
             colOrder[LANG_COL_OFFSET + i] = NUM_NON_LANG_COL + i;
             try
             {
+                UniversalLanguage ul = new UniversalLanguage(lang.getLang());
+                
                 if (tableViewer.getTable().getColumnCount() <= i + NUM_NON_LANG_COL)
                 {
                     column = new TableColumn(tableViewer.getTable(), SWT.LEFT);
+                    column.addSelectionListener(new SelectionListener() {
+
+                        public void widgetDefaultSelected(SelectionEvent e)
+                        {
+                            // TODO Auto-generated method stub
+                            
+                        }
+
+                        public void widgetSelected(SelectionEvent e)
+                        {
+                            if (e.widget instanceof TableColumn)
+                            {
+                               if (tableViewer.getTable().getSortColumn() == e.widget)
+                               {
+                                   int oldDir = tableViewer.getTable().getSortDirection();
+                                   int newDir = SWT.None;
+                                   switch (oldDir)
+                                   {
+                                   case SWT.DOWN:
+                                       newDir = SWT.UP;
+                                       break;
+                                   case SWT.UP:    
+                                       newDir = SWT.None;
+                                       break;
+                                   case SWT.NONE:
+                                       newDir = SWT.DOWN;
+                                       break;
+                                   }
+                                   tableViewer.getTable().setSortDirection(newDir);
+                               }
+                               else
+                               {
+                                   tableViewer.getTable().setSortColumn((TableColumn)e.widget);
+                                   tableViewer.getTable().setSortDirection(SWT.DOWN);
+                               }
+                            }
+                        }
+                        
+                    });
                 }
                 else
                 {
                     column = tableViewer.getTable().getColumn(i + NUM_NON_LANG_COL);
                 }
-            }
-            catch (ArrayIndexOutOfBoundsException e)
-            {
-                System.out.println(e);
-            }
-            try
-            {
-            	UniversalLanguage ul = new UniversalLanguage(lang.getLang());
+            
                 column.setText(ul.getDescription());
                 for (int m = 0; m < langMenu.length; m++)
                 {
@@ -709,6 +837,10 @@ public class TestItemEditor extends EditorPart
             catch(IllegalArgumentException e)
             {
             	column.setText(lang.getLang());
+            }
+            catch (ArrayIndexOutOfBoundsException e)
+            {
+                System.out.println(e);
             }
             column.setResizable(true);
             column.setWidth(LANG_COL_WIDTH);
