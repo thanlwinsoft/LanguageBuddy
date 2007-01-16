@@ -89,6 +89,7 @@ public class TestView extends ViewPart implements ISelectionChangedListener
     private Font foreignFont = null;
     private HashSet selectionProviders = null;
     private final static int [] NO_PICTURE_WEIGHTS = new int [] {99,1};
+    private final static float MIN_WEIGHT = 0.1f;
     private int [] pictureWeights = new int [] {50,50};
     private ImageData imageData = null;
     private Test test = null;  //  @jve:decl-index=0:
@@ -267,7 +268,11 @@ public class TestView extends ViewPart implements ISelectionChangedListener
     }
     protected void setPicture()
     {
-    	if (imageData == null) return;
+    	if (imageData == null) 
+        {
+            picture.setImage(null);
+            return;
+        }
     	ImageData id = imageData;
     	float ratio = ((float)imageData.width) /((float)imageData.height);
     	if (picture.getSize().x < id.height)
@@ -377,9 +382,11 @@ public class TestView extends ViewPart implements ISelectionChangedListener
             // cache old weights before we remove the picture
             if (picture.getImage() != null)
             {
-            	pictureWeights = horizontalSash.getWeights();
+                int [] weights = horizontalSash.getWeights();
+                if (weights[1] > MIN_WEIGHT * weights[0])
+                    pictureWeights = weights;
             }
-            if (ti.isSetImg())
+            if (ti.isSetImg() && ti.getImg() != null)
             {
                 
                 IEditorInput editorInput = getSite().getPage().getActiveEditor().getEditorInput();
@@ -406,7 +413,7 @@ public class TestView extends ViewPart implements ISelectionChangedListener
                         ImageData [] imageDatas = null;
                         if (imgFile != null && imgFile.exists())
                         {
-                            imageDatas = loader.load(imgFile.getLocation().toOSString());
+                            imageDatas = loader.load(imgFile.getRawLocation().toOSString());
                             
                         }
                         else
@@ -423,6 +430,10 @@ public class TestView extends ViewPart implements ISelectionChangedListener
                             //Image image = new Image(display, imageData[0]);
                         	imageData = imageDatas[0];
                             setPicture();
+                        }
+                        else
+                        {
+                            picture.setImage(null);
                         }
                         if (nativeViewer.getTextWidget().isVisible())
                         	picture.setToolTipText(ti.getImg());
@@ -515,8 +526,8 @@ public class TestView extends ViewPart implements ISelectionChangedListener
     }
     protected void testFinished()
     {
-        float percent = Math.round(test.getNumFirstTimePasses() * 1.0f / 
-                        test.getNumTests());
+        float percent = (float)(test.getNumFirstTimePasses()) / 
+                        (float)test.getNumTests();
         NumberFormat nf = new DecimalFormat("0%");
         if (test.getNumRetests() == 0)
         {
@@ -591,7 +602,7 @@ public class TestView extends ViewPart implements ISelectionChangedListener
     public void markTest(boolean pass)
     {
         test.setPassStatus(pass);
-        if (test.isRetest() == false)
+        if (test.isRetest() == false && currentItem.getTestCount() == 1)
         {
             TestHistory history = 
                 manager.getTestHistory(Integer.toHexString(currentItem.getModuleId()),

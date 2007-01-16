@@ -3,7 +3,11 @@
  */
 package org.thanlwinsoft.languagetest.eclipse.editors;
 
+import java.io.File;
+
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.DialogCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -32,16 +36,25 @@ public class PictureCellEditor extends DialogCellEditor {
 		FileDialog dialog = new FileDialog(cellEditorWindow.getShell(), SWT.OPEN);
 		dialog.setText(MessageUtil.getString("PictureFileDialogTitle"));
 		dialog.setFilterExtensions(GRAPHIC_EXT);
-		if (moduleFile != null)
+        if (getDefaultLabel().getText().length() > 0)
+        {
+            IPath path = new Path(getDefaultLabel().getText());
+            dialog.setFilterPath(path.removeLastSegments(1).toOSString());
+            dialog.setFileName(path.lastSegment());
+        }
+        else if (moduleFile != null)
 		{
-			dialog.setFilterPath(moduleFile.getParent().getLocation() + "/*.*");
+			IPath parent = moduleFile.getRawLocation().removeLastSegments(1);
+            dialog.setFilterPath(parent.toOSString() + File.separator + "*.*");
 		}
+        
 		String filePath = dialog.open(); 
 		if (filePath != null)
 		{
 			this.getDefaultLabel().setText(filePath);
 			this.getDefaultLabel().setToolTipText(filePath);
 		}
+        else filePath = "";
 		return filePath;
 	}
 	/* (non-Javadoc)
@@ -64,6 +77,13 @@ public class PictureCellEditor extends DialogCellEditor {
 			getDefaultLabel().setToolTipText(value.toString());
 		}
 	}
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.viewers.DialogCellEditor#createContents(org.eclipse.swt.widgets.Composite)
+     */
+    protected Control createContents(Composite cell)
+    {
+        return super.createContents(cell);
+    }
 	
 	
 }

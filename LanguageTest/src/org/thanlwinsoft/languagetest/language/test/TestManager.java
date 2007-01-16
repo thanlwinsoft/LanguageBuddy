@@ -42,6 +42,7 @@ public class TestManager
     private UserConfig config = null;
     public final static String LANG_SEPARATOR = "-";
     public final static String ID_DATA_SEPARATOR = "-";
+    private final static String HISTORY_DIR = "TestHistory";
     public final static String HISTORY_EXT = ".xml";
     /** Construct a test manager for a given user and language selectio
      * 
@@ -208,36 +209,40 @@ public class TestManager
         XmlBeansTestHistory history = null;
         if (userProject != null)
         {
-            IFolder historyFolder = 
-                userProject.getFolder(nativeLang + LANG_SEPARATOR + foreignLang);
-            if (historyFolder != null)
+            try
             {
-                try
+                IFolder historyRoot = userProject.getFolder(HISTORY_DIR);
+                if (!historyRoot.exists())
+                    historyRoot.create(false, true, null);
+                IFolder historyFolder = 
+                    historyRoot.getFolder(nativeLang + LANG_SEPARATOR + foreignLang);
+                if (historyFolder != null)
                 {
-                    if (!historyFolder.exists())
-                    {
-                        historyFolder.create(true, true, null);
-                    }
-                    IFile historyFile = historyFolder.getFile(moduleId + 
-                            ID_DATA_SEPARATOR + moduleCreationTime + HISTORY_EXT);
-                    if (historyFile != null)
-                        history = new XmlBeansTestHistory(historyFile, modulePath);
+                        if (!historyFolder.exists())
+                        {
+                            historyFolder.create(true, true, null);
+                        }
+                        IFile historyFile = historyFolder.getFile(moduleId + 
+                                ID_DATA_SEPARATOR + moduleCreationTime + HISTORY_EXT);
+                        if (historyFile != null)
+                            history = new XmlBeansTestHistory(historyFile, modulePath);
+                    
                 }
-                catch (CoreException e)
-                {
-                    LanguageTestPlugin.log(IStatus.WARNING, 
-                            "Error reading history: " + e.getLocalizedMessage(),e);
-                }
-                catch (XmlException e)
-                {
-                    LanguageTestPlugin.log(IStatus.WARNING, 
-                            "Error reading history: "  + e.getLocalizedMessage(),e);
-                } 
-                catch (IOException e)
-                {
-                    LanguageTestPlugin.log(IStatus.WARNING, 
+            }
+            catch (CoreException e)
+            {
+                LanguageTestPlugin.log(IStatus.WARNING, 
+                        "Error reading history: " + e.getLocalizedMessage(),e);
+            }
+            catch (XmlException e)
+            {
+                LanguageTestPlugin.log(IStatus.WARNING, 
                         "Error reading history: "  + e.getLocalizedMessage(),e);
-                }
+            } 
+            catch (IOException e)
+            {
+                LanguageTestPlugin.log(IStatus.WARNING, 
+                    "Error reading history: "  + e.getLocalizedMessage(),e);
             }
         }
         return history;

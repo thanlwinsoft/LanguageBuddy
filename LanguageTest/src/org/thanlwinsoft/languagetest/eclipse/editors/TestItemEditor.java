@@ -3,19 +3,27 @@
  */
 package org.thanlwinsoft.languagetest.eclipse.editors;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Vector;
 
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourceAttributes;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ICellEditorListener;
 import org.eclipse.jface.viewers.ICellEditorValidator;
@@ -43,6 +51,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.IActionBars;
@@ -65,6 +74,7 @@ import org.thanlwinsoft.schemas.languagetest.ForeignLangType;
 import org.thanlwinsoft.schemas.languagetest.LangType;
 import org.thanlwinsoft.schemas.languagetest.LangTypeType;
 import org.thanlwinsoft.schemas.languagetest.LanguageModuleDocument;
+import org.thanlwinsoft.schemas.languagetest.LanguageModuleType;
 import org.thanlwinsoft.schemas.languagetest.NativeLangType;
 import org.thanlwinsoft.schemas.languagetest.SoundFileType;
 import org.thanlwinsoft.schemas.languagetest.TestItemType;
@@ -79,6 +89,8 @@ public class TestItemEditor extends EditorPart
     private TableViewer tableViewer = null;
     private int langCount = 0;
     private int nativeLangCount = 0;
+    private IFile moduleFile = null;
+    private Menu [] langMenu = new Menu[3];
     // fixed columns are created first, then language columns
     // setColumnOrder is then used to move the language columns before the
     // Creator and Creation columns. This is needed because it doesn't seem
@@ -94,10 +106,10 @@ public class TestItemEditor extends EditorPart
     private static final int CREATOR_COL_WIDTH = 100;
     private static final int CREATION_COL_WIDTH = 100;
     private static final int LANG_COL_WIDTH = 200;
-    private static final String SOUND_COL = "Sound";
-    private static final String PICTURE_COL = "Picture";
-    private static final String CREATOR_COL = "Creator";
-    private static final String CREATION_DATE = "CDate";
+    public static final String SOUND_COL = "Sound";
+    public static final String PICTURE_COL = "Picture";
+    public static final String CREATOR_COL = "Creator";
+    public static final String CREATION_DATE = "CDate";
     
     private TableColumn soundCol = null;
     private TableColumn pictureCol = null;
@@ -110,11 +122,15 @@ public class TestItemEditor extends EditorPart
     private TestItemCellModifier cellModifier = null;
     private TestItemLabelProvider labelProvider = null;
     
-    private Action copyAction = null;
-    //private Action cutAction = null;
-    //private Action pasteAction = null;
+    private ClipboardAction copyAction = null;
+    private ClipboardAction cutAction = null;
+    private ClipboardAction pasteAction = null;
+    private MenuItem cutLangItem = null;
+    private MenuItem copyLangItem = null;
+    private MenuItem pasteLangItem = null;
     private Action insertAction = null;
     private Menu popup = null;
+    
     public TestItemEditor(TestModuleEditor parent)
     {
         super();
@@ -167,6 +183,15 @@ public class TestItemEditor extends EditorPart
         return parent.isSaveAsAllowed();
     }
 
+    /** get the Parent Editor
+     * 
+     * @return TestModuleEditor
+     */
+    public TestModuleEditor getParent()
+    {
+        return parent;
+    }
+    
     /* (non-Javadoc)
      * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
      */
@@ -176,7 +201,7 @@ public class TestItemEditor extends EditorPart
         parentControl.setLayout(layout);
         
         tableViewer = new TableViewer(parentControl, SWT.H_SCROLL | SWT.V_SCROLL
-        		| SWT.SINGLE | SWT.FULL_SELECTION);
+        		| SWT.MULTI);
         tableViewer.setContentProvider(new TestItemContentProvider());
         labelProvider = new TestItemLabelProvider();
         tableViewer.setLabelProvider(labelProvider);
@@ -210,10 +235,6 @@ public class TestItemEditor extends EditorPart
         cDateCol.setResizable(true);
         cDateCol.setMoveable(true);
         cDateCol.setWidth(CREATION_COL_WIDTH);
-        tableViewer.setInput(parent.getDocument());
-        tableViewer.getTable().setData(parent.getDocument());
-        tableViewer.refresh();
-        tableViewer.getTable().pack();
         
         makeActions();
         enableActions();
@@ -251,28 +272,33 @@ public class TestItemEditor extends EditorPart
             public void widgetDefaultSelected(SelectionEvent e){}
             public void widgetSelected(SelectionEvent e)
             {
-                TestItemType item = getSelectedItem();
-                if (item != null)
-                {
-                    TestItemType [] items = parent.getDocument().getLanguageModule().getTestItemArray();
-                    for (int i = 0; i < items.length; i++)
-                    {
-                        if (item.equals(items[i]))
-                        {
-                            tableViewer.setSelection(null);
-                            parent.getDocument().getLanguageModule().removeTestItem(i);
-                            break;
-                        }
-                    }
-                    parent.setDirty(true);
-                    parent.firePropertyChange(PROP_DIRTY);
-                    tableViewer.refresh();
-                    tableViewer.getTable().redraw();
-                }
+                deleteSelection();
             }
         });
-        
+        MenuItem separator = new MenuItem(popup, SWT.SEPARATOR);
+        MenuItem cutItem = new MenuItem(popup, SWT.PUSH);
+        cutItem.setText(cutAction.getText());
+        cutItem.addSelectionListener(cutAction);
+        MenuItem copyItem = new MenuItem(popup, SWT.PUSH);
+        copyItem.setText(copyAction.getText());
+        copyItem.addSelectionListener(copyAction);
+        MenuItem pasteItem = new MenuItem(popup, SWT.PUSH);
+        pasteItem.setText(pasteAction.getText());
+        pasteItem.addSelectionListener(pasteAction);
+        cutLangItem = new MenuItem(popup, SWT.CASCADE);
+        cutLangItem.setText(MessageUtil.getString("CutFromLang"));
+        copyLangItem = new MenuItem(popup, SWT.CASCADE);
+        copyLangItem.setText(MessageUtil.getString("CopyFromLang"));
+        pasteLangItem = new MenuItem(popup, SWT.CASCADE);
+        pasteLangItem.setText(MessageUtil.getString("PasteIntoLang"));
         popup.setEnabled(true);
+        // the table should not be initialized until after the popup 
+        // menu is created becasue setupLangColumns uses some of the items
+        tableViewer.setInput(parent.getDocument());
+        tableViewer.getTable().setData(parent.getDocument());
+        tableViewer.refresh();
+        tableViewer.getTable().pack();
+
         tableViewer.getTable().addMouseListener(new MouseListener(){
 
             public void mouseDoubleClick(MouseEvent e)
@@ -325,6 +351,207 @@ public class TestItemEditor extends EditorPart
             tableViewer.editElement(item, NUM_NON_LANG_COL);
     }
     
+    public void deleteSelection()
+    {
+        int [] selection = tableViewer.getTable().getSelectionIndices();
+        LanguageModuleType lm = parent.getDocument().getLanguageModule();
+        // work backwards so indices remain valid after deletion
+        Arrays.sort(selection);
+        for (int i = selection.length - 1; i >= 0; i--)
+        {
+            lm.removeTestItem(selection[i]);
+        }
+        tableViewer.getTable().deselectAll();
+//        TestItemType item = getSelectedItem();
+//        if (item != null)
+//        {
+//            TestItemType [] items = parent.getDocument().getLanguageModule().getTestItemArray();
+//            for (int i = 0; i < items.length; i++)
+//            {
+//                if (item.equals(items[i]))
+//                {
+//                    tableViewer.setSelection(null);
+//                    parent.getDocument().getLanguageModule().removeTestItem(i);
+//                    break;
+//                }
+//            }
+            parent.setDirty(true);
+            parent.firePropertyChange(PROP_DIRTY);
+            tableViewer.refresh();
+            tableViewer.getTable().redraw();
+//        }
+    }
+    
+    public void pasteItems(TestItemType [] items, String langCode)
+    {
+        int [] selection = tableViewer.getTable().getSelectionIndices(); 
+        int langIndex = langIds.indexOf(langCode);
+        
+        if (selection.length == items.length)
+        {
+            LanguageModuleType lm = parent.getDocument().getLanguageModule();
+            for (int i = 0; i < items.length; i++)
+            {
+                TestItemType target = lm.getTestItemArray(selection[i]);
+                if (langCode.equals(PICTURE_COL))
+                {
+                    target.setImg(items[i].getImg());
+                }
+                else if (langCode.equals(SOUND_COL))
+                {
+                    target.setSoundFile(items[i].getSoundFile());
+                }
+                else if (langIndex < nativeLangCount)
+                {
+                    NativeLangType ltp = null;
+                    int k;
+                    // this should get the entry that matches the requested 
+                    // language if that isn't found, then default to whatever
+                    // is left - the user may want to copy and paste between
+                    // languages
+                    for (k = 0; k < items[i].sizeOfNativeLangArray(); k++)
+                    {
+                        ltp = items[i].getNativeLangArray(k);
+                        if (ltp.getLang().equals(langCode))
+                            break;
+                    }
+                    // was anything found? If not go to next item
+                    if (ltp == null) continue;
+                    ltp.setLang(langCode); // the language may have changed
+                    // look for existing entry in target item
+                    int j;
+                    for (j = 0; j < target.sizeOfNativeLangArray(); j++)
+                    {
+                        
+                        NativeLangType lt = target.getNativeLangArray(j);
+                        if (lt.getLang().equals(langCode))
+                        {
+                            target.setNativeLangArray(j, ltp);
+                            break;
+                        }
+                    }
+                    // if an existing entry has been set, this check will fail
+                    if (j == target.sizeOfNativeLangArray())
+                    {
+                        // there is no item yet, so create one now
+                        NativeLangType nlt = target.addNewNativeLang();
+                        nlt.set(ltp);
+                    }
+                }
+                else
+                {
+                    ForeignLangType ltp = null;
+                    int k;
+                    // this should get the entry that matches the requested 
+                    // language if that isn't found, then default to whatever
+                    // is left - the user may want to copy and paste between
+                    // languages
+                    for (k = 0; k < items[i].sizeOfForeignLangArray(); k++)
+                    {
+                        ltp = items[i].getForeignLangArray(k);
+                        if (ltp.getLang().equals(langCode))
+                            break;
+                    }
+                    // was anything found? If not go to next item
+                    if (k == items[i].sizeOfForeignLangArray()) continue;
+                    // look for existing entry in target item
+                    int j;
+                    for (j = 0; j < target.sizeOfForeignLangArray(); j++)
+                    {
+                        
+                        ForeignLangType lt = target.getForeignLangArray(j);
+                        if (lt.getLang().equals(langCode))
+                        {
+                            target.setForeignLangArray(j, ltp);
+                            break;
+                        }
+                    }
+                    if (j == target.sizeOfForeignLangArray())
+                    {
+                        // there is no item yet, so create one now
+                        ForeignLangType nlt = target.addNewForeignLang();
+                        nlt.set(ltp);
+                    }
+                }
+            }
+            parent.setDirty(true);
+            parent.firePropertyChange(PROP_DIRTY);
+            tableViewer.refresh();
+        }
+        else
+        {
+            MessageDialog.openInformation(this.getSite().getShell(), 
+                    MessageUtil.getString("PasteSelectionMismatchTitle"), 
+                    MessageUtil.getString("PasteSelectionMismatchDesc",
+                            Integer.toString(selection.length), 
+                            Integer.toString(items.length)));
+        }
+    }
+    
+    public void pasteItems(TestItemType [] items)
+    {
+        int [] selection = tableViewer.getTable().getSelectionIndices(); 
+        String message = MessageUtil.getString("PasteBeforeOrAfter");
+        String [] buttonText;
+        if (selection.length == items.length)
+        {
+            message = MessageUtil.getString("PasteOverwriteBeforeOrAfter");
+            buttonText = new String[4];
+            buttonText[0] = MessageUtil.getString("PasteBefore");
+            buttonText[1] = MessageUtil.getString("PasteAfter");
+            buttonText[2] = MessageUtil.getString("Overwrite");
+            buttonText[3] = MessageUtil.getString("Cancel");
+        }
+        else
+        {
+            buttonText = new String[3];
+            buttonText[0] = MessageUtil.getString("InsertBefore");
+            buttonText[1] = MessageUtil.getString("InsertAfter");
+            buttonText[2] = MessageUtil.getString("Cancel");
+        }
+        MessageDialog dialog = new MessageDialog(this.getSite().getShell(),
+                MessageUtil.getString("PasteTitle"), null, message,
+                MessageDialog.QUESTION, buttonText, 1);
+        int choice = dialog.open();
+        int insertionIndex = 0;
+        
+        LanguageModuleType lm = parent.getDocument().getLanguageModule();
+        if (choice == buttonText.length - 1) return ;
+        switch (choice)
+        {
+        case 0:
+            if (selection.length > 0)
+            {
+                insertionIndex = selection[0];
+            }
+            break;
+        case 1:
+            
+            if (selection.length == 0)
+                insertionIndex = tableViewer.getTable().getItemCount();
+            else
+                insertionIndex = selection[selection.length - 1] + 1;
+            break;
+        case 2:
+            for (int i = 0; i < items.length; i++)
+            {
+                lm.setTestItemArray(selection[i], items[i]);
+            }
+            parent.setDirty(true);
+            parent.firePropertyChange(PROP_DIRTY);
+            tableViewer.refresh();
+            return;
+        }
+        for (int i = 0; i < items.length; i++)
+        {
+            lm.insertNewTestItem(insertionIndex + i);
+            lm.setTestItemArray(insertionIndex + i, items[i]);
+        }
+        parent.setDirty(true);
+        parent.firePropertyChange(PROP_DIRTY);
+        tableViewer.refresh();
+    }
+    
     protected void enableActions()
     {
         IActionBars bar = this.getEditorSite().getActionBars();
@@ -348,6 +575,28 @@ public class TestItemEditor extends EditorPart
             }
         }
         return item;
+    }
+    
+    public TestItemType [] getSelectedItems()
+    {
+        TestItemType [] items = null;
+        ISelection s = tableViewer.getSelection();
+        if (s instanceof StructuredSelection)
+        {
+            StructuredSelection ss = (StructuredSelection)s;
+            items = new TestItemType[ss.size()];
+            int row = 0;
+            Iterator i = ss.iterator();
+            while (i.hasNext())
+            {
+                Object o = i.next();
+                if (ss.getFirstElement() instanceof TestItemType)
+                {
+                    items[row++] = (TestItemType)o;
+                }
+            }
+        }
+        return items;
     }
     
     protected void setModule(LanguageModuleDocument doc)
@@ -397,7 +646,7 @@ public class TestItemEditor extends EditorPart
         colOrder[CREATION_DATE_ID + langs.length] = CREATION_DATE_ID;
         CellEditor [] editors = new CellEditor[maxColumns];
         IEditorInput input = parent.getEditorInput();
-        IFile moduleFile = null;
+        moduleFile = null;
         if (input instanceof IFileEditorInput)
         {
             moduleFile = ((IFileEditorInput)input).getFile();
@@ -408,6 +657,19 @@ public class TestItemEditor extends EditorPart
         		SWT.LEFT, moduleFile);
         editors[CREATOR_COL_ID] = null;
         editors[CREATION_DATE_ID] = null;
+        for (int i = 0; i < langMenu.length; i++)
+        {
+            if (langMenu[i] != null)
+            {
+                langMenu[i].dispose();
+            }
+        }
+        langMenu[0] = new Menu(cutLangItem);
+        langMenu[1] = new Menu(copyLangItem);
+        langMenu[2] = new Menu(pasteLangItem);
+        cutLangItem.setMenu(langMenu[0]);
+        copyLangItem.setMenu(langMenu[1]);
+        pasteLangItem.setMenu(langMenu[2]);
         
         langIds.clear();
         langCount = langs.length;
@@ -437,6 +699,12 @@ public class TestItemEditor extends EditorPart
             {
             	UniversalLanguage ul = new UniversalLanguage(lang.getLang());
                 column.setText(ul.getDescription());
+                for (int m = 0; m < langMenu.length; m++)
+                {
+                    MenuItem langItem = new MenuItem(langMenu[m], SWT.PUSH);
+                    langItem.setText(ul.getDescription());
+                    langItem.addSelectionListener(new LangMenuListener(ul.getCode()));
+                }
             }
             catch(IllegalArgumentException e)
             {
@@ -462,13 +730,22 @@ public class TestItemEditor extends EditorPart
             editors[j] = null;
             colOrder[j] = j;
         }
+        // remaining items to language menu
+        for (int m = 0; m < langMenu.length; m++)
+        {
+            MenuItem langItem = new MenuItem(langMenu[m], SWT.PUSH);
+            langItem.setText(MessageUtil.getString("PictureColumn"));
+            langItem.addSelectionListener(new LangMenuListener(PICTURE_COL));
+            langItem = new MenuItem(langMenu[m], SWT.PUSH);
+            langItem.setText(MessageUtil.getString("SoundColumn"));
+            langItem.addSelectionListener(new LangMenuListener(SOUND_COL));
+        }
+        
         tableViewer.setColumnProperties(colProperties);
         tableViewer.setCellEditors(editors);
         tableViewer.getTable().setColumnOrder(colOrder);
         tableViewer.refresh();
-        
-        
-        
+                
     }
     
     protected class TestItemContentProvider implements IStructuredContentProvider
@@ -657,6 +934,9 @@ public class TestItemEditor extends EditorPart
         IViewPart testView = getEditorSite().getPage().findView(Perspective.TEST_VIEW);
         if (testView != null)
             tableViewer.removeSelectionChangedListener((TestView)testView);
+        copyAction.dispose();
+        cutAction.dispose();
+        pasteAction.dispose();
         super.dispose();
     }
     
@@ -786,19 +1066,32 @@ public class TestItemEditor extends EditorPart
                 }
                 else if (property.equals(SOUND_COL))
                 {
-                    if (testItem.getSoundFile().getStringValue().equals(value))
+                    
+                    String soundFilePath = getRelativePath(value.toString());
+                    
+                    if (testItem.isSetSoundFile() &&
+                        testItem.getSoundFile().getStringValue().equals(soundFilePath))
+                    {
                         return; // unchanged
+                    }
                     SoundFileType sft = SoundFileType.Factory.newInstance();
-                    sft.setStringValue(value.toString());
-                    testItem.setSoundFile(sft);
+                    sft.setStringValue(soundFilePath);
+                    if (soundFilePath == null || soundFilePath.length() == 0)
+                    {
+                        testItem.setSoundFile(null);
+                    }
+                    else testItem.setSoundFile(sft);
                 }
                 else if (property.equals(PICTURE_COL))
                 {
                 	if (value != null)
                     {
-                        if (testItem.getImg().equals(value)) return;
-                		testItem.setImg(value.toString());
+                        String imgPath = getRelativePath(value.toString());
+                        if (testItem.isSetImg() && testItem.getImg().equals(imgPath)) return;
+                		if (imgPath == null || imgPath.length() == 0) testItem.setImg(null);
+                        else testItem.setImg(imgPath); 
                     }
+                    else testItem.setImg(null);
                 }
                 else
                 {
@@ -864,28 +1157,43 @@ public class TestItemEditor extends EditorPart
         {
             return null;
         }
-        
+        private String getRelativePath(String fullPath)
+        {
+            File f = new File(fullPath);
+            if (!f.exists()) return null;
+            IPath path = new Path(fullPath);
+            IPath mp = moduleFile.getRawLocation().removeLastSegments(1);
+            if (mp.getDevice().endsWith(path.getDevice()) && mp.isPrefixOf(path))
+            {
+                path = path.removeFirstSegments(mp.segmentCount());
+                path = path.setDevice("");
+            }
+            return path.toPortableString();
+        }
     }
+    
     private void makeActions()
     {
 //      properties
-        copyAction = new Action() {
-            public void run()
-            {
-                TestItemType item = getSelectedItem();
-                if (item != null && lastPropertyChanged != null)
-                {
-                    CellEditor ce = tableViewer.getCellEditors()[NUM_NON_LANG_COL]; 
-                    ce.activate();
-                    ce.performCopy();
-                }
-            }
-        };
-        copyAction.setText(MessageUtil.getString("copy.text"));
-        copyAction.setToolTipText(MessageUtil.getString("copy.tooltip"));
-        copyAction.setEnabled(false);
+//        copyAction = new Action() {
+//            public void run()
+//            {
+//                TestItemType item = getSelectedItem();
+//                if (item != null && lastPropertyChanged != null)
+//                {
+//                    CellEditor ce = tableViewer.getCellEditors()[NUM_NON_LANG_COL]; 
+//                    ce.activate();
+//                    ce.performCopy();
+//                }
+//            }
+//        };
+//        copyAction.setText(MessageUtil.getString("copy.text"));
+//        copyAction.setToolTipText(MessageUtil.getString("copy.tooltip"));
+//        copyAction.setEnabled(false);
         
-       
+        copyAction = new ClipboardAction(this, ClipboardAction.COPY);
+        cutAction = new ClipboardAction(this, ClipboardAction.CUT);
+        pasteAction = new ClipboardAction(this, ClipboardAction.PASTE);
         
         insertAction = new Action() {
             public void run()
@@ -955,5 +1263,51 @@ public class TestItemEditor extends EditorPart
             }
             cellEditor.removeListener(this);
         }
+    }
+    public class LangMenuListener implements SelectionListener
+    {
+        private String langCode = null;
+        public LangMenuListener(String langCode)
+        {
+            this.langCode = langCode; 
+        }
+        /* (non-Javadoc)
+         * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
+         */
+        public void widgetDefaultSelected(SelectionEvent e)
+        {
+            
+        }
+
+        /* (non-Javadoc)
+         * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+         */
+        public void widgetSelected(SelectionEvent e)
+        {
+            if (e.widget instanceof MenuItem)
+            {
+                MenuItem mi = (MenuItem)e.widget;
+                MenuItem pi = mi.getParent().getParentItem();
+                ClipboardAction ca = null;
+                if (pi == cutLangItem)
+                {
+                    ca = cutAction;
+                }
+                else if (pi == copyLangItem)
+                {
+                    ca = copyAction;
+                }
+                else if (pi == pasteLangItem)
+                {
+                    ca = pasteAction;
+                }
+                else return; // don't know what this is
+                
+                ca.setLangCode(langCode);
+                ca.run();
+                ca.setLangCode(null);
+            }
+        }
+        
     }
 }

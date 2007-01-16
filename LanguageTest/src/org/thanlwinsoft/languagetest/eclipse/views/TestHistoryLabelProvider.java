@@ -4,6 +4,8 @@
 package org.thanlwinsoft.languagetest.eclipse.views;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -41,6 +43,7 @@ public class TestHistoryLabelProvider extends LabelProvider
     private String langModulePath = null;
     private LanguageModuleType langModule = null;
     private ITreeContentProvider treeContentProvider;
+    private NumberFormat percentNF = null;
     public TestHistoryLabelProvider(ITreeContentProvider treeContentProvider)
     {
         this.treeContentProvider = treeContentProvider;
@@ -48,6 +51,7 @@ public class TestHistoryLabelProvider extends LabelProvider
         correct = id.createImage();
         id = LanguageTestPlugin.getImageDescriptor("icons/wrong16.png");
         wrong = id.createImage();
+        percentNF = new DecimalFormat("0%");
     }
     
     /* (non-Javadoc)
@@ -163,6 +167,29 @@ public class TestHistoryLabelProvider extends LabelProvider
             else if (xf.child instanceof TestType)
             {
                 TestType tt = (TestType)xf.child;
+                String nodeName =  tt.getDomNode().getLocalName();
+                int passCount = 0;
+                for (int i = 0; i < tt.sizeOfResultArray(); i++)
+                {
+                    if (tt.getResultArray(i).getPass()) passCount++;
+                }
+                String percent = percentNF.format(((float)passCount)/
+                                ((float)tt.sizeOfResultArray()));
+                if (nodeName.equals("NR"))
+                {
+                    return MessageUtil.getString("WritingResults", percent, 
+                                    Integer.toString(tt.sizeOfResultArray()));
+                }
+                else if (nodeName.equals("FL"))
+                {
+                    return MessageUtil.getString("ListeningResults", percent, 
+                                    Integer.toString(tt.sizeOfResultArray()));                    
+                }
+                else if (nodeName.equals("FR"))
+                {
+                    return MessageUtil.getString("ReadingResults", percent, 
+                                    Integer.toString(tt.sizeOfResultArray()));                    
+                }
                 return tt.getDomNode().getLocalName() + " " + 
                     tt.sizeOfResultArray();
             }

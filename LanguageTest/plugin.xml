@@ -145,6 +145,7 @@
                toolbarPath="Bar/new"
                tooltip="%LanguageTest.startTestActionDesc"/>
          <action
+               class="org.thanlwinsoft.languagetest.eclipse.wizards.NewLangModuleAction"
                icon="icons/newModule.png"
                id="org.thanlwinsoft.languagetest.newLangModuleAction"
                label="%LanguageTest.newLangModule"
@@ -167,6 +168,12 @@
       </filter>
       <filter
             pattern=".languages.xml"
+            selected="true"/>
+      <filter
+            pattern="TestHistory"
+            selected="true"/>
+      <filter
+            pattern="*.xsl"
             selected="true"/>
    </extension>
    <extension point=

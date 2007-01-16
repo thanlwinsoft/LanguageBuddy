@@ -8,9 +8,11 @@ import java.io.InputStream;
 
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlOptions;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IEditorInput;
@@ -26,8 +28,12 @@ import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.thanlwinsoft.languagetest.eclipse.Perspective;
 import org.thanlwinsoft.languagetest.eclipse.views.TestView;
+import org.thanlwinsoft.languagetest.language.test.XmlBeansTestModule;
 import org.thanlwinsoft.schemas.languagetest.LanguageModuleDocument;
 import org.thanlwinsoft.schemas.languagetest.TestItemType;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.ProcessingInstruction;
 
 /**
  * @author keith
@@ -40,6 +46,9 @@ public class TestModuleEditor extends MultiPageEditorPart
     private LanguageModuleDocument currentDoc = null;
     private TestItemEditor testItemEditor = null;
     private ModuleLanguagePart languagePart = null;
+    public final static String XSL_FILENAME = XmlBeansTestModule.XSL_FILENAME;
+    public final static String XSL_TARGET = XmlBeansTestModule.XSL_TARGET;
+    public final static String XSL_DATA = XmlBeansTestModule.XSL_DATA;
     
     public TestModuleEditor()
     {
@@ -52,6 +61,31 @@ public class TestModuleEditor extends MultiPageEditorPart
     {
         if (getEditorInput() instanceof IFileEditorInput && currentDoc != null)
         {
+            Document domDoc = currentDoc.getLanguageModule().getDomNode().getOwnerDocument();
+            if (domDoc != null)
+            {
+                boolean hasXsl = false;
+                if (domDoc.hasChildNodes())
+                {
+                    Node child = domDoc.getFirstChild();
+                    while (child != null)
+                    {
+                        if (child.getNodeType() == 
+                            Node.PROCESSING_INSTRUCTION_NODE &&
+                            ((ProcessingInstruction)child).getTarget().equals(XSL_TARGET))
+                        {
+                            hasXsl = true;
+                            break;
+                        }
+                        child = child.getNextSibling();
+                    }
+                }
+                if (!hasXsl)
+                {
+                    Node xslNode = domDoc.createProcessingInstruction(XSL_TARGET, XSL_DATA);
+                    domDoc.insertBefore(xslNode, domDoc.getFirstChild());
+                }
+            }
             IFileEditorInput input = (IFileEditorInput)getEditorInput();
             XmlOptions options = new XmlOptions();
             options.setCharacterEncoding("UTF-8");
@@ -63,11 +97,25 @@ public class TestModuleEditor extends MultiPageEditorPart
                                             0, monitor);
                 setDirty(false);
                 firePropertyChange(PROP_DIRTY);
+                IFile xslFile = input.getFile().getParent().getFile(new Path(XSL_FILENAME));
+                if (!xslFile.exists())
+                {
+                    InputStream source = getClass().getResourceAsStream
+                        ("/org/thanlwinsoft/languagetest/language/text/" + XSL_FILENAME);
+                    xslFile.create(source, true, monitor);
+                    source.close();
+                }
             }
             catch (CoreException e)
             {
                 LanguageTestPlugin.log(IStatus.ERROR, "Error saving " +
                         input.getName(), e);
+                errorMsg = e.getLocalizedMessage();
+            }
+            catch (IOException e)
+            {
+                LanguageTestPlugin.log(IStatus.ERROR, "Error saving " +
+                                input.getName(), e);
                 errorMsg = e.getLocalizedMessage();
             }
             finally 

@@ -42,9 +42,8 @@ public class NewLangModuleWizardPage extends WizardPage {
 	 */
 	public NewLangModuleWizardPage(ISelection selection) {
 		super("wizardPage");
-		setTitle("Multi-page Editor File");
-		setDescription("This wizard creates a new file with *." + EXTENSION
-                + " extension that can be opened by a multi-page editor.");
+		setTitle(MessageUtil.getString("NewLangModuleTitle"));
+		setDescription(MessageUtil.getString("NewLangModuleDesc"));
 		this.selection = selection;
 	}
 

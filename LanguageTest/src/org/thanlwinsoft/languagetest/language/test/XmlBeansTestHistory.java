@@ -31,6 +31,7 @@ public class XmlBeansTestHistory implements TestHistory
     private IFile file = null;
     private ModuleHistoryDocument doc = null;
     
+    
     public XmlBeansTestHistory(IFile file) throws XmlException, IOException, CoreException
     {
         construct(file, null);
@@ -120,7 +121,7 @@ public class XmlBeansTestHistory implements TestHistory
         for (int i = 0; i < items.length; i++)
         {
             if (items[i].getCreated() == item.getCreationTime() &&
-                items[i].getAuthor() == item.getCreator())
+                items[i].getAuthor().equals(item.getCreator()))
             {
                 org.thanlwinsoft.schemas.languagetest.TestType testType = null;
                 if (type.equals(TestType.READING_FOREIGN_NATIVE))

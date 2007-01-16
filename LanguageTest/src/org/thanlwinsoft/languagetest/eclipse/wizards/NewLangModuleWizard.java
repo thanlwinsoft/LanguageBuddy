@@ -17,9 +17,12 @@ import org.eclipse.core.runtime.CoreException;
 import java.io.*;
 import org.eclipse.ui.*;
 import org.eclipse.ui.ide.IDE;
+import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.thanlwinsoft.languagetest.eclipse.WorkspaceLanguageManager;
+import org.thanlwinsoft.languagetest.language.test.XmlBeansTestModule;
 import org.thanlwinsoft.schemas.languagetest.LangType;
 import org.thanlwinsoft.schemas.languagetest.LanguageModuleDocument;
+import org.w3c.dom.Document;
 
 /**
  * This is a sample new wizard. Its role is to create a new file 
@@ -36,6 +39,8 @@ public class NewLangModuleWizard extends Wizard implements INewWizard {
 	private NewLangModuleWizardPage page;
 	private ISelection selection;
 
+    public final static String XSL_FILENAME = XmlBeansTestModule.XSL_FILENAME;
+    
 	/**
 	 * Constructor for NewLangModuleWizard.
 	 */
@@ -133,8 +138,13 @@ public class NewLangModuleWizard extends Wizard implements INewWizard {
 				file.create(stream, true, monitor);
 			}
 			stream.close();
-		} catch (IOException e) {
-		}
+            monitor.worked(1);
+            
+		} 
+        catch (IOException e)
+        {
+            LanguageTestPlugin.log(IStatus.WARNING, e.getLocalizedMessage(), e);
+		}       
 		monitor.worked(1);
 		monitor.setTaskName("Opening file for editing...");
 		getShell().getDisplay().asyncExec(new Runnable() {
@@ -167,6 +177,7 @@ public class NewLangModuleWizard extends Wizard implements INewWizard {
             if (doc != null)
             {
                 doc.addNewLanguageModule();
+                
                 doc.getLanguageModule().setCreationTime(new Date().getTime());
                 doc.getLanguageModule().setId(Integer.toHexString(doc.hashCode()));
                 LangType [] langArray = WorkspaceLanguageManager.findLanguages(project);
@@ -174,7 +185,10 @@ public class NewLangModuleWizard extends Wizard implements INewWizard {
                 XmlOptions options = new XmlOptions();
                 options.setCharacterEncoding("UTF-8");
                 options.setSavePrettyPrint();
+                
                 is = doc.newInputStream(options);
+                
+                
             }
         }
         catch (Exception e)

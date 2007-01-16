@@ -27,6 +27,10 @@ public class XmlBeansTestModule implements TestModule
     int uniqueId = -1;
     long creationTime = -1;
     IPath path = null;
+    public final static String XSL_FILENAME = "LanguageTest.xsl";
+    public final static String XSL_TARGET = "xml-stylesheet";
+    public final static String XSL_DATA = "href=\"" + XSL_FILENAME + "\" type=\"text/xsl\"";
+    
     public XmlBeansTestModule(IPath path) throws XmlException, IOException
     {
         BufferedInputStream is = 
