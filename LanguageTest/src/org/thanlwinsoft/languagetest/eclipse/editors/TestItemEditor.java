@@ -132,6 +132,7 @@ public class TestItemEditor extends EditorPart
     private MenuItem pasteLangItem = null;
     private Action insertAction = null;
     private Menu popup = null;
+    private TestItemSorter sorter = null;
     
     public TestItemEditor(TestModuleEditor parent)
     {
@@ -203,13 +204,15 @@ public class TestItemEditor extends EditorPart
         parentControl.setLayout(layout);
         
         tableViewer = new TableViewer(parentControl, SWT.H_SCROLL | SWT.V_SCROLL
-        		| SWT.MULTI);
+        		| SWT.MULTI | SWT.FULL_SELECTION); // need full selecion on Windows
         tableViewer.setContentProvider(new TestItemContentProvider());
         labelProvider = new TestItemLabelProvider();
         tableViewer.setLabelProvider(labelProvider);
         tableViewer.getTable().setHeaderVisible(true);
         cellModifier = new TestItemCellModifier();
         tableViewer.setCellModifier(cellModifier);
+        sorter = new TestItemSorter();
+        
         IViewPart testView = getEditorSite().getPage().findView(Perspective.TEST_VIEW);
         if (testView != null)
             ((TestView)testView).addSelectionProvider(tableViewer);
@@ -219,25 +222,32 @@ public class TestItemEditor extends EditorPart
         soundCol.setResizable(true);
         soundCol.setMoveable(true);
         soundCol.setWidth(SOUND_COL_WIDTH);
+        soundCol.addSelectionListener(new ColumnListener(tableViewer, 
+                        sorter, SOUND_COL_ID, SOUND_COL, null));
         pictureCol = new TableColumn(tableViewer.getTable(), SWT.LEFT);
         pictureCol.setText(MessageUtil.getString("PictureColumn"));
         pictureCol.setToolTipText(MessageUtil.getString("PictureColumn"));
         pictureCol.setResizable(true);
         pictureCol.setMoveable(true);
         pictureCol.setWidth(PICTURE_COL_WIDTH);
+        pictureCol.addSelectionListener(new ColumnListener(tableViewer, 
+                        sorter, PICTURE_COL_ID, PICTURE_COL, null));
         creatorCol = new TableColumn(tableViewer.getTable(), SWT.LEFT);
         creatorCol.setText(MessageUtil.getString("CreatorColumn"));
         creatorCol.setToolTipText(MessageUtil.getString("CreatorColumn"));
         creatorCol.setResizable(true);
         creatorCol.setMoveable(true);
         creatorCol.setWidth(CREATOR_COL_WIDTH);
+        creatorCol.addSelectionListener(new ColumnListener(tableViewer, 
+                        sorter, CREATOR_COL_ID, CREATOR_COL, null));
         cDateCol = new TableColumn(tableViewer.getTable(), SWT.LEFT);
         cDateCol.setText(MessageUtil.getString("CDateColumn"));
         cDateCol.setToolTipText(MessageUtil.getString("CDateColumn"));
         cDateCol.setResizable(true);
         cDateCol.setMoveable(true);
         cDateCol.setWidth(CREATION_COL_WIDTH);
-        
+        cDateCol.addSelectionListener(new ColumnListener(tableViewer, 
+                        sorter, CREATION_DATE_ID, CREATION_DATE, null));
         makeActions();
         enableActions();
         
@@ -333,7 +343,9 @@ public class TestItemEditor extends EditorPart
                 }
             }
         });
-        tableViewer.setComparator(new ViewerSorter());
+        
+        tableViewer.setComparator(null);
+        
     }
     
     private void insertItem(int i)
@@ -777,49 +789,14 @@ public class TestItemEditor extends EditorPart
             try
             {
                 UniversalLanguage ul = new UniversalLanguage(lang.getLang());
-                
+                final String ulCode = ul.getCode();
+                final String localeCode = ul.getICUlocaleID();
+                final int colIndex = NUM_NON_LANG_COL + i;
                 if (tableViewer.getTable().getColumnCount() <= i + NUM_NON_LANG_COL)
                 {
                     column = new TableColumn(tableViewer.getTable(), SWT.LEFT);
-                    column.addSelectionListener(new SelectionListener() {
-
-                        public void widgetDefaultSelected(SelectionEvent e)
-                        {
-                            // TODO Auto-generated method stub
-                            
-                        }
-
-                        public void widgetSelected(SelectionEvent e)
-                        {
-                            if (e.widget instanceof TableColumn)
-                            {
-                               if (tableViewer.getTable().getSortColumn() == e.widget)
-                               {
-                                   int oldDir = tableViewer.getTable().getSortDirection();
-                                   int newDir = SWT.None;
-                                   switch (oldDir)
-                                   {
-                                   case SWT.DOWN:
-                                       newDir = SWT.UP;
-                                       break;
-                                   case SWT.UP:    
-                                       newDir = SWT.None;
-                                       break;
-                                   case SWT.NONE:
-                                       newDir = SWT.DOWN;
-                                       break;
-                                   }
-                                   tableViewer.getTable().setSortDirection(newDir);
-                               }
-                               else
-                               {
-                                   tableViewer.getTable().setSortColumn((TableColumn)e.widget);
-                                   tableViewer.getTable().setSortDirection(SWT.DOWN);
-                               }
-                            }
-                        }
-                        
-                    });
+                    column.addSelectionListener(new ColumnListener(tableViewer, 
+                                    sorter, colIndex, ulCode, localeCode));
                 }
                 else
                 {

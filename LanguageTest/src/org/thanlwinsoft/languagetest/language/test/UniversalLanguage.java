@@ -183,6 +183,26 @@ public class UniversalLanguage
     	return valid;
     }
     
+    public String getICUlocaleID()
+    {
+        if (countryCode.length()> 0)
+        {
+            if (script.length() > 0)
+            {
+                return langCode + "_" + script + "_" + countryCode;
+            }
+            else
+            {
+                return langCode + "_" + countryCode;
+            }
+        }
+        else if (script.length() > 0)
+        {
+            return langCode + "_" + script;
+        }
+        return langCode;
+    }
+    
     protected String generateDescription()
     {
         StringBuffer b = new StringBuffer(Iso639.getDescription(langCode));
