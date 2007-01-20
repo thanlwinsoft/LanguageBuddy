@@ -96,9 +96,14 @@ public class TestView extends ViewPart implements ISelectionChangedListener
     private Test test = null;  //  @jve:decl-index=0:
     private TestItem currentItem = null;  //  @jve:decl-index=0:
     private TestManager manager = null;
+    public final static String FLIP_PERIOD_PREF = "FlipPeriod";
+    public final static String FLIP_REPEAT_PREF = "FlipRepeat";
     public TestView()
     {
         selectionProviders = new HashSet();
+        LanguageTestPlugin.getPrefStore().setDefault(FLIP_PERIOD_PREF, 10000);
+        LanguageTestPlugin.getPrefStore().setDefault(FLIP_REPEAT_PREF, 5);
+        
     }
     /* (non-Javadoc)
      * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
@@ -119,7 +124,7 @@ public class TestView extends ViewPart implements ISelectionChangedListener
         // layout data
         FormData controlFD = new FormData();
         controlFD.top = new FormAttachment(0,0);
-        //controlFD.bottom = new FormAttachment(0,0);
+        controlFD.bottom = new FormAttachment(100,0);
         controlFD.right = new FormAttachment(100,0);
         controlPanel.setLayoutData(controlFD);
         FormData horizontalFD = new FormData();
@@ -522,6 +527,7 @@ public class TestView extends ViewPart implements ISelectionChangedListener
             promptView = NATIVE_ID | FOREIGN_ID;
             showAnswer(true);
             controlPanel.setFlipControlVisible(true);
+            flipOnTime();
         }
         // shouldn't happen
         else throw new IllegalArgumentException("Unknown test type:" + test);
@@ -529,6 +535,56 @@ public class TestView extends ViewPart implements ISelectionChangedListener
         controlPanel.setStatusVisible(true);
         currentItem = test.getNextItem();
         setTestItem(currentItem);
+    }
+    protected void flipOnTime()
+    {
+        final int maxShowCount = LanguageTestPlugin.getPrefStore().getInt(FLIP_REPEAT_PREF);
+        
+        Runnable runnable = new Runnable() {
+            public void run()
+            {
+                if (controlPanel.isDisposed()) return;
+                if (controlPanel.isTestPaused())
+                {
+                    flipOnTime();
+                }
+                else
+                {
+                    test.setPassStatus(false);// increments test count
+                    if (currentItem.getTestCount() >= maxShowCount)
+                    {
+                        test.removeCurrentItem();
+                    }
+                    currentItem = test.getNextItem();
+                    if (currentItem == null)
+                    {
+                        // finished
+                        controlPanel.setStatusVisible(false);
+                        controlPanel.setFlipControlVisible(false);
+                        restoreView();
+                    }
+                    else
+                    {
+                        setTestItem(currentItem);
+                        StringBuilder sb = new StringBuilder();
+                        sb.append(MessageUtil.getString("FlipCardCount", 
+                                        Integer.toString(test.getNumTests())));
+                        sb.append("\r\n");
+                        sb.append(MessageUtil.getString("FlipCardTotalShows", 
+                                  Integer.toString(test.getTestCount())));
+                        sb.append("\r\n");
+                        sb.append(MessageUtil.getString("FlipCardThisCardShowsOfTotal", 
+                                  Integer.toString(currentItem.getTestCount()),
+                                  Integer.toString(maxShowCount)));
+                        controlPanel.setStatus(sb.toString());
+                        flipOnTime();
+                    }
+                }
+            }
+        };
+        int milliseconds = LanguageTestPlugin.getPrefStore().getInt(FLIP_PERIOD_PREF);
+        
+        controlPanel.getDisplay().timerExec(milliseconds, runnable);
     }
     protected void testFinished()
     {
@@ -561,6 +617,15 @@ public class TestView extends ViewPart implements ISelectionChangedListener
         setText(foreignViewer, foreignDoc, "", null);
         show(SHOW_BOTH);
         
+        restoreView();
+        
+        test = null;
+        controlPanel.setTestControlVisible(false);
+        controlPanel.setFlipControlVisible(false);
+        controlPanel.setStatusVisible(false);
+    }
+    protected void restoreView()
+    {
         IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow(); 
         IWorkbenchPage page = window.getActivePage(); 
         try
@@ -577,11 +642,6 @@ public class TestView extends ViewPart implements ISelectionChangedListener
         {
             e.printStackTrace();
         }
-        
-        test = null;
-        controlPanel.setTestControlVisible(false);
-        controlPanel.setFlipControlVisible(false);
-        controlPanel.setStatusVisible(false);
     }
     protected void setTestItem(TestItem ti)
     {
@@ -590,7 +650,6 @@ public class TestView extends ViewPart implements ISelectionChangedListener
             testFinished();
             return;
         }
-        Display display = getSite().getShell().getDisplay();
         nativeFont = null;
         if (ti.getNativeFontData() != null)
             nativeFont = LanguageTestPlugin.getFont(ti.getNativeFontData());

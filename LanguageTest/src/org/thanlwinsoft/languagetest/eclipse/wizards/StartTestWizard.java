@@ -3,6 +3,8 @@
  */
 package org.thanlwinsoft.languagetest.eclipse.wizards;
 
+import java.io.IOException;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -26,6 +28,7 @@ import org.thanlwinsoft.languagetest.language.test.Test;
 import org.thanlwinsoft.languagetest.language.test.TestManager;
 import org.thanlwinsoft.languagetest.language.test.TestType;
 import org.thanlwinsoft.languagetest.language.test.TestOptions;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.eclipse.ui.views.navigator.ResourceNavigator;
 
 /**
@@ -77,6 +80,19 @@ public class StartTestWizard extends Wizard
                     testTypePage.getUser(),
                     testTypePage.getNativeLanguage().getCode(),
                     testTypePage.getForeignLanguage().getCode());
+            ScopedPreferenceStore prefs = testTypePage.getPrefStore(testTypePage.getUser());
+            prefs.setValue(TestTypePage.NATIVE_TEST_LANG_PREF, testTypePage.getNativeLanguage().getCode());
+            prefs.setValue(TestTypePage.FOREIGN_TEST_LANG_PREF, testTypePage.getForeignLanguage().getCode());
+            
+            try
+            {
+                prefs.save();
+            }
+            catch (IOException e)
+            {
+                LanguageTestPlugin.log(IStatus.WARNING, e.getLocalizedMessage(), e);
+            }
+            
             Test test = null;
             TestType testType = testTypePage.getTestType();
             TestOptions options = new TestOptions(testType);

@@ -94,7 +94,7 @@ public class TestItemSearchViewPage extends AbstractTextSearchViewPage
     protected void configureTableViewer(TableViewer viewer)
     {
         if (viewer.getTable().isDisposed()) return;
-        System.out.println(this + "ConfigureTableViewer " + viewer);
+        //System.out.println(this + "ConfigureTableViewer " + viewer);
         if (viewer.getContentProvider() == null)
         {
             provider = new TableContentProvider();
@@ -122,7 +122,7 @@ public class TestItemSearchViewPage extends AbstractTextSearchViewPage
      */
     protected void configureTreeViewer(TreeViewer viewer)
     {
-        System.out.println(this + "ConfigureTreeViewer " + viewer);
+        //System.out.println(this + "ConfigureTreeViewer " + viewer);
         this.treeViewer = viewer;
         if (viewer.getTree().isDisposed()) return;
         if (viewer.getContentProvider() == null)
@@ -291,7 +291,7 @@ public class TestItemSearchViewPage extends AbstractTextSearchViewPage
 
             public void run()
             {
-                System.out.println("updateTableViewer" + result.getMatchCount());
+                //System.out.println("updateTableViewer" + result.getMatchCount());
                 if (tableViewer != null && !tableViewer.getTable().isDisposed())
                 {
                     if (tableViewer.getTable().getColumnCount() == 0)
@@ -347,9 +347,9 @@ public class TestItemSearchViewPage extends AbstractTextSearchViewPage
                     tableViewer.getTable().redraw();
 
                     tableViewer.getTable().setToolTipText(result.getLabel());
-                    System.out.println("updatedTableViewer" + tableViewer.getTable().getItemCount() + tableViewer);
+                    //System.out.println("updatedTableViewer" + tableViewer.getTable().getItemCount() + tableViewer);
                 }
-                else System.out.println("no table viewer update");
+                //else System.out.println("no table viewer update");
             }
         };
         if (async)
@@ -366,7 +366,7 @@ public class TestItemSearchViewPage extends AbstractTextSearchViewPage
 
             public void run()
             {
-                System.out.println("updateTreeViewer" + result.getMatchCount());
+                //System.out.println("updateTreeViewer" + result.getMatchCount());
                 if (treeViewer != null && !treeViewer.getTree().isDisposed())
                 {
                     
@@ -375,7 +375,7 @@ public class TestItemSearchViewPage extends AbstractTextSearchViewPage
                     treeViewer.getTree().redraw();
                     treeViewer.getTree().setToolTipText(result.getLabel());
                 }
-                else System.out.println("no tree viewer update");
+                //else System.out.println("no tree viewer update");
                 
             }
         };
@@ -396,7 +396,7 @@ public class TestItemSearchViewPage extends AbstractTextSearchViewPage
         if (e.getSource() instanceof TestItemSearchResult)
         {
             result = (TestItemSearchResult)e.getSource();
-            System.out.println("handleSearchResult " + result);
+            //System.out.println("handleSearchResult " + result);
         }
         if (result != null)
         {
@@ -415,7 +415,7 @@ public class TestItemSearchViewPage extends AbstractTextSearchViewPage
         if (newSearch instanceof TestItemSearchResult)
         {
             result = (TestItemSearchResult)newSearch;
-            System.out.println("setInput" + newSearch);
+            //System.out.println("setInput" + newSearch);
             result.addListener(new ISearchResultListener() {
                 public void searchResultChanged(SearchResultEvent e)
                 {

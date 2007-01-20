@@ -3,20 +3,29 @@
  */
 package org.thanlwinsoft.languagetest.eclipse.views;
 
+import java.io.IOException;
+
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.thanlwinsoft.eclipse.widgets.SoundPlayer;
 import org.thanlwinsoft.languagetest.MessageUtil;
+import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Spinner;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Slider;
 import org.eclipse.swt.custom.StyledText;
@@ -37,8 +46,12 @@ public class TestControlPanel extends Composite
     private Group flipGroup = null;
     private Button pauseButton = null;
     private Slider flipInterval = null;
+    private Spinner repeatSpinner = null;
     private Group statusGroup = null;
     private StyledText statusText = null;
+    public final static int MIN_PERIOD = 1000;
+    public final static int MAX_PERIOD = 30000;// 30sec
+    
     public TestControlPanel(TestView view, Composite parent, int style)
     {
         super(parent, style);
@@ -67,6 +80,8 @@ public class TestControlPanel extends Composite
         fd.right = new FormAttachment(100, 0);
         flipGroup.setLayoutData(fd);
         fd = new FormData();
+        // assume test control group is taller than flip group
+        fd.top = new FormAttachment(testControlGroup);
         fd.bottom = new FormAttachment(100, 0);
         fd.left = new FormAttachment(0, 0);
         fd.right = new FormAttachment(100, 0);
@@ -83,7 +98,7 @@ public class TestControlPanel extends Composite
         setGroupVisible(testControlGroup, false);
         setGroupVisible(flipGroup, false);
         setStatusVisible(false);
-        pack();
+        //pack();
     }
     public SoundPlayer player()
     {
@@ -150,24 +165,96 @@ public class TestControlPanel extends Composite
      */
     private void createFlipGroup()
     {
-        GridLayout gridLayout1 = new GridLayout();
-        gridLayout1.numColumns = 1;
+        GridLayout layout = new GridLayout();
+        layout.numColumns = 2;
         flipGroup = new Group(this, SWT.NONE);
-        flipGroup.setLayout(gridLayout1);
-        flipGroup.setBounds(new Rectangle(5, 5, 14, 14));
-        pauseButton = new Button(flipGroup, SWT.NONE);
+        
+        flipGroup.setLayout(layout);
+        flipGroup.setText(MessageUtil.getString("FlipCardsGroup"));
+        Label labelInterval = new Label(flipGroup, SWT.LEAD);
+        labelInterval.setText(MessageUtil.getString("FlipInterval"));
+        GridData layoutData = new GridData(GridData.FILL_HORIZONTAL);
+        layoutData.horizontalSpan = 2;
+        labelInterval.setLayoutData(layoutData);
+        flipInterval = new Slider(flipGroup, SWT.NONE);
+        flipInterval.setMinimum(MIN_PERIOD);
+        flipInterval.setMaximum(MAX_PERIOD);
+        flipInterval.setThumb(1000);
+        flipInterval.setPageIncrement(5000);
+        flipInterval.setIncrement(1000);
+        layoutData = new GridData(GridData.FILL_HORIZONTAL);
+        layoutData.horizontalSpan = 2;
+        flipInterval.setLayoutData(layoutData);
+        int flipMs = LanguageTestPlugin.getPrefStore().getInt(TestView.FLIP_PERIOD_PREF);
+        
+        flipInterval.setSelection(flipMs);
+        flipInterval.addSelectionListener(new SelectionListener() {
+
+            public void widgetDefaultSelected(SelectionEvent e)
+            {
+                
+            }
+
+            public void widgetSelected(SelectionEvent e)
+            {
+                flipInterval.setToolTipText(MessageUtil.getString("FlipIntervalToolTip", 
+                                Integer.toString(flipInterval.getSelection()/1000)));
+                LanguageTestPlugin.getPrefStore().setValue(TestView.FLIP_PERIOD_PREF, 
+                                flipInterval.getSelection());
+                try
+                {
+                    LanguageTestPlugin.getPrefStore().save();
+                }
+                catch (IOException ioe)
+                {
+                    LanguageTestPlugin.log(IStatus.WARNING, ioe.getMessage(), ioe);
+                }
+            }});
+        flipInterval.setToolTipText(MessageUtil.getString("FlipIntervalToolTip", 
+                        Integer.toString(flipMs/1000)));
+        Label labelRepeat = new Label(flipGroup, SWT.LEAD);
+        labelRepeat.setText(MessageUtil.getString("RepeatLabel"));
+        repeatSpinner = new Spinner(flipGroup, SWT.NONE);
+        int repeatCount = LanguageTestPlugin.getPrefStore().getInt(TestView.FLIP_REPEAT_PREF);
+        repeatSpinner.setValues(repeatCount, 1, 20, 0, 1, 5);
+        repeatSpinner.addSelectionListener(new SelectionListener() {
+
+            public void widgetDefaultSelected(SelectionEvent e)
+            {
+                
+            }
+
+            public void widgetSelected(SelectionEvent e)
+            {
+                repeatSpinner.setToolTipText(MessageUtil.getString("RepeatCountToolTip", 
+                                Integer.toString(repeatSpinner.getSelection())));
+                LanguageTestPlugin.getPrefStore().setValue(TestView.FLIP_REPEAT_PREF, 
+                                repeatSpinner.getSelection());
+                try
+                {
+                    LanguageTestPlugin.getPrefStore().save();
+                }
+                catch (IOException ioe)
+                {
+                    LanguageTestPlugin.log(IStatus.WARNING, ioe.getMessage(), ioe);
+                }
+            }});
+        repeatSpinner.setToolTipText(MessageUtil.getString("RepeatCountToolTip", 
+                        Integer.toString(repeatCount)));
+        
+        pauseButton = new Button(flipGroup, SWT.TOGGLE);
         pauseButton.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter()
         {
             public void widgetSelected(org.eclipse.swt.events.SelectionEvent e)
             {
-                System.out.println("widgetSelected()"); // TODO Auto-generated Event stub widgetSelected()
+                
             }
         });
         pauseButton.setText(MessageUtil.getString("Pause"));
-        pauseButton.setText(MessageUtil.getString("PauseToolTip"));
-        
-        flipInterval = new Slider(flipGroup, SWT.NONE);
-        flipInterval.setToolTipText(MessageUtil.getString("FlipIntervalToolTip"));
+        pauseButton.setToolTipText(MessageUtil.getString("PauseToolTip"));
+        layoutData = new GridData(GridData.FILL_HORIZONTAL);
+        layoutData.horizontalSpan = 2;
+        pauseButton.setLayoutData(layoutData);
     }
     /**
      * This method initializes statusGroup	
@@ -176,45 +263,41 @@ public class TestControlPanel extends Composite
     private void createStatusGroup()
     {
         statusGroup = new Group(this, SWT.NONE);
-        statusGroup.setLayout(new GridLayout());
-        statusGroup.setBounds(new Rectangle(5, 5, 14, 14));
-        statusText = new StyledText(statusGroup, SWT.READ_ONLY);
+        statusGroup.setText(MessageUtil.getString("StatusGroup"));
+        statusGroup.setLayout(new FillLayout());
+        //statusGroup.setBounds(new Rectangle(5, 5, 40, 40));
+        statusText = new StyledText(statusGroup, SWT.READ_ONLY | SWT.MULTI);
+        statusText.setSize(100, 100);
     }
     
     protected void setTestControlVisible(boolean visible)
     {
         setGroupVisible(testControlGroup,visible);
-        //setGroupVisible(statusGroup, visible);
-        //setGroupVisible(flipGroup, visible);
     }
     protected void setFlipControlVisible(boolean visible)
     {
         setGroupVisible(flipGroup, visible);
-        //setGroupVisible(statusGroup, visible);
-        //setGroupVisible(testControlGroup,visible);
     }
     protected void setStatusVisible(boolean visible)
     {
-        //setGroupVisible(statusGroup,visible, flipGroup);
+        setGroupVisible(statusGroup,visible);
         
     }
     private void setGroupVisible(Group group, boolean visible)
     {
-//        FormData fd = new FormData();
-//        if (attach == null)
-//            fd.top = new FormAttachment(0, 0);
-//        else
-//            fd.top = new FormAttachment(attach, 0);
-//        group.setLayoutData(fd);
         
         group.setVisible(visible);
-        group.setLayoutDeferred(!visible);
-//        RowData rd = new RowData(SWT.DEFAULT, 1);
-//        if (visible)
-//            rd = new RowData(SWT.DEFAULT, SWT.DEFAULT);
-//        group.setLayoutData(rd);
-        pack();
-        redraw();
     }
-    
+    /** Checks whether the pause button is pressed in
+     * @return
+     */
+    public boolean isTestPaused()
+    {
+        return pauseButton.getSelection();
+    }
+    public void setStatus(String message)
+    {
+        statusText.setText(message);
+        statusText.setToolTipText(message);
+    }
 }

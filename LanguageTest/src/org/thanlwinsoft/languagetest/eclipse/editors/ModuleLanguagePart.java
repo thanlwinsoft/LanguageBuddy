@@ -231,11 +231,11 @@ public class ModuleLanguagePart extends EditorPart implements ModifyListener {
         int i = 0;
         for (; i < nLangArray.length; i++)
         {
-            langArray[i] = nLangArray[i];
+            langArray[i] = (LangType)nLangArray[i].copy();
         }
         for (; i < langArray.length; i++)
         {
-            langArray[i] = fLangArray[i - nLangArray.length];
+            langArray[i] = (LangType)fLangArray[i - nLangArray.length].copy();
         }
         parent.getDocument().getLanguageModule().setLangArray(langArray);
         nativeTable.saveProjectLangs(project, null, true);

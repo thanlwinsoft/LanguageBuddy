@@ -140,7 +140,7 @@
                icon="icons/startTest.png"
                id="org.thanlwinsoft.languagetest.eclipse.wizards.StartTestAction"
                label="%LanguageTest.startTestAction"
-               menubarPath="File"
+               menubarPath="File/new"
                style="push"
                toolbarPath="Bar/new"
                tooltip="%LanguageTest.startTestActionDesc"/>
@@ -360,7 +360,7 @@ wizardId=
          canSearchEnclosingProjects="true"
          class="org.thanlwinsoft.languagetest.eclipse.search.LanguageTestItemSearch"
          enabled="true"
-         extensions="xml"
+         extensions="xml:1"
          icon="icons/testItemSearch.png"
          id="org.thanlwinsoft.languagetest.eclipse.search.LanguageTestItemSearch"
          label="%LanguageTest.searchPage"

@@ -8,6 +8,8 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ProjectScope;
+import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
@@ -17,6 +19,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Combo;
 import org.thanlwinsoft.languagetest.MessageUtil;
+import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.thanlwinsoft.languagetest.eclipse.WorkspaceLanguageManager;
 import org.thanlwinsoft.languagetest.language.test.TestType;
 import org.thanlwinsoft.languagetest.language.test.UniversalLanguage;
@@ -25,6 +28,7 @@ import org.thanlwinsoft.schemas.languagetest.LangTypeType;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 /**
  * @author keith
@@ -52,6 +56,8 @@ public class TestTypePage extends WizardPage
     private Label paddingLabel3 = null;
     private Combo maxItemsCombo = null;
     private Label maxItemsLabel = null;
+    public final static String NATIVE_TEST_LANG_PREF = "NativeTestLang";
+    public final static String FOREIGN_TEST_LANG_PREF = "ForeignTestLang";
     private final static int [] MAX_ITEMS = { -1, 10, 25, 50, 100, 200, 500 }; 
     
     /**
@@ -217,6 +223,14 @@ public class TestTypePage extends WizardPage
         }
     }
 
+    protected ScopedPreferenceStore getPrefStore(IProject userProject)
+    {
+        ProjectScope configScope = new ProjectScope(userProject);
+        ScopedPreferenceStore prefStore = 
+            new ScopedPreferenceStore(configScope, LanguageTestPlugin.ID);
+        
+        return prefStore;
+    }
     /**
      * This method initializes nativeCombo	
      *
@@ -230,18 +244,22 @@ public class TestTypePage extends WizardPage
         Iterator ie = map.entrySet().iterator();
         String [] items = new String[map.size()];
         nativeLangs = new UniversalLanguage[map.size()];
+        String prevLang = getPrefStore(userProject).getString(FOREIGN_TEST_LANG_PREF);
+        int selection = 0;
         int i = 0;
         while (ie.hasNext())
         {
             Map.Entry entry = (Map.Entry)ie.next();
             nativeLangs[i] = new UniversalLanguage(entry.getKey().toString());
             items[i] = nativeLangs[i].getDescription();
+            if (nativeLangs[i].getCode().equals(prevLang))
+                selection = i;
             i++;
         }
         nativeCombo.setItems(items);
-        if (items.length == 1) 
+        if (items.length > 0) 
         {
-            nativeCombo.select(0);
+            nativeCombo.select(selection);
         }
         nativeCombo.addSelectionListener(new org.eclipse.swt.events.SelectionListener()
         {
@@ -269,17 +287,22 @@ public class TestTypePage extends WizardPage
         String [] items = new String[map.size()];
         foreignLangs = new UniversalLanguage[map.size()];
         int i = 0;
+        
+        String prevLang = getPrefStore(userProject).getString(FOREIGN_TEST_LANG_PREF);
+        int selection = 0;
         while (ie.hasNext())
         {
             Map.Entry entry = (Map.Entry)ie.next();
             foreignLangs[i] = new UniversalLanguage(entry.getKey().toString());
             items[i] = foreignLangs[i].getDescription();
+            if (foreignLangs[i].getCode().equals(prevLang))
+                selection = i;
             i++;
         }
         foreignCombo.setItems(items);
-        if (items.length == 1) 
+        if (items.length > 0) 
         {
-            foreignCombo.select(0);
+            foreignCombo.select(selection);
         }
         foreignCombo
                 .addSelectionListener(new SelectionListener()

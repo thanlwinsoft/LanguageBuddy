@@ -57,6 +57,14 @@ public class TestModuleEditor extends MultiPageEditorPart
         
     }
     /* (non-Javadoc)
+     * @see org.eclipse.ui.part.MultiPageEditorPart#getAdapter(java.lang.Class)
+     */
+    public Object getAdapter(Class adapter)
+    {
+        System.out.println(adapter.toString());
+        return super.getAdapter(adapter);
+    }
+    /* (non-Javadoc)
      * @see org.eclipse.ui.part.EditorPart#doSave(org.eclipse.core.runtime.IProgressMonitor)
      */
     public void doSave(IProgressMonitor monitor)

@@ -67,7 +67,14 @@ public class LanguageTestPlugin extends AbstractUIPlugin
     }
     protected void writeImportantState(File target) 
     {
-        
+//        try
+//        {
+//            prefStore.save();
+//        }
+//        catch (IOException e)
+//        {
+//            System.out.println(e);
+//        }
     }
 
 
@@ -76,14 +83,7 @@ public class LanguageTestPlugin extends AbstractUIPlugin
      */
     public void stop(BundleContext context) throws Exception 
     {
-        try
-        {
-            prefStore.save();
-        }
-        catch (IOException e)
-        {
-            System.out.println(e);
-        }
+        
         super.stop(context);
         plugin = null;
     }

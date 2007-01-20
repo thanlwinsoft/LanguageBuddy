@@ -155,11 +155,12 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         editMenu.add(cutAction);
         editMenu.add(copyAction);
         editMenu.add(pasteAction);
+        editMenu.add(new GroupMarker("org.eclipse.ui.edit.text.gotoLastEditPosition"));
+        
         
         windowMenu.add(preferencesAction);
         windowMenu.add(showViewAction);
         
-        //editMenu.add(new GroupMarker("org.eclipse.ui.edit.text.gotoLastEditPosition"));
         // Help
         helpMenu.add(aboutAction);
     }
