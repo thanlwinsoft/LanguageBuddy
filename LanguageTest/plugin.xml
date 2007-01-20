@@ -364,7 +364,8 @@ wizardId=
          icon="icons/testItemSearch.png"
          id="org.thanlwinsoft.languagetest.eclipse.search.LanguageTestItemSearch"
          label="%LanguageTest.searchPage"
-         tabPosition="1"/>
+         showScopeSection="true"
+         tabPosition="0"/>
 </extension>
 <extension
       point="org.eclipse.search.searchResultViewPages">

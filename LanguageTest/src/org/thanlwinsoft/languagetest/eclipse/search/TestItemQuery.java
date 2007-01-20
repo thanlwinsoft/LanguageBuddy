@@ -24,11 +24,14 @@ public class TestItemQuery implements ISearchQuery
     private TestItemSearchEngine engine = null;
     private TextSearchScope scope = null;
     private Pattern searchPattern;
-    public TestItemQuery(TestItemSearchEngine engine, TextSearchScope scope, Pattern pattern)
+    private String [] langCodes;
+    public TestItemQuery(TestItemSearchEngine engine, TextSearchScope scope, 
+                         Pattern pattern, String [] langCodes)
     {
         this.engine = engine;
         this.scope = scope;
         this.searchPattern = pattern;
+        this.langCodes = langCodes;
         engine.setQuery(this);
     }
     /* (non-Javadoc)
@@ -40,6 +43,7 @@ public class TestItemQuery implements ISearchQuery
         return true;
     }
 
+    
     /* (non-Javadoc)
      * @see org.eclipse.search.ui.ISearchQuery#canRunInBackground()
      */
@@ -72,8 +76,11 @@ public class TestItemQuery implements ISearchQuery
                     throws OperationCanceledException
     {
         TextSearchRequestor requestor = null;
-        
+        engine.getResult().removeAll();
         return engine.search(scope, requestor, searchPattern, monitor);
     }
-
+    public final String [] getLangCodes()
+    {
+        return langCodes;
+    }
 }

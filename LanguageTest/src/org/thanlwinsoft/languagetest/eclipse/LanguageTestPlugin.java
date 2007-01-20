@@ -11,7 +11,11 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.resource.FontRegistry;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -113,5 +117,14 @@ public class LanguageTestPlugin extends AbstractUIPlugin
             System.out.println("[" + status + "]" + msg);
             e.printStackTrace();
         }
+    }
+    public static Font getFont(FontData fd)
+    {
+        FontRegistry r = JFaceResources.getFontRegistry();
+        if (!r.hasValueFor(fd.toString()))
+        {
+            r.put(fd.toString(), new FontData[]{fd});
+        }
+        return r.get(fd.toString());
     }
 }

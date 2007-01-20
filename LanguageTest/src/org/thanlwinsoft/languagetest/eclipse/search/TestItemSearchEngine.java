@@ -21,9 +21,12 @@ import org.eclipse.search.core.text.TextSearchRequestor;
 import org.eclipse.search.core.text.TextSearchScope;
 import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.search.ui.text.Match;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.FontData;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.thanlwinsoft.schemas.languagetest.LangEntryType;
+import org.thanlwinsoft.schemas.languagetest.LangType;
 import org.thanlwinsoft.schemas.languagetest.LanguageModuleDocument;
 import org.thanlwinsoft.schemas.languagetest.LanguageModuleType;
 import org.thanlwinsoft.schemas.languagetest.TestItemType;
@@ -37,7 +40,11 @@ public class TestItemSearchEngine extends TextSearchEngine
     private HashSet langSet = null;
     private TestItemSearchResult searchResult = null;
     private ISearchQuery query = null;
+    // internal variables for TestModule currently being processed
     private HashMap fontMap = null;
+    private LanguageModuleType lm = null;
+    private int maxLanguages = 0;
+    
     public TestItemSearchEngine(HashSet langSet)
     {
         this.langSet = langSet;
@@ -47,10 +54,13 @@ public class TestItemSearchEngine extends TextSearchEngine
     {
         return searchResult;
     }
-    public void setQuery(ISearchQuery query)
+    public void setQuery(TestItemQuery query)
     {
         this.query = query;
         searchResult = new TestItemSearchResult(query);
+        maxLanguages = 0;
+        lm = null;
+        fontMap = null;
     }
     /* (non-Javadoc)
      * @see org.eclipse.search.core.text.TextSearchEngine#search(org.eclipse.search.core.text.TextSearchScope, org.eclipse.search.core.text.TextSearchRequestor, java.util.regex.Pattern, org.eclipse.core.runtime.IProgressMonitor)
@@ -68,17 +78,14 @@ public class TestItemSearchEngine extends TextSearchEngine
     public IStatus search(IFile[] scope, TextSearchRequestor requestor,
                     Pattern searchPattern, IProgressMonitor monitor)
     {
-        //requestor.beginReporting();
-        
         for (int i = 0; i < scope.length; i++)
         {
             try
             {
-                //if (!requestor.acceptFile(scope[i])) continue;
-                
                 LanguageModuleDocument doc =
                     LanguageModuleDocument.Factory.parse(scope[i].getContents());
-                LanguageModuleType lm = doc.getLanguageModule();
+                lm = doc.getLanguageModule();
+                fontMap = null;
                 if (lm == null) continue;
                 for (int j = 0; j < lm.sizeOfTestItemArray(); j++)
                 {
@@ -89,7 +96,7 @@ public class TestItemSearchEngine extends TextSearchEngine
                         LangEntryType let = ti.getNativeLangArray(k);
                         if (langSet == null || langSet.contains(let.getLang()))
                         {
-                            index(scope[i], j, let, searchPattern);
+                            index(scope[i], j, ti, let, searchPattern);
                             monitor.worked(1);
                         }
                     }
@@ -98,7 +105,7 @@ public class TestItemSearchEngine extends TextSearchEngine
                         LangEntryType let = ti.getForeignLangArray(k);
                         if (langSet == null || langSet.contains(let.getLang()))
                         {
-                            index(scope[i], j, let, searchPattern);
+                            index(scope[i], j, ti, let, searchPattern);
                             monitor.worked(1);
                         }
                     }
@@ -118,22 +125,43 @@ public class TestItemSearchEngine extends TextSearchEngine
                 e.printStackTrace();
             }
         }
-        //requestor.endReporting();
         
         IStatus status = new Status(IStatus.OK, LanguageTestPlugin.ID, IStatus.OK, 
                         MessageUtil.getString("SearchOKStatus"), null);
         return status;
     }
-    private void index(IFile file, int item, LangEntryType let, 
+    private void index(IFile file, int item, TestItemType testItem, 
+                       LangEntryType let, 
                        Pattern searchPattern)
     {
         Matcher m = searchPattern.matcher(let.getStringValue());
-        while (m.find())
+//   we don't distinguish between more than one match within an item
+        //while (m.find())
+        if (m.find()) 
         {
-            m.start();
-            Match match = new TestItemMatch(file, item, let, 
-                                            m.start(), m.end() - m.start());
+            if (fontMap == null)
+            {
+                getFontMap();
+            }
+            Match match = new TestItemMatch(file, item, testItem, let, 
+                                            m.start(), m.end() - m.start(), 
+                                            fontMap);
             searchResult.addMatch(match);
+        }
+    }
+    private void getFontMap()
+    {
+        if (lm != null)
+        {
+            fontMap = new HashMap(lm.sizeOfLangArray());
+            for (int i = 0; i < lm.sizeOfLangArray(); i++)
+            {
+                LangType lt = lm.getLangArray(i);
+                FontData fd = new FontData(lt.getFont(), 
+                                lt.getFontSize().intValue(), SWT.NORMAL);
+                fontMap.put(lt.getLang(), fd);
+            }
+            maxLanguages = Math.max(maxLanguages, lm.sizeOfLangArray());
         }
     }
 }

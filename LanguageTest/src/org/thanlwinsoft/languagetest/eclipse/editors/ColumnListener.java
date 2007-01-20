@@ -20,7 +20,14 @@ public class ColumnListener implements SelectionListener
     private int columnIndex = -1;
     private String column = null;
     private String localeID = null;
-    
+    /**
+     * A listener to detect clicks on column headings to initiate TestItem sorting
+     * @param viewer
+     * @param sorter
+     * @param columnIndex
+     * @param colId
+     * @param localeId
+     */
     public ColumnListener(TableViewer viewer, TestItemSorter sorter, int columnIndex, String colId, String localeId)
     {
         this.tableViewer = viewer;

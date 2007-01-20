@@ -4,15 +4,21 @@
 package org.thanlwinsoft.languagetest.eclipse.search;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Vector;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.jface.resource.FontRegistry;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Region;
+import org.eclipse.jface.viewers.IFontProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ITableFontProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -25,6 +31,8 @@ import org.eclipse.search.ui.SearchResultEvent;
 import org.eclipse.search.ui.text.AbstractTextSearchViewPage;
 import org.eclipse.search.ui.text.Match;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IEditorPart;
@@ -36,7 +44,12 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
+import org.thanlwinsoft.languagetest.eclipse.editors.ColumnListener;
+import org.thanlwinsoft.languagetest.eclipse.editors.TestItemSorter;
 import org.thanlwinsoft.languagetest.eclipse.editors.TestModuleEditor;
+import org.thanlwinsoft.languagetest.language.test.UniversalLanguage;
+import org.thanlwinsoft.schemas.languagetest.LangEntryType;
+import org.thanlwinsoft.schemas.languagetest.TestItemType;
 
 /**
  * @author keith
@@ -48,6 +61,11 @@ public class TestItemSearchViewPage extends AbstractTextSearchViewPage
     private TreeViewer treeViewer = null;
     private TableViewer tableViewer = null;
     private TestItemSearchResult result = null;
+    private String [] colLangId = null;
+    private final static int ROW_FONT_SIZE = 12;
+    private final static int TABLE_FONT_SIZE = 14;
+    TestItemSorter sorter = new TestItemSorter();
+    
     /* (non-Javadoc)
      * @see org.eclipse.search.ui.text.AbstractTextSearchViewPage#clear()
      */
@@ -69,23 +87,16 @@ public class TestItemSearchViewPage extends AbstractTextSearchViewPage
         if (viewer.getContentProvider() == null)
         {
             provider = new TableContentProvider();
-            if (viewer.getTable().getColumnCount() == 0)
-            {
-                TableColumn tc = new TableColumn(viewer.getTable(), SWT.LEFT);
-                tc.setResizable(true);
-                tc.setText(MessageUtil.getString("Matches"));
-                tc.setToolTipText(MessageUtil.getString("Matches"));
-                tc.setWidth(200);
-                tc = new TableColumn(viewer.getTable(), SWT.LEFT);
-                tc.setResizable(true);
-                tc.setText(MessageUtil.getString("File"));
-                tc.setToolTipText(MessageUtil.getString("File"));
-                tc.setWidth(100);
-            }
             viewer.setContentProvider(provider);
             viewer.setLabelProvider(new TestItemTableLabelProvider());
             viewer.getTable().setHeaderVisible(true);
-            viewer.setColumnProperties(new String[]{ "Matches" });
+            FontData fd = JFaceResources.getDialogFont().getFontData()[0];
+            // deliberately up the size because if the font size is too small
+            // bigger table cell fonts are truncated
+            FontData fdBig = new FontData(fd.getName(), TABLE_FONT_SIZE, fd.getStyle());
+            Font font = LanguageTestPlugin.getFont(fdBig);                                 
+            viewer.getTable().setFont(font);
+            
         }
         this.tableViewer = viewer;
         if (result != null)
@@ -104,7 +115,7 @@ public class TestItemSearchViewPage extends AbstractTextSearchViewPage
         if (viewer.getContentProvider() == null)
         {
             viewer.setContentProvider(new TestItemSearchTreeProvider());
-            viewer.setLabelProvider(new LabelProvider());
+            viewer.setLabelProvider(new TestItemTableLabelProvider());
         }
         if (result != null)
         {
@@ -154,7 +165,7 @@ public class TestItemSearchViewPage extends AbstractTextSearchViewPage
      */
     protected void elementsChanged(Object[] objects)
     {
-        
+        updateViewerInputs(true);
     }
     
     public class TestItemSearchTreeProvider implements ITreeContentProvider
@@ -244,6 +255,18 @@ public class TestItemSearchViewPage extends AbstractTextSearchViewPage
         super.saveState(memento);
     }
 
+    /* (non-Javadoc)
+     * @see org.eclipse.search.ui.text.AbstractTextSearchViewPage#getLabel()
+     */
+    public String getLabel()
+    {
+        if (result != null)
+        {
+            result.getLabel();
+        }
+        return super.getLabel();
+    }
+
     private void updateViewerInputs(boolean async)
     {
         Runnable runnable = new Runnable() {
@@ -259,12 +282,50 @@ public class TestItemSearchViewPage extends AbstractTextSearchViewPage
                     treeViewer.setInput(result.getElements());
                     treeViewer.refresh();
                     treeViewer.getTree().redraw();
+                    treeViewer.getTree().setToolTipText(result.getLabel());
                 }
                 if (tableViewer != null && !tableViewer.getTable().isDisposed())
                 {
-                    if (tableViewer.getContentProvider() == null)
+//                    if (tableViewer.getContentProvider() == null)
+//                    {
+//                        tableViewer.setContentProvider(new TableContentProvider());
+//                    }
+                    if (tableViewer.getTable().getColumnCount() == 0)
                     {
-                        tableViewer.setContentProvider(new TableContentProvider());
+                        int width = 200;
+                        if (getControl() != null)
+                        {
+                            // allow room for a scroll bar
+                            int totalWidth = getControl().getSize().x - 25;
+                            width = (int)Math.floor((float)totalWidth / 
+                                    (float)(result.getLanguageCount() + 1));
+                        }
+                        Iterator i = result.getLanguages().iterator();
+                        colLangId = new String[result.getLanguageCount()];
+                        int c = 0;
+                        Font font = JFaceResources.getTextFont();
+                        
+                        while (i.hasNext())
+                        {
+                            TableColumn tc = new TableColumn(tableViewer.getTable(), SWT.LEFT);
+                            tc.setResizable(true);
+                            UniversalLanguage lang = new UniversalLanguage(i.next().toString());
+                            tc.setText(lang.getDescription());
+                            tc.setToolTipText(lang.getDescription());
+                            //tc.setText(MessageUtil.getString("Matches"));
+                            //tc.setToolTipText(MessageUtil.getString("Matches"));
+                            tc.setWidth(width);
+                            tc.addSelectionListener(new ColumnListener(tableViewer, sorter, 
+                                            c, lang.getCode(), lang.getICUlocaleID()));
+                            colLangId[c++] = lang.getCode();
+                        }
+                        TableColumn tc = new TableColumn(tableViewer.getTable(), SWT.LEFT);
+                        tc.setResizable(true);
+                        tc.setText(MessageUtil.getString("FileColName"));
+                        tc.setToolTipText(MessageUtil.getString("FileColName"));
+                        tc.setWidth(width);
+                        tc.addSelectionListener(new ColumnListener(tableViewer, sorter, 
+                                                c, "File", null));
                     }
                     Object [] files = result.getElements();
                     Vector v = new Vector(2 * files.length);
@@ -287,7 +348,10 @@ public class TestItemSearchViewPage extends AbstractTextSearchViewPage
                     
                     tableViewer.refresh(true);
                     tableViewer.getTable().redraw();
+
+                    tableViewer.getTable().setToolTipText(result.getLabel());
                 }
+                
             }
         };
         if (async)
@@ -383,9 +447,11 @@ public class TestItemSearchViewPage extends AbstractTextSearchViewPage
         }
         
     }
-    public class TestItemTableLabelProvider extends LabelProvider implements ITableLabelProvider
+    public class TestItemTableLabelProvider extends LabelProvider implements ITableLabelProvider, IFontProvider, ITableFontProvider
     {
         private Image image = null;
+        private HashMap fontMap = new HashMap();
+        private Font font = null;
         public TestItemTableLabelProvider()
         {
             image = LanguageTestPlugin.getImageDescriptor("icons/module.png").createImage();
@@ -395,7 +461,8 @@ public class TestItemSearchViewPage extends AbstractTextSearchViewPage
          */
         public Image getColumnImage(Object element, int columnIndex)
         {
-            if (element instanceof TestItemMatch && columnIndex == 1)
+            if (element instanceof TestItemMatch && 
+                columnIndex == result.getLanguageCount())
             {
                 return image;
             }
@@ -410,16 +477,41 @@ public class TestItemSearchViewPage extends AbstractTextSearchViewPage
             if (element instanceof TestItemMatch)
             {
                 TestItemMatch match = (TestItemMatch)element;
-                switch (columnIndex)
+                if (result == null || columnIndex == result.getLanguageCount())
                 {
-                case 0:
-                    return element.toString();
-                case 1:
-                    return ((IFile)match.getElement()).getName();
+                    if (match.getElement() instanceof IFile)
+                    {
+                        IFile f = (IFile)match.getElement();
+                        return f.getName();
+                    }
+                    return "";
                 }
+                if (colLangId == null || columnIndex > colLangId.length) 
+                    return match.toString();
+                String langCode = colLangId[columnIndex];
+                // last column is the filename
+                if (columnIndex == colLangId.length)
+                    return ((IFile)match.getElement()).getName();
                 
+                TestItemType ti = match.getTestItem();
+                for (int i = 0; i < ti.sizeOfNativeLangArray(); i++)
+                {
+                    LangEntryType entry = ti.getNativeLangArray(i);
+                    if (entry.getLang().equals(langCode))
+                    {
+                        return entry.getStringValue();
+                    }
+                }
+                for (int i = 0; i < ti.sizeOfForeignLangArray(); i++)
+                {
+                    LangEntryType entry = ti.getForeignLangArray(i);
+                    if (entry.getLang().equals(langCode))
+                    {
+                        return entry.getStringValue();
+                    }
+                }
             }
-            return null;
+            return "";
         }
 
         
@@ -430,6 +522,42 @@ public class TestItemSearchViewPage extends AbstractTextSearchViewPage
         public void dispose()
         {
             image.dispose();
+        }
+        /* (non-Javadoc)
+         * @see org.eclipse.jface.viewers.IFontProvider#getFont(java.lang.Object)
+         */
+        public Font getFont(Object element)
+        {
+            if (element instanceof TestItemMatch)
+            {
+                TestItemMatch m = (TestItemMatch)element;
+                FontData fd = m.getFontData();
+                fd.setHeight(ROW_FONT_SIZE);
+                return getFontFromData(fd);
+            }
+            return JFaceResources.getTextFont();
+        }
+        private Font getFontFromData(FontData fd)
+        {
+            return LanguageTestPlugin.getFont(fd);
+        }
+        /* (non-Javadoc)
+         * @see org.eclipse.jface.viewers.ITableFontProvider#getFont(java.lang.Object, int)
+         */
+        public Font getFont(Object element, int columnIndex)
+        {
+            if (element instanceof TestItemMatch && colLangId != null && 
+                columnIndex < colLangId.length)
+            {
+                TestItemMatch m = (TestItemMatch)element;
+                FontData fd = (FontData)m.getFontMap().get(colLangId[columnIndex]);
+                if (fd != null)
+                {
+                    fd.setHeight(ROW_FONT_SIZE);
+                    return getFontFromData(fd);
+                }
+            }
+            return JFaceResources.getDialogFont();
         }
 
         

@@ -10,8 +10,8 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
-import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
+import org.thanlwinsoft.languagetest.eclipse.search.TestItemMatch;
 import org.thanlwinsoft.schemas.languagetest.TestItemType;
 
 import com.ibm.icu.text.Collator;
@@ -64,10 +64,20 @@ public class TestItemSorter extends ViewerComparator
      */
     public int compare(Viewer viewer, Object e1, Object e2)
     {
+        TestItemType i1 = null;
+        TestItemType i2 = null;
         if (e1 instanceof TestItemType && e2 instanceof TestItemType)
         {
-            TestItemType i1 = (TestItemType)e1;
-            TestItemType i2 = (TestItemType)e2;
+            i1 = (TestItemType)e1;
+            i2 = (TestItemType)e2;
+        }
+        if (e1 instanceof TestItemMatch && e2 instanceof TestItemMatch)
+        {
+            i1 = ((TestItemMatch)e1).getTestItem();
+            i2 = ((TestItemMatch)e2).getTestItem();
+        }
+        if (i1 != null && i2 != null)
+        {
             if (column.equals(TestItemEditor.CREATION_DATE))
             {
                 if (i1.getCreationTime() < i2.getCreationTime())

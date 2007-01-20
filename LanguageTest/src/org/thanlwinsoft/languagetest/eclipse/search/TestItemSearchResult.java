@@ -3,6 +3,12 @@
  */
 package org.thanlwinsoft.languagetest.eclipse.search;
 
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.search.ui.ISearchQuery;
@@ -23,10 +29,17 @@ import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 public class TestItemSearchResult extends AbstractTextSearchResult
 {
     private ISearchQuery query;
-    public TestItemSearchResult(ISearchQuery query)
+    
+    private SortedSet languages = new TreeSet();
+    public TestItemSearchResult(TestItemQuery query)
     {
         super();
+        for (int i = 0; i < query.getLangCodes().length; i++)
+        {
+            languages.add(query.getLangCodes()[i]);
+        }
         this.query = query;
+        
     }
     /* (non-Javadoc)
      * @see org.eclipse.search.ui.text.AbstractTextSearchResult#getEditorMatchAdapter()
@@ -71,7 +84,6 @@ public class TestItemSearchResult extends AbstractTextSearchResult
      */
     public Object[] getElements()
     {
-        // TODO Auto-generated method stub
         return super.getElements();
     }
     /* (non-Javadoc)
@@ -150,5 +162,39 @@ public class TestItemSearchResult extends AbstractTextSearchResult
             return false;
         }
         
+    }
+
+    /* (non-Javadoc)
+     * @see org.eclipse.search.ui.text.AbstractTextSearchResult#addMatch(org.eclipse.search.ui.text.Match)
+     */
+    public void addMatch(Match match)
+    {
+        if (match instanceof TestItemMatch)
+        {
+            Map fontMap = ((TestItemMatch)match).getFontMap();
+            if (fontMap != null)
+            {
+                Set langIds = fontMap.keySet();
+                Iterator i = langIds.iterator();
+                while (i.hasNext())
+                {
+                    Object o = i.next();
+                    if (!languages.contains(o))
+                    {
+                        languages.add(o);
+                    }
+                }
+            }
+        }
+        super.addMatch(match);
+    }
+    
+    public int getLanguageCount()
+    {
+        return languages.size();
+    }
+    public Set getLanguages()
+    {
+        return languages;
     }
 }

@@ -34,6 +34,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.thanlwinsoft.languagetest.MessageUtil;
+import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.thanlwinsoft.languagetest.eclipse.WorkspaceLanguageManager;
 import org.thanlwinsoft.languagetest.language.test.UniversalLanguage;
 import org.thanlwinsoft.schemas.languagetest.LangType;
@@ -54,7 +55,6 @@ public class LanguageTestItemSearch extends DialogPage implements ISearchPage
     private Label searchLabel = null;
     private Text searchText = null;
     private Group langGroup = null;
-    private Label langLabel = null;
     private List langList = null;
     private String [] langCodes = null;
     private HashMap fontMap = null;
@@ -92,7 +92,7 @@ public class LanguageTestItemSearch extends DialogPage implements ISearchPage
             Pattern searchPattern = Pattern.compile(searchText.getText(), patternOptions);
             //IJobManager jobMan = Platform.getJobManager();
             //IProgressMonitor monitor = jobMan.createProgressGroup();
-            final TestItemQuery query = new TestItemQuery(engine, scope, searchPattern);
+            final TestItemQuery query = new TestItemQuery(engine, scope, searchPattern, langCodes);
             //NewSearchUI searchUI = new NewSearchUI();
             container = null;
             if (container == null)
@@ -232,7 +232,8 @@ public class LanguageTestItemSearch extends DialogPage implements ISearchPage
                 if (s > -1 && s < langCodes.length)
                 {
                     FontData fd = (FontData)fontMap.get(langCodes[s]);
-                    Font font = new Font(getShell().getDisplay(), fd);
+                    //Font font = new Font(getShell().getDisplay(), fd);
+                    Font font = LanguageTestPlugin.getFont(fd);
                     searchText.setFont(font);
                     mainGroup.pack();
                 }
