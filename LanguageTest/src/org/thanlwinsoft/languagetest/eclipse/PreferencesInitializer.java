@@ -12,7 +12,7 @@ public class PreferencesInitializer extends AbstractPreferenceInitializer
     public static final int DEFAULT_FONT_SIZE = 12;
     public static final String TEST_FONT_SIZE = "TestFontSize";
     
-    private ScopedPreferenceStore prefStore = null;
+    private IPreferenceStore prefStore = null;
     public PreferencesInitializer()
     {
         
@@ -26,10 +26,10 @@ public class PreferencesInitializer extends AbstractPreferenceInitializer
     public void initializeDefaultPreferences()
     {
 //        Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-        
-        ConfigurationScope configScope = new ConfigurationScope();
-        prefStore = new ScopedPreferenceStore(configScope, 
-            "org.thanlwinsoft.languagetest");
+        prefStore = LanguageTestPlugin.getPrefStore();
+//        ConfigurationScope configScope = new ConfigurationScope();
+//        prefStore = new ScopedPreferenceStore(configScope, 
+//            "org.thanlwinsoft.languagetest");
 //        IWorkspace workspace = ResourcesPlugin.getWorkspace();
 //        File pluginStateLocation = 
 //            LanguageTestPlugin.getDefault().getStateLocation().toFile();
@@ -37,6 +37,7 @@ public class PreferencesInitializer extends AbstractPreferenceInitializer
 //        String installArea = System.getProperty("osgi.install.area");
         
         prefStore.setDefault(TEST_FONT_SIZE, DEFAULT_FONT_SIZE);
+        
     }
 
 }

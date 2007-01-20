@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ICellEditorListener;
@@ -46,6 +47,7 @@ import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -133,6 +135,10 @@ public class TestItemEditor extends EditorPart
     private Action insertAction = null;
     private Menu popup = null;
     private TestItemSorter sorter = null;
+    public final static String ROW_FONT_PREF = "TableRowFontSize";
+    public final static String TABLE_FONT_PREF = "TableFontSize";
+    private static int ROW_FONT_SIZE = 12;
+    private static int TABLE_FONT_SIZE = 14;
     
     public TestItemEditor(TestModuleEditor parent)
     {
@@ -141,6 +147,11 @@ public class TestItemEditor extends EditorPart
         this.setPartName(MessageUtil.getString("TestItemEditor"));
         this.setContentDescription(MessageUtil.getString("TestItemEditor"));
         langIds = new Vector(2,2);// lang size may grow, but 2 is minimum
+        LanguageTestPlugin.getPrefStore().setDefault(TABLE_FONT_PREF, TABLE_FONT_SIZE);
+        LanguageTestPlugin.getPrefStore().setDefault(ROW_FONT_PREF, ROW_FONT_SIZE);
+        
+        TABLE_FONT_SIZE = LanguageTestPlugin.getPrefStore().getInt(TABLE_FONT_PREF);
+        ROW_FONT_SIZE = LanguageTestPlugin.getPrefStore().getInt(ROW_FONT_PREF);
     }
     /* (non-Javadoc)
      * @see org.eclipse.ui.part.EditorPart#doSave(org.eclipse.core.runtime.IProgressMonitor)
@@ -208,6 +219,11 @@ public class TestItemEditor extends EditorPart
         tableViewer.setContentProvider(new TestItemContentProvider());
         labelProvider = new TestItemLabelProvider();
         tableViewer.setLabelProvider(labelProvider);
+        // set a tall font, so rows are high enough
+        FontData fd = JFaceResources.getDialogFont().getFontData()[0];
+        FontData tallFont = new FontData(fd.getName(), TABLE_FONT_SIZE, fd.getStyle());
+        Font font = LanguageTestPlugin.getFont(tallFont);
+        tableViewer.getTable().setFont(font);
         tableViewer.getTable().setHeaderVisible(true);
         cellModifier = new TestItemCellModifier();
         tableViewer.setCellModifier(cellModifier);

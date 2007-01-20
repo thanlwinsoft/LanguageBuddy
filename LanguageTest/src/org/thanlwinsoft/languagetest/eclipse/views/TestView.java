@@ -30,6 +30,7 @@ import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
@@ -310,11 +311,18 @@ public class TestView extends ViewPart implements ISelectionChangedListener
             }
         }
     }
+    /**
+     * A safe way to retreive a font and not worry about disposal
+     * @param faceName
+     * @param size
+     * @return
+     */
     protected Font getFont(String faceName, int size)
     {
-        Display display = getSite().getShell().getDisplay();
-        return new Font(display, faceName, size, SWT.NORMAL);
+        FontData fd = new FontData(faceName, size, SWT.NORMAL);
+        return LanguageTestPlugin.getFont(fd);
     }
+    
     public void setTestModule(LanguageModuleType module)
     {
         if (module == null)
@@ -330,7 +338,6 @@ public class TestView extends ViewPart implements ISelectionChangedListener
                         .equals(langs[i].getFont()) == false ||
                     nativeFont.getFontData()[0].getHeight() != fontSize)
                 {
-                    //if (nativeFont != null) nativeFont.dispose();
                     nativeFont = getFont(langs[i].getFont(), fontSize);
                     if (nativeFont != null)
                         nativeViewer.getTextWidget().setFont(nativeFont);
@@ -343,7 +350,6 @@ public class TestView extends ViewPart implements ISelectionChangedListener
                         .equals(langs[i].getFont()) == false ||
                         foreignFont.getFontData()[0].getHeight() != fontSize)
                 {
-                    //if (foreignFont != null) foreignFont.dispose();
                     foreignFont = getFont(langs[i].getFont(), fontSize);
                     if (foreignFont != null)
                         foreignViewer.getTextWidget().setFont(foreignFont);
@@ -585,14 +591,12 @@ public class TestView extends ViewPart implements ISelectionChangedListener
             return;
         }
         Display display = getSite().getShell().getDisplay();
-        //if (nativeFont != null) nativeFont.dispose();
         nativeFont = null;
         if (ti.getNativeFontData() != null)
-            nativeFont = new Font(display, ti.getNativeFontData());
-        //if (foreignFont != null) foreignFont.dispose();
+            nativeFont = LanguageTestPlugin.getFont(ti.getNativeFontData());
         foreignFont = null;
         if (ti.getForeignFontData() != null)
-            foreignFont = new Font(display, ti.getForeignFontData());
+            foreignFont = LanguageTestPlugin.getFont(ti.getForeignFontData());
         
         setText(nativeViewer, nativeDoc, ti.getNativeText(), nativeFont);
         setText(foreignViewer, foreignDoc, ti.getForeignText(), foreignFont);

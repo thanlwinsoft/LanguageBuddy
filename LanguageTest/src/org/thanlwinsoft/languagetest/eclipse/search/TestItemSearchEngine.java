@@ -20,7 +20,9 @@ import org.eclipse.search.core.text.TextSearchEngine;
 import org.eclipse.search.core.text.TextSearchRequestor;
 import org.eclipse.search.core.text.TextSearchScope;
 import org.eclipse.search.ui.ISearchQuery;
+import org.eclipse.search.ui.SearchResultEvent;
 import org.eclipse.search.ui.text.Match;
+import org.eclipse.search.ui.text.MatchEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 import org.thanlwinsoft.languagetest.MessageUtil;
@@ -39,7 +41,6 @@ public class TestItemSearchEngine extends TextSearchEngine
 {
     private HashSet langSet = null;
     private TestItemSearchResult searchResult = null;
-    private ISearchQuery query = null;
     // internal variables for TestModule currently being processed
     private HashMap fontMap = null;
     private LanguageModuleType lm = null;
@@ -56,7 +57,6 @@ public class TestItemSearchEngine extends TextSearchEngine
     }
     public void setQuery(TestItemQuery query)
     {
-        this.query = query;
         searchResult = new TestItemSearchResult(query);
         maxLanguages = 0;
         lm = null;

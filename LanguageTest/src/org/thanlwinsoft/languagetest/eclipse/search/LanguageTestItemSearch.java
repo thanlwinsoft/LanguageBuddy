@@ -3,6 +3,7 @@
  */
 package org.thanlwinsoft.languagetest.eclipse.search;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -62,6 +63,7 @@ public class LanguageTestItemSearch extends DialogPage implements ISearchPage
     private Composite optionsComposite = null;
     private Group optionsGroup = null;
     private Button caseCheckBox = null;
+    private final static String LAST_SEARCH = "Search.Last";
     
     public LanguageTestItemSearch()
     {
@@ -84,12 +86,27 @@ public class LanguageTestItemSearch extends DialogPage implements ISearchPage
             }
             TestItemSearchEngine engine = new TestItemSearchEngine(langSet);
             TextSearchScope scope = FileTextSearchScope.newWorkspaceScope(new String[] {"*.xml"}, false);
-            int patternOptions = Pattern.UNICODE_CASE;
+            int patternOptions = 0;
+            Pattern searchPattern = null;
             if (caseCheckBox.getSelection() == false)
             {
                 patternOptions |= Pattern.CASE_INSENSITIVE;
+                patternOptions |= Pattern.UNICODE_CASE;
+                searchPattern = Pattern.compile(searchText.getText(), patternOptions);
             }
-            Pattern searchPattern = Pattern.compile(searchText.getText(), patternOptions);
+            else
+            {
+                searchPattern = Pattern.compile(searchText.getText());
+            }
+            LanguageTestPlugin.getPrefStore().setValue(LAST_SEARCH, searchText.getText());
+            try
+            {
+                LanguageTestPlugin.getPrefStore().save();
+            }
+            catch (IOException e)
+            {
+                LanguageTestPlugin.log(IStatus.ERROR, e.getLocalizedMessage(), e);
+            }
             //IJobManager jobMan = Platform.getJobManager();
             //IProgressMonitor monitor = jobMan.createProgressGroup();
             final TestItemQuery query = new TestItemQuery(engine, scope, searchPattern, langCodes);
@@ -101,37 +118,7 @@ public class LanguageTestItemSearch extends DialogPage implements ISearchPage
                 return true;
             }
             final IRunnableContext context = container.getRunnableContext();
-//            if (container != null)
-//            {
-//                context = container.getRunnableContext();
-//            }
-//            else
-//            {
-//                IWorkbenchWindow w = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-//                if (w instanceof IRunnableContext)
-//                {
-//                    context = (IRunnableContext)w;
-//                }
-//                else
-//                {
-//                    
-//                }
-//            }
-            
-            
-//            IRunnableWithProgress op = new IRunnableWithProgress() {
-//                public void run(IProgressMonitor monitor) throws InvocationTargetException {
-//                    try {
-//                        NewSearchUI.runQueryInForeground(context, query);
-//                    } 
-//                    finally {
-//                        monitor.done();
-//                    }
-//                }
-//            };
-//            try 
-//            {
-                //container.getRunnableContext().run(true, false, op);
+
                 IStatus status = NewSearchUI.runQueryInForeground(context, query);
                 if (!status.isOK())
                 {
@@ -141,18 +128,6 @@ public class LanguageTestItemSearch extends DialogPage implements ISearchPage
                         status.getMessage());
                     return false;
                 }
-                
-//            } 
-//            catch (InterruptedException e) 
-//            {
-//                return false;
-//            } 
-//            catch (InvocationTargetException e) 
-//            {
-//                Throwable realException = e.getTargetException();
-//                MessageDialog.openError(getShell(), "Error", realException.getMessage());
-//                return false;
-//            }
             return true;
         }
         return false;
@@ -183,6 +158,7 @@ public class LanguageTestItemSearch extends DialogPage implements ISearchPage
         
         searchText = new Text(mainGroup, SWT.BORDER);
         searchText.setToolTipText(MessageUtil.getString("SearchTextToolTip"));
+        searchText.setText(LanguageTestPlugin.getPrefStore().getString(LAST_SEARCH));
         RowLayout layout = new RowLayout();
         layout.fill = true;
         layout.justify = true;
@@ -232,7 +208,6 @@ public class LanguageTestItemSearch extends DialogPage implements ISearchPage
                 if (s > -1 && s < langCodes.length)
                 {
                     FontData fd = (FontData)fontMap.get(langCodes[s]);
-                    //Font font = new Font(getShell().getDisplay(), fd);
                     Font font = LanguageTestPlugin.getFont(fd);
                     searchText.setFont(font);
                     mainGroup.pack();

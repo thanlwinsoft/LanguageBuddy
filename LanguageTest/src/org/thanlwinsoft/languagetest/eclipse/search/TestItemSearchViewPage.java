@@ -45,6 +45,7 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.thanlwinsoft.languagetest.eclipse.editors.ColumnListener;
+import org.thanlwinsoft.languagetest.eclipse.editors.TestItemEditor;
 import org.thanlwinsoft.languagetest.eclipse.editors.TestItemSorter;
 import org.thanlwinsoft.languagetest.eclipse.editors.TestModuleEditor;
 import org.thanlwinsoft.languagetest.language.test.UniversalLanguage;
@@ -62,19 +63,29 @@ public class TestItemSearchViewPage extends AbstractTextSearchViewPage
     private TableViewer tableViewer = null;
     private TestItemSearchResult result = null;
     private String [] colLangId = null;
-    private final static int ROW_FONT_SIZE = 12;
-    private final static int TABLE_FONT_SIZE = 14;
+    public final static String ROW_FONT_PREF = TestItemEditor.ROW_FONT_PREF;
+    public final static String TABLE_FONT_PREF = TestItemEditor.TABLE_FONT_PREF;
+    private static int ROW_FONT_SIZE = 12;
+    private static int TABLE_FONT_SIZE = 14;
     TestItemSorter sorter = new TestItemSorter();
     
+    public TestItemSearchViewPage()
+    {
+        LanguageTestPlugin.getPrefStore().setDefault(TABLE_FONT_PREF, TABLE_FONT_SIZE);
+        LanguageTestPlugin.getPrefStore().setDefault(ROW_FONT_PREF, ROW_FONT_SIZE);
+        
+        TABLE_FONT_SIZE = LanguageTestPlugin.getPrefStore().getInt(TABLE_FONT_PREF);
+        ROW_FONT_SIZE = LanguageTestPlugin.getPrefStore().getInt(ROW_FONT_PREF);
+    }
     /* (non-Javadoc)
      * @see org.eclipse.search.ui.text.AbstractTextSearchViewPage#clear()
      */
     protected void clear()
     {
-        result = null;
-        provider = null;
-        tableViewer = null;
-        treeViewer = null;
+//        result = null;
+//        provider = null;
+//        tableViewer = null;
+//        treeViewer = null;
     }
 
     /* (non-Javadoc)
@@ -83,7 +94,7 @@ public class TestItemSearchViewPage extends AbstractTextSearchViewPage
     protected void configureTableViewer(TableViewer viewer)
     {
         if (viewer.getTable().isDisposed()) return;
-        
+        System.out.println(this + "ConfigureTableViewer " + viewer);
         if (viewer.getContentProvider() == null)
         {
             provider = new TableContentProvider();
@@ -101,7 +112,8 @@ public class TestItemSearchViewPage extends AbstractTextSearchViewPage
         this.tableViewer = viewer;
         if (result != null)
         {
-            updateViewerInputs(true);
+//          for some reason this needs to be async to get anything displayed
+            updateTableViewerInputs(true);
         }
     }
 
@@ -110,6 +122,7 @@ public class TestItemSearchViewPage extends AbstractTextSearchViewPage
      */
     protected void configureTreeViewer(TreeViewer viewer)
     {
+        System.out.println(this + "ConfigureTreeViewer " + viewer);
         this.treeViewer = viewer;
         if (viewer.getTree().isDisposed()) return;
         if (viewer.getContentProvider() == null)
@@ -119,7 +132,8 @@ public class TestItemSearchViewPage extends AbstractTextSearchViewPage
         }
         if (result != null)
         {
-            updateViewerInputs(true);
+            // for some reason this needs to be async to get anything displayed
+            updateTreeViewerInputs(true);
         }
     }
 
@@ -165,7 +179,11 @@ public class TestItemSearchViewPage extends AbstractTextSearchViewPage
      */
     protected void elementsChanged(Object[] objects)
     {
-        updateViewerInputs(true);
+        if (result != null)
+        {
+            updateTreeViewerInputs(true);
+            updateTableViewerInputs(true);
+        }
     }
     
     public class TestItemSearchTreeProvider implements ITreeContentProvider
@@ -267,29 +285,15 @@ public class TestItemSearchViewPage extends AbstractTextSearchViewPage
         return super.getLabel();
     }
 
-    private void updateViewerInputs(boolean async)
+    private void updateTableViewerInputs(boolean async)
     {
         Runnable runnable = new Runnable() {
 
             public void run()
             {
-                if (treeViewer != null && !treeViewer.getTree().isDisposed())
-                {
-                    if (treeViewer.getContentProvider() == null)
-                    {
-                        treeViewer.setContentProvider(new TestItemSearchTreeProvider());
-                    }
-                    treeViewer.setInput(result.getElements());
-                    treeViewer.refresh();
-                    treeViewer.getTree().redraw();
-                    treeViewer.getTree().setToolTipText(result.getLabel());
-                }
+                System.out.println("updateTableViewer" + result.getMatchCount());
                 if (tableViewer != null && !tableViewer.getTable().isDisposed())
                 {
-//                    if (tableViewer.getContentProvider() == null)
-//                    {
-//                        tableViewer.setContentProvider(new TableContentProvider());
-//                    }
                     if (tableViewer.getTable().getColumnCount() == 0)
                     {
                         int width = 200;
@@ -328,7 +332,7 @@ public class TestItemSearchViewPage extends AbstractTextSearchViewPage
                                                 c, "File", null));
                     }
                     Object [] files = result.getElements();
-                    Vector v = new Vector(2 * files.length);
+                    Vector v = new Vector(files.length);
                     for (int i = 0; i < files.length; i++)
                     {
                         Match [] matches = result.getMatches(files[i]);
@@ -337,20 +341,41 @@ public class TestItemSearchViewPage extends AbstractTextSearchViewPage
                             v.add(matches[j]);
                         }
                     }
-                    try
-                    {
-                        tableViewer.setInput(v);
-                    }
-                    catch (Exception e)
-                    {
-                        e.printStackTrace();
-                    }
+                    tableViewer.setInput(v);
                     
                     tableViewer.refresh(true);
                     tableViewer.getTable().redraw();
 
                     tableViewer.getTable().setToolTipText(result.getLabel());
+                    System.out.println("updatedTableViewer" + tableViewer.getTable().getItemCount() + tableViewer);
                 }
+                else System.out.println("no table viewer update");
+            }
+        };
+        if (async)
+            this.getControl().getDisplay().asyncExec(runnable);
+        else 
+        {
+            runnable.run();
+        }
+    }
+
+    private void updateTreeViewerInputs(boolean async)
+    {
+        Runnable runnable = new Runnable() {
+
+            public void run()
+            {
+                System.out.println("updateTreeViewer" + result.getMatchCount());
+                if (treeViewer != null && !treeViewer.getTree().isDisposed())
+                {
+                    
+                    treeViewer.setInput(result.getElements());
+                    treeViewer.refresh();
+                    treeViewer.getTree().redraw();
+                    treeViewer.getTree().setToolTipText(result.getLabel());
+                }
+                else System.out.println("no tree viewer update");
                 
             }
         };
@@ -361,6 +386,7 @@ public class TestItemSearchViewPage extends AbstractTextSearchViewPage
             runnable.run();
         }
     }
+
     
     /* (non-Javadoc)
      * @see org.eclipse.search.ui.text.AbstractTextSearchViewPage#handleSearchResultChanged(org.eclipse.search.ui.SearchResultEvent)
@@ -370,10 +396,12 @@ public class TestItemSearchViewPage extends AbstractTextSearchViewPage
         if (e.getSource() instanceof TestItemSearchResult)
         {
             result = (TestItemSearchResult)e.getSource();
+            System.out.println("handleSearchResult " + result);
         }
         if (result != null)
         {
-            updateViewerInputs(true);
+            updateTreeViewerInputs(true);
+            updateTableViewerInputs(true);
         }
         
         super.handleSearchResultChanged(e);
@@ -387,13 +415,15 @@ public class TestItemSearchViewPage extends AbstractTextSearchViewPage
         if (newSearch instanceof TestItemSearchResult)
         {
             result = (TestItemSearchResult)newSearch;
+            System.out.println("setInput" + newSearch);
             result.addListener(new ISearchResultListener() {
                 public void searchResultChanged(SearchResultEvent e)
                 {
                     handleSearchResultChanged(e);
                 }
             });
-            updateViewerInputs(false);
+            updateTreeViewerInputs(false);
+            updateTableViewerInputs(false);
         }
     }
 
