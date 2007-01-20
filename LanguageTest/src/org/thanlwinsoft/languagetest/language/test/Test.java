@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
- *  File:          $Source: /home/keith/cvsroot/projects/LanguageAids/uk/co/dabsol/stribley/language/test/Test.java,v $
- *  Version:       $Revision: 706 $
- *  Last Modified: $Date: 2007-01-07 06:30:20 +0700 (Sun, 07 Jan 2007) $
+ *  File:          $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/LanguageTest/src/org/thanlwinsoft/languagetest/language/test/Test.java $
+ *  Version:       $Revision: 717 $
+ *  Last Modified: $Date: 2007-01-20 17:14:43 +0700 (Sat, 20 Jan 2007) $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2003 Keith Stribley <jungleglacier@snc.co.uk>
  *

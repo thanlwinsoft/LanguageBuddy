@@ -397,6 +397,15 @@ public class TestItemEditor extends EditorPart
 //        }
     }
     
+    public void selectItem(int i)
+    {
+        if (i < tableViewer.getTable().getItemCount())
+        {
+            tableViewer.getTable().setSelection(i);
+            tableViewer.getTable().showSelection();
+        }
+    }
+    
     public void pasteItems(TestItemType [] items, String langCode)
     {
         int [] selection = tableViewer.getTable().getSelectionIndices(); 

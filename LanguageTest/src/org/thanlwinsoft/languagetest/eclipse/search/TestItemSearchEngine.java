@@ -4,6 +4,7 @@
 package org.thanlwinsoft.languagetest.eclipse.search;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -14,10 +15,13 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.search.core.text.TextSearchEngine;
 import org.eclipse.search.core.text.TextSearchRequestor;
 import org.eclipse.search.core.text.TextSearchScope;
+import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.search.ui.text.Match;
+import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.thanlwinsoft.schemas.languagetest.LangEntryType;
 import org.thanlwinsoft.schemas.languagetest.LanguageModuleDocument;
@@ -32,13 +36,21 @@ public class TestItemSearchEngine extends TextSearchEngine
 {
     private HashSet langSet = null;
     private TestItemSearchResult searchResult = null;
+    private ISearchQuery query = null;
+    private HashMap fontMap = null;
     public TestItemSearchEngine(HashSet langSet)
     {
         this.langSet = langSet;
+        
     }
     public TestItemSearchResult getResult()
     {
         return searchResult;
+    }
+    public void setQuery(ISearchQuery query)
+    {
+        this.query = query;
+        searchResult = new TestItemSearchResult(query);
     }
     /* (non-Javadoc)
      * @see org.eclipse.search.core.text.TextSearchEngine#search(org.eclipse.search.core.text.TextSearchScope, org.eclipse.search.core.text.TextSearchRequestor, java.util.regex.Pattern, org.eclipse.core.runtime.IProgressMonitor)
@@ -57,7 +69,7 @@ public class TestItemSearchEngine extends TextSearchEngine
                     Pattern searchPattern, IProgressMonitor monitor)
     {
         //requestor.beginReporting();
-        searchResult = new TestItemSearchResult(); 
+        
         for (int i = 0; i < scope.length; i++)
         {
             try
@@ -77,7 +89,16 @@ public class TestItemSearchEngine extends TextSearchEngine
                         LangEntryType let = ti.getNativeLangArray(k);
                         if (langSet == null || langSet.contains(let.getLang()))
                         {
-                            index(scope[i], j, let, searchPattern, searchResult);
+                            index(scope[i], j, let, searchPattern);
+                            monitor.worked(1);
+                        }
+                    }
+                    for (int k = 0; k < ti.sizeOfForeignLangArray(); k++)
+                    {
+                        LangEntryType let = ti.getForeignLangArray(k);
+                        if (langSet == null || langSet.contains(let.getLang()))
+                        {
+                            index(scope[i], j, let, searchPattern);
                             monitor.worked(1);
                         }
                     }
@@ -98,10 +119,13 @@ public class TestItemSearchEngine extends TextSearchEngine
             }
         }
         //requestor.endReporting();
-        return null;
+        
+        IStatus status = new Status(IStatus.OK, LanguageTestPlugin.ID, IStatus.OK, 
+                        MessageUtil.getString("SearchOKStatus"), null);
+        return status;
     }
     private void index(IFile file, int item, LangEntryType let, 
-                       Pattern searchPattern, TestItemSearchResult result)
+                       Pattern searchPattern)
     {
         Matcher m = searchPattern.matcher(let.getStringValue());
         while (m.find())
@@ -109,8 +133,7 @@ public class TestItemSearchEngine extends TextSearchEngine
             m.start();
             Match match = new TestItemMatch(file, item, let, 
                                             m.start(), m.end() - m.start());
-            result.addMatch(match);
-            
+            searchResult.addMatch(match);
         }
     }
 }

@@ -42,6 +42,8 @@ import org.w3c.dom.ProcessingInstruction;
 public class TestModuleEditor extends MultiPageEditorPart
     implements IReusableEditor, IShowEditorInput
 {
+    public final static int LANG_PAGE_INDEX = 0;
+    public final static int TEST_ITEM_PAGE_INDEX = 1;
     private boolean isDirty = false;
     private LanguageModuleDocument currentDoc = null;
     private TestItemEditor testItemEditor = null;
@@ -321,5 +323,17 @@ public class TestModuleEditor extends MultiPageEditorPart
     protected void firePropertyChange(int property) 
     {
         super.firePropertyChange(property);
+    }
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.part.MultiPageEditorPart#setActivePage(int)
+     */
+    public void setActivePage(int pageIndex)
+    {
+        super.setActivePage(pageIndex);
+    }
+    /** Select a specific TestItem e.g. from a search result */
+    public void selectTestItem(int i)
+    {
+        testItemEditor.selectItem(i);
     }
 }

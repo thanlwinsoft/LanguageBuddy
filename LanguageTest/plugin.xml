@@ -353,6 +353,27 @@ wizardId=
          id="org.thanlwinsoft.languagetest.eclipse.views.LangPropertyPage"
          name="%LanguageTest.langPropertyPage"
          objectClass="org.eclipse.core.resources.IResource"/>
+</extension>
+<extension
+      point="org.eclipse.search.searchPages">
+   <page
+         canSearchEnclosingProjects="true"
+         class="org.thanlwinsoft.languagetest.eclipse.search.LanguageTestItemSearch"
+         enabled="true"
+         extensions="xml"
+         icon="icons/testItemSearch.png"
+         id="org.thanlwinsoft.languagetest.eclipse.search.LanguageTestItemSearch"
+         label="%LanguageTest.searchPage"
+         tabPosition="1"/>
+</extension>
+<extension
+      point="org.eclipse.search.searchResultViewPages">
+   <viewPage
+         class="org.thanlwinsoft.languagetest.eclipse.search.TestItemSearchViewPage"
+         icon="icons/testItemSearch.png"
+         id="org.thanlwinsoft.languagetest.eclipse.search.TestItemSearchViewPage"
+         label="%LanguageTest.testItemSearchResultPage"
+         searchResultClass="org.thanlwinsoft.languagetest.eclipse.search.TestItemSearchResult"/>
 </extension>		
  
 </plugin>
