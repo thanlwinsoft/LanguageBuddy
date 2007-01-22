@@ -62,6 +62,10 @@ public class TestModuleEditor extends MultiPageEditorPart
     public Object getAdapter(Class adapter)
     {
         System.out.println(adapter.toString());
+        if (adapter.equals(testItemEditor.getClass()))
+            return testItemEditor;
+        if (adapter.equals(languagePart.getClass()))
+            return languagePart;
         return super.getAdapter(adapter);
     }
     /* (non-Javadoc)
@@ -151,7 +155,7 @@ public class TestModuleEditor extends MultiPageEditorPart
 
     }
     
-    protected LanguageModuleDocument getDocument()
+    public LanguageModuleDocument getDocument()
     {
         return this.currentDoc;
     }
@@ -257,6 +261,7 @@ public class TestModuleEditor extends MultiPageEditorPart
                     languagePart.setInput(input);
                 }
                 setPartName(input.getName());
+                updateTestView();
             }
             else
             {
@@ -303,7 +308,7 @@ public class TestModuleEditor extends MultiPageEditorPart
         if (testViewPart != null)
         {
             TestView testView = (TestView)testViewPart;
-            if (getDocument() != null)
+            if (getDocument() != null && testItemEditor != null)
             {
                 testView.setTestModule(getDocument().getLanguageModule());
                 TestItemType item = testItemEditor.getSelectedItem();

@@ -1,6 +1,7 @@
 package org.thanlwinsoft.languagetest.eclipse;
 
 import org.eclipse.jface.action.GroupMarker;
+import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.ICoolBarManager;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
@@ -9,6 +10,8 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarContributionItem;
 import org.eclipse.jface.action.ToolBarManager;
 import org.thanlwinsoft.languagetest.MessageUtil;
+import org.thanlwinsoft.languagetest.eclipse.views.TestHistoryView;
+import org.thanlwinsoft.languagetest.eclipse.views.TestView;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -37,11 +40,15 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
     private IWorkbenchAction closeAction;
     private IWorkbenchAction closeAllAction;
     private IWorkbenchAction showViewAction;
+    private IWorkbenchAction showTestViewAction;
+    private IWorkbenchAction showHistoryViewAction;
     
-    //private IWorkbenchAction newWindowAction;
+    private IWorkbenchAction newWindowAction;
     //private OpenViewAction openViewAction;
     //private Action messagePopupAction;
     //private Action conversionWizardAction;
+    private IWorkbenchAction newEditorAction;
+    
     
     public ApplicationActionBarAdvisor(IActionBarConfigurer configurer) {
         super(configurer);
@@ -97,10 +104,18 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         
         showViewAction = ActionFactory.SHOW_VIEW_MENU.create(window);
         register(showViewAction);
-        //newWindowAction = ActionFactory.OPEN_NEW_WINDOW.create(window);
-        //register(newWindowAction);
+        newWindowAction = ActionFactory.OPEN_NEW_WINDOW.create(window);
+        register(newWindowAction);
         
-
+        newEditorAction = ActionFactory.NEW_EDITOR.create(window);
+        register(newEditorAction);
+        
+        showTestViewAction = new ShowViewAction(TestView.ID, 
+                        MessageUtil.getString("ShowTestView"));
+        showHistoryViewAction = new ShowViewAction(TestHistoryView.ID, 
+                        MessageUtil.getString("ShowHistoryView"));
+        
+        register(showTestViewAction);
         //conversionWizardAction = new ConversionWizardAction();
         // Open the wizard dialog
         //wizardDialog.open();
@@ -159,7 +174,11 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         
         
         windowMenu.add(preferencesAction);
-        windowMenu.add(showViewAction);
+        //windowMenu.add(showViewAction);
+        //windowMenu.add(newWindowAction);
+        windowMenu.add(newEditorAction);
+        windowMenu.add(showTestViewAction);
+        windowMenu.add(showHistoryViewAction);
         
         // Help
         helpMenu.add(aboutAction);

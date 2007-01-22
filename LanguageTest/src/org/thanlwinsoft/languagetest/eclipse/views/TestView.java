@@ -27,22 +27,29 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.custom.StyledTextContent;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.RowData;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -54,12 +61,15 @@ import org.eclipse.ui.part.ViewPart;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.thanlwinsoft.languagetest.eclipse.Perspective;
+import org.thanlwinsoft.languagetest.eclipse.editors.TestItemEditor;
+import org.thanlwinsoft.languagetest.eclipse.editors.TestModuleEditor;
 import org.thanlwinsoft.languagetest.language.test.Test;
 import org.thanlwinsoft.languagetest.language.test.TestHistory;
 import org.thanlwinsoft.languagetest.language.test.TestHistoryStorageException;
 import org.thanlwinsoft.languagetest.language.test.TestItem;
 import org.thanlwinsoft.languagetest.language.test.TestManager;
 import org.thanlwinsoft.languagetest.language.test.TestType;
+import org.thanlwinsoft.languagetest.language.test.UniversalLanguage;
 import org.thanlwinsoft.schemas.languagetest.ForeignLangType;
 import org.thanlwinsoft.schemas.languagetest.LangType;
 import org.thanlwinsoft.schemas.languagetest.LangTypeType;
@@ -73,10 +83,13 @@ import org.thanlwinsoft.schemas.languagetest.TestItemType;
  */
 public class TestView extends ViewPart implements ISelectionChangedListener
 {
+    public final static String ID = "org.thanlwinsoft.languagetest.TestView";
     private TextViewer nativeViewer = null;
     private TextViewer foreignViewer = null;
     private Document nativeDoc = null;
     private Document foreignDoc = null;
+    private Group nativeGroup = null;
+    private Group foreignGroup = null;
     private Label picture = null;
     private TestControlPanel controlPanel = null;
     private SashForm horizontalSash = null;
@@ -98,6 +111,8 @@ public class TestView extends ViewPart implements ISelectionChangedListener
     private TestManager manager = null;
     public final static String FLIP_PERIOD_PREF = "FlipPeriod";
     public final static String FLIP_REPEAT_PREF = "FlipRepeat";
+    private SashForm phraseForm = null;
+    
     public TestView()
     {
         selectionProviders = new HashSet();
@@ -112,15 +127,14 @@ public class TestView extends ViewPart implements ISelectionChangedListener
     {
         Group mainControl  = new Group(parent, SWT.SHADOW_ETCHED_IN);
         // horizontally: phraseForm | picture | controlPanel
-        horizontalSash = new SashForm(mainControl, SWT.HORIZONTAL);
+        horizontalSash = new SashForm(mainControl, SWT.HORIZONTAL | SWT.SMOOTH);
         
-        SashForm phraseForm = new SashForm(horizontalSash, SWT.VERTICAL);
-        
+        phraseForm = new SashForm(horizontalSash, SWT.VERTICAL | SWT.SMOOTH);
+        phraseForm.setLayout(new FillLayout());
         FormLayout mainLayout = new FormLayout();
         mainControl.setLayout(mainLayout);
 //      control panel should not be resized
         controlPanel = new TestControlPanel(this, mainControl, SWT.NONE);
-        
         // layout data
         FormData controlFD = new FormData();
         controlFD.top = new FormAttachment(0,0);
@@ -133,26 +147,39 @@ public class TestView extends ViewPart implements ISelectionChangedListener
         horizontalFD.left = new FormAttachment(0,0);
         horizontalFD.right = new FormAttachment(controlPanel);
         horizontalSash.setLayoutData(horizontalFD);
-        
+        horizontalSash.addControlListener(new ControlListener() {
+            public void controlMoved(ControlEvent e) {
+                centerViewer(nativeViewer);
+                centerViewer(foreignViewer);
+            }
+            public void controlResized(ControlEvent e) {
+                centerViewer(nativeViewer);
+                centerViewer(foreignViewer);
+            }
+        });
         
         picture = new Label(horizontalSash, SWT.CENTER | SWT.WRAP);
         picture.addControlListener(new ControlListener(){
 
-			public void controlMoved(ControlEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
+			public void controlMoved(ControlEvent e) {}
 
 			public void controlResized(ControlEvent e) {
-				// TODO Auto-generated method stub
 				setPicture();
+                //centerViewer(nativeViewer);
+                //centerViewer(foreignViewer);
 			}
         	
         });
         //picture.setText(MessageUtil.getString("No picture"));
         // phrase viewers top: native, bottom: foreign
-        Group nativeGroup = new Group(phraseForm, SWT.SHADOW_ETCHED_IN);
+        nativeGroup = new Group(phraseForm, SWT.SHADOW_ETCHED_IN);
+        nativeGroup.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+//        RowLayout layout = new RowLayout(SWT.VERTICAL);
+//        layout.fill = true;
+//        layout.justify = true;
+        //nativeGroup.setLayout(layout);
         nativeGroup.setLayout(new FillLayout());
+        //nativeSpacer = new Composite(nativeGroup, SWT.NONE);
         nativeViewer = new TextViewer(nativeGroup, SWT.WRAP | SWT.H_SCROLL 
                 | SWT.V_SCROLL);
         nativeViewer.getTextWidget().setAlignment(SWT.CENTER);
@@ -160,14 +187,21 @@ public class TestView extends ViewPart implements ISelectionChangedListener
         nativeViewer.setDocument(nativeDoc);
         nativeViewer.setEditable(false);
         nativeViewer.getTextWidget().setVisible(true);
+        
         //Color color = getViewSite().getShell().getDisplay()
         //    .getSystemColor(SWT.COLOR_DARK_BLUE);
         //nativeViewer.getTextWidget().setBackground(color);
         
         //Composite foreignComposite = new Composite(phraseForm, SWT.NONE);
         //foreignComposite.setLayout(new FillLayout());
-        Group foreignGroup = new Group(phraseForm, SWT.SHADOW_ETCHED_IN);
+        foreignGroup = new Group(phraseForm, SWT.SHADOW_ETCHED_IN);
+        foreignGroup.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+//        layout = new RowLayout(SWT.VERTICAL);
+//        layout.fill = true;
+//        layout.justify = true;
+        //foreignGroup.setLayout(layout);
         foreignGroup.setLayout(new FillLayout());
+        //foreignSpacer = new Composite(foreignGroup, SWT.NONE);
         foreignViewer = new TextViewer(foreignGroup, SWT.WRAP | 
                 SWT.H_SCROLL | SWT.V_SCROLL);
         foreignViewer.getTextWidget().setAlignment(SWT.CENTER);
@@ -184,6 +218,15 @@ public class TestView extends ViewPart implements ISelectionChangedListener
         getViewSite().getActionBars().setGlobalActionHandler(
                 ActionFactory.COPY.getId(),
                 copyAction);
+        
+        IEditorPart editor = getSite().getPage().getActiveEditor();
+        if (editor instanceof TestModuleEditor)
+        {
+            TestModuleEditor tme = (TestModuleEditor)editor;
+            TestItemEditor tie = (TestItemEditor) tme.getAdapter(TestItemEditor.class);
+            addSelectionProvider(tie);
+        }
+        
     }
     
     /**
@@ -225,7 +268,63 @@ public class TestView extends ViewPart implements ISelectionChangedListener
         if (font != null) viewer.getTextWidget().setFont(font);
         doc.set(text);
         viewer.setDocument(doc);
+        centerViewer(viewer);
     }
+    protected void centerViewer(TextViewer viewer)
+    {
+        
+        FillLayout layout = (FillLayout)viewer.getTextWidget().getParent().getLayout();
+        StyledTextContent tc = viewer.getTextWidget().getContent();
+        if (tc.getCharCount() > 0)
+        {
+            
+            //RowLayout layout = (RowLayout)viewer.getTextWidget().getParent().getLayout();
+            Rectangle textRect = viewer.getTextWidget().getTextBounds(0, tc.getCharCount() - 1);
+            Group group = (Group)viewer.getTextWidget().getParent();
+            System.out.println("Phrase form " + phraseForm.getClientArea());
+            System.out.println("Group " + group.getClientArea());
+            Rectangle availableRect = group.getClientArea();
+            int dx = 0;
+            int dy = 0;
+            if (viewer.getTextWidget().getVerticalBar() != null)
+                dx = viewer.getTextWidget().getVerticalBar().getSize().x;
+            if (viewer.getTextWidget().getHorizontalBar() != null)
+                dy = viewer.getTextWidget().getHorizontalBar().getSize().y;
+            Rectangle textBounds = viewer.getTextWidget().getClientArea();
+            //int groupBorder = group.getBounds().width - group.getClientArea().width;
+            if (textRect.height < availableRect.height)
+            {
+                layout.marginHeight = (availableRect.height - textRect.height - dy) / 2;
+                System.out.println("available " + availableRect.height + " " + 
+                                textBounds.height + " text " +
+                                textRect.height + " margin " + layout.marginHeight);
+                
+            }
+            else
+            {
+                layout.marginHeight = 0;
+            }
+            
+//            int availableWidth = availableRect.width;
+//            RowData rowData = new RowData(availableWidth - groupBorder - dx, 
+//                            Math.min(availableRect.height - dy, textRect.height));
+//            viewer.getTextWidget().setLayoutData(rowData);
+//            controlPanel.pack();
+//            phraseForm.pack();
+            
+        }
+        else
+        {
+            layout.marginHeight = 0;
+        }
+        System.out.println(" margin " + layout.marginHeight);
+        //viewer.getTextWidget().getParent().redraw();
+        viewer.setTopIndex(0);
+        
+        //viewer.refresh();
+        //viewer.getTextWidget().redraw();
+    }
+    
     public void hide(int type)
     {
         switch (type)
@@ -281,12 +380,12 @@ public class TestView extends ViewPart implements ISelectionChangedListener
         }
     	ImageData id = imageData;
     	float ratio = ((float)imageData.width) /((float)imageData.height);
-    	if (picture.getSize().x < id.height)
+    	if (picture.getSize().x < id.width)
     	{
     		id = imageData.scaledTo(picture.getSize().x, 
     				(int)Math.round((float)picture.getSize().x / ratio));
     	}
-    	if (picture.getSize().y < id.width)
+    	if (picture.getSize().y < id.height)
     	{
     		
     		id = imageData.scaledTo((int)Math.round((float)picture.getSize().y * ratio), 
@@ -301,9 +400,18 @@ public class TestView extends ViewPart implements ISelectionChangedListener
      */
     public void selectionChanged(SelectionChangedEvent event)
     {
+        if (phraseForm.isDisposed()) return;
         if (event.getSource() instanceof TableViewer)
         {
             show(NATIVE_ID | FOREIGN_ID);
+            Composite c = ((TableViewer)event.getSource()).getTable().getParent();
+            IEditorPart editor = 
+                PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+            TestModuleEditor tme = (TestModuleEditor)editor.getAdapter(TestModuleEditor.class);
+            if (tme != null && tme.getDocument() != null)
+            {
+                setTestModule(tme.getDocument().getLanguageModule());
+            }
         }
         //System.out.println(event.getSource().getClass().getName());
         if (event.getSelection() instanceof StructuredSelection)
@@ -347,6 +455,8 @@ public class TestView extends ViewPart implements ISelectionChangedListener
                     if (nativeFont != null)
                         nativeViewer.getTextWidget().setFont(nativeFont);
                 }
+                UniversalLanguage ul = new UniversalLanguage(langs[i].getLang());
+                nativeGroup.setText(ul.getDescription());
             }
             else if (langs[i].getType().equals(LangTypeType.FOREIGN))
             {
@@ -359,6 +469,8 @@ public class TestView extends ViewPart implements ISelectionChangedListener
                     if (foreignFont != null)
                         foreignViewer.getTextWidget().setFont(foreignFont);
                 }
+                UniversalLanguage ul = new UniversalLanguage(langs[i].getLang());
+                foreignGroup.setText(ul.getDescription());
             }
         }
     }
@@ -368,28 +480,6 @@ public class TestView extends ViewPart implements ISelectionChangedListener
         if (ti == null) return;
         try
         {
-            NativeLangType [] nLang = ti.getNativeLangArray();
-            if (nLang.length > 0)
-            {
-                setText(NATIVE_ID, nLang[0].getStringValue(), null);
-            }
-            else
-            {
-                setText(NATIVE_ID, "", null);
-            }
-            ForeignLangType [] fLang = ti.getForeignLangArray();
-            if (fLang.length > 0)
-            {
-                setText(FOREIGN_ID, fLang[0].getStringValue(), null);
-            }
-            else
-            {
-                setText(FOREIGN_ID, "", null);
-            }
-            if (ti.isSetSoundFile())
-                controlPanel.player().setFile(ti.getSoundFile().getStringValue());
-            else
-                controlPanel.player().setFile(null);
             // cache old weights before we remove the picture
             if (picture.getImage() != null)
             {
@@ -399,11 +489,11 @@ public class TestView extends ViewPart implements ISelectionChangedListener
             }
             if (ti.isSetImg() && ti.getImg() != null)
             {
-                
-                IEditorInput editorInput = getSite().getPage().getActiveEditor().getEditorInput();
-                if (editorInput instanceof FileEditorInput)
+                IEditorPart editor = getSite().getPage().getActiveEditor();
+                if (editor != null && editor.getEditorInput() != null &&
+                    editor.getEditorInput() instanceof FileEditorInput)
                 {
-                    FileEditorInput fei = (FileEditorInput)editorInput;
+                    FileEditorInput fei = (FileEditorInput)editor.getEditorInput();
                     IContainer basePath = fei.getFile().getParent();
                     ImageLoader loader = new ImageLoader();
                     try
@@ -467,9 +557,33 @@ public class TestView extends ViewPart implements ISelectionChangedListener
             	picture.setToolTipText("");
             	horizontalSash.setWeights(NO_PICTURE_WEIGHTS);
             }
+            
+            NativeLangType [] nLang = ti.getNativeLangArray();
+            if (nLang.length > 0)
+            {
+                setText(NATIVE_ID, nLang[0].getStringValue(), null);
+            }
+            else
+            {
+                setText(NATIVE_ID, "", null);
+            }
+            ForeignLangType [] fLang = ti.getForeignLangArray();
+            if (fLang.length > 0)
+            {
+                setText(FOREIGN_ID, fLang[0].getStringValue(), null);
+            }
+            else
+            {
+                setText(FOREIGN_ID, "", null);
+            }
+            if (ti.isSetSoundFile())
+                controlPanel.player().setFile(ti.getSoundFile().getStringValue());
+            else
+                controlPanel.player().setFile(null);
+            
             nativeViewer.refresh();
             foreignViewer.refresh();
-            nativeViewer.getTextWidget().redraw();
+            //nativeViewer.getTextWidget().redraw();
             picture.redraw();
         }
         catch (org.apache.xmlbeans.XmlRuntimeException xmlE)

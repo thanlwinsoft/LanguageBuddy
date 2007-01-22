@@ -30,6 +30,7 @@ public class TestHistoryView extends ViewPart
     private TreeViewer viewer = null;
     private Tree tree = null;
     private ITreeContentProvider provider = null;
+    public final static String ID = "org.thanlwinsoft.languagetest.TestHistoryView";
     /* (non-Javadoc)
      * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
      */

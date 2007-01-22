@@ -40,21 +40,27 @@
    <extension
          point="org.eclipse.ui.views">
       <view
+            category="org.thanlwinsoft.languagetest.views"
             class="org.thanlwinsoft.languagetest.eclipse.views.TestView"
             icon="icons/languageBuddy16.png"
             id="org.thanlwinsoft.languagetest.TestView"
             name="%LanguageTest.TestView"/>
       <view
             allowMultiple="false"
+            category="org.thanlwinsoft.languagetest.views"
             class="org.eclipse.ui.views.navigator.ResourceNavigator"
             id="org.thanlwinsoft.languagetest.Navigator"
             name="%LanguageTest.navigator"/>
       <view
             allowMultiple="false"
+            category="org.thanlwinsoft.languagetest.views"
             class="org.thanlwinsoft.languagetest.eclipse.views.TestHistoryView"
             icon="icons/correct.png"
             id="org.thanlwinsoft.languagetest.TestHistoryView"
             name="%LanguageTest.testHistoryView"/>
+      <category
+            id="org.thanlwinsoft.languagetest.views"
+            name="%LanguageTest.viewCategory"/>
    </extension>
    <extension
          point="org.eclipse.core.resources.natures"

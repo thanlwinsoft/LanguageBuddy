@@ -31,6 +31,8 @@ import org.eclipse.jface.viewers.ICellEditorValidator;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableFontProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -87,7 +89,7 @@ import org.thanlwinsoft.schemas.languagetest.TestItemType;
  * @author keith
  *
  */
-public class TestItemEditor extends EditorPart 
+public class TestItemEditor extends EditorPart implements ISelectionProvider
 {
     private TestModuleEditor parent = null;
     private TableViewer tableViewer = null;
@@ -182,6 +184,7 @@ public class TestItemEditor extends EditorPart
     /* (non-Javadoc)
      * @see org.eclipse.ui.part.EditorPart#isDirty()
      */
+    
     public boolean isDirty()
     {
         
@@ -1443,5 +1446,36 @@ public class TestItemEditor extends EditorPart
             }
         }
         
+    }
+    
+    
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.viewers.ISelectionProvider#addSelectionChangedListener(org.eclipse.jface.viewers.ISelectionChangedListener)
+     */
+    public void addSelectionChangedListener(ISelectionChangedListener listener)
+    {
+        tableViewer.addSelectionChangedListener(listener);
+    }
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.viewers.ISelectionProvider#getSelection()
+     */
+    public ISelection getSelection()
+    {
+        
+        return tableViewer.getSelection();
+    }
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.viewers.ISelectionProvider#removeSelectionChangedListener(org.eclipse.jface.viewers.ISelectionChangedListener)
+     */
+    public void removeSelectionChangedListener(ISelectionChangedListener listener)
+    {
+        tableViewer.removeSelectionChangedListener(listener);
+    }
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.viewers.ISelectionProvider#setSelection(org.eclipse.jface.viewers.ISelection)
+     */
+    public void setSelection(ISelection selection)
+    {
+        tableViewer.setSelection(selection);
     }
 }

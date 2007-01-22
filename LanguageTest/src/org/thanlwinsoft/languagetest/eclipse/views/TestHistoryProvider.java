@@ -74,9 +74,10 @@ public class TestHistoryProvider implements ITreeContentProvider
                             e.printStackTrace();
                         }
                     }
-                    else
+                    // exclude hidden files
+                    else if (!members[i].getName().startsWith("."))
                     {
-                        v.add(members[i]);
+                            v.add(members[i]);
                     }
                 }
                 return v.toArray();
