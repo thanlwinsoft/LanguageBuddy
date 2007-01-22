@@ -49,13 +49,14 @@
             allowMultiple="false"
             category="org.thanlwinsoft.languagetest.views"
             class="org.eclipse.ui.views.navigator.ResourceNavigator"
+            icon="icons/moduleProject.png"
             id="org.thanlwinsoft.languagetest.Navigator"
             name="%LanguageTest.navigator"/>
       <view
             allowMultiple="false"
             category="org.thanlwinsoft.languagetest.views"
             class="org.thanlwinsoft.languagetest.eclipse.views.TestHistoryView"
-            icon="icons/correct.png"
+            icon="icons/testHistory16.png"
             id="org.thanlwinsoft.languagetest.TestHistoryView"
             name="%LanguageTest.testHistoryView"/>
       <category

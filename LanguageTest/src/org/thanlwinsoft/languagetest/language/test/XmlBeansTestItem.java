@@ -54,13 +54,14 @@ public class XmlBeansTestItem implements TestItem
                 break;
             }
         }
-        if (ti.isSetSoundFile())
+        if (ti.isSetSoundFile() && ti.getSoundFile().getStringValue() != null && 
+            ti.getSoundFile().getStringValue().length() > 0)
         {
             soundFile = new Path(ti.getSoundFile().getStringValue());
             playStart = ti.getSoundFile().getStart();
             playEnd = ti.getSoundFile().getEnd();
         }
-        if (ti.isSetImg())
+        if (ti.isSetImg() && ti.getImg() != null && ti.getImg().length() > 0)
         {
             imagePath = new Path(ti.getImg());
         }

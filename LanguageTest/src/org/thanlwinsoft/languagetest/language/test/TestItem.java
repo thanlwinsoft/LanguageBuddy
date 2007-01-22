@@ -79,5 +79,9 @@ public interface TestItem
      */
     IPath getModulePath();
     
-
+    /**
+     * Path to the image file or null if there is no associated image
+     * @return
+     */
+    IPath getImagePath();
 }

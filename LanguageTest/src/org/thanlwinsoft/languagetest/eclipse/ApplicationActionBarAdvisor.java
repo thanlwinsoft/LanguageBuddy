@@ -48,6 +48,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
     //private Action messagePopupAction;
     //private Action conversionWizardAction;
     private IWorkbenchAction newEditorAction;
+    private ShowViewAction showNavigatorViewAction;
     
     
     public ApplicationActionBarAdvisor(IActionBarConfigurer configurer) {
@@ -114,6 +115,8 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
                         MessageUtil.getString("ShowTestView"));
         showHistoryViewAction = new ShowViewAction(TestHistoryView.ID, 
                         MessageUtil.getString("ShowHistoryView"));
+        showNavigatorViewAction = new ShowViewAction("org.thanlwinsoft.languagetest.Navigator", 
+                        MessageUtil.getString("ShowNavigatorView"));
         
         register(showTestViewAction);
         //conversionWizardAction = new ConversionWizardAction();
@@ -179,7 +182,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         windowMenu.add(newEditorAction);
         windowMenu.add(showTestViewAction);
         windowMenu.add(showHistoryViewAction);
-        
+        windowMenu.add(showNavigatorViewAction);
         // Help
         helpMenu.add(aboutAction);
     }

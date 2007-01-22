@@ -331,5 +331,7 @@ public class TestManager
             LanguageTestPlugin.log(IStatus.WARNING, e.getLocalizedMessage(),e);
         }
     }
+    public String getNativeLang() { return nativeLang; }
+    public String getForeignLang() { return foreignLang; }
     
 }

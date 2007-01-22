@@ -191,7 +191,7 @@ public class ShowViewAction implements IWorkbenchAction
     public int getStyle()
     {
         
-        return SWT.PUSH;
+        return 0;
     }
 
     /* (non-Javadoc)

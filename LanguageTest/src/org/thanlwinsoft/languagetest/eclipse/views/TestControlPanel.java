@@ -111,9 +111,10 @@ public class TestControlPanel extends Composite
     private void createTestControlGroup()
     {
         GridLayout gridLayout = new GridLayout();
-        gridLayout.numColumns = 1;
+        gridLayout.numColumns = 2;
         testControlGroup = new Group(this, SWT.NONE);
         testControlGroup.setLayout(gridLayout);
+        testControlGroup.setText(MessageUtil.getString("TestGroupLabel"));
         answerButton = new Button(testControlGroup, SWT.TOGGLE);
         markLabel = new Label(testControlGroup, SWT.NONE);
         markLabel.setText("Label");
@@ -149,6 +150,13 @@ public class TestControlPanel extends Composite
                 testView.markTest(false);
             }
         });
+        correctButton.setImage(LanguageTestPlugin.getImageDescriptor("icons/correct16.png").createImage(getDisplay()));
+        wrongButton.setImage(LanguageTestPlugin.getImageDescriptor("icons/wrong16.png").createImage(getDisplay()));
+        
+        GridData gridData = new GridData();
+        gridData.horizontalSpan = 2;
+        markLabel.setLayoutData(gridData);
+        answerButton.setLayoutData(gridData);
         answerButton.setText(MessageUtil.getString("ShowAnswer"));
         answerButton.setToolTipText(MessageUtil.getString("ShowAnswerToolTip"));
         correctButton.setText(MessageUtil.getString("Correct"));

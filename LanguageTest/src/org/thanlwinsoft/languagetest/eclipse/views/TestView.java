@@ -14,9 +14,12 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.TextViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -102,6 +105,7 @@ public class TestView extends ViewPart implements ISelectionChangedListener
     private Font nativeFont = null;  //  @jve:decl-index=0:
     private Font foreignFont = null;
     private HashSet selectionProviders = null;
+    public final static int [] EQUAL_WEIGHT = new int [] { 50, 50};
     private final static int [] NO_PICTURE_WEIGHTS = new int [] {99,1};
     private final static float MIN_WEIGHT = 0.1f;
     private int [] pictureWeights = new int [] {50,50};
@@ -147,16 +151,7 @@ public class TestView extends ViewPart implements ISelectionChangedListener
         horizontalFD.left = new FormAttachment(0,0);
         horizontalFD.right = new FormAttachment(controlPanel);
         horizontalSash.setLayoutData(horizontalFD);
-        horizontalSash.addControlListener(new ControlListener() {
-            public void controlMoved(ControlEvent e) {
-                centerViewer(nativeViewer);
-                centerViewer(foreignViewer);
-            }
-            public void controlResized(ControlEvent e) {
-                centerViewer(nativeViewer);
-                centerViewer(foreignViewer);
-            }
-        });
+        
         
         picture = new Label(horizontalSash, SWT.CENTER | SWT.WRAP);
         picture.addControlListener(new ControlListener(){
@@ -212,7 +207,22 @@ public class TestView extends ViewPart implements ISelectionChangedListener
         phraseForm.setWeights(new int[]{1,1});
         horizontalSash.setWeights(NO_PICTURE_WEIGHTS);
         
-        
+        nativeGroup.addControlListener(new ControlListener() {
+            public void controlMoved(ControlEvent e) {
+                centerViewer(nativeViewer);
+            }
+            public void controlResized(ControlEvent e) {
+                centerViewer(nativeViewer);
+            }
+        });
+        foreignGroup.addControlListener(new ControlListener() {
+            public void controlMoved(ControlEvent e) {
+                centerViewer(foreignViewer);
+            }
+            public void controlResized(ControlEvent e) {
+                centerViewer(foreignViewer);
+            }
+        });
         
         makeActions();
         getViewSite().getActionBars().setGlobalActionHandler(
@@ -475,18 +485,23 @@ public class TestView extends ViewPart implements ISelectionChangedListener
         }
     }
     
+    private void savePictureWeights()
+    {
+//      cache old weights before we remove the picture
+        if (picture.getImage() != null)
+        {
+            int [] weights = horizontalSash.getWeights();
+            if (weights[1] > MIN_WEIGHT * weights[0])
+                pictureWeights = weights;
+        }
+    }
+    
     public void setTestItem(TestItemType ti)
     {
         if (ti == null) return;
         try
         {
-            // cache old weights before we remove the picture
-            if (picture.getImage() != null)
-            {
-                int [] weights = horizontalSash.getWeights();
-                if (weights[1] > MIN_WEIGHT * weights[0])
-                    pictureWeights = weights;
-            }
+            savePictureWeights();
             if (ti.isSetImg() && ti.getImg() != null)
             {
                 IEditorPart editor = getSite().getPage().getActiveEditor();
@@ -583,6 +598,8 @@ public class TestView extends ViewPart implements ISelectionChangedListener
             
             nativeViewer.refresh();
             foreignViewer.refresh();
+            centerViewer(nativeViewer);
+            centerViewer(foreignViewer);
             //nativeViewer.getTextWidget().redraw();
             picture.redraw();
         }
@@ -645,8 +662,15 @@ public class TestView extends ViewPart implements ISelectionChangedListener
         }
         // shouldn't happen
         else throw new IllegalArgumentException("Unknown test type:" + test);
-        
+        UniversalLanguage ul = new UniversalLanguage(manager.getNativeLang());
+        nativeGroup.setText(ul.getDescription());
+        ul = new UniversalLanguage(manager.getForeignLang());
+        foreignGroup.setText(ul.getDescription());
         controlPanel.setStatusVisible(true);
+        controlPanel.setStatus(MessageUtil.getString("TestStatus",
+                        Integer.toString(test.getPassCount()),
+                        Integer.toString(test.getNumTests()),
+                        Integer.toString(test.getNumRetests())));
         currentItem = test.getNextItem();
         setTestItem(currentItem);
     }
@@ -764,6 +788,8 @@ public class TestView extends ViewPart implements ISelectionChangedListener
             testFinished();
             return;
         }
+        savePictureWeights();
+        
         nativeFont = null;
         if (ti.getNativeFontData() != null)
             nativeFont = LanguageTestPlugin.getFont(ti.getNativeFontData());
@@ -773,8 +799,66 @@ public class TestView extends ViewPart implements ISelectionChangedListener
         
         setText(nativeViewer, nativeDoc, ti.getNativeText(), nativeFont);
         setText(foreignViewer, foreignDoc, ti.getForeignText(), foreignFont);
+
         
-        // TODO picture and sound 
+        IWorkspace workspace = ResourcesPlugin.getWorkspace();
+        IFile moduleFile = workspace.getRoot().getFile(ti.getModulePath());
+        
+        if (ti.getSoundFile() != null)
+        {
+            if (ti.getSoundFile().toFile().exists())
+            {
+                controlPanel.player().setFile(ti.getSoundFile().toOSString());
+            }
+            else if (moduleFile.exists() && 
+                     moduleFile.getParent().getFile(ti.getSoundFile()).exists())
+            {
+                IFile soundFile = moduleFile.getParent().getFile(ti.getSoundFile());
+                controlPanel.player().setFile(soundFile.getRawLocation().toOSString());
+            }
+            else controlPanel.player().setFile(null);
+        }
+        else
+        {
+            controlPanel.player().setFile(null);
+        }
+        
+        if (ti.getImagePath() != null)
+        {
+            ImageLoader loader = new ImageLoader();
+            ImageData [] imageDatae = null;
+            if (ti.getImagePath().toFile().exists())
+            {
+                imageDatae = loader.load(ti.getImagePath().toOSString());
+            }
+            else if (moduleFile.exists())
+            {
+                IFile file = moduleFile.getParent().getFile(ti.getImagePath()); 
+                if (file.exists())
+                {
+                    imageDatae = loader.load(file.getRawLocation().toOSString());
+                }
+            }
+            if (imageDatae != null && imageDatae.length > 0)
+            {
+                imageData = imageDatae[0];
+                if (foreignViewer.getTextWidget().isVisible())
+                    horizontalSash.setWeights(pictureWeights);
+            }
+            else
+            {
+                horizontalSash.setWeights(NO_PICTURE_WEIGHTS);
+            }
+        }
+        else 
+        {
+            horizontalSash.setWeights(NO_PICTURE_WEIGHTS);
+            imageData = null;
+        }
+        setPicture();
+
+        centerViewer(nativeViewer);
+        centerViewer(foreignViewer);
     }
     public void markTest(boolean pass)
     {
@@ -808,8 +892,16 @@ public class TestView extends ViewPart implements ISelectionChangedListener
                         e.getLocalizedMessage(), e);
             }
         }
+        controlPanel.setStatus(MessageUtil.getString("TestStatus",
+                        Integer.toString(test.getPassCount()),
+                        Integer.toString(test.getNumTests()),
+                        Integer.toString(test.getNumRetests())));
+        
         showAnswer(false);
         currentItem = test.getNextItem();
+        // hack to get refresh to work
+        phraseForm.setWeights(new int [] { 45, 55});
+        phraseForm.setWeights(EQUAL_WEIGHT);
         setTestItem(currentItem);
     }
     public void showAnswer(boolean showAns)
@@ -817,10 +909,15 @@ public class TestView extends ViewPart implements ISelectionChangedListener
         if (showAns)
         {
             show(SHOW_BOTH);
+            if (imageData != null) horizontalSash.setWeights(pictureWeights);
         }
         else 
         {
             show(promptView);
+            if (promptView != NATIVE_ID || imageData == null)
+            {
+                horizontalSash.setWeights(NO_PICTURE_WEIGHTS);
+            }
         }
     }
 }
