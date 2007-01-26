@@ -6,6 +6,7 @@ package org.thanlwinsoft.languagetest.eclipse.views;
 import java.io.IOException;
 
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
@@ -150,8 +151,12 @@ public class TestControlPanel extends Composite
                 testView.markTest(false);
             }
         });
-        correctButton.setImage(LanguageTestPlugin.getImageDescriptor("icons/correct16.png").createImage(getDisplay()));
-        wrongButton.setImage(LanguageTestPlugin.getImageDescriptor("icons/wrong16.png").createImage(getDisplay()));
+        ImageDescriptor img = LanguageTestPlugin.getImageDescriptor("icons/correct16.png");
+        if (img != null)
+            correctButton.setImage(img.createImage(getDisplay()));
+        img = LanguageTestPlugin.getImageDescriptor("icons/wrong16.png");
+        if (img != null)
+            wrongButton.setImage(img.createImage(getDisplay()));
         
         GridData gridData = new GridData();
         gridData.horizontalSpan = 2;

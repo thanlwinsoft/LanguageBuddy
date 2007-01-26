@@ -119,10 +119,10 @@ public class SoundRecorder extends Composite
     private Combo encodingCombo = null;
     private ComboViewer comboViewer = null;
     private final static int MAX_SOUND_FILES = 10000;
-    private static final String MP3_CONVERTER_PREF = "MP3Converter";
-    private static final String MP3_CONV_ARG_PREF = "MP3ConverterArguments";
+    public static final String MP3_CONVERTER_PREF = "MP3Converter";
+    public static final String MP3_CONV_ARG_PREF = "MP3ConverterArguments";
     
-    public final String OVERWRITE_PREF_KEY = "OverwriteAudioNoPrompt";
+    public final static String OVERWRITE_PREF_KEY = "OverwriteAudioNoPrompt";
     public SoundRecorder(Composite parent, int style)
     {
         super(parent, style);
@@ -272,6 +272,7 @@ public class SoundRecorder extends Composite
             }
             lineController.closeLines();
             recorder = null;
+            setTestItem();
         }
         else
         {
@@ -299,6 +300,8 @@ public class SoundRecorder extends Composite
             else return;
             
             File targetFile = getAudioFile();
+            boolean overwriteOK = LanguageTestPlugin.getPrefStore().getBoolean(OVERWRITE_PREF_KEY);
+            
             if (targetFile == null)
             {
                 MessageDialog.openError(getShell(), 
@@ -306,7 +309,7 @@ public class SoundRecorder extends Composite
                                 MessageUtil.getString("NoAudioFileMessage"));
                 return;
             }
-            else if (targetFile.exists())
+            else if (targetFile.exists() && overwriteOK == false)
             {
                 final String [] buttons = {
                     MessageUtil.getString("Yes"),
@@ -323,9 +326,18 @@ public class SoundRecorder extends Composite
                                 LanguageTestPlugin.getPrefStore(),
                                 OVERWRITE_PREF_KEY);
                 int choice = 0;
-                //dialog.open();
+                LanguageTestPlugin.getPrefStore().setValue(OVERWRITE_PREF_KEY,
+                        dialog.getToggleState());
+                try
+                {
+                    LanguageTestPlugin.getPrefStore().save();
+                } 
+                catch (IOException e)
+                {
+                    LanguageTestPlugin.log(IStatus.WARNING, 
+                            e.getLocalizedMessage(), e);
+                }
                 choice = dialog.getReturnCode();
-                String result = dialog.getPrefStore().getString(OVERWRITE_PREF_KEY);
                 
                 if (choice != 2) 
                     return;
@@ -360,6 +372,33 @@ public class SoundRecorder extends Composite
                 job.schedule(100);
             }
             
+        }
+    }
+    
+    protected void setTestItem()
+    {
+        IEditorPart editor = 
+            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+        if (editor instanceof TestModuleEditor)
+        {
+            TestModuleEditor tme = (TestModuleEditor)editor;
+            if (tme.getEditorInput() instanceof IFileEditorInput)
+            {
+                TestItemEditor tie = (TestItemEditor)tme.getAdapter(TestItemEditor.class);
+                
+                if (tie != null && tie.getSelection() instanceof IStructuredSelection)
+                {
+                    TestItemType [] items = tie.getSelectedItems();
+                    if (items.length > 0)
+                    {
+                        TestItemType ti = items[0];
+                        if (ti.getSoundFile() == null)
+                                ti.addNewSoundFile();
+                        ti.getSoundFile().setStringValue(fileNameText.getText());
+                        tme.setDirty(true);
+                    }
+                }
+            }
         }
     }
     
@@ -565,7 +604,8 @@ public class SoundRecorder extends Composite
         final String allArgs = MessageFormat.format(arguments, new Object[] 
            {path.toOSString(),
             newPath.toOSString()});
-        
+        final Display display = getShell().getDisplay();
+        System.out.println(converter + allArgs);
         if (converter.length() > 0)
         {
             
@@ -578,7 +618,8 @@ public class SoundRecorder extends Composite
                     StringBuilder errorBuilder = new StringBuilder();
                     try
                     {
-                        Process p = Runtime.getRuntime().exec(new String[] {converter, allArgs});
+                        Process p = Runtime.getRuntime().exec(converter+allArgs);
+                        //Process p = Runtime.getRuntime().exec(new String[] {converter, allArgs});
                         retValue = p.waitFor();
                         BufferedReader br = new BufferedReader(new InputStreamReader(p.getErrorStream()));
                         
@@ -586,7 +627,7 @@ public class SoundRecorder extends Composite
                         {
                             errorBuilder.append(br.readLine());
                         }
-                        
+                        System.out.println(errorBuilder.toString());
                     }
                     catch (IOException e)
                     {
@@ -603,7 +644,7 @@ public class SoundRecorder extends Composite
                         if (retValue != 0)
                         {
                             final String errorMsg = errorBuilder.toString();
-                            getShell().getDisplay().asyncExec (new Runnable () {
+                            display.asyncExec (new Runnable () {
                                 public void run () {
                                     MessageDialog.openWarning(getShell(), 
                                         MessageUtil.getString("ConversionProcessFailedTitle"), 

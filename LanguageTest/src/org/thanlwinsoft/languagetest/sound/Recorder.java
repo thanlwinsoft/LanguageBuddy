@@ -422,6 +422,10 @@ public class Recorder implements Runnable
         {
             System.out.println(e.getMessage());
             recordException(e.getLocalizedMessage());
+            dumpAudioFileFormats();
+            System.out.println(encoding);
+            System.out.println(rawFormat);
+            System.out.println(newFileFormat);
         }
         catch (IOException e)
         {

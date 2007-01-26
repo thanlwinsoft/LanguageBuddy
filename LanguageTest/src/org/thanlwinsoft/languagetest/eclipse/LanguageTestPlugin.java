@@ -105,7 +105,7 @@ public class LanguageTestPlugin extends AbstractUIPlugin
      */
     public static ImageDescriptor getImageDescriptor(String path) 
     {
-        return AbstractUIPlugin.imageDescriptorFromPlugin("LanguageTest", path);
+        return AbstractUIPlugin.imageDescriptorFromPlugin(ID, path);
     }
     
     public static void log(int status, String msg)

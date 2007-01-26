@@ -178,10 +178,11 @@ public class TestModuleEditor extends MultiPageEditorPart
         testItemEditor.setupLangColumns();
     }
     
-    protected void setDirty(boolean dirty)
+    public void setDirty(boolean dirty)
     {
         if (dirty) updateTestView();
         isDirty = dirty;
+        firePropertyChange(PROP_DIRTY);
     }
     /* (non-Javadoc)
      * @see org.eclipse.ui.part.EditorPart#isDirty()

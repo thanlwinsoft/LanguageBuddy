@@ -1282,7 +1282,6 @@ public class TestItemEditor extends EditorPart implements ISelectionProvider
                     }
                 }
                 parent.setDirty(true);
-                parent.firePropertyChange(PROP_DIRTY);
                 tableViewer.update(data, new String[] {property});
             }
         }

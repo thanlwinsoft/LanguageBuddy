@@ -24,6 +24,8 @@ import java.util.Vector;
 public class LineController implements Runnable
 {
     private static final float MAX_SAMPLE_RATE = 44100;
+    private static final int MAX_BITS = 16;
+    private static final int MAX_CHANNELS = 2;
     private TargetDataLine targetDataLine = null;
     private SourceDataLine sourceDataLine = null;
     private boolean linesOpen = false;
@@ -136,7 +138,7 @@ public class LineController implements Runnable
                     if (li != null)
                     {
                         if (li.length == 0 && count < 2)
-                            System.out.println("No target lines for recording.");
+                            System.out.println("No target lines for recording on " + mixers[i].getDescription());
                             
                         for (int l=0; l<li.length; l++)
                         {
@@ -158,7 +160,7 @@ public class LineController implements Runnable
                                         recIndex = i;
                                         recLineInfo = testLi;
                                         recMixer = AudioSystem.getMixer(mixers[recIndex]);
-                                        System.out.println("chose " + testFormat);
+                                        System.out.println("chose " + testFormat + " on " + mixers[i].getDescription());
                                     }
                                 }
                             }
@@ -187,7 +189,17 @@ public class LineController implements Runnable
             
             if (playIndex > -1 || recIndex > -1)
             {
-                System.out.println("Getting lines...");
+                System.out.println("Found lines in " + count + " loop");
+                if (playMixer != null)
+                {
+                    System.out.println(playMixer.getMixerInfo().getName());
+                    System.out.println(playLineInfo);
+                }
+                if (recMixer != null)
+                {
+                    System.out.println(recMixer.getMixerInfo().getName());
+                    System.out.println(recLineInfo);
+                }
                 foundLines = true;
             }        
             else
@@ -379,14 +391,22 @@ public class LineController implements Runnable
     protected AudioFormat compareFormats(AudioFormat bestSoFar, AudioFormat test)
     {
         
-        if (bestSoFar == null ||
+        if (test.getSampleSizeInBits() <= MAX_BITS && (bestSoFar == null ||
+            test.getSampleSizeInBits() > bestSoFar.getSampleSizeInBits() ||
             (test.getSampleRate() > 
              bestSoFar.getSampleRate()) ||
             (test.getChannels() >
-             bestSoFar.getChannels()))
+             bestSoFar.getChannels())
+             ))
         {
+            System.out.println("rejected " + bestSoFar);
             bestSoFar = test;
             System.out.println("chose " + test);
+            
+        }
+        else
+        {
+            System.out.println("rejected " + test);
         }
         return bestSoFar;
     }
@@ -409,23 +429,38 @@ public class LineController implements Runnable
 
         for (int i=0; i<formats.length; i++)
         {
-            //System.out.println(formats[i]);
-            if (refFormat.getChannels() < formats[i].getChannels())
+            // does it meet the target format
+            if (formats[i].getSampleSizeInBits() == MAX_BITS &&
+                formats[i].getChannels() == 2 &&
+                formats[i].getEncoding() == AudioFormat.Encoding.PCM_SIGNED &&
+                formats[i].isBigEndian())
             {
-                refFormat = formats[i];
+                System.out.println(formats[i]);
+                //break;// good enough
             }
-            else if (formats[i].getSampleRate() > refFormat.getSampleRate() &&
-                     formats[i].getSampleRate() <= MAX_SAMPLE_RATE)
-            {
-                refFormat = formats[i];                             
-            }
-            // all other factors being equal, prefer PCM_SIGNED
-            else if (formats[i].getEncoding() == AudioFormat.Encoding.PCM_SIGNED &&
-                     formats[i].getSampleRate() == refFormat.getSampleRate() &&
-                     formats[i].getChannels() == refFormat.getChannels())
-            {
-                refFormat = formats[i];
-            }
+            
+            // skip quickly over rejects
+            if (formats[i].getSampleSizeInBits() > MAX_BITS ||
+                formats[i].getSampleSizeInBits() < refFormat.getSampleSizeInBits())
+                continue;
+            if (formats[i].getChannels() > MAX_CHANNELS ||
+                formats[i].getChannels() < refFormat.getChannels())
+                continue;
+            if (formats[i].getSampleRate() != AudioSystem.NOT_SPECIFIED &&
+                (formats[i].getSampleRate() < refFormat.getSampleRate() ||
+                 formats[i].getSampleRate() > MAX_SAMPLE_RATE))
+                continue;
+            // prefer PCM_SIGNED, big endian
+            if (formats[i].getEncoding() != AudioFormat.Encoding.PCM_SIGNED)
+                continue;
+            if ((formats[i].isBigEndian() == false) &&
+                (refFormat.getEncoding() == AudioFormat.Encoding.PCM_SIGNED))
+                continue;
+            // unless the ref is null, it must have the same or more channels 
+            // as ref, a higher or equal sample rate and be big endian, 
+            // PCM_SIGNED
+            refFormat = formats[i];
+            System.out.println(i + "Candidate " + refFormat);
         }
         // if the sample rate is not specified then specify it now
         if (refFormat != null)
