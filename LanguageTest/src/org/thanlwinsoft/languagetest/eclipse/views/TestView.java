@@ -61,6 +61,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.ViewPart;
+import org.thanlwinsoft.eclipse.widgets.SoundPlayer;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.thanlwinsoft.languagetest.eclipse.Perspective;
@@ -919,5 +920,17 @@ public class TestView extends ViewPart implements ISelectionChangedListener
                 horizontalSash.setWeights(NO_PICTURE_WEIGHTS);
             }
         }
+    }
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.part.WorkbenchPart#getAdapter(java.lang.Class)
+     */
+    public Object getAdapter(Class adapter)
+    {
+        if (adapter == this.getClass()) return this;
+        if (adapter == SoundPlayer.class)
+        {
+            return controlPanel.player();
+        }
+        return super.getAdapter(adapter);
     }
 }

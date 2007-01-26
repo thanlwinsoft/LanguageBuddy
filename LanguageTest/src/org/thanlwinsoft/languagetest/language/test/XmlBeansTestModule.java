@@ -30,6 +30,7 @@ public class XmlBeansTestModule implements TestModule
     public final static String XSL_FILENAME = "LanguageTest.xsl";
     public final static String XSL_TARGET = "xml-stylesheet";
     public final static String XSL_DATA = "href=\"" + XSL_FILENAME + "\" type=\"text/xsl\"";
+    public final static String FOLDER_EXT = ".lmf";
     
     public XmlBeansTestModule(IPath path) throws XmlException, IOException
     {

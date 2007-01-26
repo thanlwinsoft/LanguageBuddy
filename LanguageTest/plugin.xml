@@ -62,6 +62,12 @@
       <category
             id="org.thanlwinsoft.languagetest.views"
             name="%LanguageTest.viewCategory"/>
+      <view
+            category="org.thanlwinsoft.languagetest.views"
+            class="org.thanlwinsoft.languagetest.eclipse.views.RecordingView"
+            icon="icons/playMini.png"
+            id="org.thanlwinsoft.languagetest.eclipse.views.RecordingView"
+            name="%LanguageTest.recordingView"/>
    </extension>
    <extension
          point="org.eclipse.core.resources.natures"

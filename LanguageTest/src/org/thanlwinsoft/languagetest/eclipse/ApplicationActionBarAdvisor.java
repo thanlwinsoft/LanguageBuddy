@@ -10,6 +10,7 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarContributionItem;
 import org.eclipse.jface.action.ToolBarManager;
 import org.thanlwinsoft.languagetest.MessageUtil;
+import org.thanlwinsoft.languagetest.eclipse.views.RecordingView;
 import org.thanlwinsoft.languagetest.eclipse.views.TestHistoryView;
 import org.thanlwinsoft.languagetest.eclipse.views.TestView;
 import org.eclipse.swt.SWT;
@@ -42,6 +43,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
     private IWorkbenchAction showViewAction;
     private IWorkbenchAction showTestViewAction;
     private IWorkbenchAction showHistoryViewAction;
+    private IWorkbenchAction showRecordingViewAction;
     
     private IWorkbenchAction newWindowAction;
     //private OpenViewAction openViewAction;
@@ -117,8 +119,13 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
                         MessageUtil.getString("ShowHistoryView"));
         showNavigatorViewAction = new ShowViewAction("org.thanlwinsoft.languagetest.Navigator", 
                         MessageUtil.getString("ShowNavigatorView"));
+        showRecordingViewAction = new ShowViewAction(RecordingView.ID, 
+                        MessageUtil.getString("ShowRecordingView"));
         
         register(showTestViewAction);
+        register(showHistoryViewAction);
+        register(showNavigatorViewAction);
+        register(showRecordingViewAction);
         //conversionWizardAction = new ConversionWizardAction();
         // Open the wizard dialog
         //wizardDialog.open();
@@ -183,6 +190,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         windowMenu.add(showTestViewAction);
         windowMenu.add(showHistoryViewAction);
         windowMenu.add(showNavigatorViewAction);
+        windowMenu.add(showRecordingViewAction);
         // Help
         helpMenu.add(aboutAction);
     }

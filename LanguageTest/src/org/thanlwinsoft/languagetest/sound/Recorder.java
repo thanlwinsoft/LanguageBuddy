@@ -181,6 +181,8 @@ public class Recorder implements Runnable
         
         if (targetLine == null)
         {
+            if (!lineController.linesAreAvailable())
+                lineController.openLines();
             if (lineController.linesAreAvailable())
             {
                 rawFormat = lineController.getRecLineFormat();
@@ -216,7 +218,7 @@ public class Recorder implements Runnable
             File tempAudioFile = File.createTempFile("LangTestRec",".raw");
             tempAudioFile.deleteOnExit();
             reinit(tempAudioFile);
-            System.out.println("Line open");
+            
             int totalWritten = 0;
             int read = 0;
             // check that initalisation was successful
@@ -225,6 +227,7 @@ public class Recorder implements Runnable
                 read = -1;
                 System.out.println("Recorder initialisation failed");
             }
+            else System.out.println("Line open");
             while (read > -1)
             {
                 byte [] readBuffer = new byte[READ_BUFFER_SIZE];
@@ -266,16 +269,23 @@ public class Recorder implements Runnable
 //                System.out.println("Wrote " + wrote + " bytes " 
 //                   + inputStream.getFrameLength() + " frames");
             } 
-            lengthInFrames = 
-                totalWritten / inputStream.getFormat().getFrameSize();
-            lengthInMs = (long)(((float)lengthInFrames * 1000) / 
-                inputStream.getFormat().getFrameRate());
+            lengthInFrames = -1;
+            if (inputStream != null && inputStream.getFormat() != null)
+            {
+                lengthInFrames = 
+                    totalWritten / inputStream.getFormat().getFrameSize();
+                lengthInMs = (long)(((float)lengthInFrames * 1000) / 
+                                inputStream.getFormat().getFrameRate());
+            }
             System.out.println("Recorded " + lengthInFrames + " frames");
-            targetLine.stop();
-            targetLine.flush();
-            targetLine.close();
-            inputStream.close();
-            outputStream.close();
+            if (targetLine != null)
+            {
+                targetLine.stop();
+                targetLine.flush();
+                targetLine.close();
+            }
+            if (inputStream != null) inputStream.close();
+            if (outputStream != null) outputStream.close();
             convert(targetFile, targetEncoding, targetFileFormat);
             inputStream = null;
             outputStream = null;
@@ -537,10 +547,15 @@ public class Recorder implements Runnable
      */
     public static void main(String args[])
     {
-        
-        Recorder recorder = new Recorder(new LineController());
+        LineController lineController = new LineController(LineController.REC_MODE);
+        lineController.run();
+        if (!lineController.openLines())
+        {
+            System.out.println("Failed to open lines");
+            System.exit(2);
+        }
+        Recorder recorder = new Recorder(lineController);
         recorder.dumpAudioFileFormats();
-        
         while (!recorder.initialise(new File("sample.wav")))
         {
             try
@@ -590,9 +605,9 @@ public class Recorder implements Runnable
         //recorder.convert(new File("sample.wav"), new File("sample.mp3"), 
         //    MpegFormatConversionProvider.MPEG1L3,  
         //    AudioFileTypes.getType("MP3", "mp3"));
-        recorder.convert(new File("sample.wav"), new File("sample.ogg"), 
-            AudioFormat.Encoding.PCM_SIGNED,  
-            recorder.getVorbisFileFormat());
+//        recorder.convert(new File("sample.wav"), new File("sample.ogg"), 
+//            AudioFormat.Encoding.PCM_SIGNED,  
+//            recorder.getVorbisFileFormat());
 //        recorder.convertA2B(new File("sample.mp3"), 
 //            MpegFormatConversionProvider.MPEG1L3, 
 //            AudioFileTypes.getType("MP3", "mp3"));
@@ -601,6 +616,7 @@ public class Recorder implements Runnable
 //             org.tritonus.share.sampled.Encodings.getEncoding("VORBIS"), 
 //             AudioSystem.getAudioFileTypes()[4]);
         recorder = null;
+        lineController.closeLines();
         System.out.println("Recorder finished");
         System.exit(0);
     }

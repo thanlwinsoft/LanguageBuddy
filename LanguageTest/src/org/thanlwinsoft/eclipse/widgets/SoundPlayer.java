@@ -540,9 +540,10 @@ public class SoundPlayer extends Composite implements BasicPlayerListener
 //            PlaylistItem pli = playlist.getCursor();
 //            this.setCurrentSong(pli);
           }
-          LanguageTestPlugin.log(IStatus.INFO, "Scale: " + slider.getSelection() +
-                  "/" + slider.getMaximum() + " " + event.getValue() + "," + 
-                  event.getPosition());
+          // don't call get slider outside gui thread
+//          LanguageTestPlugin.log(IStatus.INFO, "Scale: " + slider.getSelection() +
+//                  "/" + slider.getMaximum() + " " + event.getValue() + "," + 
+//                  event.getPosition());
         }
         else if (state==BasicPlayerEvent.PLAYING)
         {
@@ -570,7 +571,7 @@ public class SoundPlayer extends Composite implements BasicPlayerListener
      */
     public void setController(BasicController controller)
     {
-        theSoundPlayer = controller;    
+        theSoundPlayer = controller;
     }
     
     /**
