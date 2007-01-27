@@ -10,7 +10,10 @@ import java.io.File;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -27,6 +30,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Scale;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
+import org.thanlwinsoft.languagetest.sound.AudioPlayListener;
 
 import javazoom.jlgui.basicplayer.BasicController;
 import javazoom.jlgui.basicplayer.BasicPlayer;
@@ -63,6 +67,7 @@ public class SoundPlayer extends Composite implements BasicPlayerListener
     // gui
     private Scale slider = null;
     private Display display = null;
+    private Set audioPlayListenerSet = new HashSet();
     
     public SoundPlayer(Composite parent)
     {
@@ -129,7 +134,7 @@ public class SoundPlayer extends Composite implements BasicPlayerListener
         
         playerState = STOP;
         // debug testing only
-        setFile("/home/keith/ogg/Fierce/Simply Worship 1/01 - Track 1.ogg");
+        //setFile("/home/keith/ogg/Fierce/Simply Worship 1/01 - Track 1.ogg");
     }
 
     /**
@@ -369,6 +374,17 @@ public class SoundPlayer extends Composite implements BasicPlayerListener
         }
     }
     
+    public void seek(long msInterval)
+    {
+        if (playerState == PAUSE || playerState == STOP)
+        {
+            if (msInterval > 0)
+            {
+                posValue = msInterval * 0.001;
+                processSeek();
+            }
+        }
+    }
     
     public void setFile(String file)
     {
@@ -492,7 +508,13 @@ public class SoundPlayer extends Composite implements BasicPlayerListener
     try
     {
     //slider.setSelection(sliderPos);
-    
+    Iterator i = audioPlayListenerSet.iterator();
+    long msPosition = secondsAmount * 1000;
+    long msTotalLength = getLengthInSeconds() * 1000;
+    while (i.hasNext())
+    {
+        ((AudioPlayListener)i.next()).playPosition(msPosition, msTotalLength);
+    }
     display.asyncExec (new Runnable () {
         public void run () {
             int oldMax = slider.getMaximum();
@@ -692,5 +714,13 @@ public class SoundPlayer extends Composite implements BasicPlayerListener
         if (isRealLength)
             return lengthInSecond;
         return -1l;
+    }
+    public void addPlayListener(AudioPlayListener listener)
+    {
+        audioPlayListenerSet.add(listener);
+    }
+    public void removePlayListener(AudioPlayListener listener)
+    {
+        audioPlayListenerSet.remove(listener);
     }
 }

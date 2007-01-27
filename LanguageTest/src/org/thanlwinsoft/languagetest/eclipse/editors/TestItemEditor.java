@@ -64,6 +64,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.EditorPart;
@@ -73,6 +74,7 @@ import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.thanlwinsoft.languagetest.eclipse.Perspective;
 import org.thanlwinsoft.languagetest.eclipse.TestModuleAdapter;
 import org.thanlwinsoft.languagetest.eclipse.WorkspaceLanguageManager;
+import org.thanlwinsoft.languagetest.eclipse.views.RecordingView;
 import org.thanlwinsoft.languagetest.eclipse.views.TestView;
 import org.thanlwinsoft.languagetest.language.test.UniversalLanguage;
 import org.thanlwinsoft.schemas.languagetest.ForeignLangType;
@@ -231,10 +233,14 @@ public class TestItemEditor extends EditorPart implements ISelectionProvider
         cellModifier = new TestItemCellModifier();
         tableViewer.setCellModifier(cellModifier);
         sorter = new TestItemSorter();
-        
-        IViewPart testView = getEditorSite().getPage().findView(Perspective.TEST_VIEW);
+        IWorkbenchPage page = getEditorSite().getPage();
+        IViewPart testView = page.findView(Perspective.TEST_VIEW);
         if (testView != null)
             ((TestView)testView).addSelectionProvider(tableViewer);
+        RecordingView recordingView = (RecordingView)page.findView(RecordingView.ID);
+        if (recordingView != null)
+            addSelectionChangedListener(recordingView.getRecorder());
+        
         soundCol = new TableColumn(tableViewer.getTable(), SWT.LEFT);
         soundCol.setText(MessageUtil.getString("SoundColumn"));
         soundCol.setToolTipText(MessageUtil.getString("SoundColumn"));
@@ -1475,6 +1481,8 @@ public class TestItemEditor extends EditorPart implements ISelectionProvider
      */
     public void setSelection(ISelection selection)
     {
+        tableViewer.refresh();
+        tableViewer.getTable().redraw();
         tableViewer.setSelection(selection);
     }
 }

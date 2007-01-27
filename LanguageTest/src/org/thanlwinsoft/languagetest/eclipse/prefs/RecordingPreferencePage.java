@@ -27,6 +27,9 @@
  */
 package org.thanlwinsoft.languagetest.eclipse.prefs;
 
+import java.io.IOException;
+
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
@@ -41,9 +44,12 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.thanlwinsoft.eclipse.widgets.SoundRecorder;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
@@ -56,8 +62,11 @@ public class RecordingPreferencePage extends FieldEditorPreferencePage
 implements IWorkbenchPreferencePage
 {
 
-    private StringFieldEditor argumentEditor = null;
-    private FileFieldEditor fileEditor = null;
+    private StringFieldEditor wavToMp3ArgumentEditor = null;
+    private FileFieldEditor wavToMp3FileEditor = null;
+    private StringFieldEditor mp3ToWavArgumentEditor = null;
+    private FileFieldEditor mp3ToWavFileEditor = null;
+    
     private BooleanFieldEditor overwriteEditor = null;
     /**
      * @param arg0
@@ -85,41 +94,76 @@ implements IWorkbenchPreferencePage
      */
     protected void createFieldEditors()
     {
-        fileEditor = new FileFieldEditor(SoundRecorder.MP3_CONVERTER_PREF, 
-                MessageUtil.getString("MP3ConverterProgram"), 
-                false, getFieldEditorParent());
-        if (Platform.getOS().equals(Platform.OS_WIN32))
-        {
-            fileEditor.setFileExtensions(new String[] {".exe"});
-        }
-        fileEditor.setEmptyStringAllowed(true);
-        addField(fileEditor); 
-        argumentEditor =
-            new StringFieldEditor(SoundRecorder.MP3_CONV_ARG_PREF, 
-                    MessageUtil.getString("MP3ConverterArguments"), 
-                    SWT.NONE, getFieldEditorParent());
-        argumentEditor.setEmptyStringAllowed(true);
-        addField(argumentEditor);
+        Label introLabel = new Label(getFieldEditorParent(), SWT.WRAP);
+        introLabel.setText(MessageUtil.getString("ConverterIntro"));
+        GridData gd = new GridData();
+        gd.horizontalSpan = 3;
+        introLabel.setLayoutData(gd);
+        addConverterFieldEditors(SoundRecorder.WAVTOMP3_CONVERTER_PREF,
+                "WavToMP3ConverterProgram",
+                SoundRecorder.WAVTOMP3_CONV_ARG_PREF,
+                "WavToMP3ConverterArguments");
+        addConverterFieldEditors(SoundRecorder.MP3TOWAV_CONVERTER_PREF,
+                "MP3ToWavConverterProgram",
+                SoundRecorder.MP3TOWAV_CONV_ARG_PREF,
+                "MP3ToWavConverterArguments");
+        addConverterFieldEditors(SoundRecorder.WAVTOOGG_CONVERTER_PREF,
+                "WavToOggConverterProgram",
+                SoundRecorder.WAVTOOGG_CONV_ARG_PREF,
+                "WavToOggConverterArguments");
+        addConverterFieldEditors(SoundRecorder.OGGTOWAV_CONVERTER_PREF,
+                "OggToWavConverterProgram",
+                SoundRecorder.OGGTOWAV_CONV_ARG_PREF,
+                "OggToWavConverterArguments");
         
-       
         overwriteEditor = new BooleanFieldEditor(SoundRecorder.OVERWRITE_PREF_KEY, 
                 MessageUtil.getString("OverwriteRecordingsWithoutAsking"), 
                 SWT.NONE, getFieldEditorParent());
         addField(overwriteEditor);
+        overwriteEditor.fillIntoGrid(getFieldEditorParent(), 3);
         
         adjustGridLayout();
         
     }
 
-    
+    private void addConverterFieldEditors(String convPref, String convLabelId,
+                                          String argPref, String argLabelId)
+    {
+        wavToMp3FileEditor = new FileFieldEditor(convPref, 
+                MessageUtil.getString(convLabelId), 
+                false, getFieldEditorParent());
+        if (Platform.getOS().equals(Platform.OS_WIN32))
+        {
+            wavToMp3FileEditor.setFileExtensions(new String[] {".exe"});
+        }
+        wavToMp3FileEditor.setEmptyStringAllowed(true);
+        addField(wavToMp3FileEditor); 
+        wavToMp3FileEditor.fillIntoGrid(getFieldEditorParent(), 3);
+        wavToMp3ArgumentEditor =
+            new StringFieldEditor(argPref, 
+                    MessageUtil.getString(argLabelId), 
+                    SWT.NONE, getFieldEditorParent());
+        wavToMp3ArgumentEditor.setEmptyStringAllowed(true);
+        
+        addField(wavToMp3ArgumentEditor);
+        wavToMp3ArgumentEditor.fillIntoGrid(getFieldEditorParent(), 3);
+        
+        adjustTextControl(wavToMp3FileEditor);
+        adjustTextControl(wavToMp3ArgumentEditor);
+        
+    }
     
     /* (non-Javadoc)
      * @see org.eclipse.jface.preference.FieldEditorPreferencePage#adjustGridLayout()
      */
     protected void adjustGridLayout()
     {
-        adjustTextControl(fileEditor);
-        adjustTextControl(argumentEditor);
+        Layout layout = getFieldEditorParent().getLayout();
+        if (layout instanceof GridLayout)
+        {
+            GridLayout gl = (GridLayout)layout;
+            gl.numColumns = 3;
+        }
     }
 
 
@@ -131,20 +175,80 @@ implements IWorkbenchPreferencePage
         if (text.getLayoutData() instanceof GridData)
         {
             GridData gd = ((GridData)text.getLayoutData());
-            gd.widthHint = 300;
+            gd.widthHint = 150;
             text.setLayoutData(gd);
         }
         
     }
     
-    protected void initializeDefaults()
+    public static void initializeDefaults()
     {
-        getPreferenceStore().setDefault(SoundRecorder.MP3_CONVERTER_PREF, "lame");
-        getPreferenceStore().setDefault(SoundRecorder.MP3_CONV_ARG_PREF,
-            " -V2 \"{0}\" \"{1}\"");
-        getPreferenceStore().setDefault(SoundRecorder.OVERWRITE_PREF_KEY, false);
+        String exePath = "";
+        String exeExt = "";
+        if (Platform.getOS().equals(Platform.OS_WIN32))
+        {
+           exeExt = ".exe";
+        }
+        else if (Platform.getOS().equals(Platform.OS_LINUX))
+        {
+            exePath = "/usr/bin/";
+        }
+        ScopedPreferenceStore prefStore = LanguageTestPlugin.getPrefStore();
+        prefStore.setDefault(SoundRecorder.WAVTOMP3_CONVERTER_PREF, 
+                exePath + "lame" + exeExt);
+        prefStore.setDefault(SoundRecorder.WAVTOMP3_CONV_ARG_PREF,
+            " -V2 {0} {1}");
+        prefStore.setDefault(SoundRecorder.MP3TOWAV_CONVERTER_PREF, 
+                exePath + "lame" + exeExt);
+        prefStore.setDefault(SoundRecorder.MP3TOWAV_CONV_ARG_PREF,
+            " --decode {0} {1}");
+        prefStore.setDefault(SoundRecorder.WAVTOOGG_CONVERTER_PREF, 
+                exePath + "oggenc" + exeExt);
+        prefStore.setDefault(SoundRecorder.WAVTOOGG_CONV_ARG_PREF,
+            " -q 5 {0} -o {1}");
+        prefStore.setDefault(SoundRecorder.OGGTOWAV_CONVERTER_PREF, 
+                exePath + "oggdec" + exeExt);
+        prefStore.setDefault(SoundRecorder.OGGTOWAV_CONV_ARG_PREF,
+            " {0} -o {1}");
+        prefStore.setDefault(SoundRecorder.OVERWRITE_PREF_KEY, false);
         
     }
+
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.preference.PreferencePage#performApply()
+     */
+    protected void performApply()
+    {
+        super.performApply();
+        try
+        {
+            LanguageTestPlugin.getPrefStore().save();
+        } 
+        catch (IOException e)
+        {
+            LanguageTestPlugin.log(IStatus.WARNING, e.getLocalizedMessage(), e);
+        }
+    }
+
+
+
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.preference.FieldEditorPreferencePage#performOk()
+     */
+    public boolean performOk()
+    {
+        try
+        {
+            LanguageTestPlugin.getPrefStore().save();
+        } 
+        catch (IOException e)
+        {
+            LanguageTestPlugin.log(IStatus.WARNING, e.getLocalizedMessage(), e);
+        }
+        return super.performOk();
+    }
+
+
 
     /* (non-Javadoc)
      * @see org.eclipse.jface.preference.PreferencePage#doGetPreferenceStore()
@@ -159,7 +263,7 @@ implements IWorkbenchPreferencePage
      */
     public void init(IWorkbench workbench)
     {
-        
+        initializeDefaults();
     }
 
 

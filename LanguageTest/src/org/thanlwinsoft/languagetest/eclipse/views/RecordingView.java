@@ -55,8 +55,10 @@ public class RecordingView extends ViewPart
      */
     public void setFocus()
     {
-        // TODO Auto-generated method stub
-
+        recorder.setFocus();
     }
-
+    public SoundRecorder getRecorder()
+    {
+        return recorder;
+    }
 }

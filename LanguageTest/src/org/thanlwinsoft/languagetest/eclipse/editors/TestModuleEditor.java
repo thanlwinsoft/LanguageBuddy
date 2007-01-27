@@ -13,6 +13,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IEditorInput;
@@ -27,6 +29,7 @@ import org.eclipse.ui.part.MultiPageEditorPart;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.thanlwinsoft.languagetest.eclipse.Perspective;
+import org.thanlwinsoft.languagetest.eclipse.views.RecordingView;
 import org.thanlwinsoft.languagetest.eclipse.views.TestView;
 import org.thanlwinsoft.languagetest.language.test.XmlBeansTestModule;
 import org.thanlwinsoft.schemas.languagetest.LanguageModuleDocument;
@@ -62,7 +65,8 @@ public class TestModuleEditor extends MultiPageEditorPart
     public Object getAdapter(Class adapter)
     {
         System.out.println(adapter.toString());
-        if (adapter.equals(testItemEditor.getClass()))
+        if (adapter.equals(testItemEditor.getClass()) ||
+            adapter.equals(ISelectionProvider.class))
             return testItemEditor;
         if (adapter.equals(languagePart.getClass()))
             return languagePart;
@@ -318,6 +322,12 @@ public class TestModuleEditor extends MultiPageEditorPart
                     testView.setTestItem(item);
                 }
             }
+        }
+        IViewPart recordingPart = getEditorSite().getPage().findView(RecordingView.ID);
+        if (recordingPart instanceof ISelectionChangedListener)
+        {
+            ISelectionChangedListener scl = (ISelectionChangedListener)recordingPart;
+            testItemEditor.addSelectionChangedListener(scl);
         }
     }
     /* (non-Javadoc)

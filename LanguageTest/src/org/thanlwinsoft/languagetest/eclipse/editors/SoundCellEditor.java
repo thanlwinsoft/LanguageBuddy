@@ -42,8 +42,16 @@ public class SoundCellEditor extends DialogCellEditor {
             IPath path = new Path(getDefaultLabel().getText());
             if (!f.exists())
             {
-                IPath ws = ResourcesPlugin.getWorkspace().getRoot().getRawLocation();
-                path = ws.append(path); 
+                if (moduleFile != null)
+                {
+                    IPath parent = moduleFile.getRawLocation().removeLastSegments(1);
+                    path = parent.append(path);
+                }
+                else
+                {
+                    IPath ws = ResourcesPlugin.getWorkspace().getRoot().getRawLocation();
+                    path = ws.append(path);
+                }
             }
             dialog.setFilterPath(path.removeLastSegments(1).toOSString());
             dialog.setFileName(path.lastSegment());

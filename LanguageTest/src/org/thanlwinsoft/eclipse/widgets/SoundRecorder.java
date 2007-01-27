@@ -33,6 +33,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.MessageFormat;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.StringTokenizer;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -69,8 +74,10 @@ import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.thanlwinsoft.languagetest.eclipse.editors.TestItemEditor;
 import org.thanlwinsoft.languagetest.eclipse.editors.TestModuleEditor;
+import org.thanlwinsoft.languagetest.eclipse.prefs.RecordingPreferencePage;
 import org.thanlwinsoft.languagetest.eclipse.views.TestView;
 import org.thanlwinsoft.languagetest.language.test.XmlBeansTestModule;
+import org.thanlwinsoft.languagetest.sound.AudioPlayListener;
 import org.thanlwinsoft.languagetest.sound.LineController;
 import org.thanlwinsoft.languagetest.sound.Recorder;
 import org.thanlwinsoft.schemas.languagetest.TestItemType;
@@ -83,7 +90,12 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 
 /**
@@ -92,7 +104,7 @@ import org.eclipse.jface.window.Window;
  * @author keith
  *
  */
-public class SoundRecorder extends Composite
+public class SoundRecorder extends Composite implements ISelectionChangedListener, AudioPlayListener
 {
     private Button recordButton = null;
     private Button stopButton = null;
@@ -111,22 +123,33 @@ public class SoundRecorder extends Composite
     private static final int OGG = 2;
     private static final int NUM_ENCODINGS = 3;
     
-    private static final String [] EXTENSIONS = new String[] { ".wav", ".mp3", ".ogg" };
+    private static final String [] EXTENSIONS = new String[] { "wav", "mp3", "ogg" };
     private static final String [] FILTERS = new String[] { "*.wav", "*.mp3", "*.ogg" };
-    private static final String [] TYPES = new String[] { "Wave .wav", "MP3 .mp3", "Vorbis .ogg" };
+    private static final String [] TYPES = new String[] { "Wave", "MP3", "Vorbis" };
     private Text fileNameText = null;
     private Button browseButton = null;
     private Combo encodingCombo = null;
     private ComboViewer comboViewer = null;
     private final static int MAX_SOUND_FILES = 10000;
-    public static final String MP3_CONVERTER_PREF = "MP3Converter";
-    public static final String MP3_CONV_ARG_PREF = "MP3ConverterArguments";
+    private Display display = null;
+    
+    public static final String WAVTOMP3_CONVERTER_PREF = "WavToMP3Converter";
+    public static final String WAVTOMP3_CONV_ARG_PREF = "WavToMP3ConverterArguments";
+    public static final String MP3TOWAV_CONVERTER_PREF = "MP3ToWavConverter";
+    public static final String MP3TOWAV_CONV_ARG_PREF = "MP3ToWavConverterArguments";
+    public static final String WAVTOOGG_CONVERTER_PREF = "WavToOggConverter";
+    public static final String WAVTOOGG_CONV_ARG_PREF = "WavToOggConverterArguments";
+    public static final String OGGTOWAV_CONVERTER_PREF = "OGGToWavConverter";
+    public static final String OGGTOWAV_CONV_ARG_PREF = "OGGToWavConverterArguments";
+    
     
     public final static String OVERWRITE_PREF_KEY = "OverwriteAudioNoPrompt";
     public SoundRecorder(Composite parent, int style)
     {
         super(parent, style);
         initialize();
+        RecordingPreferencePage.initializeDefaults();
+        this.display = parent.getDisplay();
     }
 
     private void initialize()
@@ -136,11 +159,11 @@ public class SoundRecorder extends Composite
         GridData gridData1 = new GridData();
         gridData1.horizontalAlignment = org.eclipse.swt.layout.GridData.FILL;
         GridData gridData = new GridData();
-        gridData.horizontalSpan = 4;
+        gridData.horizontalSpan = 5;
         gridData.horizontalAlignment = org.eclipse.swt.layout.GridData.FILL;
         gridData.widthHint = -1;
         GridLayout gridLayout = new GridLayout();
-        gridLayout.numColumns = 6;
+        gridLayout.numColumns = 7;
         recordButton = new Button(this, SWT.NONE);
         recordButton.setImage(new Image(Display.getCurrent(), getClass().getResourceAsStream("/org/thanlwinsoft/languagetest/sound/icons/recordMini.png")));
         recordButton.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter()
@@ -161,6 +184,9 @@ public class SoundRecorder extends Composite
         });
         recordScale = new Scale(this, SWT.NONE);
         recordScale.setPageIncrement(10);
+        recordScale.setMinimum(0);
+        recordScale.setMaximum(30);
+        recordScale.setIncrement(1);
         recordScale.setLayoutData(gridData);
         playButton = new Button(this, SWT.NONE);
         playButton.setImage(new Image(Display.getCurrent(), getClass().getResourceAsStream("/org/thanlwinsoft/languagetest/sound/icons/playMini.png")));
@@ -177,12 +203,27 @@ public class SoundRecorder extends Composite
         {
             public void widgetSelected(org.eclipse.swt.events.SelectionEvent e)
             {
-                System.out.println("widgetSelected()"); // TODO Auto-generated Event stub widgetSelected()
+                File file = getAudioFile();
+                if (file != null && MessageDialog.openConfirm(getShell(), 
+                        MessageUtil.getString("ConfirmDeleteTitle"), 
+                        MessageUtil.getString("ConfirmDeleteMessage", 
+                                file.getName())))
+                {
+                    file.delete();
+                    fileNameText.setText("");
+                    fileNameText.setToolTipText("");
+                }
             }
         });
         startButton = new Button(this, SWT.LEFT);
         startSpinner = new Spinner(this, SWT.NONE);
+        startSpinner.setValues(0, 0, 3000, 1, 1, 10);
+        Label spacer = new Label(this, SWT.LEAD);
+        GridData spacerGridData = new GridData();
+        spacerGridData.grabExcessHorizontalSpace = true;
+        spacer.setLayoutData(spacerGridData);
         endSpinner = new Spinner(this, SWT.NONE);
+        endSpinner.setValues(0, 0, 30000, 1, 1, 10);
         endButton = new Button(this, SWT.RIGHT);
         // Visual Editor doesn't like direct calls to MessageUtil in setText
         createEncodingCombo();
@@ -191,7 +232,10 @@ public class SoundRecorder extends Composite
         fileNameGridData.horizontalAlignment = GridData.FILL;
         fileNameText = new Text(this, SWT.BORDER);
         fileNameText.setLayoutData(fileNameGridData);
+        GridData browseGridData = new GridData();
+        browseGridData.horizontalSpan = 2;
         browseButton = new Button(this, SWT.NONE);
+        browseButton.setLayoutData(browseGridData);
         browseButton.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter()
         {
             public void widgetSelected(org.eclipse.swt.events.SelectionEvent e)
@@ -214,7 +258,7 @@ public class SoundRecorder extends Composite
         {
             public void widgetSelected(org.eclipse.swt.events.SelectionEvent e)
             {
-                System.out.println("widgetSelected()"); // TODO Auto-generated Event stub widgetSelected()
+                startSpinner.setSelection(recordScale.getSelection());
             }
         });
         s = MessageUtil.getString("PlaybackEndButton");
@@ -224,7 +268,7 @@ public class SoundRecorder extends Composite
         {
             public void widgetSelected(org.eclipse.swt.events.SelectionEvent e)
             {
-                System.out.println("widgetSelected()"); // TODO Auto-generated Event stub widgetSelected()
+                endSpinner.setSelection(recordScale.getSelection());
             }
         });
         s = MessageUtil.getString("Browse");
@@ -249,7 +293,16 @@ public class SoundRecorder extends Composite
         job.setPriority(Job.LONG);
         job.schedule();
         
-        
+        IEditorPart editor = 
+            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+        if (editor instanceof TestModuleEditor)
+        {
+            ISelectionProvider sp = (ISelectionProvider)editor.getAdapter(ISelectionProvider.class);
+            if (sp != null)
+            {
+                sp.addSelectionChangedListener(this);
+            }
+        }
     }
 
     /**
@@ -296,7 +349,12 @@ public class SoundRecorder extends Composite
                 lineController.openLines();
             }
             if (recorder == null)
+            {
                 recorder = new Recorder(lineController);
+                recorder.addPlayListener(this);
+                startSpinner.setSelection(0);
+                endSpinner.setSelection(0);
+            }
             else return;
             
             File targetFile = getAudioFile();
@@ -385,8 +443,8 @@ public class SoundRecorder extends Composite
             if (tme.getEditorInput() instanceof IFileEditorInput)
             {
                 TestItemEditor tie = (TestItemEditor)tme.getAdapter(TestItemEditor.class);
-                
-                if (tie != null && tie.getSelection() instanceof IStructuredSelection)
+                ISelection selection = tie.getSelection();
+                if (tie != null && selection instanceof IStructuredSelection)
                 {
                     TestItemType [] items = tie.getSelectedItems();
                     if (items.length > 0)
@@ -394,8 +452,19 @@ public class SoundRecorder extends Composite
                         TestItemType ti = items[0];
                         if (ti.getSoundFile() == null)
                                 ti.addNewSoundFile();
+                        IPath path = new Path(fileNameText.getText());
+                        if (path.isAbsolute())
+                        {
+                            IPath modulePath = ((IFileEditorInput)tme.getEditorInput()).getFile().getRawLocation();
+                            if (modulePath.removeLastSegments(1).isPrefixOf(path))
+                            {
+                                path = path.removeFirstSegments(modulePath.segmentCount() - 1);
+                                fileNameText.setText(path.toString());
+                            }
+                        }
                         ti.getSoundFile().setStringValue(fileNameText.getText());
                         tme.setDirty(true);
+                        tie.setSelection(selection);
                     }
                 }
             }
@@ -429,6 +498,7 @@ public class SoundRecorder extends Composite
                 TestItemEditor tie = (TestItemEditor)tme.getAdapter(TestItemEditor.class);
                 if (tie != null && tie.getSelection() instanceof IStructuredSelection)
                 {
+                    tie.addSelectionChangedListener(this);
                     TestItemType [] items = tie.getSelectedItems();
                     if (items.length > 0 && items[0].sizeOfNativeLangArray() > 0)
                     {
@@ -436,7 +506,7 @@ public class SoundRecorder extends Composite
                         IPath path = new Path(fileName);
                         if (moduleFile.getParent().getFullPath().isValidSegment(nativeText))
                         {
-                            fileName = nativeText + EXTENSIONS[WAV];
+                            fileName = nativeText + "." + EXTENSIONS[WAV];
                         }
                     }
                 }
@@ -485,7 +555,7 @@ public class SoundRecorder extends Composite
                 // give up eventually if max sane number is reached
                 while (testFile.exists() && i++ < MAX_SOUND_FILES)
                 {
-                    fileName = moduleBaseName + i + EXTENSIONS[WAV];
+                    fileName = moduleBaseName + i + "." + EXTENSIONS[WAV];
                     testFile = folder.getFile(fileName);
                 }
                 if (testFile != null)
@@ -512,6 +582,7 @@ public class SoundRecorder extends Composite
         if (player != null)
         {
             player.setFile(getAudioFile().getAbsolutePath());
+            player.seek(startSpinner.getSelection() * 100);
             player.play();
         }
     }
@@ -536,6 +607,7 @@ public class SoundRecorder extends Composite
         if (view != null)
         {
             player = (SoundPlayer)view.getAdapter(SoundPlayer.class);
+            player.addPlayListener(this);
         }
         return player;
     }
@@ -556,27 +628,59 @@ public class SoundRecorder extends Composite
 
             public void widgetSelected(SelectionEvent e)
             {
-                int fileEncoding = getFileEncoding();
-                int selectedEncoding = encodingCombo.getSelectionIndex();
-                if (fileEncoding != selectedEncoding)
-                {
-                    switch (selectedEncoding)
-                    {
-                    case WAV:
-                        break;
-                    case MP3:
-                        convertToMp3();
-                        break;
-                    case OGG:
-                        convertToOgg();
-                        break;
-                    }
-                }
+                convertIfNeeded();
             }});
         comboViewer = new ComboViewer(encodingCombo);
         comboViewer.add(TYPES);
     }
 
+    /**
+     * This compares the requested format with the current audio format.
+     * If the 2 don't match a conversion is initiatied. This may take it to an
+     * intermediate format. After each conversion, this is recalled to initiate
+     * the next stage in the conversion.
+     */
+    private void convertIfNeeded()
+    {
+        int fileEncoding = getFileEncoding();
+        int selectedEncoding = encodingCombo.getSelectionIndex();
+        if (fileEncoding != selectedEncoding)
+        {
+            switch (fileEncoding)
+            {
+            case WAV:
+                switch (selectedEncoding)
+                {
+                case MP3:
+                    convertWavToMp3();
+                    break;
+                case OGG:
+                    convertWavToOgg();
+                    break;
+                }
+                break;
+            case MP3:
+                switch (selectedEncoding)
+                {
+                case OGG:
+                case WAV:
+                    convertMp3ToWav();
+                    break;
+                }
+                break;
+            case OGG:
+                switch (selectedEncoding)
+                {
+                case MP3:
+                case WAV:
+                    convertOggToWav();
+                    break;
+                }
+                break;
+            }
+        }
+    }
+    
     private int getFileEncoding()
     {
         File file = getAudioFile();
@@ -590,21 +694,76 @@ public class SoundRecorder extends Composite
     }
     
     /**
-     * 
+     * Convert file from Wave to MP3
      */
-    protected void convertToMp3()
+    protected void convertWavToMp3()
     {
         final String converter = 
-            LanguageTestPlugin.getPrefStore().getString(MP3_CONVERTER_PREF);
-        String arguments = 
-            LanguageTestPlugin.getPrefStore().getString(MP3_CONV_ARG_PREF);
+            LanguageTestPlugin.getPrefStore().getString(WAVTOMP3_CONVERTER_PREF);
+        String argumentTemplate = 
+            LanguageTestPlugin.getPrefStore().getString(WAVTOMP3_CONV_ARG_PREF);
+        externalConverter(EXTENSIONS[MP3], converter, argumentTemplate);
+    }
+    
+    /**
+     * Convert file from MP3 to Wave
+     */
+    protected void convertMp3ToWav()
+    {
+        final String converter = 
+            LanguageTestPlugin.getPrefStore().getString(MP3TOWAV_CONVERTER_PREF);
+        String argumentTemplate = 
+            LanguageTestPlugin.getPrefStore().getString(MP3TOWAV_CONV_ARG_PREF);
+        externalConverter(EXTENSIONS[WAV], converter, argumentTemplate);
+    }
+    
+    /**
+     * Convert from Wave to Ogg Vorbis
+     */
+    protected void convertWavToOgg()
+    {
+        final String converter = 
+            LanguageTestPlugin.getPrefStore().getString(WAVTOOGG_CONVERTER_PREF);
+        String argumentTemplate = 
+            LanguageTestPlugin.getPrefStore().getString(WAVTOOGG_CONV_ARG_PREF);
+        externalConverter(EXTENSIONS[OGG], converter, argumentTemplate);
+        
+    }
+    
+    /**
+     * Convert from Ogg to Wave
+     */
+    protected void convertOggToWav()
+    {
+        final String converter = 
+            LanguageTestPlugin.getPrefStore().getString(OGGTOWAV_CONVERTER_PREF);
+        String argumentTemplate = 
+            LanguageTestPlugin.getPrefStore().getString(OGGTOWAV_CONV_ARG_PREF);
+        externalConverter(EXTENSIONS[WAV], converter, argumentTemplate);
+    }
+    
+    protected void externalConverter(final String newExtension, 
+            final String converter, final String argumentTemplate)
+    {
+        final File oldFile = getAudioFile();
         IPath path = new Path(getAudioFile().getAbsolutePath());
-        final IPath newPath = path.removeFileExtension();
-        newPath.addFileExtension(EXTENSIONS[MP3]);
-        final String allArgs = MessageFormat.format(arguments, new Object[] 
+        IPath basePath = path.removeFileExtension();
+        
+        final IPath newPath = basePath.addFileExtension(newExtension);
+        final String newFilePath = newPath.toOSString();
+        final String allArgs = MessageFormat.format(argumentTemplate, new Object[] 
            {path.toOSString(),
-            newPath.toOSString()});
+            newFilePath });
+        StringTokenizer st = new StringTokenizer(allArgs, " ", false);
+        final String [] arguments = new String[st.countTokens() + 1];
+        arguments[0] = converter;
+        for (int i = 1; i < arguments.length; i++)
+        {
+            arguments[i] = st.nextToken();
+        }
         final Display display = getShell().getDisplay();
+        // Lame checks for term environment variable
+        final String [] environment = { "TERM=xterm" }; 
         System.out.println(converter + allArgs);
         if (converter.length() > 0)
         {
@@ -618,15 +777,20 @@ public class SoundRecorder extends Composite
                     StringBuilder errorBuilder = new StringBuilder();
                     try
                     {
-                        Process p = Runtime.getRuntime().exec(converter+allArgs);
-                        //Process p = Runtime.getRuntime().exec(new String[] {converter, allArgs});
+                        Process p = Runtime.getRuntime().exec(arguments, environment);
                         retValue = p.waitFor();
                         BufferedReader br = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-                        
                         while (br.ready())
                         {
                             errorBuilder.append(br.readLine());
                         }
+                        br.close();
+                        br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                        while (br.ready())
+                        {
+                            errorBuilder.append(br.readLine());
+                        }
+                        br.close();
                         System.out.println(errorBuilder.toString());
                     }
                     catch (IOException e)
@@ -652,10 +816,23 @@ public class SoundRecorder extends Composite
                                                         converter, allArgs,errorMsg));
                                  }
                             });
+                            s = new Status(IStatus.ERROR, LanguageTestPlugin.ID,
+                                    IStatus.OK, errorMsg, null);
                         }
                         else
                         {
-                            fileNameText.setText(newPath.toPortableString());
+                            // update gui
+                            display.asyncExec (new Runnable () {
+                                public void run () {
+                                    fileNameText.setText(newPath.toString());
+                                    fileNameText.setToolTipText(newPath.toString());
+                                    System.out.println(newPath.toString());
+                                    setTestItem();
+                                    // may need a second conversion
+                                    convertIfNeeded();
+                                }
+                            });
+                            oldFile.delete(); // delete old format
                             s = new Status(IStatus.OK, LanguageTestPlugin.ID,
                                            IStatus.OK, converter, null);
                         }
@@ -674,13 +851,99 @@ public class SoundRecorder extends Composite
         }
     }
 
-    /**
-     * 
+    
+
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
+     * called when TestItem selection changes in the TestItemEditor
      */
-    protected void convertToOgg()
+    public void selectionChanged(SelectionChangedEvent event)
     {
-        
+        stop();
+        if (fileNameText.isDisposed())
+            return;
+        if (event.getSelection() instanceof StructuredSelection)
+        {
+            StructuredSelection ss = (StructuredSelection)event.getSelection();
+            TestItemType ti = null;
+            if (ss.getFirstElement() instanceof TestItemType)
+            {
+                ti = (TestItemType)ss.getFirstElement();
+            }
+            if (ti != null && ti.isSetSoundFile() && 
+                ti.getSoundFile().getStringValue() != null)
+            {
+                fileNameText.setText(ti.getSoundFile().getStringValue());
+                fileNameText.setToolTipText(ti.getSoundFile().getStringValue());
+                IPath path = new Path(ti.getSoundFile().getStringValue());
+                for (int i = 0; i < EXTENSIONS.length; i++)
+                {
+                    if (EXTENSIONS[i].equalsIgnoreCase(path.getFileExtension()))
+                    {
+                        encodingCombo.select(i);
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                fileNameText.setText("");
+                fileNameText.setToolTipText("");
+                encodingCombo.select(WAV);
+            }
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see org.eclipse.swt.widgets.Widget#dispose()
+     */
+    public void dispose()
+    {
+        IEditorPart editor = 
+            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+        if (editor instanceof TestModuleEditor)
+        {
+            ISelectionProvider sp = (ISelectionProvider)editor.getAdapter(ISelectionProvider.class);
+            if (sp != null)
+            {
+                sp.removeSelectionChangedListener(this);
+            }
+        }
+        SoundPlayer player = getSoundPlayer();
+        if (player != null)
+        {
+            player.removePlayListener(this);
+        }
+        super.dispose();
+    }
+
+    /* (non-Javadoc)
+     * @see org.thanlwinsoft.languagetest.sound.AudioPlayListener#initialisationProgress(int)
+     */
+    public void initialisationProgress(int percent)
+    {
         
     }
 
+    /* (non-Javadoc)
+     * @see org.thanlwinsoft.languagetest.sound.AudioPlayListener#playPosition(long, long)
+     */
+    public void playPosition(long msPosition, long msTotalLength)
+    {
+        // use 0.1 sec as interval
+        final int sTotalLength = (int)(msTotalLength/100);
+        final int sPosition = (int)(msPosition/100);
+        display.asyncExec (new Runnable () {
+            public void run () {
+                if (recordScale.isDisposed()) return;
+                int oldMax = recordScale.getMaximum();
+                if (sTotalLength > 0 && sTotalLength > oldMax)
+                    recordScale.setMaximum(sTotalLength);
+                if (sPosition > oldMax)
+                    recordScale.setMaximum(oldMax + 600); // add 1 minute
+                recordScale.setSelection(sPosition);
+            }
+         });
+    }
+   
 }

@@ -3,6 +3,7 @@ package org.thanlwinsoft.languagetest.eclipse;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
+import org.thanlwinsoft.languagetest.eclipse.views.RecordingView;
 
 
 public class Perspective implements IPerspectiveFactory 
@@ -29,8 +30,9 @@ public class Perspective implements IPerspectiveFactory
         
         IFolderLayout folderBottom = layout.createFolder(FOLDER_BOTTOM, 
                 IPageLayout.BOTTOM, 0.7f, editorArea);
-        //folderBottom.addPlaceholder(RECORDING);
+        
         folderBottom.addView(TEST_VIEW);
+        folderBottom.addView(RecordingView.ID);
         //layout.addStandaloneViewPlaceholder(USER_RESULTS,  
         //        IPageLayout.RIGHT, 0.8f, editorArea, true);
         IFolderLayout folderLeft = layout.createFolder(FOLDER_LEFT,

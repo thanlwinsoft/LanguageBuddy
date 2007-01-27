@@ -2,7 +2,7 @@
 <?eclipse version="3.2"?>
 <plugin>
    <extension
-         id="org.thanlwinsoft.languagetest"
+         id="LanguageTestApp"
          point="org.eclipse.core.runtime.applications">
       <application>
          <run
@@ -15,18 +15,9 @@
          name="%LanguageTest.name"
          point="org.eclipse.core.runtime.products">
       <product
-            application="org.thanlwinsoft.languagetest"
+            application="org.thanlwinsoft.languagetest.LanguageTestApp"
             description="%LanguageTest.desc"
-            name="%LanguageTest.name">
-         <property
-               name="aboutText"
-               value="%LanguageTest.about"/>
-         <property
-               name="aboutImage"
-               value="icons/languageBuddy64.png"/>
-         <property
-               name="windowImages"
-               value="icons/languageBuddy16.png"/>
+            name="%LanguageTest">
       </product>
    </extension>
    <extension
@@ -337,13 +328,6 @@ wizardId=
             path="additions">
          <groupMarker name="moduleEditor1"/>
       </menu>
-      <action
-            class="org.thanlwinsoft.languagetest.eclipse.editors.InsertTestItemAction"
-            enablesFor="1"
-            icon="icons/module.png"
-            id="LanguageTest.action1"
-            label="LanguageTest.action1"
-            menubarPath="org.thanlwinsoft.languagetest.popupmenu1/moduleEditor1"/>
    </viewerContribution>
    <objectContribution
          adaptable="false"
@@ -388,6 +372,13 @@ wizardId=
          id="org.thanlwinsoft.languagetest.eclipse.search.TestItemSearchViewPage"
          label="%LanguageTest.testItemSearchResultPage"
          searchResultClass="org.thanlwinsoft.languagetest.eclipse.search.TestItemSearchResult"/>
+</extension>
+<extension
+      point="org.eclipse.ui.preferencePages">
+   <page
+         class="org.thanlwinsoft.languagetest.eclipse.prefs.RecordingPreferencePage"
+         id="org.thanlwinsoft.languagetest.eclipse.prefs.RecordingPreferencePage"
+         name="%LanguageTest.recordingPrefPage"/>
 </extension>		
  
 </plugin>

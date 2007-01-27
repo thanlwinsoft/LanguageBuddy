@@ -4,6 +4,7 @@ import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
+import org.thanlwinsoft.languagetest.eclipse.prefs.RecordingPreferencePage;
 
 
 
@@ -37,7 +38,7 @@ public class PreferencesInitializer extends AbstractPreferenceInitializer
 //        String installArea = System.getProperty("osgi.install.area");
         
         prefStore.setDefault(TEST_FONT_SIZE, DEFAULT_FONT_SIZE);
-        
+        RecordingPreferencePage.initializeDefaults();
     }
 
 }
