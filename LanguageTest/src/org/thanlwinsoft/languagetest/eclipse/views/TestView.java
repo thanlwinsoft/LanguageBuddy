@@ -306,9 +306,9 @@ public class TestView extends ViewPart implements ISelectionChangedListener
             if (textRect.height < availableRect.height)
             {
                 layout.marginHeight = (availableRect.height - textRect.height - dy) / 2;
-                System.out.println("available " + availableRect.height + " " + 
-                                textBounds.height + " text " +
-                                textRect.height + " margin " + layout.marginHeight);
+//                System.out.println("available " + availableRect.height + " " + 
+//                                textBounds.height + " text " +
+//                                textRect.height + " margin " + layout.marginHeight);
                 
             }
             else
@@ -316,24 +316,13 @@ public class TestView extends ViewPart implements ISelectionChangedListener
                 layout.marginHeight = 0;
             }
             
-//            int availableWidth = availableRect.width;
-//            RowData rowData = new RowData(availableWidth - groupBorder - dx, 
-//                            Math.min(availableRect.height - dy, textRect.height));
-//            viewer.getTextWidget().setLayoutData(rowData);
-//            controlPanel.pack();
-//            phraseForm.pack();
-            
         }
         else
         {
             layout.marginHeight = 0;
         }
-        System.out.println(" margin " + layout.marginHeight);
-        //viewer.getTextWidget().getParent().redraw();
+        //System.out.println(" margin " + layout.marginHeight);
         viewer.setTopIndex(0);
-        
-        //viewer.refresh();
-        //viewer.getTextWidget().redraw();
     }
     
     public void hide(int type)

@@ -160,8 +160,12 @@ public class TestControlPanel extends Composite
         
         GridData gridData = new GridData();
         gridData.horizontalSpan = 2;
-        markLabel.setLayoutData(gridData);
+        gridData.grabExcessHorizontalSpace = true;
+        gridData.horizontalAlignment = SWT.FILL;
         answerButton.setLayoutData(gridData);
+        gridData = new GridData();
+        gridData.horizontalSpan = 2;
+        markLabel.setLayoutData(gridData);
         answerButton.setText(MessageUtil.getString("ShowAnswer"));
         answerButton.setToolTipText(MessageUtil.getString("ShowAnswerToolTip"));
         correctButton.setText(MessageUtil.getString("Correct"));
