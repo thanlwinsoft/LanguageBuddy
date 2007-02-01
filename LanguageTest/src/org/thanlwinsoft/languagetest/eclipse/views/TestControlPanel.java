@@ -160,7 +160,6 @@ public class TestControlPanel extends Composite
         
         GridData gridData = new GridData();
         gridData.horizontalSpan = 2;
-        gridData.grabExcessHorizontalSpace = true;
         gridData.horizontalAlignment = SWT.FILL;
         answerButton.setLayoutData(gridData);
         gridData = new GridData();

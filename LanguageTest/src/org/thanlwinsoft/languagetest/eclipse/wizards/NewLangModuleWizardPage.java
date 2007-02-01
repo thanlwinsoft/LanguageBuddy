@@ -32,7 +32,7 @@ public class NewLangModuleWizardPage extends WizardPage {
 
 	private Text fileText;
 	public final static String EXTENSION = "xml";
-    public final String XML = "xml";
+    public final static String XML = "xml";
 	private ISelection selection;
 
 	/**

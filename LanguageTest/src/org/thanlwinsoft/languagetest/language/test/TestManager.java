@@ -42,7 +42,7 @@ public class TestManager
     private UserConfig config = null;
     public final static String LANG_SEPARATOR = "-";
     public final static String ID_DATA_SEPARATOR = "-";
-    private final static String HISTORY_DIR = "TestHistory";
+    public final static String HISTORY_DIR = "TestHistory";
     public final static String HISTORY_EXT = ".xml";
     /** Construct a test manager for a given user and language selectio
      * 

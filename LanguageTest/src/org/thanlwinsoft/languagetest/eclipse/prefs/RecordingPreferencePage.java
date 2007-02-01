@@ -62,10 +62,6 @@ public class RecordingPreferencePage extends FieldEditorPreferencePage
 implements IWorkbenchPreferencePage
 {
 
-    private StringFieldEditor wavToMp3ArgumentEditor = null;
-    private FileFieldEditor wavToMp3FileEditor = null;
-    private StringFieldEditor mp3ToWavArgumentEditor = null;
-    private FileFieldEditor mp3ToWavFileEditor = null;
     
     private BooleanFieldEditor overwriteEditor = null;
     /**
@@ -129,27 +125,29 @@ implements IWorkbenchPreferencePage
     private void addConverterFieldEditors(String convPref, String convLabelId,
                                           String argPref, String argLabelId)
     {
-        wavToMp3FileEditor = new FileFieldEditor(convPref, 
+        StringFieldEditor argumentEditor = null;
+        FileFieldEditor fileEditor = null;
+        fileEditor = new FileFieldEditor(convPref, 
                 MessageUtil.getString(convLabelId), 
                 false, getFieldEditorParent());
         if (Platform.getOS().equals(Platform.OS_WIN32))
         {
-            wavToMp3FileEditor.setFileExtensions(new String[] {".exe"});
+            fileEditor.setFileExtensions(new String[] {".exe"});
         }
-        wavToMp3FileEditor.setEmptyStringAllowed(true);
-        addField(wavToMp3FileEditor); 
-        wavToMp3FileEditor.fillIntoGrid(getFieldEditorParent(), 3);
-        wavToMp3ArgumentEditor =
+        fileEditor.setEmptyStringAllowed(true);
+        addField(fileEditor); 
+        fileEditor.fillIntoGrid(getFieldEditorParent(), 3);
+        argumentEditor =
             new StringFieldEditor(argPref, 
                     MessageUtil.getString(argLabelId), 
                     SWT.NONE, getFieldEditorParent());
-        wavToMp3ArgumentEditor.setEmptyStringAllowed(true);
+        argumentEditor.setEmptyStringAllowed(true);
         
-        addField(wavToMp3ArgumentEditor);
-        wavToMp3ArgumentEditor.fillIntoGrid(getFieldEditorParent(), 3);
+        addField(argumentEditor);
+        argumentEditor.fillIntoGrid(getFieldEditorParent(), 3);
         
-        adjustTextControl(wavToMp3FileEditor);
-        adjustTextControl(wavToMp3ArgumentEditor);
+        adjustTextControl(fileEditor);
+        adjustTextControl(argumentEditor);
         
     }
     

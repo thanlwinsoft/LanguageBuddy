@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:          $Source: /home/keith/cvsroot/projects/LanguageAids/uk/co/dabsol/stribley/language/test/TestType.java,v $
- *  Version:       $Revision: 706 $
- *  Last Modified: $Date: 2007-01-07 06:30:20 +0700 (Sun, 07 Jan 2007) $
+ *  Version:       $Revision: 729 $
+ *  Last Modified: $Date: 2007-02-01 16:58:22 +0700 (Thu, 01 Feb 2007) $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2003 Keith Stribley <jungleglacier@snc.co.uk>
  *
@@ -23,6 +23,8 @@
  */
 
 package org.thanlwinsoft.languagetest.language.test;
+
+import org.thanlwinsoft.languagetest.MessageUtil;
 
 /**
  *
@@ -49,6 +51,17 @@ public class TestType
     public int getId() { return id; }
     public String description() 
     { 
+        switch (id)
+        {
+        case LISTENING_FOREIGN_NATIVE_ID:
+            return MessageUtil.getString("Listening");
+        case READING_FOREIGN_NATIVE_ID:
+            return MessageUtil.getString("Reading");
+        case READING_NATIVE_FOREIGN_ID:
+            return MessageUtil.getString("SpeakingWriting");
+        case FLIP_CARD_ID:
+            return MessageUtil.getString("FlipCards");
+        }
 //        StringBuffer description = new StringBuffer(prefix);
 //        if (LanguageConfig.getCurrent() != null)
 //        {

@@ -26,6 +26,7 @@ import org.eclipse.swt.graphics.FontData;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.natures.LanguageUserNature;
 import org.thanlwinsoft.languagetest.language.test.UniversalLanguage;
+import org.thanlwinsoft.schemas.languagetest.DescType;
 import org.thanlwinsoft.schemas.languagetest.LangType;
 import org.thanlwinsoft.schemas.languagetest.LangTypeType;
 import org.thanlwinsoft.schemas.languagetest.LanguageModuleDocument;
@@ -65,7 +66,9 @@ public class WorkspaceLanguageManager
         BigDecimal fontSize = BigDecimal.valueOf(fontData.getHeight());
         lang.setFontSize(fontSize);
         lang.setType(type);
-        lang.setStringValue(ul.getDescription());
+        DescType desc = lang.addNewDesc();
+        desc.setLang("en");
+        desc.setStringValue(ul.getDescription());
         get().setLanguage(project, lang, monitor);
     }
 	public static void addLanguage(IProject project, LangTypeType.Enum type, 
@@ -107,8 +110,15 @@ public class WorkspaceLanguageManager
                 trialLang.setFontSize(lang.getFontSize());
                 // is it wise to allow type changes?
                 trialLang.setType(lang.getType());
-                if (lang.getStringValue().length() > 0)
-                    trialLang.setStringValue(lang.getStringValue());
+                // copy accross description array
+                if (lang.sizeOfDescArray() > 0)
+                {
+                    for (int k = 0; k < lang.sizeOfDescArray(); k++)
+                    {
+                        trialLang.addNewDesc();
+                        trialLang.setDescArray(k, lang.getDescArray(k));
+                    }
+                }
                 saveLang(project, doc, monitor);
                 return;
             }

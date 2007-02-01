@@ -231,7 +231,7 @@ public class TestModuleEditor extends MultiPageEditorPart
                 languagePart.setInput(getEditorInput());
                 testItemEditor.setModule(currentDoc);
             }
-            //setActivePage(1);
+            setActivePage(1);
         }
         catch (PartInitException e)
         {
