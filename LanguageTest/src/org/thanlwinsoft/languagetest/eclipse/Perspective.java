@@ -3,6 +3,8 @@ package org.thanlwinsoft.languagetest.eclipse;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
+import org.eclipse.ui.IPlaceholderFolderLayout;
+import org.thanlwinsoft.languagetest.eclipse.views.ChartHistoryView;
 import org.thanlwinsoft.languagetest.eclipse.views.RecordingView;
 
 
@@ -12,6 +14,8 @@ public class Perspective implements IPerspectiveFactory
         "org.thanlwinsoft.languagetest.FolderBottom";
     public final static String FOLDER_LEFT = 
         "org.thanlwinsoft.languagetest.FolderLeft";
+    public final static String FOLDER_RIGHT = 
+        "org.thanlwinsoft.languagetest.FolderRight";
     public final static String TEST_VIEW = 
         "org.thanlwinsoft.languagetest.TestView";
     public final static String RECORDING = 
@@ -39,6 +43,10 @@ public class Perspective implements IPerspectiveFactory
                 IPageLayout.LEFT, 0.25f, editorArea);
         folderLeft.addView("org.eclipse.ui.views.ResourceNavigator");
         folderLeft.addView(TEST_HISTORY_VIEW);
+        
+        IPlaceholderFolderLayout folderRight = layout.createPlaceholderFolder(FOLDER_RIGHT,
+                IPageLayout.RIGHT, 0.3f, editorArea);
+        folderRight.addPlaceholder(ChartHistoryView.ID);
 	}
     
     

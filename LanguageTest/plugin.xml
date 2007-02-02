@@ -386,6 +386,38 @@ wizardId=
          class="org.thanlwinsoft.languagetest.eclipse.prefs.RecordingPreferencePage"
          id="org.thanlwinsoft.languagetest.eclipse.prefs.RecordingPreferencePage"
          name="%LanguageTest.recordingPrefPage"/>
+</extension>
+<extension
+      point="org.eclipse.ui.exportWizards">
+   <wizard
+         class="languageTest.ExportWizard1"
+         id="LanguageTest.wizard1"
+         name="LanguageTest.wizard1"/>
+</extension>
+<extension
+      point="org.eclipse.ui.viewActions">
+   <viewContribution
+         id="org.thanlwinsoft.languagetest.chartHistoryViewContribution"
+         targetID="org.thanlwinsoft.languagetest.eclipse.views.ChartHistoryView">
+      <action
+            class="org.thanlwinsoft.languagetest.eclipse.charts.PDFChartGenerator"
+            enablesFor="*"
+            icon="icons/testHistory16.png"
+            id="org.thanlwinsoft.languagetest.PDFChartGenerator"
+            label="%LanguageTest.PDFChartGenerator"
+            menubarPath="File/additions"
+            style="push"
+            toolbarPath="Bar/additions"/>
+      <action
+            class="org.thanlwinsoft.languagetest.eclipse.charts.SVGChartGenerator"
+            enablesFor="*"
+            icon="icons/correct16.png"
+            id="org.thanlwinsoft.languagetest.SVGChartGenerator"
+            label="SVG"
+            menubarPath="File/additions"
+            style="push"
+            toolbarPath="Bar/additions"/>
+   </viewContribution>
 </extension>		
  
 </plugin>

@@ -334,4 +334,24 @@ public class TestManager
     public String getNativeLang() { return nativeLang; }
     public String getForeignLang() { return foreignLang; }
     
+    /**
+     * Generate a description for a pair of language codes separated by a '-'
+     * @param langPair
+     * @return the description
+     */
+    public static String getLangPairDescription(String langPair)
+    {
+        int separator = langPair.indexOf('-');
+        if (separator > -1 && separator < langPair.length() - 1)
+        {
+            UniversalLanguage ulA = new UniversalLanguage(langPair.substring(0, separator));
+            UniversalLanguage ulB = new UniversalLanguage(langPair.substring(separator + 1));
+            return ulA.generateDescription() + " / " + ulB.generateDescription();
+        }
+        else
+        {
+            return langPair;
+        }
+    }
+    
 }

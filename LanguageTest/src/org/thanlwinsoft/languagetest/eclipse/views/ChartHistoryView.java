@@ -38,7 +38,10 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -52,6 +55,7 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Layout;
 import org.eclipse.ui.part.ViewPart;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
@@ -133,8 +137,11 @@ public class ChartHistoryView extends ViewPart
 
     private void createControl()
     {
-        GridLayout layout = new GridLayout();
-        layout.numColumns = 4;
+//        GridLayout layout = new GridLayout();
+//        layout.numColumns = 4;
+        RowLayout layout = new RowLayout();
+        layout.type = SWT.HORIZONTAL;
+        layout.wrap = true;
         
         controls.setLayout(layout);
         userCombo = new Combo(controls, SWT.DROP_DOWN);
@@ -145,9 +152,9 @@ public class ChartHistoryView extends ViewPart
             users.add(userProjects[i]);
         }
         langCombo = new Combo(controls, SWT.DROP_DOWN);
-        GridData gd = new GridData();
-        gd.widthHint = 100;
-        langCombo.setLayoutData(gd);
+//        GridData gd = new GridData();
+//        gd.widthHint = 100;
+//        langCombo.setLayoutData(gd);
         testTypeCombo = new Combo(controls, SWT.DROP_DOWN);
         graphTypeCombo = new Combo(controls, SWT.DROP_DOWN);
         
@@ -164,30 +171,7 @@ public class ChartHistoryView extends ViewPart
             public void widgetDefaultSelected(SelectionEvent e){}
             public void widgetSelected(SelectionEvent e)
             {
-                if (userProject != users.elementAt(userCombo.getSelectionIndex()))
-                {
-                    userProject = (IProject)users.elementAt(userCombo.getSelectionIndex());
-                    langCombo.removeAll();
-                    IFolder folder = userProject.getFolder(TestManager.HISTORY_DIR);
-                    if (folder != null)
-                    {
-                        IResource[] members;
-                        try
-                        {
-                            members = folder.members();
-                            for (int i = 0; i < members.length; i++)
-                                langCombo.add(members[i].getName());
-                            controls.pack();
-                        } 
-                        catch (CoreException e1)
-                        {
-                            LanguageTestPlugin.log(IStatus.WARNING, 
-                                    e1.getLocalizedMessage(), e1);
-                        }
-                        
-                    }
-                    //createChart();
-                }
+                userChanged();
                 
             }});
         langCombo.addSelectionListener(new SelectionListener(){
@@ -214,9 +198,47 @@ public class ChartHistoryView extends ViewPart
                 createChart();
             }
         });
-
+        // default selection
+        if (users.size() > 0)
+        {
+            userCombo.select(0);
+            testTypeCombo.select(TestType.READING_NATIVE_FOREIGN_ID);
+            graphTypeCombo.select(0);
+            userChanged();
+        }
     }
     
+    private void userChanged()
+    {
+        if (userCombo.getSelectionIndex() > -1 &&
+            userProject != users.elementAt(userCombo.getSelectionIndex()))
+        {
+            userProject = (IProject)users.elementAt(userCombo.getSelectionIndex());
+            langCombo.removeAll();
+            IFolder folder = userProject.getFolder(TestManager.HISTORY_DIR);
+            if (folder != null)
+            {
+                IResource[] members;
+                try
+                {
+                    members = folder.members();
+                    for (int i = 0; i < members.length; i++)
+                        langCombo.add(members[i].getName());
+                    if (members.length > 0)
+                        langCombo.select(0);
+                    controls.pack();
+                }
+                catch (CoreException e1)
+                {
+                    LanguageTestPlugin.log(IStatus.WARNING, 
+                            e1.getLocalizedMessage(), e1);
+                }
+            }
+            createChart();
+        }
+    }
+    
+    /** create the chart using the provider if there is enough data for one */
     protected void createChart()
     {
         
@@ -229,57 +251,84 @@ public class ChartHistoryView extends ViewPart
         }
         provider.reset();
         provider.setType(graphTypeCombo.getSelectionIndex());
-        IFolder folder = userProject.getFolder(TestManager.HISTORY_DIR);
-        TestType testType = TestType.getById(testTypeCombo.getSelectionIndex());
+        final IFolder folder = userProject.getFolder(TestManager.HISTORY_DIR);
         if (folder == null) return;
-        try
-        {
-            IResource [] members = folder.members();
-            if (members.length > langCombo.getSelectionIndex())
+        final TestType testType = TestType.getById(testTypeCombo.getSelectionIndex());
+        final Display display = canvas.getDisplay();
+        final int langSelection = langCombo.getSelectionIndex();
+        Job job = new Job("CreateChart") {
+
+            protected IStatus run(IProgressMonitor monitor)
             {
-                IResource r = members[langCombo.getSelectionIndex()];
-                if (r instanceof IFolder)
+                IStatus status = new Status(IStatus.OK, LanguageTestPlugin.ID, 
+                        0, "CreateChart", null);
+                try
                 {
-                    IFolder hFolder = (IFolder)r;
-                    members = hFolder.members();
-                    for (int i = 0; i < members.length; i++)
+                    IResource [] members = folder.members();
+                    if (members.length > langSelection)
                     {
-                        if (members[i] instanceof IFile)
+                        IResource r = members[langSelection];
+                        if (r instanceof IFolder)
                         {
-                            IFile file = (IFile)members[i];
-                            InputStream is = file.getContents();
-                            try
+                            IFolder hFolder = (IFolder)r;
+                            members = hFolder.members();
+                            for (int i = 0; i < members.length; i++)
                             {
-                                ModuleHistoryDocument doc = 
-                                    ModuleHistoryDocument.Factory.parse(is);
-                                ModuleHistoryType mht = doc.getModuleHistory();
-                                if (mht != null)
+                                if (members[i] instanceof IFile)
                                 {
-                                    provider.parse(mht, testType);
+                                    IFile file = (IFile)members[i];
+                                    InputStream is = file.getContents();
+                                    try
+                                    {
+                                        ModuleHistoryDocument doc = 
+                                            ModuleHistoryDocument.Factory.parse(is);
+                                        ModuleHistoryType mht = doc.getModuleHistory();
+                                        if (mht != null)
+                                        {
+                                            provider.parse(mht, testType);
+                                        }
+                                    } 
+                                    catch (XmlException e)
+                                    {
+                                        LanguageTestPlugin.log(IStatus.WARNING, 
+                                                e.getLocalizedMessage(), e);
+                                        status = new Status(IStatus.WARNING, 
+                                                LanguageTestPlugin.ID, 
+                                                0, "CreateChart", e);
+                                    } 
+                                    catch (IOException e)
+                                    {
+                                        LanguageTestPlugin.log(IStatus.WARNING, 
+                                                e.getLocalizedMessage(), e);
+                                        status = new Status(IStatus.WARNING, 
+                                                LanguageTestPlugin.ID, 
+                                                0, "CreateChart", e);
+                                    }
                                 }
-                            } 
-                            catch (XmlException e)
-                            {
-                                LanguageTestPlugin.log(IStatus.WARNING, 
-                                        e.getLocalizedMessage(), e);
-                            } 
-                            catch (IOException e)
-                            {
-                                LanguageTestPlugin.log(IStatus.WARNING, 
-                                        e.getLocalizedMessage(), e);
                             }
                         }
                     }
+                    
+                } 
+                catch (CoreException e)
+                {
+                    LanguageTestPlugin.log(IStatus.WARNING, e.getLocalizedMessage(), e);
+                    status = new Status(IStatus.WARNING, 
+                            LanguageTestPlugin.ID, 
+                            0, "CreateChart", e);
                 }
-            }
-            
-        } 
-        catch (CoreException e)
-        {
-            LanguageTestPlugin.log(IStatus.WARNING, e.getLocalizedMessage(), e);
-        }
-        Chart chart = provider.createChart();
-        chartDisplay.renderModel(chart);
+                chart = provider.createChart();
+                display.asyncExec(new Runnable() {
+
+                    public void run()
+                    {
+                        chartDisplay.renderModel(chart);
+                    }});
+                
+                return status;
+            }};
+        job.setPriority(Job.BUILD);
+        job.schedule();
     }
     
     /* (non-Javadoc)
@@ -287,8 +336,8 @@ public class ChartHistoryView extends ViewPart
      */
     public void setFocus()
     {
-        
-
+        controls.setFocus();
     }
-
+    
+    public Chart getChart() { return chart; }
 }

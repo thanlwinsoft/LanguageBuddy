@@ -53,6 +53,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
     //private Action conversionWizardAction;
     private IWorkbenchAction newEditorAction;
     private ShowViewAction showNavigatorViewAction;
+    private IWorkbenchAction exportAction;
     
     
     public ApplicationActionBarAdvisor(IActionBarConfigurer configurer) {
@@ -97,6 +98,9 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         
         saveAllAction = ActionFactory.SAVE_ALL.create(window);
         register(saveAllAction);
+        
+        exportAction = ActionFactory.EXPORT.create(window);
+        register(exportAction);
         
         closeAction = ActionFactory.CLOSE.create(window);
         register(closeAction);
@@ -172,8 +176,10 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         fileMenu.add(saveAllAction);
         fileMenu.add(closeAction);
         fileMenu.add(closeAllAction);
+        fileMenu.add(exportAction);
         
         fileMenu.add(new GroupMarker("File/additions"));
+        fileMenu.add(new GroupMarker("org.thanlwinsoft.languagetest.PDFChartGenerator"));
         fileMenu.add(new Separator());
         //fileMenu.add(messagePopupAction);
         //fileMenu.add(openViewAction);

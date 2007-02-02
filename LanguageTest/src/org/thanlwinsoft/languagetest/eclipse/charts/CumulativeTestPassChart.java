@@ -38,6 +38,7 @@ import java.util.TreeMap;
 
 import org.eclipse.birt.chart.model.Chart;
 import org.eclipse.birt.chart.model.ChartWithAxes;
+import org.eclipse.birt.chart.model.attribute.Anchor;
 import org.eclipse.birt.chart.model.attribute.AxisType;
 import org.eclipse.birt.chart.model.attribute.DataPoint;
 import org.eclipse.birt.chart.model.attribute.DataPointComponentType;
@@ -55,14 +56,21 @@ import org.eclipse.birt.chart.model.attribute.impl.JavaNumberFormatSpecifierImpl
 import org.eclipse.birt.chart.model.component.Axis;
 import org.eclipse.birt.chart.model.component.Series;
 import org.eclipse.birt.chart.model.component.impl.SeriesImpl;
+import org.eclipse.birt.chart.model.data.DataElement;
+import org.eclipse.birt.chart.model.data.DateTimeDataSet;
+import org.eclipse.birt.chart.model.data.NumberDataElement;
 import org.eclipse.birt.chart.model.data.NumberDataSet;
 import org.eclipse.birt.chart.model.data.SeriesDefinition;
+import org.eclipse.birt.chart.model.data.impl.DataPackageImpl;
+import org.eclipse.birt.chart.model.data.impl.DateTimeDataSetImpl;
+import org.eclipse.birt.chart.model.data.impl.NumberDataElementImpl;
 import org.eclipse.birt.chart.model.data.impl.NumberDataSetImpl;
 import org.eclipse.birt.chart.model.data.impl.SeriesDefinitionImpl;
 import org.eclipse.birt.chart.model.impl.ChartWithAxesImpl;
 import org.eclipse.birt.chart.model.type.ScatterSeries;
 import org.eclipse.birt.chart.model.type.impl.ScatterSeriesImpl;
 import org.thanlwinsoft.languagetest.MessageUtil;
+import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.thanlwinsoft.languagetest.eclipse.views.ChartHistoryProvider;
 import org.thanlwinsoft.schemas.languagetest.ItemType;
 import org.thanlwinsoft.schemas.languagetest.ModuleHistoryType;
@@ -87,10 +95,15 @@ public class CumulativeTestPassChart implements ChartHistoryProvider
     private int type = CUMULATIVE_PASSES;
     private SortedMap resultMap = null; //<long time, int[]>
     
+    public final static String CHART_LABEL_SIZE_PREF = "ChartLabelSize";
+    public final static String CHART_TITLE_SIZE_PREF = "ChartTitleSize";
     
     public CumulativeTestPassChart()
     {
         reset();
+        LanguageTestPlugin.getPrefStore().setDefault(CHART_LABEL_SIZE_PREF, 8.0);
+        LanguageTestPlugin.getPrefStore().setDefault(CHART_TITLE_SIZE_PREF, 9.0);
+        
     }
     
     /* (non-Javadoc)
@@ -99,6 +112,9 @@ public class CumulativeTestPassChart implements ChartHistoryProvider
     public Chart createChart()
     {
         if (resultMap.size() == 0) return null;
+        
+        float titleFontSize = LanguageTestPlugin.getPrefStore().getFloat(CHART_TITLE_SIZE_PREF);
+        float labelFontSize = LanguageTestPlugin.getPrefStore().getFloat(CHART_LABEL_SIZE_PREF);
         
         ChartWithAxes cwaScatter = ChartWithAxesImpl.create( );
 
@@ -126,17 +142,23 @@ public class CumulativeTestPassChart implements ChartHistoryProvider
                 .setValue( title );//$NON-NLS-1$
         FontDefinition tfd = 
             FontDefinitionImpl.copyInstance(cwaScatter.getTitle().getLabel().getCaption().getFont());
-        tfd.setSize(12);
+        tfd.setSize(titleFontSize);
         cwaScatter.getTitle().getLabel().getCaption().setFont(tfd);
         //Legend
         cwaScatter.getLegend( ).setVisible( true );
-
+        FontDefinition lfd =  FontDefinitionImpl.copyInstance(cwaScatter.getLegend().getText().getFont());
+        lfd.setSize(labelFontSize);
+        cwaScatter.getLegend().getText().setFont(lfd);
+        cwaScatter.getLegend().setAnchor(Anchor.EAST_LITERAL);
+        
         // X-Axis
         Axis xAxisPrimary = ( (ChartWithAxesImpl) cwaScatter ).getPrimaryBaseAxes( )[0];
-        xAxisPrimary.setType( AxisType.LINEAR_LITERAL );
+        //xAxisPrimary.setType( AxisType.LINEAR_LITERAL );
+        xAxisPrimary.setType( AxisType.DATE_TIME_LITERAL );
         xAxisPrimary.getLabel( )
                 .getCaption( )
                 .setColor( ColorDefinitionImpl.GREEN( ).darker( ) );
+        xAxisPrimary.getLabel().getCaption().setFont(FontDefinitionImpl.copyInstance(lfd));
 
         xAxisPrimary.getMajorGrid( ).setTickStyle( TickStyle.BELOW_LITERAL );
         xAxisPrimary.getMajorGrid( )
@@ -147,17 +169,18 @@ public class CumulativeTestPassChart implements ChartHistoryProvider
                 .setColor( ColorDefinitionImpl.GREY( ) );
         xAxisPrimary.getMajorGrid( ).getLineAttributes( ).setVisible( true );
         xAxisPrimary.getOrigin( ).setType( IntersectionType.VALUE_LITERAL );
-        xAxisPrimary.getTitle().getCaption().setValue(MessageUtil.getString("Days"));
+        xAxisPrimary.getTitle().getCaption().setValue(MessageUtil.getString("DateAxisTitle"));
         xAxisPrimary.getTitle( ).setVisible( true );
         FontDefinition fd = FontDefinitionImpl.copyInstance(
                 xAxisPrimary.getTitle().getCaption().getFont());
-        fd.setSize(10);
+        fd.setSize(labelFontSize);
         xAxisPrimary.getTitle().getCaption().setFont(fd);
         // Y-Axis
         Axis yAxisPrimary = ( (ChartWithAxesImpl) cwaScatter ).getPrimaryOrthogonalAxis( xAxisPrimary );
         yAxisPrimary.getLabel( )
                 .getCaption( )
                 .setColor( ColorDefinitionImpl.BLUE( ) );
+        yAxisPrimary.getLabel().getCaption().setFont(FontDefinitionImpl.copyInstance(lfd));
         yAxisPrimary.setType( AxisType.LINEAR_LITERAL );
 
         yAxisPrimary.getMajorGrid( ).setTickStyle( TickStyle.LEFT_LITERAL );
@@ -169,10 +192,13 @@ public class CumulativeTestPassChart implements ChartHistoryProvider
                 .setColor( ColorDefinitionImpl.GREY( ) );
         yAxisPrimary.getMajorGrid( ).getLineAttributes( ).setVisible( true );
 
-        yAxisPrimary.getOrigin( ).setType( IntersectionType.VALUE_LITERAL );
-
+        yAxisPrimary.getOrigin( ).setType( IntersectionType.MIN_LITERAL );
+        NumberDataElement yOrigin = NumberDataElementImpl.create(0.0);
+        yAxisPrimary.getOrigin().setValue(yOrigin);
+        
         // Data Set
-        NumberDataSet timeValues = NumberDataSetImpl.create(getTimeArray());
+        //NumberDataSet timeValues = NumberDataSetImpl.create(getTimeArray());
+        DateTimeDataSet timeValues = DateTimeDataSetImpl.create(getTimeArray());
         
         NumberDataSet passValues = null;
         NumberDataSet totalValues = null;
@@ -187,28 +213,9 @@ public class CumulativeTestPassChart implements ChartHistoryProvider
             totalValues = NumberDataSetImpl.create(getIntArray(TEST_BIN));
             break;
         default:
-            //passValues = NumberDataSetImpl.create(getIntegratedArray(NEW_BIN));
-            timeValues = 
-                NumberDataSetImpl.create( new double[]{
-                    25.32, 84.46, 125.95, 38.65, -54.32, 30
-            } );
-            passValues = NumberDataSetImpl.create( new double[]{
-                    352.95, -201.95, 299.95, -95.95, 65.95, 58.95
-            } );
-            totalValues = NumberDataSetImpl.create( new double[]{
-                    35.95, -21.95, 29.95, -9.95, 6.95, 5.95
-            } );
-
+            // for testing only
         }
-        //NumberDataSet passValues = NumberDataSetImpl.create(getIntegratedArray(NEW_BIN));
-//            NumberDataSetImpl.create( new double[]{
-//                352.95, -201.95, 299.95, -95.95, 65.95, 58.95
-//        } );
-         
-//            NumberDataSetImpl.create( new double[]{
-//                352.95, -201.95, 299.95, -95.95, 65.95, 58.95
-//        } );
-
+        
         // X-Series
         Series seBase = SeriesImpl.create( );
         seBase.setDataSet( timeValues );
@@ -240,8 +247,9 @@ public class CumulativeTestPassChart implements ChartHistoryProvider
         ss.getLabel( ).setVisible( false );
         ss.setSeriesIdentifier(MessageUtil.getString("NumItemsPassed"));
         ss.setDataSet( passValues );
-        ss.getLineAttributes().setColor(ColorDefinitionImpl.RED());
+        ss.getLineAttributes().setColor(ColorDefinitionImpl.GREEN());
         ss.getLineAttributes().setStyle(LineStyle.SOLID_LITERAL);
+        ss.getLineAttributes().setVisible(true);
         ss.setPaletteLineColor(true);
         
         ScatterSeries ss2 = (ScatterSeries) ScatterSeriesImpl.create( );
@@ -255,15 +263,15 @@ public class CumulativeTestPassChart implements ChartHistoryProvider
         ss2.getLabel( ).setVisible( false );
         ss2.setSeriesIdentifier(MessageUtil.getString("TotalNumItems"));
         ss2.setDataSet( totalValues );
-        ss2.getLineAttributes().setColor(ColorDefinitionImpl.GREEN());
+        ss2.getLineAttributes().setColor(ColorDefinitionImpl.BLUE());
         ss2.getLineAttributes().setStyle(LineStyle.SOLID_LITERAL);
+        ss2.getLineAttributes().setVisible(true);
         ss2.setPaletteLineColor(true);
 
         SeriesDefinition sdY = SeriesDefinitionImpl.create( );
         yAxisPrimary.getSeriesDefinitions( ).add( sdY );
-        sdY.getSeriesPalette( ).update( ColorDefinitionImpl.RED() );
+        sdY.getSeriesPalette( ).update( ColorDefinitionImpl.GREEN() );
         sdY.getSeries( ).add( ss );
-        //sdY.getSeries( ).add( ss2 );
         
         SeriesDefinition sdY2 = SeriesDefinitionImpl.create( );
         yAxisPrimary.getSeriesDefinitions( ).add( sdY2 );
@@ -314,7 +322,24 @@ public class CumulativeTestPassChart implements ChartHistoryProvider
     /**
      * @return
      */
-    private double [] getTimeArray()
+    private long [] getTimeArray()
+    {
+        long [] values = new long [resultMap.size()];
+        if (resultMap.size() == 0) return values;
+        Iterator iBin = resultMap.keySet().iterator();
+        int i = 0;
+        while (iBin.hasNext())
+        {
+            Date date = (Date)iBin.next();
+            values[i++] = date.getTime();
+        }
+        return values;
+    }
+    
+    /**
+     * @return
+     */
+    private double [] getDayArray()
     {
         double [] values = new double [resultMap.size()];
         if (resultMap.size() == 0) return values;
