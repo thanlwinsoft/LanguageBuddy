@@ -2,8 +2,8 @@
 
 <!--
     File:          $Source: /home/keith/cvsroot/projects/LanguageAids/uk/co/dabsol/stribley/language/text/LanguageTest.xsl,v $
-    Version:       $Revision: 711 $
-    Last Modified: $Date: 2007-01-17 04:53:08 +0700 (Wed, 17 Jan 2007) $
+    Version:       $Revision: 738 $
+    Last Modified: $Date: 2007-02-08 02:22:33 +0700 (Thu, 08 Feb 2007) $
 
     This is the XSLT file to transform the LanguageTest XML format into
     HTML for viewing in a web browser.
@@ -286,7 +286,7 @@
 					<xsl:value-of select="../@creationTime"/><xsl:text>')</xsl:text>
                 </xsl:attribute>
                    <xsl:value-of select="."/>
-	    </xsl:element><br />
+	    	</xsl:element><br />
 	    </xsl:for-each>
 	    </td>
             <td class="Foreign" onclick="toggle(this)">

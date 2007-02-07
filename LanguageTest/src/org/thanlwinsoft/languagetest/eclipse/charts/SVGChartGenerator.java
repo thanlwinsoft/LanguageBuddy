@@ -59,6 +59,8 @@ import org.eclipse.birt.chart.factory.RunTimeContext;
 import org.eclipse.birt.chart.model.Chart;
 import org.eclipse.birt.chart.model.attribute.Bounds;
 import org.eclipse.birt.chart.model.attribute.impl.BoundsImpl;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
@@ -86,13 +88,19 @@ public class SVGChartGenerator  implements IWorkbenchWindowActionDelegate, IView
         
     }
     /**
-     * Generates a pdf chart to a file
+     * Generates a chart to an svg file.
+     * The SVG is then converted to the another format if requested.
      */
     public void generateChart(Chart cm, String fileName){
         //Tell chart engine that we are running in stand alone mode.  Note running in an eclipse environment.
         System.setProperty("STANDALONE", "true"); //$NON-NLS-1$ //$NON-NLS-2$
         
-        
+        String svnFileName = fileName;
+        IPath path = new Path(fileName);
+        if (!path.getFileExtension().equals("svg"))
+        {
+            svnFileName = path.removeFileExtension().toOSString() + "svg";
+        }
         //Create the pdf renderer
         IDeviceRenderer idr = new SVGRendererImpl();
         
@@ -109,14 +117,16 @@ public class SVGChartGenerator  implements IWorkbenchWindowActionDelegate, IView
             gcs = gr.build( idr.getDisplayServer( ), cm, bo, null, rtc, null );
 
             //Specify the file to write to. 
-            idr.setProperty( IDeviceRenderer.FILE_IDENTIFIER, fileName ); //$NON-NLS-1$
+            idr.setProperty( IDeviceRenderer.FILE_IDENTIFIER, svnFileName ); //$NON-NLS-1$
 
             //generate the chart
             gr.render( idr, gcs );
-            
-            exportSvgToJPEG(fileName);
-            exportSvgToPNG(fileName);
-            exportSvgToPDF(fileName);
+            if (fileName.endsWith(".jpg"))
+                exportSvgToJPEG(svnFileName, fileName);
+            else if (fileName.endsWith(".png"))
+                exportSvgToPNG(svnFileName, fileName);
+            else if (fileName.endsWith(".pdf"))
+                exportSvgToPDF(svnFileName, fileName);
         }
         catch ( ChartException ce )
         {
@@ -124,20 +134,20 @@ public class SVGChartGenerator  implements IWorkbenchWindowActionDelegate, IView
         }       
     }
     
-    private void exportSvgToPNG(String fileName)
+    private void exportSvgToPNG(String svnFileName, String fileName)
     {
         // Create a PNG transcoder
         PNGTranscoder t = new PNGTranscoder();
         
         // Create the transcoder input.
-        String svgURI = new File(fileName).toURI().toString();
+        String svgURI = new File(svnFileName).toURI().toString();
         TranscoderInput input = new TranscoderInput(svgURI);
 
         // Create the transcoder output.
         OutputStream ostream;
         try
         {
-            ostream = new FileOutputStream(fileName + ".png");
+            ostream = new FileOutputStream(fileName);
             TranscoderOutput output = new TranscoderOutput(ostream);
 
             // Save the image.
@@ -165,14 +175,13 @@ public class SVGChartGenerator  implements IWorkbenchWindowActionDelegate, IView
         
     }
     
-    private void exportSvgToPDF(String fileName)
+    private void exportSvgToPDF(String svnFileName, String fileName)
     {
         // Create a PNG transcoder
         PDFTranscoder t = new PDFTranscoder();// throws an exception
         
-        t.addTranscodingHint(PDFTranscoder.KEY_XML_PARSER_VALIDATING, Boolean.FALSE);
         // Create the transcoder input.
-        String svgURI = new File(fileName).toURI().toString();
+        String svgURI = new File(svnFileName).toURI().toString();
         
         TranscoderInput input = new TranscoderInput(svgURI);
         
@@ -180,7 +189,7 @@ public class SVGChartGenerator  implements IWorkbenchWindowActionDelegate, IView
         OutputStream ostream;
         try
         {
-            ostream = new FileOutputStream(fileName + ".pdf");
+            ostream = new FileOutputStream(fileName);
             TranscoderOutput output = new TranscoderOutput(ostream);
 
             // Save the image.
@@ -213,7 +222,7 @@ public class SVGChartGenerator  implements IWorkbenchWindowActionDelegate, IView
     }
     
     
-    private void exportSvgToJPEG(String fileName)
+    private void exportSvgToJPEG(String svnFileName, String fileName)
     {
 //      Create a JPEG transcoder
         JPEGTranscoder t = new JPEGTranscoder();
@@ -223,14 +232,14 @@ public class SVGChartGenerator  implements IWorkbenchWindowActionDelegate, IView
                              new Float(.8));
 
         // Create the transcoder input.
-        String svgURI = new File(fileName).toURI().toString();
+        String svgURI = new File(svnFileName).toURI().toString();
         TranscoderInput input = new TranscoderInput(svgURI);
 
         // Create the transcoder output.
         OutputStream ostream;
         try
         {
-            ostream = new FileOutputStream(fileName + ".jpg");
+            ostream = new FileOutputStream(fileName);
             TranscoderOutput output = new TranscoderOutput(ostream);
 
             // Save the image.
@@ -303,15 +312,20 @@ public class SVGChartGenerator  implements IWorkbenchWindowActionDelegate, IView
                 FileDialog dialog = new FileDialog(chView.getSite().getShell(), SWT.SAVE);
                 dialog.setText(MessageUtil.getString("ExportChartToSVG"));
                 dialog.setFileName("TestHistoryChart.svg");
-                dialog.setFilterExtensions(new String[] { "*.svg", "*.*"});
+                dialog.setFilterExtensions(new String[] { 
+                        "*.svg", "*.jpg", "*.png","*.pdf","*.*"});
                 dialog.setFilterNames(new String[] { 
                         MessageUtil.getString("Scalar Vector Graphics"), 
+                        MessageUtil.getString("JPEG Image"),
+                        MessageUtil.getString("PNG Image"),
+                        MessageUtil.getString("PDF (Acrobat)"),
                         MessageUtil.getString("All")});
                 String fileName = dialog.open();
                 if (fileName != null)
                 {
+                    IPath path = new Path(fileName);
                     generateChart(cm, fileName);
-                    Program p = Program.findProgram("*.svg");
+                    Program p = Program.findProgram("*." + path.getFileExtension());
                     p.execute(fileName);
                 }
             }

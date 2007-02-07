@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.2"?>
 <plugin>
+   <extension-point id="org.thanlwinsoft.languagetest.xslexport" name="XSL Export" schema="schema/org.thanlwinsoft.languagetest.xslexport.exsd"/>
    <extension
          id="LanguageTestApp"
          point="org.eclipse.core.runtime.applications">
@@ -390,9 +391,10 @@ wizardId=
 <extension
       point="org.eclipse.ui.exportWizards">
    <wizard
-         class="languageTest.ExportWizard1"
-         id="LanguageTest.wizard1"
-         name="LanguageTest.wizard1"/>
+         class="org.thanlwinsoft.languagetest.eclipse.export.ExportWizard"
+         icon="icons/languageTest16.png"
+         id="org.thanlwinsoft.languagetest.eclipse.export.ExportWizard"
+         name="%LanguageTest.exportWizard"/>
 </extension>
 <extension
       point="org.eclipse.ui.viewActions">
@@ -425,6 +427,21 @@ wizardId=
             style="push"
             toolbarPath="Bar/additions"/>
    </viewContribution>
+</extension>
+<extension
+      point="org.thanlwinsoft.languagetest.xslexport">
+   <exporter
+         extension="html"
+         name="HTML"
+         xslt="src/org/thanlwinsoft/languagetest/language/text/LanguageTest.xsl"/>
+   <exporter
+         extension="LanguageTest.exporter2"
+         name="CSV"
+         xslt="src/org/thanlwinsoft/languagetest/language/text/LanguageExportCsv.xsl"/>
+   <exporter
+         extension=".fo"
+         name="XSL-FO"
+         xslt="src/org/thanlwinsoft/languagetest/language/text/LangTestTableFo.xsl"/>
 </extension>		
  
 </plugin>
