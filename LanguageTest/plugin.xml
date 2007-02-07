@@ -402,19 +402,26 @@ wizardId=
       <action
             class="org.thanlwinsoft.languagetest.eclipse.charts.PDFChartGenerator"
             enablesFor="*"
-            icon="icons/testHistory16.png"
             id="org.thanlwinsoft.languagetest.PDFChartGenerator"
-            label="%LanguageTest.PDFChartGenerator"
+            label="PDF"
             menubarPath="File/additions"
             style="push"
-            toolbarPath="Bar/additions"/>
+            toolbarPath="Bar/additions"
+            tooltip="%LanguageTest.PDFChartGenerator"/>
       <action
             class="org.thanlwinsoft.languagetest.eclipse.charts.SVGChartGenerator"
             enablesFor="*"
-            icon="icons/correct16.png"
             id="org.thanlwinsoft.languagetest.SVGChartGenerator"
             label="SVG"
             menubarPath="File/additions"
+            style="push"
+            toolbarPath="Bar/additions"
+            tooltip="%LanguageTest.SVGChartGenerator"/>
+      <action
+            class="org.thanlwinsoft.languagetest.eclipse.charts.XMLChartGenerator"
+            enablesFor="*"
+            id="org.thanlwinsoft.languagetest.eclipse.charts.XMLChartGenerator"
+            label="XML"
             style="push"
             toolbarPath="Bar/additions"/>
    </viewContribution>

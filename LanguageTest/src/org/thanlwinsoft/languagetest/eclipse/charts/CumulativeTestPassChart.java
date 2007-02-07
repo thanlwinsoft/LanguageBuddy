@@ -95,6 +95,10 @@ public class CumulativeTestPassChart implements ChartHistoryProvider
     private int type = CUMULATIVE_PASSES;
     private SortedMap resultMap = null; //<long time, int[]>
     
+    private DateTimeDataSet timeValues = null;
+    private NumberDataSet passValues = null;
+    private NumberDataSet totalValues = null;
+    
     public final static String CHART_LABEL_SIZE_PREF = "ChartLabelSize";
     public final static String CHART_TITLE_SIZE_PREF = "ChartTitleSize";
     
@@ -198,10 +202,10 @@ public class CumulativeTestPassChart implements ChartHistoryProvider
         
         // Data Set
         //NumberDataSet timeValues = NumberDataSetImpl.create(getTimeArray());
-        DateTimeDataSet timeValues = DateTimeDataSetImpl.create(getTimeArray());
+        timeValues = DateTimeDataSetImpl.create(getTimeArray());
         
-        NumberDataSet passValues = null;
-        NumberDataSet totalValues = null;
+        passValues = null;
+        totalValues = null;
         switch (type)
         {
         case CUMULATIVE_PASSES:
@@ -230,20 +234,7 @@ public class CumulativeTestPassChart implements ChartHistoryProvider
         {
             ( (Marker) ss.getMarkers( ).get( i ) ).setType( MarkerType.TRIANGLE_LITERAL );
         }
-        /*
-        DataPoint dp = ss.getDataPoint( );
-        dp.getComponents( ).clear( );
-        dp.setPrefix( "(" );//$NON-NLS-1$
-        dp.setSuffix( ")" );//$NON-NLS-1$
-        dp.getComponents( )
-                .add( DataPointComponentImpl.create( DataPointComponentType.BASE_VALUE_LITERAL,
-                        JavaNumberFormatSpecifierImpl.create( "0.00" ) ) );//$NON-NLS-1$
-        dp.getComponents( )
-                .add( DataPointComponentImpl.create( DataPointComponentType.ORTHOGONAL_VALUE_LITERAL,
-                        JavaNumberFormatSpecifierImpl.create( "0.00" ) ) );//$NON-NLS-1$
-        */
-//        ss.getLabel( ).getCaption( ).setColor( ColorDefinitionImpl.RED( ) );
-//        ss.getLabel( ).setBackground( ColorDefinitionImpl.CYAN( ) );
+        
         ss.getLabel( ).setVisible( false );
         ss.setSeriesIdentifier(MessageUtil.getString("NumItemsPassed"));
         ss.setDataSet( passValues );
@@ -258,8 +249,6 @@ public class CumulativeTestPassChart implements ChartHistoryProvider
             Marker marker = (Marker) ss2.getMarkers( ).get( i );
             marker.setType( MarkerType.DIAMOND_LITERAL );
         }
-//        ss2.getLabel( ).getCaption( ).setColor( ColorDefinitionImpl.GREEN( ) );
-//        ss2.getLabel( ).setBackground( ColorDefinitionImpl.PINK() );
         ss2.getLabel( ).setVisible( false );
         ss2.setSeriesIdentifier(MessageUtil.getString("TotalNumItems"));
         ss2.setDataSet( totalValues );
