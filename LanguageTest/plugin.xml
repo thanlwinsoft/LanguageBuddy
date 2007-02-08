@@ -391,10 +391,16 @@ wizardId=
 <extension
       point="org.eclipse.ui.exportWizards">
    <wizard
+         category="org.thanlwinsoft.languagetest.export.category"
          class="org.thanlwinsoft.languagetest.eclipse.export.ExportWizard"
-         icon="icons/languageTest16.png"
+         icon="icons/languageBuddy16.png"
          id="org.thanlwinsoft.languagetest.eclipse.export.ExportWizard"
-         name="%LanguageTest.exportWizard"/>
+         name="%LanguageTest.exportWizard">
+      <selection class="org.eclipse.core.resources.IFile"/>
+   </wizard>
+   <category
+         id="org.thanlwinsoft.languagetest.export.category"
+         name="%LanguageTest.exportCategory"/>
 </extension>
 <extension
       point="org.eclipse.ui.viewActions">
@@ -402,30 +408,13 @@ wizardId=
          id="org.thanlwinsoft.languagetest.chartHistoryViewContribution"
          targetID="org.thanlwinsoft.languagetest.eclipse.views.ChartHistoryView">
       <action
-            class="org.thanlwinsoft.languagetest.eclipse.charts.PDFChartGenerator"
-            enablesFor="*"
-            id="org.thanlwinsoft.languagetest.PDFChartGenerator"
-            label="PDF"
-            menubarPath="File/additions"
-            style="push"
-            toolbarPath="Bar/additions"
-            tooltip="%LanguageTest.PDFChartGenerator"/>
-      <action
             class="org.thanlwinsoft.languagetest.eclipse.charts.SVGChartGenerator"
             enablesFor="*"
             id="org.thanlwinsoft.languagetest.SVGChartGenerator"
-            label="SVG"
-            menubarPath="File/additions"
+            label="%LanguageTest.saveChart"
             style="push"
             toolbarPath="Bar/additions"
             tooltip="%LanguageTest.SVGChartGenerator"/>
-      <action
-            class="org.thanlwinsoft.languagetest.eclipse.charts.XMLChartGenerator"
-            enablesFor="*"
-            id="org.thanlwinsoft.languagetest.eclipse.charts.XMLChartGenerator"
-            label="XML"
-            style="push"
-            toolbarPath="Bar/additions"/>
    </viewContribution>
 </extension>
 <extension
@@ -433,15 +422,16 @@ wizardId=
    <exporter
          extension="html"
          name="HTML"
-         xslt="src/org/thanlwinsoft/languagetest/language/text/LanguageTest.xsl"/>
+         xslt="/org/thanlwinsoft/languagetest/language/text/LanguageTest.xsl"/>
    <exporter
-         extension="LanguageTest.exporter2"
+         extension="pdf"
+         name="PDF"
+         wizardPage="org.thanlwinsoft.languagetest.eclipse.export.FopConfigPage"
+         xslt="/org/thanlwinsoft/languagetest/language/text/LangTestTableFo.xsl"/>
+   <exporter
+         extension="csv"
          name="CSV"
-         xslt="src/org/thanlwinsoft/languagetest/language/text/LanguageExportCsv.xsl"/>
-   <exporter
-         extension=".fo"
-         name="XSL-FO"
-         xslt="src/org/thanlwinsoft/languagetest/language/text/LangTestTableFo.xsl"/>
+         xslt="/org/thanlwinsoft/languagetest/language/text/LanguageExportCsv.xsl"/>
 </extension>		
  
 </plugin>

@@ -40,8 +40,14 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.List;
+import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 
 /**
@@ -54,8 +60,10 @@ public class ExportTypePage extends WizardPage
     
     private Vector exporters = new Vector();
     private List exporterList = null;
+    private Button autoOpen = null;
     private ExportWizard wizard = null;
     private ExporterDetails current = null;
+    private boolean isAutoOpen = true;
     /**
      * @param pageName
      */
@@ -70,8 +78,22 @@ public class ExportTypePage extends WizardPage
      */
     public void createControl(Composite parent)
     {
-        exporterList = new List(parent, SWT.SINGLE);
-        this.setControl(exporterList);
+        //parent.setLayout(new FillLayout());
+        Group group = new Group(parent, SWT.SHADOW_ETCHED_IN);
+        RowLayout layout = new RowLayout();
+        layout.type = SWT.VERTICAL;
+        layout.fill = true;
+        group.setLayout(layout);
+        
+        setTitle(MessageUtil.getString("ExportTypeTitle"));
+        setDescription(MessageUtil.getString("ExportTypeInstructions"));
+        exporterList = new List(group, SWT.SINGLE);
+        autoOpen = new Button(group, SWT.CHECK);
+        autoOpen.setSelection(true);
+        autoOpen.setText(MessageUtil.getString("OpenConvertedFile"));
+        autoOpen.setToolTipText(MessageUtil.getString("OpenConvertedFile"));
+        
+        this.setControl(group);
         IExtensionPoint point = 
             Platform.getExtensionRegistry().getExtensionPoint(EXT_POINT);
         IExtension[] extensions = point.getExtensions();
@@ -95,6 +117,7 @@ public class ExportTypePage extends WizardPage
                             details.page = (WizardPage)o;
                             details.properties = (ExporterProperties)o;
                             details.properties.setEnabled(false);
+                            details.properties.setXslt(details.stylesheet);
                             wizard.addPage(details.page);
                         }
                     }
@@ -117,7 +140,8 @@ public class ExportTypePage extends WizardPage
                     ExporterDetails d = (ExporterDetails)exporters.elementAt(exporterList.getSelectionIndex());
                     setExporter(d);
                 }
-            }});
+            }
+        });
     }
     private void setExporter(ExporterDetails d)
     {
@@ -126,7 +150,7 @@ public class ExportTypePage extends WizardPage
             if (current.page != null)
             {
                 current.page.setVisible(false);
-                d.properties.setEnabled(false);
+                current.properties.setEnabled(false);
             }
         }
         
@@ -136,7 +160,6 @@ public class ExportTypePage extends WizardPage
             this.setPageComplete(true);
             if (d.page != null)
             {
-                d.page.setVisible(true);
                 d.properties.setEnabled(true);
             }
         }
@@ -155,7 +178,16 @@ public class ExportTypePage extends WizardPage
     }
     protected ExporterDetails getSelectedExporter()
     {
+        // this is called just before a conversion, so cache auto open status
+        // before widgets are disposed
+        isAutoOpen = autoOpen.getSelection();
         return current;
+    }
+    protected boolean isAutoOpen()
+    {
+        if (!autoOpen.isDisposed())
+            isAutoOpen = autoOpen.getSelection();
+        return isAutoOpen;
     }
     class ExporterDetails
     {

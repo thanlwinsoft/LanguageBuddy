@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
-    File:          $Source: /home/keith/cvsroot/projects/LanguageAids/uk/co/dabsol/stribley/language/text/LanguageExportCsv.xsl,v $
-    Version:       $Revision: 704 $
-    Last Modified: $Date: 2007-01-05 05:50:38 +0700 (Fri, 05 Jan 2007) $
+    File:          $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/LanguageTest/src/org/thanlwinsoft/languagetest/language/text/LanguageExportCsv.xsl $
+    Version:       $Revision: 741 $
+    Last Modified: $Date: 2007-02-09 01:15:52 +0700 (Fri, 09 Feb 2007) $
 
     This is the XSLT file to transform the LanguageTest XML format into
     text delimited format for import into other programs.
     
-    Copyright (C) 2004 Keith Stribley <jungleglacier@snc.co.uk>
+    Copyright (C) 2004,2007 Keith Stribley <jungleglacier@snc.co.uk>
       
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -25,35 +25,56 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  
 -->
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+xmlns:fo="http://www.w3.org/1999/XSL/Format"
+xmlns:lan="http://www.thanlwinsoft.org/schemas/languagetest">
 <xsl:output method="text" />
 
 <xsl:template match="/"><xsl:apply-templates/>
 </xsl:template>
 
-<xsl:template match="LanguageModule">#<xsl:value-of select="Lang[@type='native']" />
-#<xsl:value-of select="Lang[@type='native']/@lang"/>,<xsl:value-of select="Lang[@type='foreign']/@lang"/>,Audio,Picture
-<xsl:for-each select="TestItem" xml:space="preserve"><xsl:apply-templates select="NativeLang"/>,<xsl:apply-templates select="ForeignLang"/>,<xsl:apply-templates select="SoundFile"/>,<xsl:apply-templates select="Img"/><xsl:text>
-</xsl:text></xsl:for-each>
-<!--
-<xsl:for-each select="TestItem" xml:space="preserve"><xsl:apply-templates select="NativeLang"/>,<xsl:apply-templates select="ForeignLang"/>,<xsl:apply-templates select="SoundFile"/>,<xsl:apply-templates select="Img"/>
+<xsl:template match="lan:LanguageModule">
+<xsl:for-each select="//lan:Lang[@type='native']">
+<xsl:text>"</xsl:text><xsl:value-of select="@lang"/><xsl:text>",</xsl:text>
 </xsl:for-each>
--->
+<xsl:for-each select="//lan:Lang[@type='foreign']">
+<xsl:text>"</xsl:text><xsl:value-of select="@lang"/><xsl:text>",</xsl:text>
+</xsl:for-each>
+<xsl:text>"Audio","Image"
+</xsl:text>
+<xsl:for-each select="//lan:Lang[@type='native']">
+<xsl:text>"</xsl:text><xsl:value-of select="@font"/><xsl:text>",</xsl:text>
+</xsl:for-each>
+<xsl:for-each select="//lan:Lang[@type='foreign']">
+<xsl:text>"</xsl:text><xsl:value-of select="@font"/><xsl:text>",</xsl:text>
+</xsl:for-each>
+<xsl:text>"",""
 
-<!--
-<xsl:for-each select="TestItem" >"<xsl:apply-templates /><xsl:value-of select="NativeLang" disable-output-escaping="yes"/>","<xsl:value-of select="ForeignLang" disable-output-escaping="yes"/>","<xsl:value-of select="SoundFile" disable-output-escaping="yes"/>"
-
-</xsl:for-each>-->
+</xsl:text>
+<xsl:for-each select="lan:TestItem">
+<xsl:variable name="item" select="."/>
+<xsl:for-each select="//lan:Lang[@type='native']">
+<xsl:variable name="lang" select="@lang"/>
+<xsl:text>"</xsl:text><xsl:apply-templates select="$item/lan:NativeLang[@lang=$lang]"/><xsl:text>",</xsl:text>
+</xsl:for-each>
+<xsl:for-each select="//lan:Lang[@type='foreign']">
+<xsl:variable name="lang" select="@lang"/>
+<xsl:text>"</xsl:text><xsl:apply-templates select="$item/lan:ForeignLang[@lang=$lang]"/><xsl:text>",</xsl:text>
+</xsl:for-each>
+<xsl:apply-templates select="lan:SoundFile"/><xsl:text>,</xsl:text>
+<xsl:apply-templates select="lan:Img"/><xsl:text>
+</xsl:text>
+</xsl:for-each>
 </xsl:template>
 
 
-<xsl:template match="NativeLang">"<xsl:apply-templates />"</xsl:template>
+<xsl:template match="lan:NativeLang"><xsl:apply-templates /></xsl:template>
 
-<xsl:template match="ForeignLang">"<xsl:apply-templates />"</xsl:template>
+<xsl:template match="lan:ForeignLang"><xsl:apply-templates /></xsl:template>
 
-<xsl:template match="SoundFile">"<xsl:apply-templates />"</xsl:template>
+<xsl:template match="lan:SoundFile"><xsl:apply-templates /></xsl:template>
 
-<xsl:template match="Img">"<xsl:apply-templates />"</xsl:template>
+<xsl:template match="lan:Img"><xsl:apply-templates /></xsl:template>
 
 
 <xsl:template match="text()">

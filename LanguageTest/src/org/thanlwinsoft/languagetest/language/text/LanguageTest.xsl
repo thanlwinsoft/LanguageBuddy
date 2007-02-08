@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
-    File:          $Source: /home/keith/cvsroot/projects/LanguageAids/uk/co/dabsol/stribley/language/text/LanguageTest.xsl,v $
-    Version:       $Revision: 738 $
-    Last Modified: $Date: 2007-02-08 02:22:33 +0700 (Thu, 08 Feb 2007) $
+    File:          $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/LanguageTest/src/org/thanlwinsoft/languagetest/language/text/LanguageTest.xsl $
+    Version:       $Revision: 741 $
+    Last Modified: $Date: 2007-02-09 01:15:52 +0700 (Fri, 09 Feb 2007) $
 
     This is the XSLT file to transform the LanguageTest XML format into
     HTML for viewing in a web browser.
     
-    Copyright (C) 2003 Keith Stribley <jungleglacier@snc.co.uk>
+    Copyright (C) 2003,2007 Keith Stribley <jungleglacier@snc.co.uk>
       
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -38,7 +38,7 @@
             </title>
             <style>
 	        body {
-                    background-color: #B0B0F0;
+                    background-color: #B0F0B0;
 					margin: 1em;
                 }
                 .Native {
@@ -48,7 +48,7 @@
                 .Foreign {
                     border: 1px solid black;
                     width: 40%;   
-                    background-color: #B0B0F0;             
+                    background-color: #B0F0B0;             
                 }
                 p.footer {
                     font-size: xx-small;
@@ -71,7 +71,7 @@
                     border: 3px solid black;
                     width: 100%;
                     text-align:center;
-                    background-color: #C0C0F0;
+                    background-color: #C0F0C0;
 					clear: both;
                     }
                 th {
@@ -240,20 +240,20 @@
 			</div>
             <table>
 				<thead>
-	                <tr><th class="Native" onclick="sortRows(0)">
+	                <tr><th class="Native" onclick="sortRows(0)" title="Click to sort">
 					<xsl:for-each select="lan:LanguageModule/lan:Lang[@type='native']">
 	                <xsl:value-of select="@lang"/>
 	                </xsl:for-each>
 					<xsl:text> </xsl:text>
-	                <span onclick="hideColumn(0, true)" class="noPrint">[Hide]</span>
-					<span onclick="hideColumn(0, false)" class="noPrint">[Show]</span>
-	                </th><th class="Foreign" onclick="sortRows(1)">
+	                <span onclick="hideColumn(0, true)" class="noPrint" title="Hide Column">[Hide]</span>
+					<span onclick="hideColumn(0, false)" class="noPrint" title="Show Column">[Show]</span>
+	                </th><th class="Foreign" onclick="sortRows(1)" title="Click to sort">
 					<xsl:for-each select="lan:LanguageModule/lan:Lang[@type='foreign']">
 	                <xsl:value-of select="@lang"/>
 	                </xsl:for-each>
 					<xsl:text> </xsl:text>
-	                <span onclick="hideColumn(1, true)" class="noPrint">[Hide]</span>
-					<span onclick="hideColumn(1, false)" class="noPrint">[Show]</span>
+	                <span onclick="hideColumn(1, true)" class="noPrint" title="Hide Column">[Hide]</span>
+					<span onclick="hideColumn(1, false)" class="noPrint" title="Show Column">[Show]</span>
 	                </th><th>Image</th></tr>
 				</thead>
 				<tbody id="langTable"> 
