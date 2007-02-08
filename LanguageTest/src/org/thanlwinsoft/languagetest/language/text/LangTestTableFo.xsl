@@ -30,6 +30,12 @@
 xmlns:fo="http://www.w3.org/1999/XSL/Format"  
 xmlns:lan="http://www.thanlwinsoft.org/schemas/languagetest">
 
+<!-- These parameters may be modified according to users wishes -->
+<xsl:param name="title">LanguageTest</xsl:param>
+<xsl:param name="colCount">1</xsl:param>
+<xsl:param name="useImage">1</xsl:param>
+<xsl:param name="pageSize">A4</xsl:param>
+
 <xsl:attribute-set name="default-style">
   <xsl:attribute name="font-size">12pt</xsl:attribute>
   <xsl:attribute name="font-weight">normal</xsl:attribute>
@@ -51,6 +57,8 @@ xmlns:lan="http://www.thanlwinsoft.org/schemas/languagetest">
 	<xsl:attribute name="border-after-color">Silver</xsl:attribute>
 	<xsl:attribute name="font-size">14pt</xsl:attribute>
 	<xsl:attribute name="font-weight">bold</xsl:attribute>
+	<xsl:attribute name="span">all</xsl:attribute>
+	<xsl:attribute name="padding-after">12pt</xsl:attribute>
 </xsl:attribute-set>
 
 <xsl:attribute-set name="cell-border">
@@ -64,11 +72,6 @@ xmlns:lan="http://www.thanlwinsoft.org/schemas/languagetest">
 	<xsl:attribute name="text-align">center</xsl:attribute>
 </xsl:attribute-set>
 
-<xsl:param name="title">LanguageTest</xsl:param>
-<xsl:param name="colCount">1</xsl:param>
-<xsl:param name="useImage">1</xsl:param>
-<xsl:param name="pageSize">A4</xsl:param>
-
 <xsl:template match="/">
 <fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format">
 
@@ -77,8 +80,9 @@ xmlns:lan="http://www.thanlwinsoft.org/schemas/languagetest">
 	    page-height="297mm" page-width="210mm"
 	    margin-top="1cm"   margin-bottom="1cm"
 	    margin-left="1cm"  margin-right="1cm">
-	  <fo:region-body region-name="xsl-region-body" margin="1cm" margin-right="1cm" 
-	  	column-count="{$colCount}" column-gap="0.5cm"/>
+	  <fo:region-body region-name="xsl-region-body" margin="1cm" 
+	  	column-count="{$colCount}" column-gap="0.5cm"
+	  	margin-bottom="2cm" />
 	  <fo:region-before extent="2cm"/>
 	  <fo:region-after  extent="2cm"/>
 	  <fo:region-start  extent="2cm"/>
@@ -88,19 +92,22 @@ xmlns:lan="http://www.thanlwinsoft.org/schemas/languagetest">
 	  </fo:simple-page-master>
 	  <fo:simple-page-master master-name="A5" 
 	    page-height="210mm" page-width="148mm"
-	    margin-top="0.5cm"   margin-bottom="0.5cm"
+	    margin-top="0.5cm"   margin-bottom="2cm"
 	    margin-left="0.5cm"  margin-right="0.5cm">
-	  <fo:region-body   margin="1cm" column-count="{$colCount}" column-gap="0.5cm"/>
+	  <fo:region-body   margin="1cm" column-count="{$colCount}" 
+	    column-gap="0.5cm" margin-bottom="2cm" />
 	  <fo:region-before extent="2cm"/>
 	  <fo:region-after  extent="2cm"/>
 	  <fo:region-start  extent="2cm"/>
 	  <fo:region-end    extent="2cm"/>
 	  </fo:simple-page-master>
+	  
 	  <fo:simple-page-master master-name="Letter" 
 	    page-height="11in" page-width="8.5in"
-	    margin-top="1cm"   margin-bottom="1cm"
+	    margin-top="1cm"   margin-bottom="2cm"
 	    margin-left="1cm"  margin-right="1cm">
-	  <fo:region-body   margin="1cm" column-count="{$colCount}" column-gap="0.5cm"/>
+	  <fo:region-body   margin="1cm" column-count="{$colCount}" 
+	  column-gap="0.5cm" margin-bottom="2cm" />
 	  <fo:region-before extent="2cm"/>
 	  <fo:region-after  extent="2cm"/>
 	  <fo:region-start  extent="2cm"/>
@@ -108,9 +115,10 @@ xmlns:lan="http://www.thanlwinsoft.org/schemas/languagetest">
 	  </fo:simple-page-master>
 	  <fo:simple-page-master master-name="Legal" 
 	    page-height="14in" page-width="8.5in"
-	    margin-top="1cm"   margin-bottom="1cm"
+	    margin-top="1cm"   margin-bottom="2cm"
 	    margin-left="1cm"  margin-right="1cm">
-	  <fo:region-body   margin="1cm" column-count="{$colCount}" column-gap="0.5cm"/>
+	  <fo:region-body   margin="1cm" column-count="{$colCount}" 
+	    column-gap="0.5cm" margin-bottom="2cm" />
 	  <fo:region-before extent="2cm"/>
 	  <fo:region-after  extent="2cm"/>
 	  <fo:region-start  extent="2cm"/>
@@ -127,7 +135,7 @@ xmlns:lan="http://www.thanlwinsoft.org/schemas/languagetest">
 	        </fo:block>
     	</fo:static-content> -->
 		<fo:static-content flow-name="xsl-region-after">
-  			<fo:block text-align="center" xsl:use-attribute-sets="cell-border footer">
+  			<fo:block text-align="center" space-before="1cm" xsl:use-attribute-sets="cell-border footer">
   				<fo:page-number />/<fo:page-number-citation-last ref-id="last"/>
   			</fo:block>
   			<fo:block text-align="center" xsl:use-attribute-sets="footer" 
@@ -193,11 +201,7 @@ xmlns:lan="http://www.thanlwinsoft.org/schemas/languagetest">
         <fo:table-row>
         	
             <fo:table-cell column-number="1" xsl:use-attribute-sets="cell-border">
-            <fo:marker marker-class-name="{@creationTime}">
-        		<xsl:value-of select="@creator"/>
-        		<xsl:value-of select="@creationTime"/>
-        	</fo:marker>
-			    <xsl:for-each select="lan:NativeLang">
+                <xsl:for-each select="lan:NativeLang">
 		            <xsl:element name="fo:block" xml:space="default" 
 		            	use-attribute-sets="default-style">
 		                <xsl:attribute name="font-family">

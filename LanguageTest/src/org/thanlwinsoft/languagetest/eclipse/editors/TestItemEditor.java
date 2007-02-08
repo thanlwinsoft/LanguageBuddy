@@ -74,6 +74,7 @@ import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.thanlwinsoft.languagetest.eclipse.Perspective;
 import org.thanlwinsoft.languagetest.eclipse.TestModuleAdapter;
 import org.thanlwinsoft.languagetest.eclipse.WorkspaceLanguageManager;
+import org.thanlwinsoft.languagetest.eclipse.export.ExportAction;
 import org.thanlwinsoft.languagetest.eclipse.views.RecordingView;
 import org.thanlwinsoft.languagetest.eclipse.views.TestView;
 import org.thanlwinsoft.languagetest.language.test.UniversalLanguage;
@@ -328,6 +329,23 @@ public class TestItemEditor extends EditorPart implements ISelectionProvider
         copyLangItem.setText(MessageUtil.getString("CopyFromLang"));
         pasteLangItem = new MenuItem(popup, SWT.CASCADE);
         pasteLangItem.setText(MessageUtil.getString("PasteIntoLang"));
+        
+        MenuItem separator2 = new MenuItem(popup, SWT.SEPARATOR);
+        MenuItem export = new MenuItem(popup, SWT.PUSH);
+        export.setText(MessageUtil.getString("ExportTypeTitle"));
+        
+        export.addSelectionListener(new SelectionListener(){
+            public void widgetDefaultSelected(SelectionEvent e) {}
+            public void widgetSelected(SelectionEvent e)
+            {
+                if (parent.getEditorInput() instanceof FileEditorInput)
+                {
+                    IFile f = ((FileEditorInput)parent.getEditorInput()).getFile();
+                    ExportAction a = new ExportAction(f, "pdf");
+                    a.run();
+                }
+            }});
+        
         popup.setEnabled(true);
         // the table should not be initialized until after the popup 
         // menu is created becasue setupLangColumns uses some of the items

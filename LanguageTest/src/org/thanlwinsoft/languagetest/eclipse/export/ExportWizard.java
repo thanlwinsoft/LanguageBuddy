@@ -58,11 +58,14 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.FileEditorInput;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
+import org.thanlwinsoft.languagetest.eclipse.editors.TestModuleEditor;
 
 /**
  * @author keith
@@ -74,6 +77,24 @@ public class ExportWizard extends Wizard implements IExportWizard
     private ExportTypePage typePage = null;
     private Shell shell = null;
     private Display display = null;
+    private String defaultExtension = null;
+    public ExportWizard()
+    {
+        
+    }
+    /**
+     * @param defaultExtension
+     */
+    public ExportWizard(String defaultExtension)
+    {
+        this.defaultExtension = defaultExtension;
+    }
+    
+    protected String getDefaultExtension()
+    {
+        return defaultExtension;
+    }
+
     /* (non-Javadoc)
      * @see org.eclipse.jface.wizard.Wizard#performFinish()
      */
@@ -285,9 +306,18 @@ public class ExportWizard extends Wizard implements IExportWizard
                     set.add(f);
             }
         }
-        files = (IFile[])set.toArray(new IFile[set.size()]);
         shell = workbench.getDisplay().getActiveShell();
         display = shell.getDisplay();
+        if (set.size() == 0)
+        {
+            IEditorPart editor = workbench.getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+            if (editor instanceof TestModuleEditor &&
+                editor.getEditorInput() instanceof FileEditorInput)
+            {
+                set.add(((FileEditorInput)editor.getEditorInput()).getFile());
+            }
+        }
+        files = (IFile[])set.toArray(new IFile[set.size()]);
         if (files.length == 0)
         {
             MessageDialog.openWarning(shell, MessageUtil.getString("NoFiles"), 

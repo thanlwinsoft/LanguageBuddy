@@ -49,7 +49,7 @@ public class AddLanguageAction implements IWorkbenchWindowActionDelegate
         AddLanguageWizard wizard = new AddLanguageWizard();
         if (window == null)
         {
-            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+            shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
         }
         else shell = window.getShell();
         WizardDialog wizardDialog = new WizardDialog(shell, wizard);

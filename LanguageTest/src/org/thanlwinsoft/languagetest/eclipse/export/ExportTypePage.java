@@ -97,6 +97,7 @@ public class ExportTypePage extends WizardPage
         IExtensionPoint point = 
             Platform.getExtensionRegistry().getExtensionPoint(EXT_POINT);
         IExtension[] extensions = point.getExtensions();
+        int exporterIndex = -1;
         for (int i = 0; i < extensions.length; i++)
         {
             IConfigurationElement ce[] = extensions[i].getConfigurationElements();
@@ -128,7 +129,14 @@ public class ExportTypePage extends WizardPage
                 }
                 exporters.add(details);
                 exporterList.add(details.name);
+                if (details.extension.equals(wizard.getDefaultExtension()))
+                {
+                    exporterIndex = exporters.size() - 1;
+                    current = details;
+                }
             }
+            if (exporterIndex > -1) exporterList.select(exporterIndex);
+            setExporter(current);
         }
         exporterList.addSelectionListener(new SelectionListener() {
 
@@ -145,7 +153,7 @@ public class ExportTypePage extends WizardPage
     }
     private void setExporter(ExporterDetails d)
     {
-        if (current != null)
+        if (current != null && current != d)
         {
             if (current.page != null)
             {
