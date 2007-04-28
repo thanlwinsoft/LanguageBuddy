@@ -116,10 +116,13 @@ public class TestManager
         LinkedList items = new LinkedList();
         try
         {
-            IFolder historyFolder = userProject.getFolder(nativeLang + LANG_SEPARATOR + foreignLang);
-            if (historyFolder != null)
+            IFolder historyFolder = userProject.getFolder(HISTORY_DIR);
+            if (historyFolder == null) return null;
+            IFolder langHistory = historyFolder.getFolder(nativeLang + 
+                    LANG_SEPARATOR + foreignLang);
+            if (langHistory != null)
             {
-                IResource [] members = historyFolder.members();
+                IResource [] members = langHistory.members();
                 for (int i = 0; i < members.length; i++)
                 {
                     if (members[i].isAccessible() && members[i] instanceof IFile)

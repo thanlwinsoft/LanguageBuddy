@@ -48,7 +48,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -109,8 +108,15 @@ public class ExportWizard extends Wizard implements IExportWizard
                     MessageUtil.getString("NoFilesToExportMessage"));
         }
         // these must be retreived in the display thread
-        final String [] parameters = ed.properties.getParameters();
-        final String [] values = ed.properties.getValues();
+        String [] parameters = null;
+        String [] values = null;
+        if (ed.properties != null)
+        {
+            parameters = ed.properties.getParameters();
+            values = ed.properties.getValues();
+        }
+        final String [] theParameters = parameters;
+        final String [] theValues = values;
         
         Job job = new Job("Export")
         {
@@ -118,7 +124,7 @@ public class ExportWizard extends Wizard implements IExportWizard
             protected IStatus run(IProgressMonitor monitor)
             {
                 int s = IStatus.ERROR;
-                if (convert(ed, parameters, values))
+                if (convert(ed, theParameters, theValues))
                     s = IStatus.OK;
                 return new Status(s, LanguageTestPlugin.ID, 0, "Export", null);
             }
@@ -164,7 +170,7 @@ public class ExportWizard extends Wizard implements IExportWizard
                 continue;
             FileOutputStream os = null;
             InputStream is = null;
-            java.io.File outputFile = null;
+            final IFile outputFile = files[i];
             final IPath outputPath = files[i].getRawLocation()
                 .removeFileExtension().addFileExtension(ed.extension);
         
@@ -215,10 +221,6 @@ public class ExportWizard extends Wizard implements IExportWizard
                         MessageUtil.getString("ExportErrorMessage", 
                                               e.getLocalizedMessage()));
                 LanguageTestPlugin.log(IStatus.ERROR, e.getMessage(), e);
-            } 
-            catch (IOException e)
-            {
-                e.printStackTrace();
             }
             finally
             {
@@ -231,9 +233,28 @@ public class ExportWizard extends Wizard implements IExportWizard
                         {
                             if (typePage.isAutoOpen())
                             {
-                                Program p = Program.findProgram("*." + ed.extension);
+                                Program p = Program.findProgram("." + ed.extension);
+                                if (p == null)
+                                    p = Program.findProgram("*." + ed.extension);
+                                if (p == null)
+                                    p = Program.findProgram("." + ed.extension.toUpperCase());
+                                if (p == null)
+                                    p = Program.findProgram("." + ed.extension.toLowerCase());
+                                if (p == null)
+                                    p = Program.findProgram(ed.extension.toUpperCase());
+                                if (p == null)
+                                    p = Program.findProgram(ed.extension.toLowerCase());
                                 if (p != null)
                                     p.execute(outputPath.toOSString());
+                                else Program.launch(outputPath.toOSString());
+                            }
+                            try
+                            {
+                                outputFile.getParent().refreshLocal(1, null);
+                            }
+                            catch (CoreException e)
+                            {
+                                LanguageTestPlugin.log(IStatus.ERROR, e.getMessage(), e);
                             }
                         }
                     };
@@ -293,7 +314,6 @@ public class ExportWizard extends Wizard implements IExportWizard
     public void init(IWorkbench workbench, IStructuredSelection selection)
     {
         Iterator si = selection.iterator();
-        int i = 0;
         HashSet set = new HashSet();
         files = new IFile[selection.size()];
         while (si.hasNext())

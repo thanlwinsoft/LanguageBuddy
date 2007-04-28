@@ -44,6 +44,7 @@ import org.eclipse.birt.chart.model.Chart;
 import org.eclipse.birt.chart.model.attribute.Bounds;
 import org.eclipse.birt.chart.model.attribute.impl.BoundsImpl;
 import org.eclipse.birt.chart.util.PluginSettings;
+import org.eclipse.birt.core.framework.Platform;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
@@ -54,6 +55,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Display;
+import org.osgi.framework.Bundle;
 
 public class ChartDisplay implements PaintListener, ControlListener
 {
@@ -82,7 +84,9 @@ public class ChartDisplay implements PaintListener, ControlListener
     public void renderModel( Chart cm )
     {
         this.cm = cm;
-
+        // Tell chart engine that we are running in stand alone mode.  Note running in an eclipse environment.
+        //System.setProperty("STANDALONE", "true"); //$NON-NLS-1$ //$NON-NLS-2$
+        
         if ( preview != null && !preview.isDisposed( ) )
         {
             updateBuffer( );

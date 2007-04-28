@@ -42,6 +42,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -58,6 +59,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Layout;
 import org.eclipse.ui.part.ViewPart;
+import org.osgi.framework.Bundle;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.thanlwinsoft.languagetest.eclipse.WorkspaceLanguageManager;
 import org.thanlwinsoft.languagetest.eclipse.charts.CumulativeTestPassChart;
@@ -106,33 +108,48 @@ public class ChartHistoryView extends ViewPart
         
         //c.setLayout(new FillLayout());
         //c.setLayoutData(fd);
-        
-        canvas = new Canvas(parent, SWT.NONE);
-        //GridData gd = new GridData();
-        //gd.grabExcessHorizontalSpace = true;
-        //gd.grabExcessVerticalSpace = true;
-        chartDisplay = new ChartDisplay();
-        canvas.addControlListener(chartDisplay);
-        canvas.addPaintListener(chartDisplay);
-        chartDisplay.setCanvas(canvas);
-        canvas.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_WHITE));
-        controls = new Composite(parent, SWT.LEFT);
-        
-        
-        FormData cfd = new FormData();
-        cfd.left = new FormAttachment(0, 0);
-        cfd.top = new FormAttachment(0,0);
-        cfd.right = new FormAttachment(100, 0);
-        controls.setLayoutData(cfd);
-        FormData fd = new FormData();
-        fd.left = new FormAttachment(0, 0);
-        fd.top = new FormAttachment(controls);
-        fd.right = new FormAttachment(100, 0);
-        fd.bottom = new FormAttachment(100, 0);
-        canvas.setLayoutData(fd);
-        
-        parent.setLayout(layout);
-        createControl();
+        try
+        {
+            // this is a bit of a hack to make sure that the relevant classes
+            // are found. If this isn't done, you get class not found exceptions
+            Bundle bcds = Platform.getBundle("org.eclipse.birt.chart.device.swt");
+            Class swtRenderer = 
+                bcds.loadClass("org.eclipse.birt.chart.device.swt.SwtRendererImpl");
+           
+            
+            canvas = new Canvas(parent, SWT.NONE);
+            //GridData gd = new GridData();
+            //gd.grabExcessHorizontalSpace = true;
+            //gd.grabExcessVerticalSpace = true;
+            chartDisplay = new ChartDisplay();
+            canvas.addControlListener(chartDisplay);
+            canvas.addPaintListener(chartDisplay);
+            chartDisplay.setCanvas(canvas);
+            canvas.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+            controls = new Composite(parent, SWT.LEFT);
+            
+            
+            FormData cfd = new FormData();
+            cfd.left = new FormAttachment(0, 0);
+            cfd.top = new FormAttachment(0,0);
+            cfd.right = new FormAttachment(100, 0);
+            controls.setLayoutData(cfd);
+            FormData fd = new FormData();
+            fd.left = new FormAttachment(0, 0);
+            fd.top = new FormAttachment(controls);
+            fd.right = new FormAttachment(100, 0);
+            fd.bottom = new FormAttachment(100, 0);
+            canvas.setLayoutData(fd);
+            
+            parent.setLayout(layout);
+            createControl();
+        } 
+        catch (ClassNotFoundException e)
+        {
+            e.printStackTrace();
+            LanguageTestPlugin.log(IStatus.ERROR, "Failed to find SwtRenderer for chart", e);
+        }
+
     }
 
     private void createControl()

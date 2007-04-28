@@ -32,6 +32,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 
@@ -56,6 +57,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExecutableExtension;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
@@ -67,6 +69,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.osgi.framework.Bundle;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.xml.sax.SAXException;
@@ -99,8 +102,7 @@ public class FopConfigPage extends WizardPage implements ExporterProperties, IEx
     public FopConfigPage()
     {
         super("FOP Config");
-        values = (String [])
-            Arrays.copyOf(DEFAULTS, DEFAULTS.length, String[].class);
+        values = DEFAULTS;
     }
 
     /* (non-Javadoc)
@@ -112,11 +114,14 @@ public class FopConfigPage extends WizardPage implements ExporterProperties, IEx
         System.out.println(source + " " + target);
 //      Step 1: Construct a FopFactory
 //      (reuse if you plan to render multiple documents!)
-        if (fopFactory == null)
-            fopFactory = FopFactory.newInstance();
+        Bundle fopBundle = Platform.getBundle("org.apache.fop");
         boolean success = false;
         try
         {
+            fopBundle.loadClass("org.apache.fop.apps.FopFactory");
+//            fopBundle.loadClass("org.apache.xmlgraphics.util.Service");
+            if (fopFactory == null)
+                fopFactory = FopFactory.newInstance();
             File sourceFile = new File(source);
             String title = new Path(source).removeFileExtension().lastSegment();
             //      Step 2: Set up output stream.
@@ -132,7 +137,10 @@ public class FopConfigPage extends WizardPage implements ExporterProperties, IEx
 //                //userAgent.setFontBaseURL(fontBase.toURI().toURL().toExternalForm());
 //                userAgent.setBaseURL(fontBase.toURI().toURL().toExternalForm());
                 DefaultConfigurationBuilder cfgBuilder = new DefaultConfigurationBuilder();
-                Configuration cfg = cfgBuilder.buildFromFile(new File(userHome + "/.fop/fop.xconf"));
+                InputStream fopConfig = 
+                    getClass().getResourceAsStream("/org/thanlwinsoft/languagetest/language/text/fop.xconf");
+                //Configuration cfg = cfgBuilder.buildFromFile(new File(userHome + "/.fop/fop.xconf"));
+                Configuration cfg = cfgBuilder.build(fopConfig);
                 fopFactory.setUserConfig(cfg);
                // Step 3: Construct fop with desired output format
 
@@ -194,6 +202,10 @@ public class FopConfigPage extends WizardPage implements ExporterProperties, IEx
         catch (IOException e)
         {
             e.printStackTrace();
+            LanguageTestPlugin.log(IStatus.WARNING, e.getMessage(), e);
+        }
+        catch (ClassNotFoundException e)
+        {
             LanguageTestPlugin.log(IStatus.WARNING, e.getMessage(), e);
         }
 

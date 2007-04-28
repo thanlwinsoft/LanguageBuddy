@@ -22,15 +22,21 @@
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  * -----------------------------------------------------------------------
  */
-
+/**
+ * 
+ */
 package org.thanlwinsoft.languagetest.eclipse.charts;
 
 import org.thanlwinsoft.languagetest.MessageUtil;
 
-public class PDFChartGenerator extends SVGChartGenerator
+/**
+ * @author keith
+ *
+ */
+public class JPEGChartGenerator extends SVGChartGenerator
 {
-    public PDFChartGenerator()
+    public JPEGChartGenerator()
     {
-        super("pdf", MessageUtil.getString("File_PDF"));
+        super("jpg", MessageUtil.getString("File_JPEG"));
     }
 }

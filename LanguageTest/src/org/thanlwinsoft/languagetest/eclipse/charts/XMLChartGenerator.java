@@ -170,8 +170,8 @@ public class XMLChartGenerator extends Action implements IWorkbenchWindowActionD
         if (chView != null)
         {
             Chart cm = chView.getChart();
-            if (cm == null)
-                cm = PDFChartGenerator.createHSChart();
+            //if (cm == null)
+            //    cm = PDFChartGenerator.createHSChart();
             if (cm != null)
             {
                 this.shell = chView.getSite().getShell();

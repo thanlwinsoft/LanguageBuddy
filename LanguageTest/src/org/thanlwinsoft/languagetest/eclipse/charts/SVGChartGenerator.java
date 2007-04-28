@@ -25,24 +25,12 @@
 
 package org.thanlwinsoft.languagetest.eclipse.charts;
 
-/***********************************************************************
- * Copyright (c) 2006 IBM Corporation.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- * IBM Corporation - initial API and implementation
- ***********************************************************************/
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.apache.batik.css.engine.value.svg.ImageRenderingManager;
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
@@ -50,7 +38,6 @@ import org.apache.batik.transcoder.image.JPEGTranscoder;
 import org.apache.batik.transcoder.image.PNGTranscoder;
 import org.apache.fop.svg.PDFTranscoder;
 import org.eclipse.birt.chart.device.IDeviceRenderer;
-import org.eclipse.birt.chart.device.pdf.PDFRendererImpl;
 import org.eclipse.birt.chart.device.svg.SVGRendererImpl;
 import org.eclipse.birt.chart.exception.ChartException;
 import org.eclipse.birt.chart.factory.GeneratedChartState;
@@ -60,17 +47,23 @@ import org.eclipse.birt.chart.model.Chart;
 import org.eclipse.birt.chart.model.attribute.Bounds;
 import org.eclipse.birt.chart.model.attribute.impl.BoundsImpl;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.program.Program;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.ui.IViewActionDelegate;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
+import org.osgi.framework.Bundle;
 import org.thanlwinsoft.languagetest.MessageUtil;
+import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.thanlwinsoft.languagetest.eclipse.views.ChartHistoryView;
 
 import com.ibm.icu.util.ULocale;
@@ -81,11 +74,27 @@ import com.ibm.icu.util.ULocale;
  */
 public class SVGChartGenerator  implements IWorkbenchWindowActionDelegate, IViewActionDelegate
 {
+    private String defaultExtension = "svg";
     private IWorkbenchWindow window = null;
     private IViewPart view = null;
+    private String [] filterExtensions = new String[] { 
+            "*.png", "*.svg", "*.jpg", "*.pdf","*.*"};
+    private String[] filterNames = new String[] {
+            MessageUtil.getString("File_SVG"), 
+            MessageUtil.getString("File_PNG"),
+            MessageUtil.getString("File_JPEG"),
+            MessageUtil.getString("File_PDF"),
+            MessageUtil.getString("File_All")};
     public SVGChartGenerator()
     {
         
+    }
+    protected SVGChartGenerator(String ext, String name)
+    {
+        this.defaultExtension = ext;
+        this.filterExtensions = new String [] { ext, "*.*" };
+        this.filterNames = new String [] { 
+                name, MessageUtil.getString("File_All")};
     }
     /**
      * Generates a chart to an svg file.
@@ -97,9 +106,12 @@ public class SVGChartGenerator  implements IWorkbenchWindowActionDelegate, IView
         
         String svnFileName = fileName;
         IPath path = new Path(fileName);
-        if (!path.getFileExtension().equals("svg"))
+        if (!"svg".equals(path.getFileExtension()))
         {
-            svnFileName = path.removeFileExtension().toOSString() + "svg";
+            svnFileName = path.removeFileExtension().toOSString();
+            if (!svnFileName.endsWith("."))
+                svnFileName += ".";
+            svnFileName += "svg";
         }
         //Create the pdf renderer
         IDeviceRenderer idr = new SVGRendererImpl();
@@ -136,62 +148,76 @@ public class SVGChartGenerator  implements IWorkbenchWindowActionDelegate, IView
     
     private void exportSvgToPNG(String svnFileName, String fileName)
     {
-        // Create a PNG transcoder
-        PNGTranscoder t = new PNGTranscoder();
-        
-        // Create the transcoder input.
-        String svgURI = new File(svnFileName).toURI().toString();
-        TranscoderInput input = new TranscoderInput(svgURI);
-
-        // Create the transcoder output.
-        OutputStream ostream;
         try
         {
-            ostream = new FileOutputStream(fileName);
-            TranscoderOutput output = new TranscoderOutput(ostream);
-
-            // Save the image.
-            t.transcode(input, output);
-
-            // Flush and close the stream.
-            ostream.flush();
-            ostream.close();
-        } 
-        catch (FileNotFoundException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } 
-        catch (IOException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } 
-        catch (TranscoderException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+            //Bundle batik = Platform.getBundle("org.apache.batik");
+            Bundle xerces = Platform.getBundle("org.apache.xerces");
+            xerces.loadClass("org.apache.xerces.parsers.SAXParser");
+            
+            // Create a PNG transcoder
+            PNGTranscoder t = new PNGTranscoder();
+            
+            // Create the transcoder input.
+            String svgURI = new File(svnFileName).toURI().toString();
+            TranscoderInput input = new TranscoderInput(svgURI);
+    
+            // Create the transcoder output.
+            OutputStream ostream;
+            try
+            {
+                ostream = new FileOutputStream(fileName);
+                TranscoderOutput output = new TranscoderOutput(ostream);
+    
+                // Save the image.
+                t.transcode(input, output);
+    
+                // Flush and close the stream.
+                ostream.flush();
+                ostream.close();
+            } 
+            catch (FileNotFoundException e)
+            {
+                LanguageTestPlugin.log(IStatus.WARNING, "ChartGenerator error", e);
+            } 
+            catch (IOException e)
+            {
+                LanguageTestPlugin.log(IStatus.WARNING, "ChartGenerator error", e);
+            } 
+            catch (TranscoderException e)
+            {
+                LanguageTestPlugin.log(IStatus.WARNING, "ChartGenerator error", e);
+            }
         
+        } 
+        catch (ClassNotFoundException e1)
+        {
+            LanguageTestPlugin.log(IStatus.ERROR, "No SaxParser", e1);
+        }
     }
     
     private void exportSvgToPDF(String svnFileName, String fileName)
     {
-        // Create a PNG transcoder
-        PDFTranscoder t = new PDFTranscoder();// throws an exception
-        
-        // Create the transcoder input.
-        String svgURI = new File(svnFileName).toURI().toString();
-        
-        TranscoderInput input = new TranscoderInput(svgURI);
-        
-        // Create the transcoder output.
-        OutputStream ostream;
         try
         {
+            Bundle batikBundle = Platform.getBundle("org.apache.fop");
+            batikBundle.loadClass("org.apache.fop.svg.PDFTranscoder");
+            batikBundle.loadClass("org.apache.batik.transcoder.TranscoderInput");
+            batikBundle.loadClass("org.apache.batik.transcoder.TranscoderOutput");
+            // Create a PNG transcoder
+            PDFTranscoder t = new PDFTranscoder();// throws an exception
+            
+            // Create the transcoder input.
+            String svgURI = new File(svnFileName).toURI().toString();
+            
+            TranscoderInput input = new TranscoderInput(svgURI);
+            
+            // Create the transcoder output.
+            OutputStream ostream;
+        
             ostream = new FileOutputStream(fileName);
             TranscoderOutput output = new TranscoderOutput(ostream);
-
+            // preload class
+            batikBundle.loadClass("org.apache.batik.transcoder.TranscoderInput");
             // Save the image.
             t.transcode(input, output);
 
@@ -201,22 +227,23 @@ public class SVGChartGenerator  implements IWorkbenchWindowActionDelegate, IView
         } 
         catch (FileNotFoundException e)
         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LanguageTestPlugin.log(IStatus.WARNING, "ChartGenerator error", e);
         } 
         catch (IOException e)
         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LanguageTestPlugin.log(IStatus.WARNING, "ChartGenerator error", e);
         } 
         catch (TranscoderException e)
         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LanguageTestPlugin.log(IStatus.WARNING, "ChartGenerator error", e);
+        }
+        catch (ClassNotFoundException e)
+        {
+            LanguageTestPlugin.log(IStatus.WARNING, "ChartGenerator error", e);
         }
         catch (Throwable e)
         {
-            e.printStackTrace();
+            LanguageTestPlugin.log(IStatus.WARNING, "ChartGenerator error", e);
         }
         
     }
@@ -251,18 +278,15 @@ public class SVGChartGenerator  implements IWorkbenchWindowActionDelegate, IView
         } 
         catch (FileNotFoundException e)
         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LanguageTestPlugin.log(IStatus.WARNING, "ChartGenerator error", e);
         } 
         catch (IOException e)
         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LanguageTestPlugin.log(IStatus.WARNING, "ChartGenerator error", e);
         } 
         catch (TranscoderException e)
         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LanguageTestPlugin.log(IStatus.WARNING, "ChartGenerator error", e);
         }
         
     }
@@ -272,7 +296,6 @@ public class SVGChartGenerator  implements IWorkbenchWindowActionDelegate, IView
      */
     public void dispose()
     {
-        // TODO Auto-generated method stub
         
     }
 
@@ -305,28 +328,34 @@ public class SVGChartGenerator  implements IWorkbenchWindowActionDelegate, IView
         if (chView != null)
         {
             Chart cm = chView.getChart();
-            if (cm == null)
-                cm = PDFChartGenerator.createHSChart();
+            //if (cm == null)
+            //    cm = PDFChartGenerator.createHSChart();
             if (cm != null)
             {
                 FileDialog dialog = new FileDialog(chView.getSite().getShell(), SWT.SAVE);
                 dialog.setText(MessageUtil.getString("ExportChartToSVG"));
-                dialog.setFileName("TestHistoryChart.svg");
-                dialog.setFilterExtensions(new String[] { 
-                        "*.svg", "*.jpg", "*.png","*.pdf","*.*"});
-                dialog.setFilterNames(new String[] { 
-                        MessageUtil.getString("Scalar Vector Graphics"), 
-                        MessageUtil.getString("JPEG Image"),
-                        MessageUtil.getString("PNG Image"),
-                        MessageUtil.getString("PDF (Acrobat)"),
-                        MessageUtil.getString("All")});
+                dialog.setFileName("TestHistoryChart." + defaultExtension);
+                dialog.setFilterExtensions(filterExtensions);
+                dialog.setFilterNames(filterNames);
+
                 String fileName = dialog.open();
                 if (fileName != null)
                 {
                     IPath path = new Path(fileName);
+                    if (path.toFile().exists() &&
+                        MessageDialog.openQuestion(view.getSite().getShell(), 
+                            MessageUtil.getString("FileAlreadyExistsTitle"), 
+                            MessageUtil.getString("FileAlreadyExistsReplace",
+                                                  path.toOSString())) == false)
+                    {
+                        return;
+                    }
                     generateChart(cm, fileName);
-                    Program p = Program.findProgram("*." + path.getFileExtension());
-                    p.execute(fileName);
+                    //Control [] dialogKids = dialog.getChildren();
+                    String extension = path.getFileExtension();
+                    Program p = Program.findProgram("." + extension);
+                    if (p != null)
+                        p.execute(fileName);
                 }
             }
         }

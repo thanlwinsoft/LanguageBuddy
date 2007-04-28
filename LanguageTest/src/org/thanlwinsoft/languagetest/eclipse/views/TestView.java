@@ -290,10 +290,12 @@ public class TestView extends ViewPart implements ISelectionChangedListener
         {
             
             //RowLayout layout = (RowLayout)viewer.getTextWidget().getParent().getLayout();
+            viewer.getTextWidget().layout();
             Rectangle textRect = viewer.getTextWidget().getTextBounds(0, tc.getCharCount() - 1);
             Group group = (Group)viewer.getTextWidget().getParent();
             System.out.println("Phrase form " + phraseForm.getClientArea());
             System.out.println("Group " + group.getClientArea());
+            System.out.println("Textrect " + textRect);
             Rectangle availableRect = group.getClientArea();
             int dx = 0;
             int dy = 0;
@@ -738,6 +740,7 @@ public class TestView extends ViewPart implements ISelectionChangedListener
                         )))
         {
             test.retestUnknown();
+            setTestStatus();
             setTestItem(test.getNextItem());
             return;
         }
@@ -882,17 +885,24 @@ public class TestView extends ViewPart implements ISelectionChangedListener
                         e.getLocalizedMessage(), e);
             }
         }
-        controlPanel.setStatus(MessageUtil.getString("TestStatus",
-                        Integer.toString(test.getPassCount()),
-                        Integer.toString(test.getNumTests()),
-                        Integer.toString(test.getNumRetests())));
-        
+        setTestStatus();
         showAnswer(false);
         currentItem = test.getNextItem();
         // hack to get refresh to work
         phraseForm.setWeights(new int [] { 45, 55});
         phraseForm.setWeights(EQUAL_WEIGHT);
         setTestItem(currentItem);
+    }
+    /**
+     * Set the test status text in the status box.
+     *
+     */
+    protected void setTestStatus()
+    {
+        controlPanel.setStatus(MessageUtil.getString("TestStatus",
+                Integer.toString(test.getPassCount()),
+                Integer.toString(test.getNumTests()),
+                Integer.toString(test.getNumRetests())));
     }
     public void showAnswer(boolean showAns)
     {

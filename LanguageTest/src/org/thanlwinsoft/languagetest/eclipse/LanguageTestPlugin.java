@@ -48,6 +48,7 @@ public class LanguageTestPlugin extends AbstractUIPlugin
     public void start(BundleContext context) throws Exception 
     {
         super.start(context);
+        //System.setProperty("STANDALONE", "true");
         ISaveParticipant saveParticipant = new LangTestWorkspaceSaveParticipant();
         ISavedState lastState =
            ResourcesPlugin.getWorkspace().addSaveParticipant(this, saveParticipant);
