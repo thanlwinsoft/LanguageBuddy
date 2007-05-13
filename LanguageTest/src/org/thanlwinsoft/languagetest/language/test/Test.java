@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:          $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/LanguageTest/src/org/thanlwinsoft/languagetest/language/test/Test.java $
- *  Version:       $Revision: 717 $
- *  Last Modified: $Date: 2007-01-20 17:14:43 +0700 (Sat, 20 Jan 2007) $
+ *  Version:       $Revision: 833 $
+ *  Last Modified: $Date: 2007-05-14 03:36:39 +0700 (Mon, 14 May 2007) $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2003 Keith Stribley <jungleglacier@snc.co.uk>
  *
@@ -207,6 +207,10 @@ public class Test
         return retest;
     }
     
+    /**
+     * Randomly removes tests until the requested number of tests equals maxTests.
+     * @param maxTests
+     */
     public void pruneTestToLimit(int maxTests)
     {
         while (remainingTests.size() > maxTests)

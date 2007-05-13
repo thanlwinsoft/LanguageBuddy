@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema  targetNamespace="http://www.thanlwinsoft.org/schemas/languagetest" xmlns="http://www.thanlwinsoft.org/schemas/languagetest" attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:schema  targetNamespace="http://www.thanlwinsoft.org/schemas/languagetest/history" 
+	xmlns="http://www.thanlwinsoft.org/schemas/languagetest/history" 
+	attributeFormDefault="unqualified" 
+	elementFormDefault="qualified" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:element name="ModuleHistory" type="ModuleHistoryType"/>
   <xs:complexType name="ResultType">
     <xs:simpleContent>

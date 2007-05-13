@@ -17,11 +17,11 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.actions.ActionFactory;
 import org.thanlwinsoft.languagetest.MessageUtil;
-import org.thanlwinsoft.schemas.languagetest.ForeignLangType;
-import org.thanlwinsoft.schemas.languagetest.LanguageModuleDocument;
-import org.thanlwinsoft.schemas.languagetest.LanguageModuleType;
-import org.thanlwinsoft.schemas.languagetest.NativeLangType;
-import org.thanlwinsoft.schemas.languagetest.TestItemType;
+import org.thanlwinsoft.schemas.languagetest.module.ForeignLangType;
+import org.thanlwinsoft.schemas.languagetest.module.LanguageModuleDocument;
+import org.thanlwinsoft.schemas.languagetest.module.LanguageModuleType;
+import org.thanlwinsoft.schemas.languagetest.module.NativeLangType;
+import org.thanlwinsoft.schemas.languagetest.module.TestItemType;
 /**
  * @author keith
  *

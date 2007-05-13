@@ -12,8 +12,8 @@ import org.apache.xmlbeans.XmlException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
-import org.thanlwinsoft.schemas.languagetest.LanguageModuleDocument;
-import org.thanlwinsoft.schemas.languagetest.LanguageModuleType;
+import org.thanlwinsoft.schemas.languagetest.module.LanguageModuleDocument;
+import org.thanlwinsoft.schemas.languagetest.module.LanguageModuleType;
 
 /**
  * XmlBeansTestModule holds the details about a module for use in a test.

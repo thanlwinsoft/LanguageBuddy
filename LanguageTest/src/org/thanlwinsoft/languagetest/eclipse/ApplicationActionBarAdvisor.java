@@ -9,6 +9,7 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarContributionItem;
 import org.eclipse.jface.action.ToolBarManager;
+import org.thanlwinsoft.languagetest.eclipse.WelcomeAction;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.views.ChartHistoryView;
 import org.thanlwinsoft.languagetest.eclipse.views.RecordingView;
@@ -55,6 +56,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
     private ShowViewAction showNavigatorViewAction;
     private IWorkbenchAction exportAction;
     
+    private WelcomeAction welcomeAction;
     
     public ApplicationActionBarAdvisor(IActionBarConfigurer configurer) {
         super(configurer);
@@ -136,6 +138,9 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         register(showNavigatorViewAction);
         register(showRecordingViewAction);
         register(showHistoryGraphViewAction);
+        
+        welcomeAction = new WelcomeAction();
+        register(welcomeAction);
         //conversionWizardAction = new ConversionWizardAction();
         // Open the wizard dialog
         //wizardDialog.open();
@@ -205,6 +210,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         windowMenu.add(showRecordingViewAction);
         windowMenu.add(showHistoryGraphViewAction);
         // Help
+        helpMenu.add(welcomeAction);
         helpMenu.add(aboutAction);
     }
 

@@ -49,8 +49,8 @@ import org.thanlwinsoft.languagetest.eclipse.editors.TestItemEditor;
 import org.thanlwinsoft.languagetest.eclipse.editors.TestItemSorter;
 import org.thanlwinsoft.languagetest.eclipse.editors.TestModuleEditor;
 import org.thanlwinsoft.languagetest.language.test.UniversalLanguage;
-import org.thanlwinsoft.schemas.languagetest.LangEntryType;
-import org.thanlwinsoft.schemas.languagetest.TestItemType;
+import org.thanlwinsoft.schemas.languagetest.module.LangEntryType;
+import org.thanlwinsoft.schemas.languagetest.module.TestItemType;
 
 /**
  * @author keith

@@ -24,7 +24,7 @@ import org.thanlwinsoft.languagetest.eclipse.WorkspaceLanguageManager;
 import org.thanlwinsoft.languagetest.language.test.TestType;
 import org.thanlwinsoft.languagetest.language.test.UniversalLanguage;
 import org.thanlwinsoft.languagetest.language.text.Iso639;
-import org.thanlwinsoft.schemas.languagetest.LangTypeType;
+import org.thanlwinsoft.schemas.languagetest.module.LangTypeType;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -383,5 +383,18 @@ public class TestTypePage extends WizardPage
             return TestType.LISTENING_FOREIGN_NATIVE;
         }
         return null;
+    }
+    
+    public boolean isSetMaxTestItems()
+    {
+        return (getMaxTestItems() > -1)? true : false;
+    }
+    
+    public int getMaxTestItems()
+    {
+        if (maxItemsCombo.getSelectionIndex() > -1)
+            return MAX_ITEMS[maxItemsCombo.getSelectionIndex()];
+        else
+            return -1;
     }
 }

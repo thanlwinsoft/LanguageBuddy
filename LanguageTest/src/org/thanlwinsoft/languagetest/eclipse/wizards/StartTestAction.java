@@ -47,6 +47,16 @@ public class StartTestAction extends Action implements IWorkbenchWindowActionDel
      */
     public void run(IAction action)
     {
+        run();
+    }
+    
+    
+
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.action.Action#run()
+     */
+    public void run()
+    {
         if (window == null)
         {
             window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
@@ -58,7 +68,6 @@ public class StartTestAction extends Action implements IWorkbenchWindowActionDel
         wizardDialog.setMinimumPageSize(300, 300);
         wizardDialog.open();
     }
-
     /* (non-Javadoc)
      * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
      */

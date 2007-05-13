@@ -9,12 +9,13 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * @author keith
  *
  */
-public class NewLangModuleAction implements IWorkbenchWindowActionDelegate 
+public class NewLangModuleAction implements IWorkbenchWindowActionDelegate
 {
     private IWorkbenchWindow window;
     private ISelection selection;
@@ -33,7 +34,10 @@ public class NewLangModuleAction implements IWorkbenchWindowActionDelegate
     public void run(IAction action) 
     {
         //      Create the wizard
-        
+        if (window == null)
+        {
+            window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+        }
         NewLangModuleWizard wizard = new NewLangModuleWizard(); 
         WizardDialog wizardDialog = 
             new WizardDialog(window.getWorkbench().getActiveWorkbenchWindow().getShell(), 

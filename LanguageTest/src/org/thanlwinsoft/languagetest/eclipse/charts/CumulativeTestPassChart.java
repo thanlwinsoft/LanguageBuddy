@@ -72,9 +72,9 @@ import org.eclipse.birt.chart.model.type.impl.ScatterSeriesImpl;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.thanlwinsoft.languagetest.eclipse.views.ChartHistoryProvider;
-import org.thanlwinsoft.schemas.languagetest.ItemType;
-import org.thanlwinsoft.schemas.languagetest.ModuleHistoryType;
-import org.thanlwinsoft.schemas.languagetest.ResultType;
+import org.thanlwinsoft.schemas.languagetest.history.ItemType;
+import org.thanlwinsoft.schemas.languagetest.history.ModuleHistoryType;
+import org.thanlwinsoft.schemas.languagetest.history.ResultType;
 import org.thanlwinsoft.languagetest.language.test.TestType;
 
 /**
@@ -353,7 +353,7 @@ public class CumulativeTestPassChart implements ChartHistoryProvider
         for (int i = 0; i < testHistory.sizeOfItemArray(); i++)
         {
             ItemType item = testHistory.getItemArray(i);
-            org.thanlwinsoft.schemas.languagetest.TestType tt = null;
+            org.thanlwinsoft.schemas.languagetest.history.TestType tt = null;
             if (TestType.LISTENING_FOREIGN_NATIVE.equals(type))
             {
                 tt = item.getFL();
@@ -373,7 +373,7 @@ public class CumulativeTestPassChart implements ChartHistoryProvider
         }
     }
     
-    protected void processItemResults(org.thanlwinsoft.schemas.languagetest.TestType tt)
+    protected void processItemResults(org.thanlwinsoft.schemas.languagetest.history.TestType tt)
     {
         boolean prevResult = false;
         Date prevDate = new Date(0);

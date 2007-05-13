@@ -18,7 +18,7 @@ import org.eclipse.jface.wizard.Wizard;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.thanlwinsoft.languagetest.eclipse.WorkspaceLanguageManager;
-import org.thanlwinsoft.schemas.languagetest.LangTypeType;
+import org.thanlwinsoft.schemas.languagetest.module.LangTypeType;
 
 /**
  * @author keith

@@ -23,7 +23,7 @@ import org.eclipse.ui.IWorkbenchWizard;
 import org.eclipse.ui.PlatformUI;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.WorkspaceLanguageManager;
-import org.thanlwinsoft.schemas.languagetest.LangTypeType;
+import org.thanlwinsoft.schemas.languagetest.module.LangTypeType;
 
 /**
  * @author keith

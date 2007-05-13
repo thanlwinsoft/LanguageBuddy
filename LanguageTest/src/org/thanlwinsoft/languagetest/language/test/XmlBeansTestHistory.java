@@ -17,10 +17,10 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.thanlwinsoft.schemas.languagetest.ItemType;
-import org.thanlwinsoft.schemas.languagetest.ModuleHistoryDocument;
-import org.thanlwinsoft.schemas.languagetest.ModuleHistoryType;
-import org.thanlwinsoft.schemas.languagetest.ResultType;
+import org.thanlwinsoft.schemas.languagetest.history.ItemType;
+import org.thanlwinsoft.schemas.languagetest.history.ModuleHistoryDocument;
+import org.thanlwinsoft.schemas.languagetest.history.ModuleHistoryType;
+import org.thanlwinsoft.schemas.languagetest.history.ResultType;
 
 /**
  * @author keith
@@ -84,7 +84,7 @@ public class XmlBeansTestHistory implements TestHistory
      * find the results for the specified TestType
      * 
      */
-    private org.thanlwinsoft.schemas.languagetest.TestType 
+    private org.thanlwinsoft.schemas.languagetest.history.TestType 
         findItem(TestItemProperties item, TestType type)
     {
         ItemType [] items = doc.getModuleHistory().getItemArray();
@@ -93,7 +93,7 @@ public class XmlBeansTestHistory implements TestHistory
             if (items[i].getCreated() == item.getCreationTime() &&
                 items[i].getAuthor() == item.getCreator())
             {
-                org.thanlwinsoft.schemas.languagetest.TestType testType = null;
+                org.thanlwinsoft.schemas.languagetest.history.TestType testType = null;
                 if (type.equals(TestType.READING_FOREIGN_NATIVE))
                 {
                     testType = items[i].getFR();
@@ -113,7 +113,7 @@ public class XmlBeansTestHistory implements TestHistory
         return null;
     }
     
-    private org.thanlwinsoft.schemas.languagetest.TestType 
+    private org.thanlwinsoft.schemas.languagetest.history.TestType 
     findItem(TestItem item, TestType type)
     {
         ModuleHistoryType history = doc.getModuleHistory();
@@ -123,7 +123,7 @@ public class XmlBeansTestHistory implements TestHistory
             if (items[i].getCreated() == item.getCreationTime() &&
                 items[i].getAuthor().equals(item.getCreator()))
             {
-                org.thanlwinsoft.schemas.languagetest.TestType testType = null;
+                org.thanlwinsoft.schemas.languagetest.history.TestType testType = null;
                 if (type.equals(TestType.READING_FOREIGN_NATIVE))
                 {
                     testType = items[i].getFR();
@@ -157,7 +157,7 @@ public class XmlBeansTestHistory implements TestHistory
     public ItemHistory getHistoryItem(TestItem item, TestType type)
             throws TestHistoryStorageException
     {
-        org.thanlwinsoft.schemas.languagetest.TestType testType = 
+        org.thanlwinsoft.schemas.languagetest.history.TestType testType = 
             findItem(item, type);
         if (testType == null) return null;
         ItemHistory ih = new ItemHistory();
@@ -194,22 +194,14 @@ public class XmlBeansTestHistory implements TestHistory
         return ih;
     }
 
-    /* (non-Javadoc)
-     * @see org.thanlwinsoft.languagetest.language.test.TestHistory#getModuleCount()
-     */
-//    public int getModuleCount()
-//    {
-//        // TODO Auto-generated method stub
-//        return 0;
-//    }
-
+    
     /* (non-Javadoc)
      * @see org.thanlwinsoft.languagetest.language.test.TestHistory#ignoreItem(org.thanlwinsoft.languagetest.language.test.TestItemProperties, org.thanlwinsoft.languagetest.language.test.TestType, boolean)
      */
     public void ignoreItem(TestItemProperties item, TestType type,
             boolean ignore) throws TestHistoryStorageException
     {
-        org.thanlwinsoft.schemas.languagetest.TestType t = findItem(item, type);
+        org.thanlwinsoft.schemas.languagetest.history.TestType t = findItem(item, type);
         t.setDisabled(ignore);
     }
 
@@ -218,8 +210,8 @@ public class XmlBeansTestHistory implements TestHistory
      */
     public Iterator iterator(TestType type)
     {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException(getClass().getName() 
+                + " iterator not implemented");
     }
 
     /* (non-Javadoc)
@@ -260,7 +252,7 @@ public class XmlBeansTestHistory implements TestHistory
     public void saveResult(TestItem item, TestType type, long testTime,
             boolean pass) throws TestHistoryStorageException
     {
-        org.thanlwinsoft.schemas.languagetest.TestType t = findItem(item, type);
+        org.thanlwinsoft.schemas.languagetest.history.TestType t = findItem(item, type);
         if (t == null)
         {
             ModuleHistoryType history = doc.getModuleHistory();

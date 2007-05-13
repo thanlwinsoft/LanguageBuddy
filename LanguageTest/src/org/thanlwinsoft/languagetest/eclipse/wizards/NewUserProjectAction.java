@@ -4,17 +4,21 @@
 package org.thanlwinsoft.languagetest.eclipse.wizards;
 
 
+import java.util.Properties;
+
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
+import org.eclipse.ui.intro.IIntroSite;
+import org.eclipse.ui.intro.config.IIntroAction;
 
 /**
  * @author keith
  *
  */
-public class NewUserProjectAction implements IWorkbenchWindowActionDelegate 
+public class NewUserProjectAction implements IWorkbenchWindowActionDelegate, IIntroAction
 {
     private IWorkbenchWindow window;
     /**
@@ -31,7 +35,12 @@ public class NewUserProjectAction implements IWorkbenchWindowActionDelegate
      */
     public void run(IAction action) 
     {
-        //      Create the wizard
+        openWizard();
+    }
+    
+    protected void openWizard()
+    {
+//      Create the wizard
         NewUserWizard wizard = new NewUserWizard(); 
         WizardDialog wizardDialog = 
             new WizardDialog(window.getWorkbench().getActiveWorkbenchWindow().getShell(), 
@@ -69,6 +78,14 @@ public class NewUserProjectAction implements IWorkbenchWindowActionDelegate
     public void init(IWorkbenchWindow window) 
     {
         this.window = window;
+    }
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.intro.config.IIntroAction#run(org.eclipse.ui.intro.IIntroSite, java.util.Properties)
+     */
+    public void run(IIntroSite site, Properties params)
+    {
+        this.window = site.getPage().getWorkbenchWindow();
+        openWizard();
     }
 
 }

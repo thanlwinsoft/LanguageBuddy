@@ -187,13 +187,17 @@
       <filter
             pattern="*.xsl"
             selected="true"/>
+      <filter
+            pattern=".settings"
+            selected="true"/>
    </extension>
    <extension point=
 "org.eclipse.ui.navigator.navigatorContent"
 >
-<commonWizard type="new"
-wizardId="org.eclipse.ui.wizards.new.folder"
->
+<commonWizard
+      menuGroupId="group.new"
+      type="new"
+      wizardId="org.eclipse.ui.wizards.new.folder">
 <enablement>
 <or>
 <adapt type=
@@ -339,7 +343,7 @@ wizardId=
    </viewerContribution>
    <objectContribution
          adaptable="false"
-         id="LanguageTest.objectContribution1"
+         id="org.thanlwinsoft.languagettest.addLanguage"
          objectClass="org.eclipse.core.resources.IProject">
       <action
             class="org.thanlwinsoft.languagetest.eclipse.wizards.AddLanguageAction"
@@ -347,6 +351,29 @@ wizardId=
             icon="icons/FlagOutline16.png"
             id="org.thanlwinsoft.languagetest.AddLanguageAction"
             label="%LanguageTest.addLanguageAction"
+            menubarPath="additions"/>
+   </objectContribution>
+   <objectContribution
+         adaptable="false"
+         id="org.thanlwinsoft.languagetest.addFolder"
+         objectClass="org.eclipse.core.resources.IResource">
+      <action
+            class="org.thanlwinsoft.languagetest.eclipse.wizards.NewFolderAction"
+            enablesFor="*"
+            id="org.thanlwinsoft.languagetest.NewFolderAction"
+            label="%LanguageTest.newFolder"
+            menubarPath="additions"/>
+   </objectContribution>
+   <objectContribution
+         adaptable="false"
+         id="org.thanlwinsoft.languagettest.newModuleMenuItem"
+         objectClass="org.eclipse.core.resources.IResource">
+      <action
+            class="org.thanlwinsoft.languagetest.eclipse.wizards.NewLangModuleAction"
+            enablesFor="*"
+            icon="icons/newModule.png"
+            id="org.thanlwinsoft.languagettest.newModuleAction"
+            label="%LanguageTest.newModule"
             menubarPath="additions"/>
    </objectContribution>
 </extension>
@@ -459,6 +486,30 @@ wizardId=
          extension="csv"
          name="CSV"
          xslt="/org/thanlwinsoft/languagetest/language/text/LanguageExportCsv.xsl"/>
+</extension>
+<extension
+      point="org.eclipse.ui.intro.config">
+   <config
+         content="docs/en/introContents.xml"
+         id="org.thanlwinsoft.languagetest.configId"
+         introId="org.thanlwinsoft.languagetest.intro">
+      <presentation
+            home-page-id="standby"
+            standby-page-id="standby">
+         <implementation
+               kind="html"
+               os="win32,linux,macosx"/>
+      </presentation>
+   </config>
+</extension>
+<extension
+      point="org.eclipse.ui.intro">
+   <intro
+         class="org.eclipse.ui.intro.config.CustomizableIntroPart"
+         id="org.thanlwinsoft.languagetest.intro"/>
+   <introProductBinding
+         introId="org.thanlwinsoft.languagetest.intro"
+         productId="org.thanlwinsoft.languagetest.LanguageTest"/>
 </extension>		
  
 </plugin>

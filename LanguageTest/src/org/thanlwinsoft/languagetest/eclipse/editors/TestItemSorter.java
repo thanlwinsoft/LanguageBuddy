@@ -12,7 +12,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.thanlwinsoft.languagetest.eclipse.search.TestItemMatch;
-import org.thanlwinsoft.schemas.languagetest.TestItemType;
+import org.thanlwinsoft.schemas.languagetest.module.TestItemType;
 
 import com.ibm.icu.text.Collator;
 import com.ibm.icu.util.ULocale;

@@ -26,8 +26,8 @@ import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.WorkspaceLanguageManager;
-import org.thanlwinsoft.schemas.languagetest.LangType;
-import org.thanlwinsoft.schemas.languagetest.LangTypeType;
+import org.thanlwinsoft.schemas.languagetest.module.LangType;
+import org.thanlwinsoft.schemas.languagetest.module.LangTypeType;
 
 /**
  * @author keith

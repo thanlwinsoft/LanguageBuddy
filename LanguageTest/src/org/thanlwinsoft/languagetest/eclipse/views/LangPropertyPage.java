@@ -38,8 +38,8 @@ import org.thanlwinsoft.languagetest.eclipse.WorkspaceLanguageManager;
 import org.thanlwinsoft.languagetest.eclipse.editors.LanguageTable;
 import org.thanlwinsoft.languagetest.eclipse.wizards.AddLanguageAction;
 import org.thanlwinsoft.languagetest.language.test.UniversalLanguage;
-import org.thanlwinsoft.schemas.languagetest.LangType;
-import org.thanlwinsoft.schemas.languagetest.LangTypeType;
+import org.thanlwinsoft.schemas.languagetest.module.LangType;
+import org.thanlwinsoft.schemas.languagetest.module.LangTypeType;
 
 /**
  * @author keith

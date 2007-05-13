@@ -20,8 +20,8 @@ import org.eclipse.ui.ide.IDE;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.thanlwinsoft.languagetest.eclipse.WorkspaceLanguageManager;
 import org.thanlwinsoft.languagetest.language.test.XmlBeansTestModule;
-import org.thanlwinsoft.schemas.languagetest.LangType;
-import org.thanlwinsoft.schemas.languagetest.LanguageModuleDocument;
+import org.thanlwinsoft.schemas.languagetest.module.LangType;
+import org.thanlwinsoft.schemas.languagetest.module.LanguageModuleDocument;
 import org.w3c.dom.Document;
 
 /**
@@ -182,12 +182,13 @@ public class NewLangModuleWizard extends Wizard implements INewWizard {
                 doc.getLanguageModule().setId(Integer.toHexString(doc.hashCode()));
                 LangType [] langArray = WorkspaceLanguageManager.findLanguages(project);
                 doc.getLanguageModule().setLangArray(langArray);
+                // add an empty test item
+                doc.getLanguageModule().addNewTestItem();
                 XmlOptions options = new XmlOptions();
                 options.setCharacterEncoding("UTF-8");
                 options.setSavePrettyPrint();
                 
                 is = doc.newInputStream(options);
-                
                 
             }
         }

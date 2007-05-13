@@ -27,11 +27,11 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
-import org.thanlwinsoft.schemas.languagetest.LangEntryType;
-import org.thanlwinsoft.schemas.languagetest.LangType;
-import org.thanlwinsoft.schemas.languagetest.LanguageModuleDocument;
-import org.thanlwinsoft.schemas.languagetest.LanguageModuleType;
-import org.thanlwinsoft.schemas.languagetest.TestItemType;
+import org.thanlwinsoft.schemas.languagetest.module.LangEntryType;
+import org.thanlwinsoft.schemas.languagetest.module.LangType;
+import org.thanlwinsoft.schemas.languagetest.module.LanguageModuleDocument;
+import org.thanlwinsoft.schemas.languagetest.module.LanguageModuleType;
+import org.thanlwinsoft.schemas.languagetest.module.TestItemType;
 
 /**
  * @author keith

@@ -107,6 +107,8 @@ public class StartTestWizard extends Wizard
             }
             if (test != null)
             {
+                if (testTypePage.isSetMaxTestItems())
+                    test.pruneTestToLimit(testTypePage.getMaxTestItems());
                 IViewReference viewRef = (IViewReference)page.getReference(testView);
                 if (viewRef != null && page.isPageZoomed() == false)
                 {

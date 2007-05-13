@@ -6,9 +6,9 @@ package org.thanlwinsoft.languagetest.language.test;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.swt.graphics.FontData;
-import org.thanlwinsoft.schemas.languagetest.ForeignLangType;
-import org.thanlwinsoft.schemas.languagetest.NativeLangType;
-import org.thanlwinsoft.schemas.languagetest.TestItemType;
+import org.thanlwinsoft.schemas.languagetest.module.ForeignLangType;
+import org.thanlwinsoft.schemas.languagetest.module.NativeLangType;
+import org.thanlwinsoft.schemas.languagetest.module.TestItemType;
 
 /**
  * @author keith

@@ -23,12 +23,12 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.ui.PlatformUI;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
-import org.thanlwinsoft.schemas.languagetest.LangType;
-import org.thanlwinsoft.schemas.languagetest.LanguageModuleDocument;
-import org.thanlwinsoft.schemas.languagetest.LanguageModuleType;
-import org.thanlwinsoft.schemas.languagetest.ModuleHistoryDocument;
-import org.thanlwinsoft.schemas.languagetest.ModuleHistoryType;
-import org.thanlwinsoft.schemas.languagetest.TestItemType;
+import org.thanlwinsoft.schemas.languagetest.module.LangType;
+import org.thanlwinsoft.schemas.languagetest.module.TestItemType;
+import org.thanlwinsoft.schemas.languagetest.module.LanguageModuleDocument;
+import org.thanlwinsoft.schemas.languagetest.module.LanguageModuleType;
+import org.thanlwinsoft.schemas.languagetest.history.ModuleHistoryDocument;
+import org.thanlwinsoft.schemas.languagetest.history.ModuleHistoryType;
 
 /**
  * @author keith

@@ -66,8 +66,8 @@ import org.thanlwinsoft.languagetest.eclipse.charts.CumulativeTestPassChart;
 import org.thanlwinsoft.languagetest.language.test.TestManager;
 import org.thanlwinsoft.languagetest.language.test.TestType;
 import org.thanlwinsoft.languagetest.language.test.XmlBeansTestHistory;
-import org.thanlwinsoft.schemas.languagetest.ModuleHistoryDocument;
-import org.thanlwinsoft.schemas.languagetest.ModuleHistoryType;
+import org.thanlwinsoft.schemas.languagetest.history.ModuleHistoryDocument;
+import org.thanlwinsoft.schemas.languagetest.history.ModuleHistoryType;
 
 /**
  * Display graphs of a users Test History 

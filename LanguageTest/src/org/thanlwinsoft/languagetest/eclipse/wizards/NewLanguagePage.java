@@ -30,7 +30,7 @@ import org.thanlwinsoft.languagetest.language.text.Iso15924;
 import org.thanlwinsoft.languagetest.language.text.Iso3166;
 import org.thanlwinsoft.languagetest.language.text.Iso639;
 import org.thanlwinsoft.languagetest.language.text.Iso3166.IsoCountry;
-import org.thanlwinsoft.schemas.languagetest.LangTypeType;
+import org.thanlwinsoft.schemas.languagetest.module.LangTypeType;
 
 /** Wizard page to define a language in terms of the main Language name,
  * Country of use, dialect if necessary, Script that is used and encoding if 

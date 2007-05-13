@@ -9,8 +9,8 @@ import java.util.Map;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.search.ui.text.Match;
 import org.eclipse.swt.graphics.FontData;
-import org.thanlwinsoft.schemas.languagetest.LangEntryType;
-import org.thanlwinsoft.schemas.languagetest.TestItemType;
+import org.thanlwinsoft.schemas.languagetest.module.LangEntryType;
+import org.thanlwinsoft.schemas.languagetest.module.TestItemType;
 
 /**
  * @author keith

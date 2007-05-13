@@ -40,6 +40,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.graphics.TextLayout;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
@@ -74,12 +75,12 @@ import org.thanlwinsoft.languagetest.language.test.TestItem;
 import org.thanlwinsoft.languagetest.language.test.TestManager;
 import org.thanlwinsoft.languagetest.language.test.TestType;
 import org.thanlwinsoft.languagetest.language.test.UniversalLanguage;
-import org.thanlwinsoft.schemas.languagetest.ForeignLangType;
-import org.thanlwinsoft.schemas.languagetest.LangType;
-import org.thanlwinsoft.schemas.languagetest.LangTypeType;
-import org.thanlwinsoft.schemas.languagetest.LanguageModuleType;
-import org.thanlwinsoft.schemas.languagetest.NativeLangType;
-import org.thanlwinsoft.schemas.languagetest.TestItemType;
+import org.thanlwinsoft.schemas.languagetest.module.ForeignLangType;
+import org.thanlwinsoft.schemas.languagetest.module.LangType;
+import org.thanlwinsoft.schemas.languagetest.module.LangTypeType;
+import org.thanlwinsoft.schemas.languagetest.module.LanguageModuleType;
+import org.thanlwinsoft.schemas.languagetest.module.NativeLangType;
+import org.thanlwinsoft.schemas.languagetest.module.TestItemType;
 
 /**
  * @author keith
@@ -117,6 +118,7 @@ public class TestView extends ViewPart implements ISelectionChangedListener
     public final static String FLIP_PERIOD_PREF = "FlipPeriod";
     public final static String FLIP_REPEAT_PREF = "FlipRepeat";
     private SashForm phraseForm = null;
+    private boolean centering = false;
     
     public TestView()
     {
@@ -278,24 +280,29 @@ public class TestView extends ViewPart implements ISelectionChangedListener
     {
         if (font != null) viewer.getTextWidget().setFont(font);
         doc.set(text);
+        // compute the new margin before setting the text, 
+        // otherwise the new margin value is ignored
+        centerViewer(viewer, text, viewer.getTextWidget().getFont());
         viewer.setDocument(doc);
-        centerViewer(viewer);
     }
+    
     protected void centerViewer(TextViewer viewer)
     {
-        
+        centerViewer(viewer, viewer.getTextWidget().getText(), viewer.getTextWidget().getFont());
+    }
+    
+    protected void centerViewer(TextViewer viewer, String text, Font font)
+    {
+        if (centering) return;
+        centering = true;
         FillLayout layout = (FillLayout)viewer.getTextWidget().getParent().getLayout();
         StyledTextContent tc = viewer.getTextWidget().getContent();
         if (tc.getCharCount() > 0)
         {
-            
             //RowLayout layout = (RowLayout)viewer.getTextWidget().getParent().getLayout();
             viewer.getTextWidget().layout();
-            Rectangle textRect = viewer.getTextWidget().getTextBounds(0, tc.getCharCount() - 1);
+            //Rectangle textRect = viewer.getTextWidget().getTextBounds(0, tc.getCharCount() - 1);
             Group group = (Group)viewer.getTextWidget().getParent();
-            System.out.println("Phrase form " + phraseForm.getClientArea());
-            System.out.println("Group " + group.getClientArea());
-            System.out.println("Textrect " + textRect);
             Rectangle availableRect = group.getClientArea();
             int dx = 0;
             int dy = 0;
@@ -303,15 +310,36 @@ public class TestView extends ViewPart implements ISelectionChangedListener
                 dx = viewer.getTextWidget().getVerticalBar().getSize().x;
             if (viewer.getTextWidget().getHorizontalBar() != null)
                 dy = viewer.getTextWidget().getHorizontalBar().getSize().y;
-            Rectangle textBounds = viewer.getTextWidget().getClientArea();
+            
+            TextLayout textLayout = new TextLayout(viewer.getTextWidget().getDisplay());
+            textLayout.setWidth(availableRect.width - dx);
+            textLayout.setFont(font);
+            textLayout.setText(text);
+            Rectangle textRect = textLayout.getBounds(0, text.length());
+
+//            System.out.println("Phrase form " + phraseForm.getClientArea());
+//            System.out.println("Group " + group.getClientArea());
+//            System.out.println("Textrect " + textRect + textLayout.getText());
+
+            //Rectangle textBounds = viewer.getTextWidget().getClientArea();
             //int groupBorder = group.getBounds().width - group.getClientArea().width;
             if (textRect.height < availableRect.height)
             {
                 layout.marginHeight = (availableRect.height - textRect.height - dy) / 2;
 //                System.out.println("available " + availableRect.height + " " + 
-//                                textBounds.height + " text " +
 //                                textRect.height + " margin " + layout.marginHeight);
-                
+                // work around for layout not updating immediately - move the 
+                // sash a bit
+                int [] weights = horizontalSash.getWeights();
+                if (weights.length == 2 && weights[0] > 0 && weights[1] > 0)
+                {
+                    weights[0]++;
+                    weights[1]--;
+                    horizontalSash.setWeights(weights);
+                    weights[0]--;
+                    weights[1]++;
+                    horizontalSash.setWeights(weights);
+                }
             }
             else
             {
@@ -324,7 +352,8 @@ public class TestView extends ViewPart implements ISelectionChangedListener
             layout.marginHeight = 0;
         }
         //System.out.println(" margin " + layout.marginHeight);
-        viewer.setTopIndex(0);
+        controlPanel.redraw();
+        centering = false;
     }
     
     public void hide(int type)
@@ -406,7 +435,6 @@ public class TestView extends ViewPart implements ISelectionChangedListener
         if (event.getSource() instanceof TableViewer)
         {
             show(NATIVE_ID | FOREIGN_ID);
-            Composite c = ((TableViewer)event.getSource()).getTable().getParent();
             IEditorPart editor = 
                 PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
             TestModuleEditor tme = (TestModuleEditor)editor.getAdapter(TestModuleEditor.class);
@@ -590,8 +618,6 @@ public class TestView extends ViewPart implements ISelectionChangedListener
             
             nativeViewer.refresh();
             foreignViewer.refresh();
-            centerViewer(nativeViewer);
-            centerViewer(foreignViewer);
             //nativeViewer.getTextWidget().redraw();
             picture.redraw();
         }

@@ -24,13 +24,13 @@ import org.eclipse.swt.graphics.Image;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.thanlwinsoft.languagetest.eclipse.views.TestHistoryProvider.XmlFamily;
-import org.thanlwinsoft.schemas.languagetest.ItemType;
-import org.thanlwinsoft.schemas.languagetest.LanguageModuleDocument;
-import org.thanlwinsoft.schemas.languagetest.LanguageModuleType;
-import org.thanlwinsoft.schemas.languagetest.ModuleHistoryType;
-import org.thanlwinsoft.schemas.languagetest.ResultType;
-import org.thanlwinsoft.schemas.languagetest.TestItemType;
-import org.thanlwinsoft.schemas.languagetest.TestType;
+import org.thanlwinsoft.schemas.languagetest.history.ItemType;
+import org.thanlwinsoft.schemas.languagetest.module.LanguageModuleDocument;
+import org.thanlwinsoft.schemas.languagetest.module.LanguageModuleType;
+import org.thanlwinsoft.schemas.languagetest.history.ModuleHistoryType;
+import org.thanlwinsoft.schemas.languagetest.history.ResultType;
+import org.thanlwinsoft.schemas.languagetest.module.TestItemType;
+import org.thanlwinsoft.schemas.languagetest.history.TestType;
 
 /**
  * @author keith

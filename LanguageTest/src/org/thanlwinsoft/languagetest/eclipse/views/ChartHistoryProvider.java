@@ -28,7 +28,7 @@
 package org.thanlwinsoft.languagetest.eclipse.views;
 
 import org.eclipse.birt.chart.model.Chart;
-import org.thanlwinsoft.schemas.languagetest.ModuleHistoryType;
+import org.thanlwinsoft.schemas.languagetest.history.ModuleHistoryType;
 import org.thanlwinsoft.languagetest.language.test.TestType;
 
 /**

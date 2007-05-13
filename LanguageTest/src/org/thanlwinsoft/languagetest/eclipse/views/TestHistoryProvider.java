@@ -17,11 +17,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.thanlwinsoft.languagetest.eclipse.natures.LanguageUserNature;
-import org.thanlwinsoft.schemas.languagetest.ItemType;
-import org.thanlwinsoft.schemas.languagetest.ModuleHistoryDocument;
-import org.thanlwinsoft.schemas.languagetest.ModuleHistoryType;
-import org.thanlwinsoft.schemas.languagetest.ResultType;
-import org.thanlwinsoft.schemas.languagetest.TestType;
+import org.thanlwinsoft.schemas.languagetest.history.ItemType;
+import org.thanlwinsoft.schemas.languagetest.history.ModuleHistoryDocument;
+import org.thanlwinsoft.schemas.languagetest.history.ModuleHistoryType;
+import org.thanlwinsoft.schemas.languagetest.history.ResultType;
+import org.thanlwinsoft.schemas.languagetest.history.TestType;
 
 /**
  * @author keith

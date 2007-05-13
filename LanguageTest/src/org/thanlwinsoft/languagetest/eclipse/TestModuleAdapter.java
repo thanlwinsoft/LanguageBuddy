@@ -13,9 +13,9 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.thanlwinsoft.languagetest.eclipse.editors.TestItemEditor;
-import org.thanlwinsoft.schemas.languagetest.LangType;
-import org.thanlwinsoft.schemas.languagetest.LangTypeType;
-import org.thanlwinsoft.schemas.languagetest.LanguageModuleType;
+import org.thanlwinsoft.schemas.languagetest.module.LangType;
+import org.thanlwinsoft.schemas.languagetest.module.LangTypeType;
+import org.thanlwinsoft.schemas.languagetest.module.LanguageModuleType;
 
 /**
  * @author keith

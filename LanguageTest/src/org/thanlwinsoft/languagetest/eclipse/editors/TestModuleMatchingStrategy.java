@@ -13,7 +13,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorMatchingStrategy;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IFileEditorInput;
-import org.thanlwinsoft.schemas.languagetest.LanguageModuleDocument;
+import org.thanlwinsoft.schemas.languagetest.module.LanguageModuleDocument;
 
 /**
  * @author keith

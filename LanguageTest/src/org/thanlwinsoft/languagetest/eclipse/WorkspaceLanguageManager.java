@@ -26,11 +26,11 @@ import org.eclipse.swt.graphics.FontData;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.natures.LanguageUserNature;
 import org.thanlwinsoft.languagetest.language.test.UniversalLanguage;
-import org.thanlwinsoft.schemas.languagetest.DescType;
-import org.thanlwinsoft.schemas.languagetest.LangType;
-import org.thanlwinsoft.schemas.languagetest.LangTypeType;
-import org.thanlwinsoft.schemas.languagetest.LanguageModuleDocument;
-import org.thanlwinsoft.schemas.languagetest.LanguageModuleType;
+import org.thanlwinsoft.schemas.languagetest.module.DescType;
+import org.thanlwinsoft.schemas.languagetest.module.LangType;
+import org.thanlwinsoft.schemas.languagetest.module.LangTypeType;
+import org.thanlwinsoft.schemas.languagetest.module.LanguageModuleDocument;
+import org.thanlwinsoft.schemas.languagetest.module.LanguageModuleType;
 
 /** The WorkspaceLanguageManager stores the languages associated with a project.
  * Usually one project is used for one Foreign language being learnt. However,

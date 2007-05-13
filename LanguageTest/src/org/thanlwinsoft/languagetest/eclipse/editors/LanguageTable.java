@@ -38,7 +38,7 @@ import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.thanlwinsoft.languagetest.eclipse.WorkspaceLanguageManager;
 import org.thanlwinsoft.languagetest.language.test.UniversalLanguage;
-import org.thanlwinsoft.schemas.languagetest.LangType;
+import org.thanlwinsoft.schemas.languagetest.module.LangType;
 
 /**
  * @author keith

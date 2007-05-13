@@ -80,12 +80,11 @@ import org.thanlwinsoft.languagetest.language.test.XmlBeansTestModule;
 import org.thanlwinsoft.languagetest.sound.AudioPlayListener;
 import org.thanlwinsoft.languagetest.sound.LineController;
 import org.thanlwinsoft.languagetest.sound.Recorder;
-import org.thanlwinsoft.schemas.languagetest.TestItemType;
+import org.thanlwinsoft.schemas.languagetest.module.TestItemType;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
-import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
@@ -96,7 +95,6 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.window.Window;
 
 /**
  * Composite containing a sound recorder
