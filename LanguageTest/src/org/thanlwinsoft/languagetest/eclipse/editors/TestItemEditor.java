@@ -921,7 +921,12 @@ public class TestItemEditor extends EditorPart implements ISelectionProvider
             {
                 LanguageModuleDocument doc = 
                     (LanguageModuleDocument)inputElement;
-                return doc.getLanguageModule().getTestItemArray();
+                TestItemType lastTI = TestItemType.Factory.newInstance();
+                Object [] elements = Arrays.copyOf(
+                        doc.getLanguageModule().getTestItemArray(), 
+                        doc.getLanguageModule().sizeOfTestItemArray() + 1);
+                elements[doc.getLanguageModule().sizeOfTestItemArray()] = lastTI;
+                return elements;
             }
             return null;
         }
@@ -1304,6 +1309,18 @@ public class TestItemEditor extends EditorPart implements ISelectionProvider
                             lang.setStringValue(value.toString());
                         }
                     }
+                }
+                // is this a place holder empty node for new entries?
+                if (testItem.getDomNode().getParentNode() == null)
+                {
+                    TestItemType ti = parent.getDocument().getLanguageModule().addNewTestItem();
+                    ti.setCreator(testItem.getCreator());
+                    ti.setCreationTime(new Date().getTime());
+                    ti.setNativeLangArray(testItem.getNativeLangArray());
+                    ti.setForeignLangArray(testItem.getForeignLangArray());
+                    ti.setImg(testItem.getImg());
+                    ti.setSoundFile(testItem.getSoundFile());
+                    tableViewer.refresh();
                 }
                 parent.setDirty(true);
                 tableViewer.update(data, new String[] {property});

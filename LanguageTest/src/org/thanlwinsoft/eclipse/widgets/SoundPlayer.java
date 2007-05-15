@@ -391,7 +391,8 @@ public class SoundPlayer extends Composite implements BasicPlayerListener
         stop();
         currentIsFile = true;
         currentFileOrURL = file;
-        LanguageTestPlugin.log(IStatus.INFO, "SoundPlayer setFile " + file);
+        if (file != null)
+            LanguageTestPlugin.log(IStatus.INFO, "SoundPlayer setFile " + file);
         slider.setSelection(0);
     }
     

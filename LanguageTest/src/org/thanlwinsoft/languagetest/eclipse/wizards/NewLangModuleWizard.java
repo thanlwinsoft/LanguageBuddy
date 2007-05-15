@@ -182,8 +182,6 @@ public class NewLangModuleWizard extends Wizard implements INewWizard {
                 doc.getLanguageModule().setId(Integer.toHexString(doc.hashCode()));
                 LangType [] langArray = WorkspaceLanguageManager.findLanguages(project);
                 doc.getLanguageModule().setLangArray(langArray);
-                // add an empty test item
-                doc.getLanguageModule().addNewTestItem();
                 XmlOptions options = new XmlOptions();
                 options.setCharacterEncoding("UTF-8");
                 options.setSavePrettyPrint();
