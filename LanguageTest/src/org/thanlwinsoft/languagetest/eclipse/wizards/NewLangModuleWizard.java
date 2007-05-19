@@ -19,10 +19,10 @@ import org.eclipse.ui.*;
 import org.eclipse.ui.ide.IDE;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.thanlwinsoft.languagetest.eclipse.WorkspaceLanguageManager;
+import org.thanlwinsoft.languagetest.eclipse.editors.TestModuleEditor;
 import org.thanlwinsoft.languagetest.language.test.XmlBeansTestModule;
 import org.thanlwinsoft.schemas.languagetest.module.LangType;
 import org.thanlwinsoft.schemas.languagetest.module.LanguageModuleDocument;
-import org.w3c.dom.Document;
 
 /**
  * This is a sample new wizard. Its role is to create a new file 
@@ -38,8 +38,7 @@ import org.w3c.dom.Document;
 public class NewLangModuleWizard extends Wizard implements INewWizard {
 	private NewLangModuleWizardPage page;
 	private ISelection selection;
-
-    public final static String XSL_FILENAME = XmlBeansTestModule.XSL_FILENAME;
+	public final static String XSL_FILENAME = XmlBeansTestModule.XSL_FILENAME;
     
 	/**
 	 * Constructor for NewLangModuleWizard.
@@ -104,8 +103,7 @@ public class NewLangModuleWizard extends Wizard implements INewWizard {
         } 
         catch (CoreException e)
         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LanguageTestPlugin.log(IStatus.WARNING, e.getMessage(), e);
         }
 		return true;
 	}
@@ -180,6 +178,7 @@ public class NewLangModuleWizard extends Wizard implements INewWizard {
                 
                 doc.getLanguageModule().setCreationTime(new Date().getTime());
                 doc.getLanguageModule().setId(Integer.toHexString(doc.hashCode()));
+                doc.getLanguageModule().setFormatVersion(TestModuleEditor.LANG_MODULE_FORMAT_VERSION);
                 LangType [] langArray = WorkspaceLanguageManager.findLanguages(project);
                 doc.getLanguageModule().setLangArray(langArray);
                 XmlOptions options = new XmlOptions();
@@ -204,7 +203,8 @@ public class NewLangModuleWizard extends Wizard implements INewWizard {
         return is;
 	}
 
-	private void throwCoreException(String message) throws CoreException {
+	private void throwCoreException(String message) throws CoreException 
+    {
 		IStatus status =
 			new Status(IStatus.ERROR, "LanguageTest", IStatus.OK, message, null);
 		throw new CoreException(status);
@@ -215,7 +215,8 @@ public class NewLangModuleWizard extends Wizard implements INewWizard {
 	 * we can initialize from it.
 	 * @see IWorkbenchWizard#init(IWorkbench, IStructuredSelection)
 	 */
-	public void init(IWorkbench workbench, IStructuredSelection selection) {
+	public void init(IWorkbench workbench, IStructuredSelection selection) 
+    {
 		this.selection = selection;
 	}
 }

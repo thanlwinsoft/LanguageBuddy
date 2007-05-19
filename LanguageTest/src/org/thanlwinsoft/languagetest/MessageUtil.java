@@ -101,4 +101,23 @@ public class MessageUtil
             return id + " " + argA + " " + argB + " " + argC + " " + argD;
         }
     }
+    static public String getString(String id, String argA, 
+            String argB, String argC, String argD, String argE)
+    {
+        ResourceBundle r = getMsgResource();
+        if (r == null)
+            return id + " " + argA + " " + argB + " " + argC + " " + argD + " " + argE;
+        Object [] args = {argA, argB, argC, argD, argE };
+        try
+        {
+            String baseString = r.getString(id);
+            return MessageFormat.format(baseString, args);
+        }
+        catch (MissingResourceException mre)
+        {
+            LanguageTestPlugin.log(IStatus.WARNING, mre.getLocalizedMessage(), mre);
+            return id + " " + argA + " " + argB + " " + argC + " " + argD + " "
+                + argE;
+        }
+    }
 }

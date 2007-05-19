@@ -5,14 +5,19 @@ package org.thanlwinsoft.languagetest.eclipse.editors;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DateFormat;
+import java.util.Date;
 
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlOptions;
+//import org.apache.xmlbeans.xml.stream.Comment;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.SWT;
@@ -29,13 +34,17 @@ import org.eclipse.ui.part.MultiPageEditorPart;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.thanlwinsoft.languagetest.eclipse.Perspective;
+import org.thanlwinsoft.languagetest.eclipse.WorkspaceLanguageManager;
 import org.thanlwinsoft.languagetest.eclipse.views.RecordingView;
 import org.thanlwinsoft.languagetest.eclipse.views.TestView;
 import org.thanlwinsoft.languagetest.language.test.XmlBeansTestModule;
 import org.thanlwinsoft.schemas.languagetest.module.LanguageModuleDocument;
+import org.thanlwinsoft.schemas.languagetest.module.LanguageModuleType;
 import org.thanlwinsoft.schemas.languagetest.module.TestItemType;
 import org.w3c.dom.Document;
+import org.w3c.dom.Comment;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.w3c.dom.ProcessingInstruction;
 
 /**
@@ -54,6 +63,11 @@ public class TestModuleEditor extends MultiPageEditorPart
     public final static String XSL_FILENAME = XmlBeansTestModule.XSL_FILENAME;
     public final static String XSL_TARGET = XmlBeansTestModule.XSL_TARGET;
     public final static String XSL_DATA = XmlBeansTestModule.XSL_DATA;
+    public final static String LANG_MODULE_FORMAT_VERSION = "2.0.0";
+    
+    public final static String VERSION = 
+        LanguageTestPlugin.getDefault().getBundle().getHeaders().get("Bundle-Version").toString();
+    public final static String PLATFORM = Platform.getOS() + " " + Platform.getOSArch(); 
     
     public TestModuleEditor()
     {
@@ -79,9 +93,40 @@ public class TestModuleEditor extends MultiPageEditorPart
     {
         if (getEditorInput() instanceof IFileEditorInput && currentDoc != null)
         {
+            currentDoc.getLanguageModule().setFormatVersion(LANG_MODULE_FORMAT_VERSION);
+            String userName = "";
+            IProject userProject = WorkspaceLanguageManager.getUserProject(); 
+            if (userProject != null) userName = userProject.getName();
+            String date = DateFormat.getDateInstance(DateFormat.MEDIUM).format(new Date());
+
+            String commentText = MessageUtil.getString("LastWritten", 
+                    LanguageTestPlugin.getDefault().toString(), VERSION, 
+                    PLATFORM, date, userName);
             Document domDoc = currentDoc.getLanguageModule().getDomNode().getOwnerDocument();
+            
             if (domDoc != null)
             {
+                String uri = currentDoc.getLanguageModule().getDomNode().getNamespaceURI();
+                String langModuleElementName = 
+                    currentDoc.getLanguageModule().getDomNode().getLocalName();
+                NodeList nodes = domDoc.getElementsByTagNameNS(uri, 
+                        langModuleElementName);
+                Comment comment = null;
+                if (nodes != null && nodes.getLength() > 0)
+                {
+                    Node nodeBefore = nodes.item(0).getPreviousSibling();
+                    if (nodeBefore != null && nodeBefore.getNodeType() == Node.COMMENT_NODE)
+                    {
+                        comment = (Comment)nodeBefore;
+                        comment.setData(commentText);
+                    }
+                }
+                if (comment == null)
+                {
+                    comment = domDoc.createComment(commentText);
+                    domDoc.insertBefore(comment, 
+                        currentDoc.getLanguageModule().getDomNode());
+                }
                 boolean hasXsl = false;
                 if (domDoc.hasChildNodes())
                 {
@@ -111,6 +156,11 @@ public class TestModuleEditor extends MultiPageEditorPart
             String errorMsg = "";
             try
             {
+                if (input == null)
+                {
+                    LanguageTestPlugin.log(IStatus.ERROR, "No input");
+                    return;
+                }
                 input.getFile().setContents(currentDoc.newInputStream(options),
                                             0, monitor);
                 setDirty(false);

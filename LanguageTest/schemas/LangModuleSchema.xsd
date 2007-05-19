@@ -39,8 +39,8 @@
 	<xs:attribute type="xs:string" name="font" use="optional"/>
    	<xs:attribute type="xs:decimal" name="fontSize" use="optional"/>
    	<xs:attribute type="xs:decimal" name="fontStyle" use="optional"/>
-   	<xs:attribute type="xs:string" name="lang"/>
-	<xs:attribute type="LangTypeType" name="type" />
+   	<xs:attribute type="xs:string" name="lang" use="required"/>
+	<xs:attribute type="LangTypeType" name="type" use="required"/>
   </xs:complexType>
   <xs:simpleType name="LangTypeType">
 		<xs:restriction base="xs:string">
@@ -68,20 +68,40 @@
     </xs:simpleContent>
   </xs:complexType>
   <xs:complexType name="LanguageModuleType">
-    <xs:sequence>
-      <xs:element type="LangType" name="Lang" maxOccurs="unbounded" minOccurs="0"/>
-      <xs:element type="TestItemType" name="TestItem" maxOccurs="unbounded" minOccurs="0"/>
-    </xs:sequence>
-    <xs:attribute type="xs:long" name="creationTime"/>
-    <xs:attribute type="xs:ID" name="id"/>
+  	<xs:sequence>
+  		<xs:element type="LangType" name="Lang" maxOccurs="unbounded"
+  			minOccurs="0" />
+  		<xs:choice>
+  			<xs:sequence>
+  				<xs:element type="TestItemType" name="TestItem"
+  					maxOccurs="unbounded" minOccurs="0" />
+  			</xs:sequence>
+  			<xs:element name="Config" type="ConfigType"></xs:element>
+  		</xs:choice>
+  	</xs:sequence>
+  	<xs:attribute type="xs:long" name="creationTime" />
+  	<xs:attribute type="xs:ID" name="id" />
+  	<xs:attribute name="formatVersion" default="1.0.0" use="optional">
+            <xs:annotation>
+            	<xs:documentation>
+            		The schema format version number.
+            	</xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+  			<xs:restriction base="xs:string">
+  				<xs:pattern value="\d+\.\d+\.\d+"></xs:pattern>
+  			</xs:restriction>
+  		</xs:simpleType>
+  	</xs:attribute>
   </xs:complexType>
 
 
   <xs:complexType name="MetaDataType">
   	<xs:sequence>
-  		<xs:element type="DescType" name="LanguageModule" minOccurs="0" maxOccurs="unbounded"></xs:element>
+  		<xs:element type="DescType" name="Desc" minOccurs="0" maxOccurs="unbounded"></xs:element>
+  		<xs:element type="MetaDataType" name="MetaData"  minOccurs="0" maxOccurs="unbounded"/>
   	</xs:sequence>
-  	<xs:attribute name="metaId" type="xs:string"></xs:attribute>
+  	<xs:attribute name="metaId" type="xs:string" use="required"></xs:attribute>
   </xs:complexType>
 
 
@@ -97,5 +117,11 @@
   			</xs:attribute>
   		</xs:extension>
   	</xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="ConfigType">
+  	<xs:sequence>
+  		<xs:element name="MetaData" type="MetaDataType" maxOccurs="unbounded" minOccurs="0"></xs:element>
+  	</xs:sequence>
   </xs:complexType>
 </xs:schema>

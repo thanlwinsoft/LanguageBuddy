@@ -997,9 +997,13 @@ public class TestItemEditor extends EditorPart implements ISelectionProvider
                 }
                 else if (columnIndex == CREATION_DATE_ID)
                 {
-                    long time = testItem.getCreationTime();
-                    DateFormat df = new SimpleDateFormat();
-                    return df.format(new Date(time));
+                    if (testItem.isSetCreationTime())
+                    {
+                        long time = testItem.getCreationTime();
+                        DateFormat df = new SimpleDateFormat();
+                        return df.format(new Date(time));
+                    }
+                    else return "";
                 }
                 else if (columnIndex < NUM_NON_LANG_COL + langCount)
                 {
@@ -1320,10 +1324,16 @@ public class TestItemEditor extends EditorPart implements ISelectionProvider
                     ti.setForeignLangArray(testItem.getForeignLangArray());
                     ti.setImg(testItem.getImg());
                     ti.setSoundFile(testItem.getSoundFile());
+                    //ISelection oldSelection = tableViewer.getSelection();
                     tableViewer.refresh();
+                    StructuredSelection ss = new StructuredSelection(ti);
+                    tableViewer.setSelection(ss, true);
+                }
+                else
+                {
+                    tableViewer.update(data, new String[] {property});                    
                 }
                 parent.setDirty(true);
-                tableViewer.update(data, new String[] {property});
             }
         }
 
