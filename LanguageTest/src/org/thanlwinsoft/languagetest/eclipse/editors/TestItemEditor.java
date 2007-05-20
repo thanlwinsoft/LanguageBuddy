@@ -75,6 +75,7 @@ import org.thanlwinsoft.languagetest.eclipse.Perspective;
 import org.thanlwinsoft.languagetest.eclipse.TestModuleAdapter;
 import org.thanlwinsoft.languagetest.eclipse.WorkspaceLanguageManager;
 import org.thanlwinsoft.languagetest.eclipse.export.ExportAction;
+import org.thanlwinsoft.languagetest.eclipse.views.MetaDataView;
 import org.thanlwinsoft.languagetest.eclipse.views.RecordingView;
 import org.thanlwinsoft.languagetest.eclipse.views.TestView;
 import org.thanlwinsoft.languagetest.language.test.UniversalLanguage;
@@ -241,6 +242,9 @@ public class TestItemEditor extends EditorPart implements ISelectionProvider
         RecordingView recordingView = (RecordingView)page.findView(RecordingView.ID);
         if (recordingView != null)
             addSelectionChangedListener(recordingView.getRecorder());
+        MetaDataView metaView = (MetaDataView)page.findView(MetaDataView.ID);
+        if (metaView != null)
+            addSelectionChangedListener(metaView);
         
         soundCol = new TableColumn(tableViewer.getTable(), SWT.LEFT);
         soundCol.setText(MessageUtil.getString("SoundColumn"));

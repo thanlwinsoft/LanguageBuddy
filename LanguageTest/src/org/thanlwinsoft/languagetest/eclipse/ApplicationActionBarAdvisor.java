@@ -12,6 +12,7 @@ import org.eclipse.jface.action.ToolBarManager;
 import org.thanlwinsoft.languagetest.eclipse.WelcomeAction;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.views.ChartHistoryView;
+import org.thanlwinsoft.languagetest.eclipse.views.MetaDataView;
 import org.thanlwinsoft.languagetest.eclipse.views.RecordingView;
 import org.thanlwinsoft.languagetest.eclipse.views.TestHistoryView;
 import org.thanlwinsoft.languagetest.eclipse.views.TestView;
@@ -47,6 +48,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
     private IWorkbenchAction showHistoryViewAction;
     private IWorkbenchAction showRecordingViewAction;
     private IWorkbenchAction showHistoryGraphViewAction;
+    private IWorkbenchAction showMetaDataViewAction;
     
     private IWorkbenchAction newWindowAction;
     //private OpenViewAction openViewAction;
@@ -133,6 +135,9 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         showHistoryGraphViewAction = new ShowViewAction(ChartHistoryView.ID, 
                 MessageUtil.getString("ShowHistoryGraphView"));
         
+        showMetaDataViewAction = new ShowViewAction(MetaDataView.ID, 
+                MessageUtil.getString("ShowMetaDataView"));
+        
         register(showTestViewAction);
         register(showHistoryViewAction);
         register(showNavigatorViewAction);
@@ -209,6 +214,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         windowMenu.add(showNavigatorViewAction);
         windowMenu.add(showRecordingViewAction);
         windowMenu.add(showHistoryGraphViewAction);
+        windowMenu.add(showMetaDataViewAction);
         // Help
         helpMenu.add(welcomeAction);
         helpMenu.add(aboutAction);

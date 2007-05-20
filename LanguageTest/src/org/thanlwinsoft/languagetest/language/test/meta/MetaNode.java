@@ -60,7 +60,7 @@ public class MetaNode
         return parent;
     }
     public boolean isOrphan() { return (parent == null); }
-    public boolean hasChildren() { return data.sizeOfMetaDataArray() == 0; }
+    public boolean hasChildren() { return data.sizeOfMetaDataArray() > 0; }
     public MetaNode [] getChildren()
     {
         MetaNode [] nodes = new MetaNode[data.sizeOfMetaDataArray()];
@@ -151,7 +151,7 @@ public class MetaNode
         while (top.parent != null)
         {
             top = top.parent;
-            nodeAxis.push(top.parent);
+            nodeAxis.push(top);
         }
         return nodeAxis;
     }

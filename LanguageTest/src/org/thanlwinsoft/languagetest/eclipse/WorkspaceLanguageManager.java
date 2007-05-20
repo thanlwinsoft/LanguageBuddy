@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Vector;
 
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlOptions;
@@ -26,6 +27,7 @@ import org.eclipse.swt.graphics.FontData;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.natures.LanguageUserNature;
 import org.thanlwinsoft.languagetest.language.test.UniversalLanguage;
+import org.thanlwinsoft.schemas.languagetest.module.ConfigType;
 import org.thanlwinsoft.schemas.languagetest.module.DescType;
 import org.thanlwinsoft.schemas.languagetest.module.LangType;
 import org.thanlwinsoft.schemas.languagetest.module.LangTypeType;
@@ -251,6 +253,22 @@ public class WorkspaceLanguageManager
 		}
 		return (IProject[])(userProjects.toArray(new IProject[userProjects.size()]));
 	}
+    
+    static public ConfigType getProjectLangConfig(IProject project)
+    {
+        LanguageModuleDocument doc = get().getProjectLang(project);
+        if (doc == null) return null;
+        ConfigType config = null;
+        if (!doc.getLanguageModule().isSetConfig())
+        {
+            config = doc.getLanguageModule().addNewConfig();
+        }
+        else
+        {
+            config = doc.getLanguageModule().getConfig();
+        }
+        return config;
+    }
 	
 	protected LanguageModuleDocument getProjectLang(IProject project)
 	{

@@ -67,6 +67,12 @@
             icon="icons/testHistory16.png"
             id="org.thanlwinsoft.languagetest.eclipse.views.ChartHistoryView"
             name="%LanguageTest.ChartHistoryView"/>
+      <view
+            category="org.thanlwinsoft.languagetest.views"
+            class="org.thanlwinsoft.languagetest.eclipse.views.MetaDataView"
+            icon="icons/MetaDataBranch.png"
+            id="org.thanlwinsoft.languagetest.eclipse.views.MetaDataView"
+            name="%LanguageTest.metaDataView"/>
    </extension>
    <extension
          point="org.eclipse.core.resources.natures"

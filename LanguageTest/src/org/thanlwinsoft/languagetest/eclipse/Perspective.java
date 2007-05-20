@@ -5,6 +5,7 @@ import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 import org.eclipse.ui.IPlaceholderFolderLayout;
 import org.thanlwinsoft.languagetest.eclipse.views.ChartHistoryView;
+import org.thanlwinsoft.languagetest.eclipse.views.MetaDataView;
 import org.thanlwinsoft.languagetest.eclipse.views.RecordingView;
 
 
@@ -37,6 +38,7 @@ public class Perspective implements IPerspectiveFactory
         
         folderBottom.addView(TEST_VIEW);
         folderBottom.addView(RecordingView.ID);
+        folderBottom.addView(MetaDataView.ID);
         //layout.addStandaloneViewPlaceholder(USER_RESULTS,  
         //        IPageLayout.RIGHT, 0.8f, editorArea, true);
         IFolderLayout folderLeft = layout.createFolder(FOLDER_LEFT,
