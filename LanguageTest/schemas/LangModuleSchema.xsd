@@ -18,7 +18,7 @@
       <xs:element type="ForeignLangType" name="ForeignLang" maxOccurs="unbounded" minOccurs="1"/>
       <xs:element type="SoundFileType" name="SoundFile" minOccurs="0"/>
       <xs:element type="xs:string" name="Img" minOccurs="0"/>
-      <xs:element type="MetaDataType" name="MetaData" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element type="TagType" name="Tag" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute type="xs:long" name="creationTime"/>
     <xs:attribute type="xs:string" name="creator"/>
@@ -95,15 +95,23 @@
   	</xs:attribute>
   </xs:complexType>
 
+  <xs:complexType name="TagType">
+  	<xs:attribute name="ref" type="xs:string"/>
+  </xs:complexType>
 
   <xs:complexType name="MetaDataType">
   	<xs:sequence>
   		<xs:element type="DescType" name="Desc" minOccurs="0" maxOccurs="unbounded"></xs:element>
   		<xs:element type="MetaDataType" name="MetaData"  minOccurs="0" maxOccurs="unbounded"/>
   	</xs:sequence>
-  	<xs:attribute name="metaId" type="xs:string" use="required"></xs:attribute>
+  	<xs:attribute name="metaId" type="MetaIdType" use="required"></xs:attribute>
   </xs:complexType>
 
+  <xs:simpleType name="MetaIdType">
+  	<xs:restriction base="xs:string">
+  		<xs:pattern value="[^/\\'&#x22;]*"></xs:pattern>
+  	</xs:restriction>
+  </xs:simpleType>
 
   <xs:complexType name="DescType">
   	<xs:simpleContent>
@@ -124,4 +132,5 @@
   		<xs:element name="MetaData" type="MetaDataType" maxOccurs="unbounded" minOccurs="0"></xs:element>
   	</xs:sequence>
   </xs:complexType>
+
 </xs:schema>

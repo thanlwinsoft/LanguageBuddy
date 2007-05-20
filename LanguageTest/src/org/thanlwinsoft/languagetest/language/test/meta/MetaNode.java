@@ -38,6 +38,7 @@ import org.eclipse.core.runtime.Path;
 import org.thanlwinsoft.schemas.languagetest.module.ConfigType;
 import org.thanlwinsoft.schemas.languagetest.module.DescType;
 import org.thanlwinsoft.schemas.languagetest.module.MetaDataType;
+import org.thanlwinsoft.schemas.languagetest.module.TagType;
 import org.thanlwinsoft.schemas.languagetest.module.TestItemType;
 
 /**
@@ -157,77 +158,101 @@ public class MetaNode
     }
     public boolean isSetOnItem(TestItemType item)
     {
-        ArrayDeque<MetaNode> nodeAxis = getNodeAxis();
-        MetaNode top = nodeAxis.removeFirst();
-        
-        for (MetaDataType md : item.getMetaDataArray())
+        String ref = toPath().toPortableString();
+        for (int i = 0; i < item.sizeOfTagArray(); i++)
         {
-            if (md.getMetaId().equals(top.data.getMetaId()))
+            TagType tag = item.getTagArray(i);
+            if (tag.getRef().equals(ref))
             {
-                boolean match = true;
-                while (top != this)
-                {
-                    top = nodeAxis.removeFirst();
-                    match = false;
-                    for (MetaDataType mdChild : md.getMetaDataArray())
-                    {
-                        if (mdChild.getMetaId().equals(top.data.getMetaId()))
-                        {
-                            md = mdChild;
-                            match = true;
-                            break;
-                        }
-                    }
-                    if (!match) break;
-                }
-                if (top == this)
-                    return match;
-                break;
+                return true;
             }
         }
+//        ArrayDeque<MetaNode> nodeAxis = getNodeAxis();
+//        MetaNode top = nodeAxis.removeFirst();
+//        
+//        for (MetaDataType md : item.getMetaDataArray())
+//        {
+//            if (md.getMetaId().equals(top.data.getMetaId()))
+//            {
+//                boolean match = true;
+//                while (top != this)
+//                {
+//                    top = nodeAxis.removeFirst();
+//                    match = false;
+//                    for (MetaDataType mdChild : md.getMetaDataArray())
+//                    {
+//                        if (mdChild.getMetaId().equals(top.data.getMetaId()))
+//                        {
+//                            md = mdChild;
+//                            match = true;
+//                            break;
+//                        }
+//                    }
+//                    if (!match) break;
+//                }
+//                if (top == this)
+//                    return match;
+//                break;
+//            }
+//        }
         return false;
     }
     public void setOnItem(TestItemType item, boolean state)
     {
-        ArrayDeque<MetaNode> nodeAxis = getNodeAxis();
-        MetaDataType [] data = item.getMetaDataArray();
-        MetaDataType prev = null;
-        while (nodeAxis.size() > 0)
+        //ArrayDeque<MetaNode> nodeAxis = getNodeAxis();
+        //TagType [] data = item.getTagArray();
+        String ref = toPath().toPortableString();
+        for (int i = 0; i < item.sizeOfTagArray(); i++)
         {
-            MetaNode n = nodeAxis.removeFirst();
-            for (int i = 0; i < data.length; i++)
+            TagType tag = item.getTagArray(i);
+            if (tag.getRef().equals(ref))
             {
-                MetaDataType md = data[i];
-                if (md.getMetaId().equals(n.data.getMetaId()))
+                if (state) return; // already set
+                else
                 {
-                    if (n == this && state == false)
-                    {
-                        prev.removeMetaData(i);
-                        return;
-                    }
-                    else
-                    {
-                        data = md.getMetaDataArray();
-                        prev = md;
-                    }
-                    break;
+                    item.removeTag(i);
+                    return;
                 }
             }
-            // node doesn't exist, so a add a new node
-            MetaDataType newMD = null;
-            if (n.parent == null)
-            {
-                newMD = item.addNewMetaData();
-            }
-            else
-            {
-                newMD = prev.addNewMetaData();
-            }
-            newMD.setMetaId(n.data.getMetaId());
-            newMD.setDescArray(n.data.getDescArray().clone());
-            data = newMD.getMetaDataArray();
-            prev = newMD;
         }
+        item.addNewTag().setRef(ref);
+//        MetaDataType prev = null;
+//        while (nodeAxis.size() > 0)
+//        {
+//            MetaNode n = nodeAxis.removeFirst();
+//            for (int i = 0; i < data.length; i++)
+//            {
+//                MetaDataType md = data[i];
+//                if (md.getMetaId().equals(n.data.getMetaId()))
+//                {
+//                    if (n == this && state == false)
+//                    {
+//                        prev.removeMetaData(i);
+//                        return;
+//                    }
+//                    else
+//                    {
+//                        data = md.getMetaDataArray();
+//                        prev = md;
+//                    }
+//                    break;
+//                }
+//            }
+//            // node doesn't exist, so a add a new node
+//            MetaDataType newMD = null;
+//            if (n.parent == null)
+//            {
+//                newMD = item.addNewMetaData();
+//            }
+//            else
+//            {
+//                newMD = prev.addNewMetaData();
+//            }
+//            newMD.setMetaId(n.data.getMetaId());
+//            newMD.setDescArray(n.data.getDescArray().clone());
+//            data = newMD.getMetaDataArray();
+//            prev = newMD;
+//        }
     }
     public static MetaNode [] getTopLevelNodes(ConfigType config)
     {
