@@ -72,6 +72,7 @@ import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.thanlwinsoft.languagetest.eclipse.WorkspaceLanguageManager;
 import org.thanlwinsoft.languagetest.eclipse.editors.TestItemEditor;
 import org.thanlwinsoft.languagetest.eclipse.editors.TestModuleEditor;
+import org.thanlwinsoft.languagetest.language.test.meta.MetaDataManager;
 import org.thanlwinsoft.languagetest.language.test.meta.MetaNode;
 import org.thanlwinsoft.schemas.languagetest.module.ConfigType;
 import org.thanlwinsoft.schemas.languagetest.module.LanguageModuleDocument;
@@ -92,8 +93,6 @@ public class MetaDataView extends ViewPart implements ISelectionChangedListener
     private Display display = null;
     private  CellEditor [] editors = null;;
     private HashSet selectionProviders = null;
-    public final static String DEFAULT_LANG_CONFIG = 
-        "/org/thanlwinsoft/languagetest/language/text/DefaultLangConfig.xml";
     public final static String ID = 
         "org.thanlwinsoft.languagetest.eclipse.views.MetaDataView";
     private final static String COL = "Tag";
@@ -158,42 +157,7 @@ public class MetaDataView extends ViewPart implements ISelectionChangedListener
     
     protected ConfigType [] loadConfig()
     {
-        IWorkspace workspace = ResourcesPlugin.getWorkspace();
-        IProject [] projects = workspace.getRoot().getProjects();
-        Vector <ConfigType> config = new Vector<ConfigType>(projects.length + 1);
-        for (IProject p : projects)
-        {
-            if (!p.isOpen()) continue;
-            ConfigType c = WorkspaceLanguageManager.getProjectLangConfig(p);
-            if (c != null)
-                config.add(c);
-        }
-        try
-        {
-            InputStream is = LanguageTestPlugin.getDefault().getBundle()
-                .getResource(DEFAULT_LANG_CONFIG).openStream();
-            XmlOptions options = new XmlOptions();
-            options.setCharacterEncoding("UTF-8");
-            options.setLoadUseDefaultResolver();
-            options.setDocumentType(LanguageModuleDocument.type);
-            LanguageModuleDocument langDoc = 
-                LanguageModuleDocument.Factory.parse(is);
-            if (langDoc != null && langDoc.getLanguageModule() != null && 
-                langDoc.getLanguageModule().isSetConfig())
-            {
-                ConfigType c = langDoc.getLanguageModule().getConfig();
-                config.add(c);
-            }
-        }
-        catch (IOException e)
-        {
-            LanguageTestPlugin.log(IStatus.WARNING, e.getMessage(), e);
-        }
-        catch (XmlException e)
-        {
-            LanguageTestPlugin.log(IStatus.WARNING, e.getMessage(), e);
-        }
-        return config.toArray(new ConfigType[config.size()]);
+        return MetaDataManager.loadConfig();
     }
 
     /* (non-Javadoc)

@@ -27,10 +27,13 @@
  */
 package org.thanlwinsoft.languagetest.eclipse.wizards;
 
+import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -40,6 +43,9 @@ import org.eclipse.swt.widgets.TreeColumn;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.views.MetaDataContentProvider;
 import org.thanlwinsoft.languagetest.eclipse.views.MetaDataLabelProvider;
+import org.thanlwinsoft.languagetest.language.test.meta.MetaDataManager;
+import org.thanlwinsoft.languagetest.language.test.meta.MetaNode;
+import org.thanlwinsoft.schemas.languagetest.module.ConfigType;
 
 /**
  * @author keith
@@ -53,7 +59,7 @@ public class TagFilterPage extends WizardPage
     private ScrolledComposite filterComposite;
     private Tree tree;
     private CheckboxTreeViewer viewer;
-    private Object contentProvider;
+    private MetaDataContentProvider contentProvider;
     private MetaDataLabelProvider labelProvider;
 
     public TagFilterPage()
@@ -68,6 +74,7 @@ public class TagFilterPage extends WizardPage
     {
         this.setDescription(MessageUtil.getString("TagFilter"));
         mainGroup = new Group(parent, SWT.CENTER);
+        setControl(mainGroup);
         rowLayout = new RowLayout();
         rowLayout.type = SWT.VERTICAL;
         rowLayout.fill = true;
@@ -79,6 +86,8 @@ public class TagFilterPage extends WizardPage
                 {
                     public void widgetSelected(org.eclipse.swt.events.SelectionEvent e)
                     {
+                        if (tree != null && tree.isDisposed() == false)
+                            tree.setEnabled(enableFilterButton.getSelection());
                         validate();
                     }
                 });
@@ -91,13 +100,42 @@ public class TagFilterPage extends WizardPage
         nameColumn.setWidth(300);
         nameColumn.setResizable(true);
         nameColumn.setText(MessageUtil.getString("FilterColumn"));
+        tree.showColumn(nameColumn);
         viewer = new CheckboxTreeViewer(tree);
+        viewer.setCellEditors(new CellEditor[] { 
+                new CheckboxCellEditor()});
         contentProvider = new MetaDataContentProvider();
         labelProvider = new MetaDataLabelProvider(parent.getDisplay());
+        viewer.setContentProvider(contentProvider);
+        viewer.setLabelProvider(labelProvider);
+        ConfigType [] config = MetaDataManager.loadConfig();
+        viewer.setInput(config);
+        viewer.refresh();
+        filterComposite.setContent(tree);
+        filterComposite.setExpandHorizontal(true);
+        filterComposite.setExpandVertical(true);
+        RowData treeRowData = new RowData(SWT.DEFAULT,200);
+        filterComposite.setLayoutData(treeRowData);
     }
     
     protected boolean validate()
     {
+        setPageComplete(true);
         return true;
+    }
+    
+    public MetaNode [] getSelection()
+    {
+        Object [] elements = viewer.getCheckedElements();
+        MetaNode [] nodes = new MetaNode[elements.length];
+        
+        for (int i = 0; i < elements.length; i++)
+        {
+            if (elements[i] instanceof MetaNode)
+            {
+                nodes[i] = (MetaNode)elements[i];
+            }
+        }
+        return nodes;
     }
 }

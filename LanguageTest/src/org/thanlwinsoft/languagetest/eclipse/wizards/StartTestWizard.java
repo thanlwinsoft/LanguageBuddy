@@ -39,6 +39,7 @@ public class StartTestWizard extends Wizard
 {
     private ModuleSelectionPage moduleSelectionPage = null;  //  @jve:decl-index=0:
     private TestTypePage testTypePage = null;
+    private TagFilterPage tagFilterPage;
     
     public StartTestWizard()
     {
@@ -51,9 +52,10 @@ public class StartTestWizard extends Wizard
     {
         testTypePage = new TestTypePage("Test Type");
         moduleSelectionPage = new ModuleSelectionPage("Select Modules");
+        tagFilterPage = new TagFilterPage();
         addPage(testTypePage);
         addPage(moduleSelectionPage);
-        
+        addPage(tagFilterPage);
         
     }
     /* (non-Javadoc)
