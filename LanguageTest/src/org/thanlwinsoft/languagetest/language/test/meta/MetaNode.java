@@ -91,7 +91,7 @@ public class MetaNode
     {
         IPath p = null;
         if (parent == null)
-            new Path(data.getMetaId());
+            p = new Path(data.getMetaId());
         else
         {
             p = parent.toPath().append(data.getMetaId());

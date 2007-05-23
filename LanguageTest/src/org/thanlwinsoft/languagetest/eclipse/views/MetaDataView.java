@@ -40,14 +40,11 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ICellModifier;
-import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -56,9 +53,7 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -92,9 +87,8 @@ public class MetaDataView extends ViewPart implements ISelectionChangedListener
     private Tree dataTree = null;
     private TreeViewer viewer = null;
     private ITreeContentProvider provider = null;
-    private ITableLabelProvider labelProvider = null;
+    private MetaDataLabelProvider labelProvider = null;
     private MetaDataCellModifier cellModifier = null;
-    private TestItemType testItem = null;
     private Display display = null;
     private  CellEditor [] editors = null;;
     private HashSet selectionProviders = null;
@@ -102,6 +96,7 @@ public class MetaDataView extends ViewPart implements ISelectionChangedListener
         "/org/thanlwinsoft/languagetest/language/text/DefaultLangConfig.xml";
     public final static String ID = 
         "org.thanlwinsoft.languagetest.eclipse.views.MetaDataView";
+    private final static String COL = "Tag";
     
     public MetaDataView()
     {
@@ -123,9 +118,9 @@ public class MetaDataView extends ViewPart implements ISelectionChangedListener
         tc.setWidth(200);
         tc.setResizable(true);
         tc.setText(MessageUtil.getString("MetaDataColumn"));
-        viewer.setColumnProperties(new String[]{"Tag"});
+        viewer.setColumnProperties(new String[]{COL});
         provider = new MetaDataContentProvider();
-        labelProvider = new MetaDataLabelProvider();
+        labelProvider = new MetaDataLabelProvider(display);
         cellModifier = new MetaDataCellModifier();
         editors = new CellEditor[]{ new CheckboxCellEditor(dataTree, SWT.LEAD) };
         viewer.setAutoExpandLevel(AbstractTreeViewer.ALL_LEVELS);
@@ -156,6 +151,7 @@ public class MetaDataView extends ViewPart implements ISelectionChangedListener
     public void setTestItem(TestItemType testItem)
     {
         cellModifier.setTestItem(testItem);
+        labelProvider.setTestItem(testItem);
         viewer.refresh();
         viewer.expandAll();
     }
@@ -208,108 +204,6 @@ public class MetaDataView extends ViewPart implements ISelectionChangedListener
         
     }
 
-    public class MetaDataLabelProvider implements ITableLabelProvider, ILabelProvider
-    {
-
-        /* (non-Javadoc)
-         * @see org.eclipse.jface.viewers.ILabelProvider#getImage(java.lang.Object)
-         */
-        public Image getImage(Object element)
-        {
-            ImageDescriptor idBranch = 
-                LanguageTestPlugin.getImageDescriptor("/icons/MetaDataBranch.png");
-            ImageDescriptor idLeaf = 
-                LanguageTestPlugin.getImageDescriptor("/icons/MetaDataLeaf.png");
-            ImageDescriptor idBranchOff = 
-                LanguageTestPlugin.getImageDescriptor("/icons/MetaDataBranchDisabled.png");
-            ImageDescriptor idLeafOff = 
-                LanguageTestPlugin.getImageDescriptor("/icons/MetaDataLeafDisabled.png");
-            if (element instanceof MetaNode)
-            {
-                MetaNode mn = (MetaNode)element;
-                if (testItem != null && mn.isSetOnItem(testItem))
-                {
-                    if (mn.hasChildren())
-                        return idBranch.createImage(display);
-                    else
-                        return idLeaf.createImage(display);
-                }
-                else
-                {
-                    if (mn.hasChildren())
-                        return idBranchOff.createImage(display);
-                    else
-                        return idLeafOff.createImage(display);
-                    
-                }
-            }
-            return null;
-        }
-
-        /* (non-Javadoc)
-         * @see org.eclipse.jface.viewers.ILabelProvider#getText(java.lang.Object)
-         */
-        public String getText(Object element)
-        {
-            if (element instanceof MetaNode)
-            {
-                MetaNode mn = (MetaNode)element;
-                return mn.getName();
-            }
-            return element.toString();
-        }
-
-        /* (non-Javadoc)
-         * @see org.eclipse.jface.viewers.IBaseLabelProvider#addListener(org.eclipse.jface.viewers.ILabelProviderListener)
-         */
-        public void addListener(ILabelProviderListener listener)
-        {
-            // TODO Auto-generated method stub
-            
-        }
-
-        /* (non-Javadoc)
-         * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
-         */
-        public void dispose()
-        {
-            
-        }
-
-        /* (non-Javadoc)
-         * @see org.eclipse.jface.viewers.IBaseLabelProvider#isLabelProperty(java.lang.Object, java.lang.String)
-         */
-        public boolean isLabelProperty(Object element, String property)
-        {
-            return true;
-        }
-
-        /* (non-Javadoc)
-         * @see org.eclipse.jface.viewers.IBaseLabelProvider#removeListener(org.eclipse.jface.viewers.ILabelProviderListener)
-         */
-        public void removeListener(ILabelProviderListener listener)
-        {
-            
-        }
-
-        /* (non-Javadoc)
-         * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int)
-         */
-        public Image getColumnImage(Object element, int columnIndex)
-        {
-            return getImage(element);
-        }
-
-        /* (non-Javadoc)
-         * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object, int)
-         */
-        public String getColumnText(Object element, int columnIndex)
-        {
-            return getText(element);
-        }
-        
-    }
-    
     public class MetaDataCellModifier implements ICellModifier
     {
         TestItemType testItem = null;
@@ -352,17 +246,19 @@ public class MetaDataView extends ViewPart implements ISelectionChangedListener
          */
         public void modify(Object element, String property, Object value)
         {
+            TreeItem treeItem = null;
             if (element instanceof TreeItem)
             {
-                TreeItem item = (TreeItem)element;
-                element = item.getData();
+                treeItem = (TreeItem)element;
+                element = treeItem.getData();
             }
             
             if (element instanceof MetaNode && value instanceof Boolean && 
                 testItem != null)
             {
+                MetaNode mn = (MetaNode)element;
                 boolean state = ((Boolean)value).booleanValue();
-                ((MetaNode)element).setOnItem(testItem, state);
+                mn.setOnItem(testItem, state);
                 IEditorPart editor = getSite().getPage().getActiveEditor();
                 if (editor instanceof TestModuleEditor)
                 {
@@ -370,90 +266,13 @@ public class MetaDataView extends ViewPart implements ISelectionChangedListener
                     TestItemEditor tie = (TestItemEditor) tme.getAdapter(TestItemEditor.class);
                     tme.setDirty(true);
                 }
-                viewer.refresh();
-                viewer.expandToLevel(element, AbstractTreeViewer.ALL_LEVELS);
+                if (treeItem != null)
+                    treeItem.setImage(labelProvider.getColumnImage(element, 0));
             }
         }
         
     }
     
-    public class MetaDataContentProvider implements ITreeContentProvider
-    {
-        
-        /* (non-Javadoc)
-         * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
-         */
-        public Object[] getChildren(Object parentElement)
-        {
-            if (parentElement instanceof MetaNode)
-            {
-                MetaNode ti = (MetaNode)parentElement;
-                return ti.getChildren();
-            }
-            return null;
-        }
-
-        /* (non-Javadoc)
-         * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object)
-         */
-        public Object getParent(Object element)
-        {
-            if (element instanceof MetaNode)
-            {
-                return ((MetaNode)element).getParent();
-            }
-            return null;
-        }
-
-        /* (non-Javadoc)
-         * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
-         */
-        public boolean hasChildren(Object element)
-        {
-            if (element instanceof MetaNode)
-            {
-                return ((MetaNode)element).hasChildren();
-            }
-            return false;
-        }
-
-        /* (non-Javadoc)
-         * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
-         */
-        public Object[] getElements(Object inputElement)
-        {
-            if (inputElement instanceof ConfigType[])
-            {
-                return MetaNode.getTopLevelNodes((ConfigType[])inputElement);
-            }
-            else if (inputElement instanceof MetaNode[])
-            {
-                return (MetaNode[])inputElement;
-            }
-            return null;
-        }
-
-        /* (non-Javadoc)
-         * @see org.eclipse.jface.viewers.IContentProvider#dispose()
-         */
-        public void dispose()
-        {
-            // TODO Auto-generated method stub
-            
-        }
-
-        /* (non-Javadoc)
-         * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
-         */
-        public void inputChanged(Viewer viewer, Object oldInput, Object newInput)
-        {
-            // TODO Auto-generated method stub
-            viewer.refresh();
-        }
-        
-    }
-
-
     /* (non-Javadoc)
      * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
      */
@@ -469,5 +288,9 @@ public class MetaDataView extends ViewPart implements ISelectionChangedListener
                     setTestItem(ti);
             }
         }
+    }
+    public Display getDisplay()
+    {
+        return display;
     }
 }
