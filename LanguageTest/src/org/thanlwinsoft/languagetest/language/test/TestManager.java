@@ -284,6 +284,15 @@ public class TestManager
         for (int i = 0; i < module.sizeOfTestItemArray(); i++)
         {
             TestItemType ti = module.getTestItemArray(i);
+            // test the item against the filters
+            boolean choose = true;
+            for (TestItemFilter f : options.getFilters())
+            {
+                choose &= f.chooseItem(module, ti);
+                if (!choose) break;
+            }
+            if (!choose) continue;
+            // see if it matches the type of test
             XmlBeansTestItem xbti = new XmlBeansTestItem(ti, nativeLang, foreignLang);
             if (xbti.getNativeText() != null && xbti.getForeignText() != null)
             {

@@ -4,6 +4,7 @@
 package org.thanlwinsoft.languagetest.eclipse.wizards;
 
 import java.io.IOException;
+import java.util.Vector;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IStatus;
@@ -25,6 +26,7 @@ import org.thanlwinsoft.languagetest.eclipse.Perspective;
 import org.thanlwinsoft.languagetest.eclipse.editors.TestModuleEditor;
 import org.thanlwinsoft.languagetest.eclipse.views.TestView;
 import org.thanlwinsoft.languagetest.language.test.Test;
+import org.thanlwinsoft.languagetest.language.test.TestItemFilter;
 import org.thanlwinsoft.languagetest.language.test.TestManager;
 import org.thanlwinsoft.languagetest.language.test.TestType;
 import org.thanlwinsoft.languagetest.language.test.TestOptions;
@@ -39,7 +41,7 @@ public class StartTestWizard extends Wizard
 {
     private ModuleSelectionPage moduleSelectionPage = null;  //  @jve:decl-index=0:
     private TestTypePage testTypePage = null;
-    private TagFilterPage tagFilterPage;
+    private TagFilterPage tagFilterPage = null;
     
     public StartTestWizard()
     {
@@ -77,6 +79,7 @@ public class StartTestWizard extends Wizard
         try
         {
             page.showView(Perspective.TEST_VIEW);
+            Vector<TestItemFilter> filters = new Vector<TestItemFilter>(1);
             TestView testView = (TestView)page.findView(Perspective.TEST_VIEW);
             TestManager manager = new TestManager(
                     testTypePage.getUser(),
@@ -98,6 +101,11 @@ public class StartTestWizard extends Wizard
             Test test = null;
             TestType testType = testTypePage.getTestType();
             TestOptions options = new TestOptions(testType);
+            if (tagFilterPage.isFilterEnabled())
+            {
+                filters.add(tagFilterPage.getFilter());
+                options.setFilters(filters.toArray(new TestItemFilter[filters.size()]));
+            }
             if (moduleSelectionPage.isRevisionTest())
             {
                 test = manager.revisionTest(options);

@@ -27,6 +27,10 @@
  */
 package org.thanlwinsoft.languagetest.eclipse.wizards;
 
+import java.util.List;
+import java.util.Vector;
+
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
@@ -43,7 +47,9 @@ import org.eclipse.swt.widgets.TreeColumn;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.views.MetaDataContentProvider;
 import org.thanlwinsoft.languagetest.eclipse.views.MetaDataLabelProvider;
+import org.thanlwinsoft.languagetest.language.test.TestItemFilter;
 import org.thanlwinsoft.languagetest.language.test.meta.MetaDataManager;
+import org.thanlwinsoft.languagetest.language.test.meta.MetaFilter;
 import org.thanlwinsoft.languagetest.language.test.meta.MetaNode;
 import org.thanlwinsoft.schemas.languagetest.module.ConfigType;
 
@@ -61,6 +67,8 @@ public class TagFilterPage extends WizardPage
     private CheckboxTreeViewer viewer;
     private MetaDataContentProvider contentProvider;
     private MetaDataLabelProvider labelProvider;
+    private Button anyTagsButton;
+    private Button allTagsButton;
 
     public TagFilterPage()
     {
@@ -91,6 +99,11 @@ public class TagFilterPage extends WizardPage
                         validate();
                     }
                 });
+        anyTagsButton = new Button(mainGroup, SWT.RADIO);
+        anyTagsButton.setText(MessageUtil.getString("AnyTagsMatchFilter"));
+        allTagsButton = new Button(mainGroup, SWT.RADIO);
+        allTagsButton.setText(MessageUtil.getString("AllTagsMatchFilter"));
+        
         filterComposite = new ScrolledComposite(mainGroup, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
         tree = new Tree(filterComposite, SWT.MULTI | SWT.CHECK);
         tree.setHeaderVisible(false);
@@ -124,7 +137,7 @@ public class TagFilterPage extends WizardPage
         return true;
     }
     
-    public MetaNode [] getSelection()
+    public MetaNode [] getCheckedNodes()
     {
         Object [] elements = viewer.getCheckedElements();
         MetaNode [] nodes = new MetaNode[elements.length];
@@ -137,5 +150,40 @@ public class TagFilterPage extends WizardPage
             }
         }
         return nodes;
+    }
+    
+    protected IPath [] getCheckedTagPaths()
+    {
+        Object [] elements = viewer.getCheckedElements();
+        List <IPath>paths = new Vector<IPath>(elements.length);
+        for (int i = 0; i < elements.length; i++)
+        {
+            if (elements[i] instanceof MetaNode)
+            {
+                paths.add(((MetaNode)elements[i]).toPath());
+            }
+        }
+        return paths.toArray(new IPath[paths.size()]);
+    }
+    
+    public boolean isFilterEnabled()
+    {
+        return enableFilterButton.getSelection();
+    }
+    
+    protected MetaFilter.Mode getFilterMode()
+    {
+        if (allTagsButton.getSelection()) return MetaFilter.Mode.ALL;
+        return MetaFilter.Mode.ANY;
+    }
+    public TestItemFilter getFilter()
+    {
+        if (isFilterEnabled())
+        {
+            TestItemFilter tagFilter = new MetaFilter(getCheckedTagPaths(),
+                    getFilterMode());
+            return tagFilter;
+        }
+        return null;
     }
 }
