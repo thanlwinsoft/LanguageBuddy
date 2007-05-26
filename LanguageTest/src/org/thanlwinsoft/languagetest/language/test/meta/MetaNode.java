@@ -87,6 +87,24 @@ public class MetaNode
         }
         data.addNewMetaData().set(newChild.copy());
     }
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj == null) return false;
+        if (obj instanceof MetaNode)
+        {
+            MetaNode mn = (MetaNode)obj;
+            if (mn.data.getMetaId().equals(data.getMetaId())) return true;
+        }
+        else if (obj.toString().equals(data.getMetaId()))
+        {
+            return true;
+        }
+        return false;
+    }
     public IPath toPath()
     {
         IPath p = null;
@@ -98,11 +116,15 @@ public class MetaNode
         }
         return p;
     }
-    public String toString()
+    public String getString()
     {
-        return toString(getDefaultLang());
+        return data.getMetaId();
     }
-    public String toString(String lang)
+    public String getPath()
+    {
+        return getPath(getDefaultLang());
+    }
+    public String getPath(String lang)
     {
         if (parent == null)
         {

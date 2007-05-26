@@ -135,8 +135,7 @@ public class TestItemSearchEngine extends TextSearchEngine
                        Pattern searchPattern)
     {
         Matcher m = searchPattern.matcher(let.getStringValue());
-//   we don't distinguish between more than one match within an item
-        //while (m.find())
+        //   we don't distinguish between more than one match within an item
         if (m.find()) 
         {
             if (fontMap == null)

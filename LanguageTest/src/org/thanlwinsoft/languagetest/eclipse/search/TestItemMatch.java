@@ -47,7 +47,6 @@ public class TestItemMatch extends Match
      */
     public int getBaseUnit()
     {
-        // TODO Auto-generated method stub
         return super.getBaseUnit();
     }
     /**

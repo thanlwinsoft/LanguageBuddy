@@ -27,31 +27,16 @@
  */
 package org.thanlwinsoft.languagetest.eclipse.wizards;
 
-import java.util.List;
-import java.util.Vector;
-
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.CheckboxCellEditor;
-import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.ScrolledComposite;
-import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Tree;
-import org.eclipse.swt.widgets.TreeColumn;
+import org.eclipse.swt.events.SelectionEvent;
 import org.thanlwinsoft.languagetest.MessageUtil;
-import org.thanlwinsoft.languagetest.eclipse.views.MetaDataContentProvider;
-import org.thanlwinsoft.languagetest.eclipse.views.MetaDataLabelProvider;
 import org.thanlwinsoft.languagetest.language.test.TestItemFilter;
-import org.thanlwinsoft.languagetest.language.test.meta.MetaDataManager;
 import org.thanlwinsoft.languagetest.language.test.meta.MetaFilter;
-import org.thanlwinsoft.languagetest.language.test.meta.MetaNode;
-import org.thanlwinsoft.schemas.languagetest.module.ConfigType;
 
 /**
  * @author keith
@@ -61,12 +46,8 @@ public class TagFilterPage extends WizardPage
 {
     private Group mainGroup;
     private RowLayout rowLayout;
-    private Button enableFilterButton;
-    private ScrolledComposite filterComposite;
-    private Tree tree;
-    private CheckboxTreeViewer viewer;
-    private MetaDataContentProvider contentProvider;
-    private MetaDataLabelProvider labelProvider;
+    private Button enableFilter;
+    private TagFilterComposite filterComposite;
     private Button anyTagsButton;
     private Button allTagsButton;
 
@@ -87,48 +68,29 @@ public class TagFilterPage extends WizardPage
         rowLayout.type = SWT.VERTICAL;
         rowLayout.fill = true;
         mainGroup.setLayout(rowLayout);
-        enableFilterButton = new Button(mainGroup, SWT.CHECK);
-        enableFilterButton.setText(MessageUtil.getString("TagFilterEnable"));
-        enableFilterButton
-                .addSelectionListener(new org.eclipse.swt.events.SelectionAdapter()
+        enableFilter = new Button(mainGroup, SWT.CHECK);
+        enableFilter.setText(MessageUtil.getString("TagFilterEnable"));
+        enableFilter
+            .addSelectionListener(new org.eclipse.swt.events.SelectionAdapter()
+            {
+                public void widgetSelected(SelectionEvent e)
                 {
-                    public void widgetSelected(org.eclipse.swt.events.SelectionEvent e)
+                    if (filterComposite != null && 
+                        filterComposite.isDisposed() == false)
                     {
-                        if (tree != null && tree.isDisposed() == false)
-                            tree.setEnabled(enableFilterButton.getSelection());
-                        validate();
+                        filterComposite.setEnabled(enableFilter.getSelection());
                     }
-                });
+                    validate();
+                }
+            });
         anyTagsButton = new Button(mainGroup, SWT.RADIO);
         anyTagsButton.setText(MessageUtil.getString("AnyTagsMatchFilter"));
         allTagsButton = new Button(mainGroup, SWT.RADIO);
         allTagsButton.setText(MessageUtil.getString("AllTagsMatchFilter"));
         
-        filterComposite = new ScrolledComposite(mainGroup, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
-        tree = new Tree(filterComposite, SWT.MULTI | SWT.CHECK);
-        tree.setHeaderVisible(false);
-        tree.setEnabled(false);
-        tree.setLinesVisible(true);
-        TreeColumn nameColumn = new TreeColumn(tree, SWT.NONE);
-        nameColumn.setWidth(300);
-        nameColumn.setResizable(true);
-        nameColumn.setText(MessageUtil.getString("FilterColumn"));
-        tree.showColumn(nameColumn);
-        viewer = new CheckboxTreeViewer(tree);
-        viewer.setCellEditors(new CellEditor[] { 
-                new CheckboxCellEditor()});
-        contentProvider = new MetaDataContentProvider();
-        labelProvider = new MetaDataLabelProvider(parent.getDisplay());
-        viewer.setContentProvider(contentProvider);
-        viewer.setLabelProvider(labelProvider);
-        ConfigType [] config = MetaDataManager.loadConfig();
-        viewer.setInput(config);
-        viewer.refresh();
-        filterComposite.setContent(tree);
-        filterComposite.setExpandHorizontal(true);
-        filterComposite.setExpandVertical(true);
-        RowData treeRowData = new RowData(SWT.DEFAULT,200);
-        filterComposite.setLayoutData(treeRowData);
+        filterComposite = new TagFilterComposite(mainGroup, SWT.H_SCROLL | 
+                                                 SWT.V_SCROLL | SWT.BORDER);
+        
     }
     
     protected boolean validate()
@@ -137,38 +99,9 @@ public class TagFilterPage extends WizardPage
         return true;
     }
     
-    public MetaNode [] getCheckedNodes()
-    {
-        Object [] elements = viewer.getCheckedElements();
-        MetaNode [] nodes = new MetaNode[elements.length];
-        
-        for (int i = 0; i < elements.length; i++)
-        {
-            if (elements[i] instanceof MetaNode)
-            {
-                nodes[i] = (MetaNode)elements[i];
-            }
-        }
-        return nodes;
-    }
-    
-    protected IPath [] getCheckedTagPaths()
-    {
-        Object [] elements = viewer.getCheckedElements();
-        List <IPath>paths = new Vector<IPath>(elements.length);
-        for (int i = 0; i < elements.length; i++)
-        {
-            if (elements[i] instanceof MetaNode)
-            {
-                paths.add(((MetaNode)elements[i]).toPath());
-            }
-        }
-        return paths.toArray(new IPath[paths.size()]);
-    }
-    
     public boolean isFilterEnabled()
     {
-        return enableFilterButton.getSelection();
+        return enableFilter.getSelection();
     }
     
     protected MetaFilter.Mode getFilterMode()
@@ -180,8 +113,9 @@ public class TagFilterPage extends WizardPage
     {
         if (isFilterEnabled())
         {
-            TestItemFilter tagFilter = new MetaFilter(getCheckedTagPaths(),
-                    getFilterMode());
+            TestItemFilter tagFilter = 
+                new MetaFilter(filterComposite.getCheckedTagPaths(), 
+                               getFilterMode());
             return tagFilter;
         }
         return null;
