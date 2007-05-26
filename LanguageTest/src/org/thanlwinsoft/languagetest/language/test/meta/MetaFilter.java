@@ -32,6 +32,7 @@ import java.util.Collection;
 import java.util.Vector;
 
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.thanlwinsoft.languagetest.language.test.TestItemFilter;
 import org.thanlwinsoft.schemas.languagetest.module.LanguageModuleType;
 import org.thanlwinsoft.schemas.languagetest.module.TagType;
@@ -69,7 +70,8 @@ public class MetaFilter implements TestItemFilter
         int matchCount = 0;
         for (TagType t : item.getTagArray())
         {
-            if (metaSet.contains(t.getRef()))
+            IPath path = new Path(t.getRef());
+            if (metaSet.contains(path))
                 matchCount++;
         }
         switch (mode)

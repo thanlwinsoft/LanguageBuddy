@@ -78,19 +78,24 @@ public class TagFilterPage extends WizardPage
                     if (filterComposite != null && 
                         filterComposite.isDisposed() == false)
                     {
-                        filterComposite.setEnabled(enableFilter.getSelection());
+                        boolean enabled = enableFilter.getSelection();
+                        filterComposite.setEnabled(enabled);
+                        anyTagsButton.setEnabled(enabled);
+                        allTagsButton.setEnabled(enabled);
                     }
                     validate();
                 }
             });
         anyTagsButton = new Button(mainGroup, SWT.RADIO);
         anyTagsButton.setText(MessageUtil.getString("AnyTagsMatchFilter"));
+        anyTagsButton.setSelection(true);
+        anyTagsButton.setEnabled(false);
         allTagsButton = new Button(mainGroup, SWT.RADIO);
         allTagsButton.setText(MessageUtil.getString("AllTagsMatchFilter"));
-        
+        allTagsButton.setEnabled(false);
         filterComposite = new TagFilterComposite(mainGroup, SWT.H_SCROLL | 
                                                  SWT.V_SCROLL | SWT.BORDER);
-        
+        filterComposite.setEnabled(false);
     }
     
     protected boolean validate()

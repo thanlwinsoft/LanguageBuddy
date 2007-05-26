@@ -4,6 +4,7 @@
 package org.thanlwinsoft.languagetest.eclipse.search;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.regex.Matcher;
@@ -27,6 +28,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
+import org.thanlwinsoft.languagetest.language.test.TestItemFilter;
 import org.thanlwinsoft.schemas.languagetest.module.LangEntryType;
 import org.thanlwinsoft.schemas.languagetest.module.LangType;
 import org.thanlwinsoft.schemas.languagetest.module.LanguageModuleDocument;
@@ -40,16 +42,17 @@ import org.thanlwinsoft.schemas.languagetest.module.TestItemType;
 public class TestItemSearchEngine extends TextSearchEngine
 {
     private HashSet langSet = null;
+    private TestItemFilter [] filters = null;
     private TestItemSearchResult searchResult = null;
     // internal variables for TestModule currently being processed
     private HashMap fontMap = null;
     private LanguageModuleType lm = null;
     private int maxLanguages = 0;
     
-    public TestItemSearchEngine(HashSet langSet)
+    public TestItemSearchEngine(HashSet langSet, TestItemFilter[] filters)
     {
         this.langSet = langSet;
-        
+        this.filters = filters;
     }
     public TestItemSearchResult getResult()
     {
@@ -80,49 +83,65 @@ public class TestItemSearchEngine extends TextSearchEngine
     {
         for (int i = 0; i < scope.length; i++)
         {
+            InputStream is = null;
             try
             {
+                is = scope[i].getContents();
                 LanguageModuleDocument doc =
-                    LanguageModuleDocument.Factory.parse(scope[i].getContents());
+                    LanguageModuleDocument.Factory.parse(is);
                 lm = doc.getLanguageModule();
                 fontMap = null;
                 if (lm == null) continue;
                 for (int j = 0; j < lm.sizeOfTestItemArray(); j++)
                 {
                     TestItemType ti = lm.getTestItemArray(j);
-                    
-                    for (int k = 0; k < ti.sizeOfNativeLangArray(); k++)
+                    boolean isMatch = false;
+                    for (int k = 0; k < ti.sizeOfNativeLangArray() && !isMatch; k++)
                     {
                         LangEntryType let = ti.getNativeLangArray(k);
                         if (langSet == null || langSet.contains(let.getLang()))
                         {
-                            index(scope[i], j, ti, let, searchPattern);
-                            monitor.worked(1);
+                            isMatch = index(scope[i], j, lm, ti, let, searchPattern);
                         }
                     }
-                    for (int k = 0; k < ti.sizeOfForeignLangArray(); k++)
+                    for (int k = 0; k < ti.sizeOfForeignLangArray() && !isMatch; k++)
                     {
                         LangEntryType let = ti.getForeignLangArray(k);
                         if (langSet == null || langSet.contains(let.getLang()))
                         {
-                            index(scope[i], j, ti, let, searchPattern);
-                            monitor.worked(1);
+                            isMatch = index(scope[i], j, lm, ti, let, searchPattern);
                         }
                     }
+                    monitor.worked(1);
                 }
             }
             catch(IOException e)
             {
-                
+                LanguageTestPlugin.log(IStatus.WARNING, "IOException while searching", e);
             }
             catch (XmlException e)
             {
-                //e.printStackTrace();
+                LanguageTestPlugin.log(IStatus.WARNING, "XmlException while searching", e);
             }
             catch (CoreException e)
             {
-                
+                LanguageTestPlugin.log(IStatus.WARNING, "CoreException while searching", e);
                 e.printStackTrace();
+            }
+            finally
+            {
+                if (is != null)
+                {
+                    try
+                    {
+                        is.close();
+                    }
+                    catch (IOException e)
+                    {
+                        LanguageTestPlugin.log(IStatus.WARNING, "IOException while searching", e);
+                        e.printStackTrace();
+                    }
+                }
             }
         }
         
@@ -130,23 +149,33 @@ public class TestItemSearchEngine extends TextSearchEngine
                         MessageUtil.getString("SearchOKStatus"), null);
         return status;
     }
-    private void index(IFile file, int item, TestItemType testItem, 
-                       LangEntryType let, 
+    private boolean index(IFile file, int item, LanguageModuleType module, 
+                       TestItemType testItem, LangEntryType let, 
                        Pattern searchPattern)
     {
+        boolean isMatch = false;
         Matcher m = searchPattern.matcher(let.getStringValue());
         //   we don't distinguish between more than one match within an item
         if (m.find()) 
         {
-            if (fontMap == null)
+            isMatch = true;
+            for (TestItemFilter f : filters)
             {
-                getFontMap();
+                isMatch &= f.chooseItem(module, testItem);
             }
-            Match match = new TestItemMatch(file, item, testItem, let, 
-                                            m.start(), m.end() - m.start(), 
-                                            fontMap);
-            searchResult.addMatch(match);
+            if (isMatch)
+            {
+                if (fontMap == null)
+                {
+                    getFontMap();
+                }
+                Match match = new TestItemMatch(file, item, testItem, let, 
+                                                m.start(), m.end() - m.start(), 
+                                                fontMap);
+                searchResult.addMatch(match);
+            }
         }
+        return isMatch;
     }
     private void getFontMap()
     {

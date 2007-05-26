@@ -69,7 +69,7 @@ public class MetaDataLabelProvider implements ITableLabelProvider, ILabelProvide
         if (element instanceof MetaNode)
         {
             MetaNode mn = (MetaNode)element;
-            if (testItem != null && mn.isSetOnItem(testItem))
+            if (testItem == null || mn.isSetOnItem(testItem))
             {
                 if (mn.hasChildren())
                     return idBranch.createImage(display);

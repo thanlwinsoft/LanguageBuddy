@@ -37,7 +37,9 @@ import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.thanlwinsoft.languagetest.eclipse.WorkspaceLanguageManager;
 import org.thanlwinsoft.languagetest.eclipse.wizards.TagFilterComposite;
+import org.thanlwinsoft.languagetest.language.test.TestItemFilter;
 import org.thanlwinsoft.languagetest.language.test.UniversalLanguage;
+import org.thanlwinsoft.languagetest.language.test.meta.MetaFilter;
 import org.thanlwinsoft.schemas.languagetest.module.LangType;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.layout.GridLayout;
@@ -79,16 +81,30 @@ public class LanguageTestItemSearch extends DialogPage implements ISearchPage
      */
     public boolean performAction()
     {
-        if (searchText.getText().length() > 0)
+        int [] langSelection = langList.getSelectionIndices();
+        HashSet<String> langSet = new HashSet<String>(langSelection.length);
+        for (int i = 0; i < langSelection.length; i++)
         {
-            int [] langSelection = langList.getSelectionIndices();
+            langSet.add(langCodes[langSelection[i]]);
+        }
+        // we only have one type of filter at the moment
+        TestItemFilter [] filters;
+        if (tags.length > 0)
+        {
+            filters = new TestItemFilter[1];
+            if (allButton.getSelection())
+                filters[0] = new MetaFilter(tags, MetaFilter.Mode.ALL);
+            else
+                filters[0] = new MetaFilter(tags, MetaFilter.Mode.ANY);
+        }
+        else
+        {
+            filters = new TestItemFilter[0];
+        }
+        TestItemSearchEngine engine = new TestItemSearchEngine(langSet, filters);
+        if (searchText.getText().length() > 0 || filters.length > 0)
+        {
             
-            HashSet<String> langSet = new HashSet<String>(langSelection.length);
-            for (int i = 0; i < langSelection.length; i++)
-            {
-                langSet.add(langCodes[langSelection[i]]);
-            }
-            TestItemSearchEngine engine = new TestItemSearchEngine(langSet);
             TextSearchScope scope = FileTextSearchScope.newWorkspaceScope(new String[] {"*.xml"}, false);
             int patternOptions = 0;
             Pattern searchPattern = null;

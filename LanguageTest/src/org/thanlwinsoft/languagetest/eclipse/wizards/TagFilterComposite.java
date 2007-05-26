@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Vector;
 
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
@@ -47,12 +48,18 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.PlatformUI;
 import org.thanlwinsoft.languagetest.MessageUtil;
+import org.thanlwinsoft.languagetest.eclipse.editors.TestModuleEditor;
 import org.thanlwinsoft.languagetest.eclipse.views.MetaDataContentProvider;
 import org.thanlwinsoft.languagetest.eclipse.views.MetaDataLabelProvider;
 import org.thanlwinsoft.languagetest.language.test.meta.MetaDataManager;
 import org.thanlwinsoft.languagetest.language.test.meta.MetaNode;
 import org.thanlwinsoft.schemas.languagetest.module.ConfigType;
+import org.thanlwinsoft.schemas.languagetest.module.MetaDataType;
+import org.thanlwinsoft.schemas.languagetest.module.TestItemType;
+import org.thanlwinsoft.schemas.languagetest.module.TagType;
 
 /**
  * @author keith
@@ -67,6 +74,7 @@ public class TagFilterComposite extends ScrolledComposite implements ICheckState
     private MetaDataLabelProvider labelProvider;
     private Object [] rootElements = null;
     private IPath [] checkedPaths = null;
+    private TestItemType testItem = null;
     /**
      * @param parent
      * @param style
@@ -117,6 +125,7 @@ public class TagFilterComposite extends ScrolledComposite implements ICheckState
             treeGridData.heightHint = 200;
             setLayoutData(treeGridData);
         }
+        tree.setToolTipText(getTagPathDescription());
     }
     
 
@@ -172,23 +181,121 @@ public class TagFilterComposite extends ScrolledComposite implements ICheckState
                     n = mn.getParent();
                 }
                 TreePath tp = new TreePath(segments);
+                viewer.expandToLevel(tp, CheckboxTreeViewer.ALL_LEVELS);
                 viewer.setSubtreeChecked(tp, event.getChecked());
+                // normally branches will not have been checked, but it may
+                // have once been a leaf, so force unchecking
+                if (event.getChecked() == false)
+                    mn.setOnItem(testItem, event.getChecked());
+                if (testItem != null)
+                    setChildrenState(mn, event.getChecked());
+            }
+            else
+            {
+                // only set the test item on leaves
+                if (testItem != null)
+                    mn.setOnItem(testItem, event.getChecked());
+                
+            }
+            if (testItem != null)
+            {
+                IEditorPart editor = PlatformUI.getWorkbench()
+                    .getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+                if (editor instanceof TestModuleEditor)
+                {
+                    TestModuleEditor tme = (TestModuleEditor)editor;
+                    tme.setDirty(true);
+                }
             }
         }
         checkedPaths = getCheckedTagPaths();
+        tree.setToolTipText(getTagPathDescription());
     }
+    
+    public String getTagPathDescription()
+    {
+        StringBuilder sb = new StringBuilder();
+        if (checkedPaths == null || checkedPaths.length == 0)
+        {
+            sb.append(MessageUtil.getString("NoTagsSelectedTooltip"));
+        }
+        else
+        {
+            if (checkedPaths.length == 1)
+                sb.append(MessageUtil.getString("OneTagSelected"));
+            else
+                sb.append(MessageUtil.getString("TagsSelected",
+                        Integer.toString(checkedPaths.length)));
+            final String eol = System.getProperty("line.separator"); 
+            for (IPath p : checkedPaths)
+            {
+                if (sb.length() > 0)
+                    sb.append(eol);
+                sb.append(p);
+            }
+        }
+        return sb.toString();
+    }
+    
     /** set children of a branch node to the same state */
     protected void setChildrenState(MetaNode mn, boolean state)
     {
         for (MetaNode child : mn.getChildren())
         {
-            viewer.setChecked(child, state);
-            
             if (child.hasChildren())
             {
                 setChildrenState(child, state);
             }
+            else
+            {
+                // only set the test item on leaves
+                child.setOnItem(testItem, state);
+            }
         }
     }
+    /* (non-Javadoc)
+     * @see org.eclipse.swt.widgets.Control#setEnabled(boolean)
+     */
+    @Override
+    public void setEnabled(boolean enabled)
+    {
+        tree.setEnabled(enabled);
+        super.setEnabled(enabled);
+    }
+    /**
+     * Create a TreePath made up of MetaNode segments. 
+     * Only the ID is important, the descriptions can be left out.
+     */
+    static TreePath pathToTreePath(IPath p)
+    {
+        Object [] segments = new Object[p.segmentCount()];
+        MetaDataType metaData = null;
+        MetaNode mn = null;
+        for (int i = 0; i < p.segmentCount(); i++)
+        {
+            metaData = MetaDataType.Factory.newInstance();
+            metaData.setMetaId(p.segment(i));
+            mn = new MetaNode(mn, metaData);
+            segments[i] = mn;
+        }
+        return new TreePath(segments);
+    }
     
+    public void setTestItem(TestItemType ti)
+    {
+        this.testItem = null;
+        labelProvider.setTestItem(ti);
+        viewer.setAllChecked(false);
+        if (ti != null && ti.sizeOfTagArray() > 0)
+        {
+            for (TagType t : ti.getTagArray())
+            {
+                TreePath element = pathToTreePath(new Path(t.getRef()));
+                viewer.setChecked(element, true);
+            }
+        }
+        this.testItem = ti;
+        checkedPaths = getCheckedTagPaths();
+        tree.setToolTipText(getTagPathDescription());
+    }
 }

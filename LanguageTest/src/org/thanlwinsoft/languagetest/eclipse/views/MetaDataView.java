@@ -27,29 +27,15 @@
  */
 package org.thanlwinsoft.languagetest.eclipse.views;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashSet;
-import java.util.Vector;
 
-import org.apache.xmlbeans.XmlException;
-import org.apache.xmlbeans.XmlOptions;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
-import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ICellModifier;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -58,25 +44,18 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.ISelectionListener;
-import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.thanlwinsoft.languagetest.MessageUtil;
-import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
-import org.thanlwinsoft.languagetest.eclipse.WorkspaceLanguageManager;
 import org.thanlwinsoft.languagetest.eclipse.editors.TestItemEditor;
 import org.thanlwinsoft.languagetest.eclipse.editors.TestModuleEditor;
+import org.thanlwinsoft.languagetest.eclipse.wizards.TagFilterComposite;
 import org.thanlwinsoft.languagetest.language.test.meta.MetaDataManager;
 import org.thanlwinsoft.languagetest.language.test.meta.MetaNode;
 import org.thanlwinsoft.schemas.languagetest.module.ConfigType;
-import org.thanlwinsoft.schemas.languagetest.module.LanguageModuleDocument;
-import org.thanlwinsoft.schemas.languagetest.module.MetaDataType;
 import org.thanlwinsoft.schemas.languagetest.module.TestItemType;
 
 /**
@@ -87,19 +66,20 @@ public class MetaDataView extends ViewPart implements ISelectionChangedListener
 {
     private Tree dataTree = null;
     private TreeViewer viewer = null;
-    private ITreeContentProvider provider = null;
-    private MetaDataLabelProvider labelProvider = null;
-    private MetaDataCellModifier cellModifier = null;
+    //private ITreeContentProvider provider = null;
+    //private MetaDataLabelProvider labelProvider = null;
+    //private MetaDataCellModifier cellModifier = null;
     private Display display = null;
-    private  CellEditor [] editors = null;;
-    private HashSet selectionProviders = null;
+    //private  CellEditor [] editors = null;;
+    private HashSet<ISelectionProvider> selectionProviders = null;
+    private TagFilterComposite filterComposite;
     public final static String ID = 
         "org.thanlwinsoft.languagetest.eclipse.views.MetaDataView";
-    private final static String COL = "Tag";
+    //private final static String COL = "Tag";
     
     public MetaDataView()
     {
-        selectionProviders = new HashSet();
+        selectionProviders = new HashSet<ISelectionProvider>();
     }
 
     /* (non-Javadoc)
@@ -110,6 +90,9 @@ public class MetaDataView extends ViewPart implements ISelectionChangedListener
         this.display = parent.getDisplay();
         Group treeComposite = new Group(parent, SWT.SHADOW_ETCHED_IN);
         treeComposite.setLayout(new FillLayout());
+        filterComposite = new TagFilterComposite(treeComposite, SWT.H_SCROLL |
+                                                 SWT.V_SCROLL);
+        /*
         dataTree = new Tree(treeComposite, SWT.SINGLE | SWT.V_SCROLL | SWT.H_SCROLL);
         dataTree.setEnabled(true);
         viewer = new TreeViewer(dataTree);
@@ -131,6 +114,7 @@ public class MetaDataView extends ViewPart implements ISelectionChangedListener
         viewer.setInput(config);
         viewer.refresh();
         dataTree.showColumn(tc);
+        */
         //dataTree.redraw();
         IEditorPart editor = getSite().getPage().getActiveEditor();
         if (editor instanceof TestModuleEditor)
@@ -149,10 +133,11 @@ public class MetaDataView extends ViewPart implements ISelectionChangedListener
     
     public void setTestItem(TestItemType testItem)
     {
-        cellModifier.setTestItem(testItem);
-        labelProvider.setTestItem(testItem);
-        viewer.refresh();
-        viewer.expandAll();
+        //cellModifier.setTestItem(testItem);
+        //labelProvider.setTestItem(testItem);
+        //viewer.refresh();
+        //viewer.expandAll();
+        filterComposite.setTestItem(testItem);
     }
     
     protected ConfigType [] loadConfig()
@@ -227,11 +212,11 @@ public class MetaDataView extends ViewPart implements ISelectionChangedListener
                 if (editor instanceof TestModuleEditor)
                 {
                     TestModuleEditor tme = (TestModuleEditor)editor;
-                    TestItemEditor tie = (TestItemEditor) tme.getAdapter(TestItemEditor.class);
+                    //TestItemEditor tie = (TestItemEditor) tme.getAdapter(TestItemEditor.class);
                     tme.setDirty(true);
                 }
-                if (treeItem != null)
-                    treeItem.setImage(labelProvider.getColumnImage(element, 0));
+                //if (treeItem != null)
+                //    treeItem.setImage(labelProvider.getColumnImage(element, 0));
             }
         }
         
@@ -248,8 +233,10 @@ public class MetaDataView extends ViewPart implements ISelectionChangedListener
             if (ss.getFirstElement() instanceof TestItemType)
             {
                 TestItemType ti = (TestItemType)ss.getFirstElement();
-                if (!dataTree.isDisposed())
-                    setTestItem(ti);
+                //if (!dataTree.isDisposed())
+                //    setTestItem(ti);
+                if (!filterComposite.isDisposed())
+                    filterComposite.setTestItem(ti);
             }
         }
     }

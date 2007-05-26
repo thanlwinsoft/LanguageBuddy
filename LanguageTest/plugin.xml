@@ -19,6 +19,15 @@
             application="org.thanlwinsoft.languagetest.LanguageTestApp"
             description="%LanguageTest.desc"
             name="%LanguageTest">
+         <property
+               name="aboutText"
+               value="%LanguageTest.about"/>
+         <property
+               name="aboutImage"
+               value="icons/languageBuddy32.png"/>
+         <property
+               name="windowImages"
+               value="icons/languageBuddy16.png"/>
       </product>
    </extension>
    <extension
