@@ -16,7 +16,6 @@ import java.util.Vector;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourceAttributes;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -24,7 +23,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ICellEditorListener;
 import org.eclipse.jface.viewers.ICellEditorValidator;
@@ -40,7 +38,6 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
@@ -56,7 +53,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.IActionBars;
@@ -125,9 +121,8 @@ public class TestItemEditor extends EditorPart implements ISelectionProvider
     private TableColumn pictureCol = null;
     private TableColumn creatorCol = null;
     private TableColumn cDateCol = null;
-    //private TableColumn [] langCols = null;
-    private Vector langIds = null;
-    private String lastPropertyChanged = null;
+    private Vector<String> langIds = null;
+//    private String lastPropertyChanged = null;
     
     private TestItemCellModifier cellModifier = null;
     private TestItemLabelProvider labelProvider = null;
@@ -152,7 +147,7 @@ public class TestItemEditor extends EditorPart implements ISelectionProvider
         this.parent = parent;
         this.setPartName(MessageUtil.getString("TestItemEditor"));
         this.setContentDescription(MessageUtil.getString("TestItemEditor"));
-        langIds = new Vector(2,2);// lang size may grow, but 2 is minimum
+        langIds = new Vector<String>(2,2);// lang size may grow, but 2 is minimum
         LanguageTestPlugin.getPrefStore().setDefault(TABLE_FONT_PREF, TABLE_FONT_SIZE);
         LanguageTestPlugin.getPrefStore().setDefault(ROW_FONT_PREF, ROW_FONT_SIZE);
         
@@ -317,7 +312,7 @@ public class TestItemEditor extends EditorPart implements ISelectionProvider
                 deleteSelection();
             }
         });
-        MenuItem separator = new MenuItem(popup, SWT.SEPARATOR);
+        new MenuItem(popup, SWT.SEPARATOR);
         MenuItem cutItem = new MenuItem(popup, SWT.PUSH);
         cutItem.setText(cutAction.getText());
         cutItem.addSelectionListener(cutAction);
@@ -334,7 +329,7 @@ public class TestItemEditor extends EditorPart implements ISelectionProvider
         pasteLangItem = new MenuItem(popup, SWT.CASCADE);
         pasteLangItem.setText(MessageUtil.getString("PasteIntoLang"));
         
-        MenuItem separator2 = new MenuItem(popup, SWT.SEPARATOR);
+        new MenuItem(popup, SWT.SEPARATOR);
         MenuItem export = new MenuItem(popup, SWT.PUSH);
         export.setText(MessageUtil.getString("ExportTypeTitle"));
         
@@ -358,26 +353,18 @@ public class TestItemEditor extends EditorPart implements ISelectionProvider
         tableViewer.refresh();
         tableViewer.getTable().pack();
 
-        tableViewer.getTable().addMouseListener(new MouseListener(){
-
-            public void mouseDoubleClick(MouseEvent e)
-            {
-            }
-
+        tableViewer.getTable().addMouseListener(new MouseListener()
+        {
+            public void mouseDoubleClick(MouseEvent e) { }
             public void mouseDown(MouseEvent e)
             {
                 if (e.button == 3)
                     popup.setVisible(true);
             }
-
-            public void mouseUp(MouseEvent e)
-            {
-            }});
+            public void mouseUp(MouseEvent e) {}
+        });
         tableViewer.getTable().addKeyListener(new KeyListener() {
-            public void keyPressed(KeyEvent e)
-            {
-                
-            }
+            public void keyPressed(KeyEvent e) {}
             public void keyReleased(KeyEvent e)
             {
                 if (e.keyCode == SWT.F2)
@@ -961,10 +948,10 @@ public class TestItemEditor extends EditorPart implements ISelectionProvider
     protected class TestItemLabelProvider implements ITableLabelProvider,  
         ITableFontProvider
     {
-    	private HashSet listeners = null;
+    	private HashSet<ILabelProviderListener> listeners = null;
     	public TestItemLabelProvider()
     	{
-    		listeners = new HashSet();
+    		listeners = new HashSet<ILabelProviderListener>();
     	}
         /* (non-Javadoc)
          * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int)
@@ -1210,7 +1197,7 @@ public class TestItemEditor extends EditorPart implements ISelectionProvider
         public void modify(Object element, String property, Object value)
         {
         	Object data = element;
-            lastPropertyChanged = property;
+            //lastPropertyChanged = property;
         	if (element instanceof TableItem)
         	{
         		TableItem tableItem = (TableItem)element;

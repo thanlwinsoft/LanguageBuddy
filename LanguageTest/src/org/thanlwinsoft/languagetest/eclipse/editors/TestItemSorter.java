@@ -3,9 +3,6 @@
  */
 package org.thanlwinsoft.languagetest.eclipse.editors;
 
-//import java.text.Collator;
-import java.util.Comparator;
-
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;

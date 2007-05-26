@@ -360,4 +360,12 @@ public class MetaNode
         }
         
     }
+
+    /**
+     * @return
+     */
+    public String getId()
+    {
+        return data.getMetaId();
+    }
 }

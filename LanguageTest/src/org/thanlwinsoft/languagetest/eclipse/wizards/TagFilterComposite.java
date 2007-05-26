@@ -27,12 +27,12 @@
  */
 package org.thanlwinsoft.languagetest.eclipse.wizards;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
@@ -41,13 +41,20 @@ import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
+import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.thanlwinsoft.languagetest.MessageUtil;
@@ -75,6 +82,11 @@ public class TagFilterComposite extends ScrolledComposite implements ICheckState
     private Object [] rootElements = null;
     private IPath [] checkedPaths = null;
     private TestItemType testItem = null;
+    private Menu popup;
+    private MenuAction addTagAction;
+    private MenuAction deleteTagAction;
+    private MenuAction editTagAction;
+    private MenuAction searchTagAction;
     /**
      * @param parent
      * @param style
@@ -83,6 +95,7 @@ public class TagFilterComposite extends ScrolledComposite implements ICheckState
     {
         super(parent, style);
         init();
+        createMenu();
     }
     protected void init()
     {
@@ -128,7 +141,109 @@ public class TagFilterComposite extends ScrolledComposite implements ICheckState
         tree.setToolTipText(getTagPathDescription());
     }
     
+    protected void createMenu()
+    {
+        popup = new Menu(tree);
+        addTagAction = new MenuAction(MessageUtil.getString("AddTagAction")) {
+            public void run()
+            {
+                addItem(tree.getSelection());
+            }
+        };
+        MenuItem addTag = new MenuItem(popup, SWT.PUSH);
+        addTag.setText(addTagAction.getText());
+        addTag.addSelectionListener(addTagAction);
+        
+        editTagAction = new MenuAction(MessageUtil.getString("EditTagAction")) {
+            public void run()
+            {
+                editItem(tree.getSelection());
+            }
+        };
+        MenuItem editTag = new MenuItem(popup, SWT.PUSH);
+        editTag.setText(editTagAction.getText());
+        editTag.addSelectionListener(editTagAction);
+        
+        deleteTagAction = new MenuAction(MessageUtil.getString("DeleteTagAction")) {
+            public void run()
+            {
+                deleteItem(tree.getSelection());
+            }
+        };
+        MenuItem deleteTag = new MenuItem(popup, SWT.PUSH);
+        deleteTag.setText(deleteTagAction.getText());
+        deleteTag.addSelectionListener(deleteTagAction);
+        
+        searchTagAction = new MenuAction(MessageUtil.getString("SearchTagAction")) {
+            public void run()
+            {
+                searchForTagItems(tree.getSelection());
+            }
+        };
+        MenuItem searchTag = new MenuItem(popup, SWT.PUSH);
+        searchTag.setText(searchTagAction.getText());
+        searchTag.addSelectionListener(searchTagAction);
+        
+        // enable it for right click
+        popup.setEnabled(true);
+        tree.addMouseListener(new MouseListener()
+        {
+            public void mouseDoubleClick(MouseEvent e) { }
+            public void mouseDown(MouseEvent e)
+            {
+                if (e.button == 3)
+                    popup.setVisible(true);
+            }
+            public void mouseUp(MouseEvent e) {}
+        });
+    }
+    
 
+    /**
+     * @param selection
+     */
+    protected void searchForTagItems(TreeItem[] selection)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    /**
+     * @param selection
+     */
+    protected void deleteItem(TreeItem[] selection)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    /**
+     * @param selection
+     */
+    protected void editItem(TreeItem[] selection)
+    {
+        EditTagDialog dialog = new EditTagDialog(this.getShell(), 
+                MessageUtil.getString("EditTagTitle"), 
+                MessageUtil.getString("EditTagDesc"), false);
+        dialog.setSelection(selection);
+        if (dialog.open() == 0)
+        {
+            // TODO
+        }
+    }
+    /**
+     * @param selection
+     */
+    protected void addItem(TreeItem[] selection)
+    {
+        EditTagDialog dialog = new EditTagDialog(this.getShell(), 
+                MessageUtil.getString("AddTagTitle"), 
+                MessageUtil.getString("AddTagDesc"), true);
+        dialog.setSelection(selection);
+        if (dialog.open() == 0)
+        {
+            // TODO create item in config
+        }
+    }
+    
     public MetaNode [] getCheckedNodes()
     {
         Object [] elements = viewer.getCheckedElements();
@@ -297,5 +412,29 @@ public class TagFilterComposite extends ScrolledComposite implements ICheckState
         this.testItem = ti;
         checkedPaths = getCheckedTagPaths();
         tree.setToolTipText(getTagPathDescription());
+    }
+    
+    class MenuAction extends Action implements SelectionListener 
+    {
+        public MenuAction(String text)
+        {
+            super(text);
+        }
+        /* (non-Javadoc)
+         * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
+         */
+        public void widgetDefaultSelected(SelectionEvent e)
+        {
+            
+        }
+
+        /* (non-Javadoc)
+         * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+         */
+        public void widgetSelected(SelectionEvent e)
+        {
+            run();
+        }
+        
     }
 }
