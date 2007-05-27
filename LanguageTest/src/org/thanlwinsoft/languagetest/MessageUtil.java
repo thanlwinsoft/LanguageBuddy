@@ -17,16 +17,16 @@ import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 public class MessageUtil
 {
     private static String resourceBase = "org/thanlwinsoft/languagetest/messages";
-    static public ResourceBundle getMsgResource()
+    static public ResourceBundle getMsgResource() throws MissingResourceException
     {
         return ResourceBundle.getBundle(resourceBase);
     }
     static public String getString(String id)
     {
-        ResourceBundle r = getMsgResource();
-        if (r == null) return id;
         try
         {
+            ResourceBundle r = getMsgResource();
+            if (r == null) return id;
             return r.getString(id);
         }
         catch (MissingResourceException mre)
@@ -37,11 +37,11 @@ public class MessageUtil
     }
     static public String getString(String id, String argA)
     {
-        ResourceBundle r = getMsgResource();
-        if (r == null) return id + " " + argA;
         Object [] args = {argA};
         try
         {
+            ResourceBundle r = getMsgResource();
+            if (r == null) return id + " " + argA;
             String baseString = r.getString(id);
             return MessageFormat.format(baseString, args);
         }
@@ -53,11 +53,11 @@ public class MessageUtil
     }
     static public String getString(String id, String argA, String argB)
     {
-        ResourceBundle r = getMsgResource();
-        if (r == null) return id + " " + argA + " " + argB;
         Object [] args = {argA, argB };
         try
         {
+            ResourceBundle r = getMsgResource();
+            if (r == null) return id + " " + argA + " " + argB;
             String baseString = r.getString(id);
             return MessageFormat.format(baseString, args);
         }
@@ -70,11 +70,11 @@ public class MessageUtil
     static public String getString(String id, String argA, 
                     String argB, String argC)
     {
-        ResourceBundle r = getMsgResource();
-        if (r == null) return id + " " + argA + " " + argB + " " + argC;
         Object [] args = {argA, argB, argC };
         try
         {
+            ResourceBundle r = getMsgResource();
+            if (r == null) return id + " " + argA + " " + argB + " " + argC;
             String baseString = r.getString(id);
             return MessageFormat.format(baseString, args);
         }
@@ -87,11 +87,11 @@ public class MessageUtil
     static public String getString(String id, String argA, 
                     String argB, String argC, String argD)
     {
-        ResourceBundle r = getMsgResource();
-        if (r == null) return id + " " + argA + " " + argB + " " + argC + " " + argD;
         Object [] args = {argA, argB, argC, argD };
         try
         {
+            ResourceBundle r = getMsgResource();
+            if (r == null) return id + " " + argA + " " + argB + " " + argC + " " + argD;
             String baseString = r.getString(id);
             return MessageFormat.format(baseString, args);
         }
@@ -104,12 +104,13 @@ public class MessageUtil
     static public String getString(String id, String argA, 
             String argB, String argC, String argD, String argE)
     {
-        ResourceBundle r = getMsgResource();
-        if (r == null)
-            return id + " " + argA + " " + argB + " " + argC + " " + argD + " " + argE;
         Object [] args = {argA, argB, argC, argD, argE };
         try
         {
+            ResourceBundle r = getMsgResource();
+            if (r == null)
+                return id + " " + argA + " " + argB + " " + argC + " " + argD +
+                    " " + argE;
             String baseString = r.getString(id);
             return MessageFormat.format(baseString, args);
         }

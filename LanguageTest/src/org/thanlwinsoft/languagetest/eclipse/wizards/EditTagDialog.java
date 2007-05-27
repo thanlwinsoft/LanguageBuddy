@@ -28,6 +28,8 @@
 package org.thanlwinsoft.languagetest.eclipse.wizards;
 
 import java.util.LinkedList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -48,10 +50,12 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.TreeItem;
 import org.thanlwinsoft.languagetest.MessageUtil;
-import org.thanlwinsoft.languagetest.eclipse.WorkspaceLanguageManager;
+import org.thanlwinsoft.languagetest.eclipse.workspace.WorkspaceLanguageManager;
 import org.thanlwinsoft.languagetest.language.test.UniversalLanguage;
 import org.thanlwinsoft.languagetest.language.test.meta.MetaNode;
+import org.thanlwinsoft.schemas.languagetest.module.DescType;
 import org.thanlwinsoft.schemas.languagetest.module.LangType;
+import org.thanlwinsoft.schemas.languagetest.module.MetaDataType;
 
 public class EditTagDialog extends MessageDialog
 {
@@ -68,6 +72,9 @@ public class EditTagDialog extends MessageDialog
     private UniversalLanguage language = null;
     private boolean isNew;
     private boolean idDescInSync = true;
+    private MetaDataType metaData = null;
+    private MetaNode metaNode = null;
+    private final static Pattern ILLEGAL_ID_CHAR = Pattern.compile("[\\/*?;:]");
     /**
      * @param parentShell
      * @param dialogTitle
@@ -129,14 +136,18 @@ public class EditTagDialog extends MessageDialog
         if (isNew)
             parentPathCombo.select(parentNodeLevel);
         else
-            parentPathCombo.select(0);
+            parentPathCombo.select(0); // can't be changed
         parentPathCombo.addSelectionListener(new SelectionListener()
         {
             public void widgetDefaultSelected(SelectionEvent e){} 
             public void widgetSelected(SelectionEvent e)
             {
                 parentNodeLevel = parentPathCombo.getSelectionIndex();
-                
+                if (parentNodeLevel == 0)
+                    metaNode = new MetaNode(null, metaData);
+                else
+                    metaNode = new MetaNode(metaNodeList.get(parentNodeLevel - 1), 
+                                            metaData);
             }
         });
         langCombo.addSelectionListener(new SelectionListener(){
@@ -158,10 +169,16 @@ public class EditTagDialog extends MessageDialog
 
             public void modifyText(ModifyEvent e)
             {
+                String id = tagId.getText();
+                Matcher m = ILLEGAL_ID_CHAR.matcher(id);
+                id = m.replaceAll("");
+                tagId.setText(id);
+                metaData.setMetaId(id);
                 // if the tagDesc is null, set it to the same as the id
                 if (tagDesc.getText().length() == 0 || idDescInSync)
                 {
                     tagDesc.setText(tagId.getText());
+                    setLangDesc();
                 }
             }});
         langCombo.setToolTipText(MessageUtil.getString("TagLanguage"));
@@ -183,19 +200,42 @@ public class EditTagDialog extends MessageDialog
                     idDescInSync = true;
                 else
                     idDescInSync = false;
+                setLangDesc();
             }});
         c.pack();
+        // set the focus
+        if (isNew)
+            tagId.setFocus();
+        else
+            tagDesc.setFocus();
         return c;
     }
+    /**
+     * set the description on the MetaData object for the current language
+     */
+    protected void setLangDesc()
+    {
+        for (DescType d : metaData.getDescArray())
+        {
+            if (d.getLang().equals(language.getCode()))
+            {
+                d.setStringValue(tagDesc.getText());
+                return;
+            }
+        }
+        DescType desc = metaData.addNewDesc();
+        desc.setLang(language.getCode());
+        desc.setStringValue(tagDesc.getText());
+    }
+
     private String [] getPathList(String langCode)
     {
-        
+        // get the list of alternative paths 
         if (metaNodeList != null)
         {
             if (isNew)
             {
                 String [] paths = new String[metaNodeList.size() + 1];
-                parentNodeLevel = metaNodeList.size();
                 int i = 0;
                 paths[i++] = "/";
                 for (MetaNode mn : metaNodeList)
@@ -206,9 +246,10 @@ public class EditTagDialog extends MessageDialog
             }
             else
             {
+                // we are editing the node, so the parent path can't be changed
                 if (metaNodeList.size() > 1)
                 {
-                    parentNodeLevel = metaNodeList.size() - 1;
+                    // We want the parent node of the one being edited
                     MetaNode mn = metaNodeList.get(metaNodeList.size() - 2);
                     return new String [] {mn.getPath(langCode)};
                 }
@@ -222,6 +263,7 @@ public class EditTagDialog extends MessageDialog
     {
         if (selection.length > 0)
         {
+            // Note: the metaNodeList excludes the root node
             metaNodeList = new LinkedList<MetaNode>();
             Object o = selection[0].getData();
             if (o instanceof MetaNode)
@@ -235,5 +277,25 @@ public class EditTagDialog extends MessageDialog
                 }
             }
         }
+        if (isNew)
+        {
+            // start with parent as first selected node
+            // 0 = root note, hence parentNodeLevel = size of node list
+            parentNodeLevel = metaNodeList.size();
+            metaData = MetaDataType.Factory.newInstance();
+            metaNode = new MetaNode(metaNodeList.getLast(), metaData);
+        }
+        else
+        {
+            // editing first selected node, so its parent is one above
+            // 0 = root note, hence parentNodeLevel = size of node list - 1 
+            parentNodeLevel = metaNodeList.size() - 1;            
+            metaNode = metaNodeList.getLast();
+            metaData = metaNode.getData();
+        }
+    }
+    public MetaNode getMetaNode()
+    {
+        return metaNode;
     }
 }

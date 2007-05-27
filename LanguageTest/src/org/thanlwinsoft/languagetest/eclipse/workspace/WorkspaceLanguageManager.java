@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.thanlwinsoft.languagetest.eclipse;
+package org.thanlwinsoft.languagetest.eclipse.workspace;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,6 +25,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 
 import org.thanlwinsoft.languagetest.MessageUtil;
+import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.thanlwinsoft.languagetest.eclipse.natures.LanguageUserNature;
 import org.thanlwinsoft.languagetest.language.test.UniversalLanguage;
 import org.thanlwinsoft.schemas.languagetest.module.ConfigType;

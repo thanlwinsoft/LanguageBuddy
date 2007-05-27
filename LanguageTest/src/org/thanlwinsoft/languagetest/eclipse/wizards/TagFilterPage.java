@@ -35,6 +35,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.events.SelectionEvent;
 import org.thanlwinsoft.languagetest.MessageUtil;
+import org.thanlwinsoft.languagetest.eclipse.views.TagFilterComposite;
 import org.thanlwinsoft.languagetest.language.test.TestItemFilter;
 import org.thanlwinsoft.languagetest.language.test.meta.MetaFilter;
 

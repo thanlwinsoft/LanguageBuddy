@@ -25,7 +25,7 @@
 /**
  * 
  */
-package org.thanlwinsoft.languagetest.eclipse.wizards;
+package org.thanlwinsoft.languagetest.eclipse.views;
 
 import java.util.List;
 import java.util.Vector;
@@ -33,6 +33,7 @@ import java.util.Vector;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
@@ -59,9 +60,8 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.editors.TestModuleEditor;
-import org.thanlwinsoft.languagetest.eclipse.views.MetaDataContentProvider;
-import org.thanlwinsoft.languagetest.eclipse.views.MetaDataLabelProvider;
-import org.thanlwinsoft.languagetest.language.test.meta.MetaDataManager;
+import org.thanlwinsoft.languagetest.eclipse.wizards.EditTagDialog;
+import org.thanlwinsoft.languagetest.eclipse.workspace.MetaDataManager;
 import org.thanlwinsoft.languagetest.language.test.meta.MetaNode;
 import org.thanlwinsoft.schemas.languagetest.module.ConfigType;
 import org.thanlwinsoft.schemas.languagetest.module.MetaDataType;
@@ -212,8 +212,19 @@ public class TagFilterComposite extends ScrolledComposite implements ICheckState
      */
     protected void deleteItem(TreeItem[] selection)
     {
-        // TODO Auto-generated method stub
-        
+        for (TreeItem item : selection)
+        {
+            if (item.getData() instanceof MetaNode)
+            {
+                MetaNode mn = (MetaNode)item.getData();
+                if (MessageDialog.openQuestion(getShell(), 
+                    MessageUtil.getString("DeleteTagTitle"), 
+                    MessageUtil.getString("DeleteTagQuestion", mn.getPath())))
+                {
+                    MetaDataManager.deleteNode(mn);
+                }
+            }
+        }
     }
     /**
      * @param selection
@@ -226,7 +237,8 @@ public class TagFilterComposite extends ScrolledComposite implements ICheckState
         dialog.setSelection(selection);
         if (dialog.open() == 0)
         {
-            // TODO
+            MetaNode node = dialog.getMetaNode();
+            MetaDataManager.saveNode(node);
         }
     }
     /**
@@ -240,7 +252,7 @@ public class TagFilterComposite extends ScrolledComposite implements ICheckState
         dialog.setSelection(selection);
         if (dialog.open() == 0)
         {
-            // TODO create item in config
+            MetaDataManager.saveNode(dialog.getMetaNode());
         }
     }
     

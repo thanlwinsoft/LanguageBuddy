@@ -368,4 +368,11 @@ public class MetaNode
     {
         return data.getMetaId();
     }
+    /**
+     * @return
+     */
+    public MetaDataType getData()
+    {
+        return data;
+    }
 }
