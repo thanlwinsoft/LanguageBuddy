@@ -30,6 +30,7 @@ package org.thanlwinsoft.languagetest.eclipse.workspace;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -69,12 +70,12 @@ public class MetaDataManager
         Map <ConfigType, ConfigDetails> map = loadConfigFromProjects();
         return map.keySet().toArray(new ConfigType[map.size()]);
     }
-    protected static TreeMap <ConfigType, ConfigDetails> loadConfigFromProjects()
+    protected static Map <ConfigType, ConfigDetails> loadConfigFromProjects()
     {
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
         IProject [] projects = workspace.getRoot().getProjects();
-        TreeMap <ConfigType, ConfigDetails> config = 
-            new TreeMap<ConfigType, ConfigDetails>();
+        Map <ConfigType, ConfigDetails> config = 
+            new HashMap<ConfigType, ConfigDetails>();
         for (IProject p : projects)
         {
             if (!p.isOpen()) continue;
@@ -163,11 +164,15 @@ public class MetaDataManager
             {
                 if (md.getMetaId().equals(seg))
                 {
-                    IProject project = map.get(c).file.getProject();
-                    if (project.isAccessible())
+                    ConfigDetails cd = map.get(c);
+                    if (cd.file != null)
                     {
-                        
-                        return saveNodeToProject(node, project);
+                        IProject project = cd.file.getProject();
+                        if (project.isAccessible())
+                        {
+                            
+                            return saveNodeToProject(node, project);
+                        }
                     }
                 }
             }
@@ -212,10 +217,13 @@ public class MetaDataManager
             final XmlOptions options = getXmlOptions();
             final LanguageModuleDocument langDoc = 
                 LanguageModuleDocument.Factory.parse(is);
-            if (langDoc != null && langDoc.getLanguageModule() != null && 
-                    langDoc.getLanguageModule().isSetConfig())
+            if (langDoc != null && langDoc.getLanguageModule() != null)
             {
-                ConfigType c = langDoc.getLanguageModule().getConfig();
+                ConfigType c = null;
+                if (langDoc.getLanguageModule().isSetConfig())
+                    c = langDoc.getLanguageModule().getConfig();
+                else
+                    c = langDoc.getLanguageModule().addNewConfig();
                 IPath nodePath = node.toPath();
                 MetaDataType levelData = null;
                 for (MetaDataType md : c.getMetaDataArray())
@@ -230,17 +238,18 @@ public class MetaDataManager
                 {
                     levelData = c.addNewMetaData();
                     levelData.setMetaId(nodePath.segment(0));
-                    if (nodePath.segmentCount() == 1)
-                    {
-                        levelData.set(node.getData());
-                    }
+                }
+                if (nodePath.segmentCount() == 1)
+                {
+                    levelData.set(node.getData());
                 }
                 MetaDataType prevData = levelData;
+                levelData = null;
                 for (int i = 1; i < nodePath.segmentCount(); i++)
                 {
                     for (MetaDataType md : prevData.getMetaDataArray())
                     {
-                        if (md.getMetaId().equals(nodePath.segment(0)))
+                        if (md.getMetaId().equals(nodePath.segment(i)))
                         {
                             levelData = md;
                             break;
@@ -249,13 +258,14 @@ public class MetaDataManager
                     if (levelData == null)
                     {
                         levelData = prevData.addNewMetaData();
-                        levelData.setMetaId(nodePath.segment(0));
-                        if (nodePath.segmentCount() == i + 1)
-                        {
-                            levelData.set(node.getData());
-                        }
+                        levelData.setMetaId(nodePath.segment(i));
+                    }
+                    if (nodePath.segmentCount() == i + 1)
+                    {
+                        levelData.set(node.getData());
                     }
                     prevData = levelData;
+                    levelData = null;
                 }
                 PlatformUI.getWorkbench().getProgressService().run(false, false, 
                         new IRunnableWithProgress()
@@ -265,7 +275,11 @@ public class MetaDataManager
                         try
                         {
                             InputStream is = langDoc.newInputStream(options);
-                            configResource.create(is, IFile.NONE, monitor);
+                            if (configResource.exists())
+                                configResource.setContents(is, IFile.NONE, monitor);
+                            else
+                                configResource.create(is, IFile.NONE, monitor);
+                            configResource.refreshLocal(1, monitor);
                         }
                         catch (CoreException e)
                         {
@@ -386,6 +400,7 @@ public class MetaDataManager
                         details = new MetaDataManager().new 
                             MetaDetails(cd.file, cd.doc, depth, prev, leafIndex);
                     }
+                    break;
                 }
                 leafIndex++;
             }
@@ -397,6 +412,7 @@ public class MetaDataManager
         final XmlOptions options = new XmlOptions();
         options.setCharacterEncoding("UTF-8");
         options.setLoadUseDefaultResolver();
+        options.setSavePrettyPrint();
         options.setDocumentType(LanguageModuleDocument.type);
         return options;
     }
@@ -410,7 +426,7 @@ public class MetaDataManager
         if (details != null)
         {
             // check that the MetaNode was found down to the correct depth
-            if (details.depth < mn.toPath().segmentCount())
+            if (details.depth + 1 < mn.toPath().segmentCount())
             {
                 LanguageTestPlugin.log(IStatus.INFO, "Could not find " + 
                         mn.getPath() + " to delete or it may be read only.");
@@ -435,6 +451,7 @@ public class MetaDataManager
                         try
                         {
                             details.file.setContents(is, IFile.NONE, monitor);
+                            details.file.refreshLocal(1, monitor);
                         }
                         catch (CoreException e)
                         {
@@ -481,7 +498,7 @@ public class MetaDataManager
         }
     }
     /**
-     * Structure to hold the results from findExistingMetaData()
+     * Structure to hold the results from loadConfigFromProject()
      * @author keith
      *
      */

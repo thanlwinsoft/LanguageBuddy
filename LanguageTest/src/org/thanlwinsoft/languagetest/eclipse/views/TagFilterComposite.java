@@ -60,7 +60,6 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.editors.TestModuleEditor;
-import org.thanlwinsoft.languagetest.eclipse.wizards.EditTagDialog;
 import org.thanlwinsoft.languagetest.eclipse.workspace.MetaDataManager;
 import org.thanlwinsoft.languagetest.language.test.meta.MetaNode;
 import org.thanlwinsoft.schemas.languagetest.module.ConfigType;
@@ -115,14 +114,9 @@ public class TagFilterComposite extends ScrolledComposite implements ICheckState
         labelProvider = new MetaDataLabelProvider(this.getDisplay());
         viewer.setContentProvider(contentProvider);
         viewer.setLabelProvider(labelProvider);
-        ConfigType [] config = MetaDataManager.loadConfig();
-        // convert the config array into the top level MetaNodes
-        // otherwise we can't compare MetaNodes from TreePaths
-        rootElements = contentProvider.getElements(config);
-        viewer.setInput(rootElements);
-        viewer.refresh();
+        
         viewer.addCheckStateListener(this);
-        viewer.expandAll();
+        refresh();
         setContent(tree);
         setExpandHorizontal(true);
         setExpandVertical(true);
@@ -139,6 +133,17 @@ public class TagFilterComposite extends ScrolledComposite implements ICheckState
             setLayoutData(treeGridData);
         }
         tree.setToolTipText(getTagPathDescription());
+    }
+    
+    protected void refresh()
+    {
+        ConfigType [] config = MetaDataManager.loadConfig();
+        // convert the config array into the top level MetaNodes
+        // otherwise we can't compare MetaNodes from TreePaths
+        rootElements = contentProvider.getElements(config);
+        viewer.setInput(rootElements);
+        viewer.refresh();
+        viewer.expandAll();
     }
     
     protected void createMenu()
@@ -186,16 +191,17 @@ public class TagFilterComposite extends ScrolledComposite implements ICheckState
         
         // enable it for right click
         popup.setEnabled(true);
-        tree.addMouseListener(new MouseListener()
-        {
-            public void mouseDoubleClick(MouseEvent e) { }
-            public void mouseDown(MouseEvent e)
-            {
-                if (e.button == 3)
-                    popup.setVisible(true);
-            }
-            public void mouseUp(MouseEvent e) {}
-        });
+        tree.setMenu(popup);
+//        tree.addMouseListener(new MouseListener()
+//        {
+//            public void mouseDoubleClick(MouseEvent e) { }
+//            public void mouseDown(MouseEvent e)
+//            {
+//                if (e.button == 3)
+//                    popup.setVisible(true);
+//            }
+//            public void mouseUp(MouseEvent e) {}
+//        });
     }
     
 
@@ -212,6 +218,7 @@ public class TagFilterComposite extends ScrolledComposite implements ICheckState
      */
     protected void deleteItem(TreeItem[] selection)
     {
+        boolean deleted = false;
         for (TreeItem item : selection)
         {
             if (item.getData() instanceof MetaNode)
@@ -221,9 +228,20 @@ public class TagFilterComposite extends ScrolledComposite implements ICheckState
                     MessageUtil.getString("DeleteTagTitle"), 
                     MessageUtil.getString("DeleteTagQuestion", mn.getPath())))
                 {
-                    MetaDataManager.deleteNode(mn);
+                    if (!MetaDataManager.deleteNode(mn))
+                    {
+                        MessageDialog.openWarning(getShell(), 
+                                MessageUtil.getString("DeleteTagTitle"), 
+                                MessageUtil.getString("TagDeleteFailed", 
+                                                      mn.getPath()));
+                    }
+                    else deleted = true;
                 }
             }
+        }
+        if (deleted)
+        {
+            refresh();
         }
     }
     /**
@@ -238,7 +256,16 @@ public class TagFilterComposite extends ScrolledComposite implements ICheckState
         if (dialog.open() == 0)
         {
             MetaNode node = dialog.getMetaNode();
-            MetaDataManager.saveNode(node);
+            if (MetaDataManager.saveNode(node))
+            {
+                refresh();
+            }
+            else
+            {
+                MessageDialog.openWarning(getShell(), 
+                    MessageUtil.getString("EditTagTitle"), 
+                    MessageUtil.getString("TagEditFailed", node.getPath()));
+            }
         }
     }
     /**
@@ -252,7 +279,17 @@ public class TagFilterComposite extends ScrolledComposite implements ICheckState
         dialog.setSelection(selection);
         if (dialog.open() == 0)
         {
-            MetaDataManager.saveNode(dialog.getMetaNode());
+            MetaNode node = dialog.getMetaNode();
+            if (MetaDataManager.saveNode(node))
+            {
+                refresh();
+            }
+            else
+            {
+                MessageDialog.openWarning(getShell(), 
+                    MessageUtil.getString("AddTagTitle"), 
+                    MessageUtil.getString("TagCreateFailed", node.getPath()));
+            }
         }
     }
     

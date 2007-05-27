@@ -35,8 +35,10 @@ import java.util.Vector;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.thanlwinsoft.languagetest.eclipse.workspace.WorkspaceLanguageManager;
 import org.thanlwinsoft.schemas.languagetest.module.ConfigType;
 import org.thanlwinsoft.schemas.languagetest.module.DescType;
+import org.thanlwinsoft.schemas.languagetest.module.LangType;
 import org.thanlwinsoft.schemas.languagetest.module.MetaDataType;
 import org.thanlwinsoft.schemas.languagetest.module.TagType;
 import org.thanlwinsoft.schemas.languagetest.module.TestItemType;
@@ -128,11 +130,11 @@ public class MetaNode
     {
         if (parent == null)
         {
-            return getName(lang);
+            return SEPARATOR + getName(lang);
         }
         else
         {
-            return parent.getName(lang) + SEPARATOR + getName(lang);
+            return parent.getPath(lang) + SEPARATOR + getName(lang);
         }
     }
     public String getName(String lang)
@@ -162,6 +164,9 @@ public class MetaNode
     protected String getDefaultLang()
     {
         String lang = System.getProperty("osgi.nl");
+        LangType [] userLangs = WorkspaceLanguageManager.findUserLanguages();
+        if (userLangs != null && userLangs.length > 0)
+            lang = userLangs[0].getLang();
         if (lang == null)
             lang = "en";
         return lang;

@@ -25,7 +25,7 @@
 /**
  * 
  */
-package org.thanlwinsoft.languagetest.eclipse.wizards;
+package org.thanlwinsoft.languagetest.eclipse.views;
 
 import java.util.LinkedList;
 import java.util.regex.Matcher;
@@ -40,12 +40,15 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.TreeItem;
@@ -74,7 +77,8 @@ public class EditTagDialog extends MessageDialog
     private boolean idDescInSync = true;
     private MetaDataType metaData = null;
     private MetaNode metaNode = null;
-    private final static Pattern ILLEGAL_ID_CHAR = Pattern.compile("[\\/*?;:]");
+    private static final int CONTROL_WIDTH = 200;
+    private final static Pattern ILLEGAL_ID_CHAR = Pattern.compile("[\\\\/*?;:]");
     /**
      * @param parentShell
      * @param dialogTitle
@@ -101,26 +105,32 @@ public class EditTagDialog extends MessageDialog
         Composite c = (Composite)super.createDialogArea(parent);
         //c.setSize(400, SWT.DEFAULT);
         Group group = new Group(c, SWT.SHADOW_ETCHED_IN);
-        RowLayout layout = new RowLayout(SWT.VERTICAL);
-        layout.fill = true;
-        layout.justify = true;
+        GridLayout layout = new GridLayout();
+        layout.numColumns = 2;
         group.setLayout(layout);
-        final Combo parentPathCombo = new Combo(group, SWT.LEAD);
-        parentPathCombo.setLayoutData(new RowData(400, SWT.DEFAULT));
+        new Label(group, SWT.LEAD).setText(MessageUtil.getString("TagParent"));
+        final Combo parentPathCombo = new Combo(group, SWT.LEAD | SWT.READ_ONLY);
+        parentPathCombo.setLayoutData(new GridData(CONTROL_WIDTH, SWT.DEFAULT));
         parentPathCombo.setToolTipText(MessageUtil.getString("TagParentPath"));
+        
         final ComboViewer pathCV = new ComboViewer(parentPathCombo);
         pathCV.setContentProvider(new ArrayContentProvider());
         parentPathCombo.setEnabled(isNew);
+        new Label(group, SWT.LEAD).setText(MessageUtil.getString("TagId"));
         tagId = new Text(group, SWT.LEAD);
+        tagId.setLayoutData(new GridData(CONTROL_WIDTH, SWT.DEFAULT));
         tagId.setEnabled(isNew);
         if (!isNew)
         {
             tagId.setText(metaNodeList.getLast().getId());
         }
-        langCombo = new Combo(group, SWT.LEAD);
+        new Label(group, SWT.LEAD).setText(MessageUtil.getString("TagLang"));
+        langCombo = new Combo(group, SWT.LEAD | SWT.READ_ONLY);
         ComboViewer langCV = new ComboViewer(langCombo);
         langCV.setContentProvider(new ArrayContentProvider());
+        new Label(group, SWT.LEAD).setText(MessageUtil.getString("TagDesc"));
         tagDesc = new Text(group, SWT.LEAD);
+        tagDesc.setLayoutData(new GridData(CONTROL_WIDTH, SWT.DEFAULT));
         LangType [] langs = WorkspaceLanguageManager.findUserLanguages();
         final UniversalLanguage [] uLangs = new UniversalLanguage[langs.length];
         for (int i = 0; i < langs.length; i++)
@@ -162,6 +172,15 @@ public class EditTagDialog extends MessageDialog
                         new UniversalLanguage(uLangs[i].getLanguageCode()).getDescription();
                     tagDesc.setToolTipText(MessageUtil.getString("TagDescription", langName));
                     pathCV.setInput(getPathList(language.getCode()));
+                    for (DescType d : metaData.getDescArray())
+                    {
+                        if (d.getLang().equals(language.getCode()))
+                        {
+                            tagDesc.setText(d.getStringValue());
+                            idDescInSync = false;
+                            return;
+                        }
+                    }
                 }
             }});
         tagId.setToolTipText(MessageUtil.getString("TagID"));
@@ -171,8 +190,11 @@ public class EditTagDialog extends MessageDialog
             {
                 String id = tagId.getText();
                 Matcher m = ILLEGAL_ID_CHAR.matcher(id);
-                id = m.replaceAll("");
-                tagId.setText(id);
+                if (m.find())
+                {
+                    id = m.replaceAll("");
+                    tagId.setText(id);
+                }
                 metaData.setMetaId(id);
                 // if the tagDesc is null, set it to the same as the id
                 if (tagDesc.getText().length() == 0 || idDescInSync)
