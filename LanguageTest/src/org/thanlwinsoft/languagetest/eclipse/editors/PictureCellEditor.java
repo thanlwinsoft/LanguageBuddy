@@ -13,6 +13,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Label;
 import org.thanlwinsoft.languagetest.MessageUtil;
 
 /**
@@ -63,8 +64,12 @@ public class PictureCellEditor extends DialogCellEditor {
 	protected void doSetValue(Object value) 
 	{
 		super.doSetValue(value);
-		this.getDefaultLabel().setText(value.toString());
-		this.getDefaultLabel().setToolTipText(value.toString());
+		if (value != null)
+		{
+		    Label label = this.getDefaultLabel(); 
+		    label.setText(value.toString());
+		    label.setToolTipText(value.toString());
+		}
 	}
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.viewers.DialogCellEditor#updateContents(java.lang.Object)

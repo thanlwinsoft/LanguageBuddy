@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ICellEditorListener;
@@ -351,18 +352,18 @@ public class TestItemEditor extends EditorPart implements ISelectionProvider
         tableViewer.setInput(parent.getDocument());
         tableViewer.getTable().setData(parent.getDocument());
         tableViewer.refresh();
-        tableViewer.getTable().pack();
-
-        tableViewer.getTable().addMouseListener(new MouseListener()
-        {
-            public void mouseDoubleClick(MouseEvent e) { }
-            public void mouseDown(MouseEvent e)
-            {
-                if (e.button == 3)
-                    popup.setVisible(true);
-            }
-            public void mouseUp(MouseEvent e) {}
-        });
+        //tableViewer.getTable().pack();
+        tableViewer.getTable().setMenu(popup);
+//        tableViewer.getTable().addMouseListener(new MouseListener()
+//        {
+//            public void mouseDoubleClick(MouseEvent e) { }
+//            public void mouseDown(MouseEvent e)
+//            {
+//                if (e.button == 3)
+//                    popup.setVisible(true);
+//            }
+//            public void mouseUp(MouseEvent e) {}
+//        });
         tableViewer.getTable().addKeyListener(new KeyListener() {
             public void keyPressed(KeyEvent e) {}
             public void keyReleased(KeyEvent e)
@@ -958,7 +959,35 @@ public class TestItemEditor extends EditorPart implements ISelectionProvider
          */
         public Image getColumnImage(Object element, int columnIndex)
         {
-            // TODO Auto-generated method stub
+            if (element instanceof TestItemType)
+            {
+                TestItemType ti = (TestItemType)element;
+                ImageDescriptor id = null;
+                if (columnIndex == SOUND_COL_ID)
+                {
+                    if (ti.isSetSoundFile())
+                    {
+                        id = LanguageTestPlugin.getImageDescriptor("icons/audio.jpg");
+                    }
+                    else
+                    {
+                        id = LanguageTestPlugin.getImageDescriptor("icons/noAudio.jpg");
+                    }
+                }
+                else if (columnIndex == PICTURE_COL_ID)
+                {
+                    if (ti.isSetImg())
+                    {
+                        id = LanguageTestPlugin.getImageDescriptor("icons/picture.jpg");
+                    }
+                    else
+                    {
+                        id = LanguageTestPlugin.getImageDescriptor("icons/noPicture.jpg");
+                    }
+                }
+                if (id != null) 
+                    return id.createImage(tableViewer.getTable().getDisplay());
+            }
             return null;
         }
 
@@ -1230,7 +1259,8 @@ public class TestItemEditor extends EditorPart implements ISelectionProvider
                     
                     String soundFilePath = getRelativePath(value.toString());
                     
-                    if (testItem.isSetSoundFile() &&
+                    if (testItem.isSetSoundFile() && 
+                        testItem.getSoundFile().getStringValue() != null &&
                         testItem.getSoundFile().getStringValue().equals(soundFilePath))
                     {
                         return; // unchanged
@@ -1248,7 +1278,8 @@ public class TestItemEditor extends EditorPart implements ISelectionProvider
                 	if (value != null)
                     {
                         String imgPath = getRelativePath(value.toString());
-                        if (testItem.isSetImg() && testItem.getImg().equals(imgPath)) return;
+                        if (testItem.isSetImg() && testItem.getImg() != null &&
+                            testItem.getImg().equals(imgPath)) return;
                 		if (imgPath == null || imgPath.length() == 0) testItem.setImg(null);
                         else testItem.setImg(imgPath); 
                     }
@@ -1309,7 +1340,11 @@ public class TestItemEditor extends EditorPart implements ISelectionProvider
                 if (testItem.getDomNode().getParentNode() == null)
                 {
                     TestItemType ti = parent.getDocument().getLanguageModule().addNewTestItem();
-                    ti.setCreator(testItem.getCreator());
+                    IProject [] up = WorkspaceLanguageManager.findUserProjects();
+                    if (up.length > 0)
+                    {
+                        ti.setCreator(up[0].getName());
+                    }
                     ti.setCreationTime(new Date().getTime());
                     ti.setNativeLangArray(testItem.getNativeLangArray());
                     ti.setForeignLangArray(testItem.getForeignLangArray());
@@ -1341,7 +1376,7 @@ public class TestItemEditor extends EditorPart implements ISelectionProvider
             if (!f.exists()) return null;
             IPath path = new Path(fullPath);
             IPath mp = moduleFile.getRawLocation().removeLastSegments(1);
-            if (mp.getDevice().endsWith(path.getDevice()) && mp.isPrefixOf(path))
+            if (mp.isPrefixOf(path))
             {
                 path = path.removeFirstSegments(mp.segmentCount());
                 path = path.setDevice("");

@@ -4,7 +4,6 @@
 package org.thanlwinsoft.languagetest.eclipse.editors;
 
 import java.util.HashSet;
-import java.util.Hashtable;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -14,7 +13,6 @@ import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.thanlwinsoft.languagetest.eclipse.search.TestItemMatch;
-import org.thanlwinsoft.languagetest.language.test.UniversalLanguage;
 import org.thanlwinsoft.schemas.languagetest.module.TestItemType;
 
 import com.ibm.icu.text.Collator;
