@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="LanguageTest" default="default" basedir=".">
+    <description>Builds, tests, and runs the project LanguageTest.</description>
+	
+	<taskdef name="xmlbean" classname="org.apache.xmlbeans.impl.tool.XMLBean" 
+		classpath="libs/xbean.jar"/>
+	<!-- - - - - - - - - - - - - - - - - - 
+          target: default                      
+         - - - - - - - - - - - - - - - - - -->
+    <target name="default" depends="compile-schema">
+            
+    </target>
+
+	<path id="xmlbeans.cp">
+		<pathelement location="libs/xbean.jar"/>
+		<pathelement location="libs/xbean_xpath.jar"/>
+		<pathelement location="libs/xmlpublic.jar"/>
+		<pathelement location="libs/resolver.jar"/>
+	</path>
+    <!-- ================================= 
+          target: compile-schema              
+         ================================= -->
+    <target name="compile-schema" description="compile schema">
+	<xmlbean classgendir="schemas/classes" srcgendir="schemas/src" 
+	      failonerror="true" destfile="libs/LanguageTestTypes.jar"
+		  classpathref="xmlbeans.cp">
+	  <fileset dir="schemas">
+		<include name="LangModuleSchema.xsd"/>
+		<include name="LangTestHistory.xsd"/>
+	  </fileset>
+	</xmlbean>
+    </target>
+
+</project>

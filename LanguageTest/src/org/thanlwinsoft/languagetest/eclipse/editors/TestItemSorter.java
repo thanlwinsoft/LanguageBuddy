@@ -3,12 +3,18 @@
  */
 package org.thanlwinsoft.languagetest.eclipse.editors;
 
+import java.util.HashSet;
+import java.util.Hashtable;
+
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
+import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.thanlwinsoft.languagetest.eclipse.search.TestItemMatch;
+import org.thanlwinsoft.languagetest.language.test.UniversalLanguage;
 import org.thanlwinsoft.schemas.languagetest.module.TestItemType;
 
 import com.ibm.icu.text.Collator;
@@ -25,9 +31,13 @@ public class TestItemSorter extends ViewerComparator
     private int columnIndex = -1;
     private int sortFactor = 1;
     private Collator icuCollator = null;
+    private HashSet<ULocale> locales;
     public TestItemSorter()
     {
-        
+        locales = new HashSet<ULocale>();
+        ULocale [] available = Collator.getAvailableULocales();
+        for (ULocale l : available)
+            locales.add(l);
     }
     public void setSortColumn(int colIndex, String col)
     {
@@ -41,6 +51,21 @@ public class TestItemSorter extends ViewerComparator
         else
         {
             ULocale locale = new ULocale(localeID);
+            if (!locales.contains(locale))
+            {
+                int firstSep = localeID.indexOf('_');
+                if (firstSep > -1)
+                {
+                    String langOnly = localeID.substring(0, firstSep);
+                    locale = new ULocale(langOnly);
+                    if (!locales.contains(locale))
+                    {
+                        LanguageTestPlugin.log(IStatus.WARNING,
+                                "No Collator found for " + localeID);
+                    }
+                }
+                
+            }
             icuCollator = Collator.getInstance(locale);
         }
     }
