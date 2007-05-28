@@ -88,4 +88,19 @@ public class MetaFilter implements TestItemFilter
         return false;
     }
 
+    /* (non-Javadoc)
+     * @see org.thanlwinsoft.languagetest.language.test.TestItemFilter#getDescription()
+     */
+    public String getDescription()
+    {
+        StringBuilder sb = new StringBuilder();
+        final String eol = System.getProperty("line.separator");
+        for (IPath p : metaSet)
+        {
+            if (sb.length() > 0) sb.append(eol);
+            sb.append(p.toString());
+        }
+        return sb.toString();
+    }
+
 }

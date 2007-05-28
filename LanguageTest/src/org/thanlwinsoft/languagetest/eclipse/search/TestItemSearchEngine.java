@@ -192,4 +192,18 @@ public class TestItemSearchEngine extends TextSearchEngine
             maxLanguages = Math.max(maxLanguages, lm.sizeOfLangArray());
         }
     }
+    public String getFilterDescription()
+    {
+        if (filters.length == 0)
+            return "";
+        StringBuilder sb = new StringBuilder();
+        sb.append("[");
+        for (TestItemFilter f : filters)
+        {
+            if (sb.length() > 1) sb.append(" ");
+            sb.append(f.getDescription());
+        }
+        sb.append("]");
+        return sb.toString();
+    }
 }

@@ -57,7 +57,8 @@ public class TestItemQuery implements ISearchQuery
      */
     public String getLabel()
     {
-        return MessageUtil.getString("TestItemQueryLabel",searchPattern.pattern());
+        return MessageUtil.getString("TestItemQueryLabel",
+                searchPattern.pattern() + engine.getFilterDescription());
     }
 
     /* (non-Javadoc)

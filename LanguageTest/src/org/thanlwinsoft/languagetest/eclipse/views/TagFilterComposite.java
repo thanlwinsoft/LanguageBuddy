@@ -27,19 +27,26 @@
  */
 package org.thanlwinsoft.languagetest.eclipse.views;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Vector;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.TreePath;
+import org.eclipse.search.core.text.TextSearchScope;
+import org.eclipse.search.ui.NewSearchUI;
+import org.eclipse.search.ui.text.FileTextSearchScope;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.MouseEvent;
@@ -60,9 +67,15 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.editors.TestModuleEditor;
+import org.thanlwinsoft.languagetest.eclipse.search.TestItemQuery;
+import org.thanlwinsoft.languagetest.eclipse.search.TestItemSearchEngine;
 import org.thanlwinsoft.languagetest.eclipse.workspace.MetaDataManager;
+import org.thanlwinsoft.languagetest.eclipse.workspace.WorkspaceLanguageManager;
+import org.thanlwinsoft.languagetest.language.test.TestItemFilter;
+import org.thanlwinsoft.languagetest.language.test.meta.MetaFilter;
 import org.thanlwinsoft.languagetest.language.test.meta.MetaNode;
 import org.thanlwinsoft.schemas.languagetest.module.ConfigType;
+import org.thanlwinsoft.schemas.languagetest.module.LangType;
 import org.thanlwinsoft.schemas.languagetest.module.MetaDataType;
 import org.thanlwinsoft.schemas.languagetest.module.TestItemType;
 import org.thanlwinsoft.schemas.languagetest.module.TagType;
@@ -210,7 +223,34 @@ public class TagFilterComposite extends ScrolledComposite implements ICheckState
      */
     protected void searchForTagItems(TreeItem[] selection)
     {
-        // TODO Auto-generated method stub
+        Vector <IPath> tags = new Vector<IPath>(selection.length);
+        for (TreeItem item : selection)
+        {
+            if (item.getData() instanceof MetaNode)
+            {
+                tags.add(((MetaNode)item.getData()).toPath());
+            }
+        }
+        if (tags.size() == 0) return; // nothing to do
+
+        TestItemFilter [] filters = { 
+            new MetaFilter(tags.toArray(new IPath[tags.size()]), 
+                           MetaFilter.Mode.ALL)
+        };
+        LangType [] langCodes = WorkspaceLanguageManager.findUserLanguages();
+        HashSet<String> langSet = new HashSet<String>(langCodes.length);
+        for (int i = 0; i < langCodes.length; i++)
+        {
+            langSet.add(langCodes[i].getLang());
+        }
+        String [] langs = langSet.toArray(new String[langSet.size()]);
+        TestItemSearchEngine engine = new TestItemSearchEngine(langSet, filters);
+        TextSearchScope scope = 
+            FileTextSearchScope.newWorkspaceScope(new String[] {"*.xml"}, false);
+        Pattern searchPattern = Pattern.compile("");
+        final TestItemQuery query = 
+            new TestItemQuery(engine, scope, searchPattern, langs);
+        NewSearchUI.runQueryInBackground(query);
         
     }
     /**

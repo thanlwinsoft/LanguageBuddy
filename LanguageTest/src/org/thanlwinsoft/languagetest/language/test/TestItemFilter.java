@@ -37,4 +37,5 @@ import org.thanlwinsoft.schemas.languagetest.module.TestItemType;
 public interface TestItemFilter
 {
     boolean chooseItem(LanguageModuleType module, TestItemType item);
+    String getDescription();
 }
