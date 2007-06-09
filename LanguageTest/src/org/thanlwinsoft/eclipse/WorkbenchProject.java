@@ -1,19 +1,29 @@
-/**
- * 
+/*
+ * -----------------------------------------------------------------------
+ *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/LanguageTest/src/org/thanlwinsoft/eclipse/WorkbenchProject.java $
+ *  Revision        $LastChangedRevision: 852 $
+ *  Last Modified:  $LastChangedDate: 2007-06-09 16:02:23 +0700 (Sat, 09 Jun 2007) $
+ *  Last Change by: $LastChangedBy: keith $
+ * -----------------------------------------------------------------------
+ *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *  
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *  
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+ *  MA 02110-1301 USA
+ * -----------------------------------------------------------------------
  */
 package org.thanlwinsoft.eclipse;
-/*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
-//package org.eclipse.ui.internal.ide.model;
-
 import java.util.HashMap;
 
 import org.eclipse.core.resources.IProject;
@@ -36,7 +46,8 @@ import org.thanlwinsoft.languagetest.eclipse.natures.LanguageUserNature;
  * An IWorkbenchAdapter that represents IProject.
  */
 public class WorkbenchProject extends WorkbenchResource implements
-        IProjectActionFilter {
+        IProjectActionFilter 
+{
     HashMap imageCache = new HashMap(11);
     HashMap natureMap = new HashMap();
     /**
@@ -44,7 +55,8 @@ public class WorkbenchProject extends WorkbenchResource implements
      *  considering the passed open status as well iff appropriate for the type of
      *  passed resource
      */
-    protected ImageDescriptor getBaseImage(IResource resource) {
+    protected ImageDescriptor getBaseImage(IResource resource) 
+    {
         IProject project = (IProject) resource;
         boolean isOpen = project.isOpen();
         String baseKey = isOpen ? ISharedImages.IMG_OBJ_FOLDER
@@ -96,30 +108,6 @@ public class WorkbenchProject extends WorkbenchResource implements
                     return LanguageTestPlugin.getImageDescriptor("/icons/userClosed.png");
                 }
             }
-//            String[] natureIds = project.getDescription().getNatureIds();
-//            for (int i = 0; i < natureIds.length; ++i) {
-//                // Have to use a cache because OverlayIcon does not define its own equality criteria,
-//                // so WorkbenchLabelProvider would always create a new image otherwise.
-//                String imageKey = natureIds[i];
-//                ImageDescriptor overlayImage = (ImageDescriptor) imageCache
-//                        .get(imageKey);
-//                if (overlayImage != null) 
-//                {
-//                    return overlayImage;
-//                }
-//                    ImageDescriptor natureImage = IDEWorkbenchPlugin
-//                            .getDefault().getProjectImageRegistry()
-//                            .getNatureImage(natureIds[i]);
-//                    if (natureImage != null) {
-//                        ImageDescriptor baseImage = IDEInternalWorkbenchImages
-//                                .getImageDescriptor(baseKey);
-//                        overlayImage = new OverlayIcon(baseImage,
-//                                new ImageDescriptor[][] { { natureImage } },
-//                                new Point(16, 16));
-//                        imageCache.put(imageKey, overlayImage);
-//                        return overlayImage;
-//                    }
-//            }
         } 
         catch (CoreException e) 
         {
@@ -127,18 +115,22 @@ public class WorkbenchProject extends WorkbenchResource implements
         }
         
         return PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(baseKey);
-        //return IDEInternalWorkbenchImages.getImageDescriptor(baseKey);
     }
 
     /**
      * Returns the children of this container.
      */
-    public Object[] getChildren(Object o) {
+    public Object[] getChildren(Object o) 
+    {
         IProject project = (IProject) o;
-        if (project.isOpen()) {
-            try {
+        if (project.isOpen()) 
+        {
+            try 
+            {
                 return project.members();
-            } catch (CoreException e) {
+            } 
+            catch (CoreException e) 
+            {
                 //don't get the children if there are problems with the project
             }
         }
@@ -154,15 +146,20 @@ public class WorkbenchProject extends WorkbenchResource implements
      * @param value the attriute value
      * @return <code>true</code> if the attribute matches; <code>false</code> otherwise
      */
-    public boolean testAttribute(Object target, String name, String value) {
-        if (!(target instanceof IProject)) {
+    public boolean testAttribute(Object target, String name, String value) 
+    {
+        if (!(target instanceof IProject)) 
+        {
             return false;
         }
         IProject proj = (IProject) target;
-        if (name.equals(NATURE)) {
+        if (name.equals(NATURE)) 
+        {
             try {
                 return proj.isAccessible() && proj.hasNature(value);
-            } catch (CoreException e) {
+            } 
+            catch (CoreException e) 
+            {
                 return false;
             }
         } else if (name.equals(OPEN)) {

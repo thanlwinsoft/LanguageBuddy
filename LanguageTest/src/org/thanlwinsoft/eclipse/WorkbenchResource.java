@@ -1,18 +1,29 @@
-/**
- * 
+/*
+ * -----------------------------------------------------------------------
+ *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/LanguageTest/src/org/thanlwinsoft/eclipse/WorkbenchResource.java $
+ *  Revision        $LastChangedRevision: 852 $
+ *  Last Modified:  $LastChangedDate: 2007-06-09 16:02:23 +0700 (Sat, 09 Jun 2007) $
+ *  Last Change by: $LastChangedBy: keith $
+ * -----------------------------------------------------------------------
+ *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *  
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *  
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+ *  MA 02110-1301 USA
+ * -----------------------------------------------------------------------
  */
 package org.thanlwinsoft.eclipse;
-/*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
-//package org.eclipse.ui.internal.ide.model;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -31,7 +42,8 @@ import org.eclipse.ui.model.WorkbenchAdapter;
  * An IWorkbenchAdapter that represents IResources.
  */
 public abstract class WorkbenchResource extends WorkbenchAdapter implements
-        IResourceActionFilter {
+        IResourceActionFilter 
+{
 
     /**
      *  Answer the appropriate base image to use for the resource.
@@ -41,7 +53,8 @@ public abstract class WorkbenchResource extends WorkbenchAdapter implements
     /**
      * Returns an image descriptor for this object.
      */
-    public ImageDescriptor getImageDescriptor(Object o) {
+    public ImageDescriptor getImageDescriptor(Object o) 
+    {
         IResource resource = getResource(o);
         return resource == null ? null : getBaseImage(resource);
     }
@@ -49,7 +62,8 @@ public abstract class WorkbenchResource extends WorkbenchAdapter implements
     /**
      * getLabel method comment.
      */
-    public String getLabel(Object o) {
+    public String getLabel(Object o) 
+    {
         IResource resource = getResource(o);
         return resource == null ? null : resource.getName();
     }
@@ -58,7 +72,8 @@ public abstract class WorkbenchResource extends WorkbenchAdapter implements
      * Returns the parent of the given object.  Returns null if the
      * parent is not available.
      */
-    public Object getParent(Object o) {
+    public Object getParent(Object o) 
+    {
         IResource resource = getResource(o);
         return resource == null ? null : resource.getParent();
     }
@@ -67,7 +82,8 @@ public abstract class WorkbenchResource extends WorkbenchAdapter implements
      * Returns the resource corresponding to this object,
      * or null if there is none.
      */
-    protected IResource getResource(Object o) {
+    protected IResource getResource(Object o) 
+    {
         if (o instanceof IResource) {
             return (IResource) o;
         }
@@ -86,8 +102,10 @@ public abstract class WorkbenchResource extends WorkbenchAdapter implements
      * @param value the attribute value
      * @return <code>true</code> if the attribute matches; <code>false</code> otherwise
      */
-    public boolean testAttribute(Object target, String name, String value) {
-        if (!(target instanceof IResource)) {
+    public boolean testAttribute(Object target, String name, String value) 
+    {
+        if (!(target instanceof IResource)) 
+        {
             return false;
         }
         IResource res = (IResource) target;
@@ -139,7 +157,8 @@ public abstract class WorkbenchResource extends WorkbenchAdapter implements
      *         <code>false</code> otherwise.
      */
     private final boolean testContentTypeProperty(final IResource resource,
-            final String contentTypeId) {
+            final String contentTypeId) 
+    {
         final String expectedValue = contentTypeId.trim();
 
         if (!(resource instanceof IFile)) {
@@ -158,7 +177,9 @@ public abstract class WorkbenchResource extends WorkbenchAdapter implements
                         .getContentType();
                 actualValue = contentType.getId();
             }
-        } catch (CoreException e) {
+        } 
+        catch (CoreException e) 
+        {
             //ignore - this just means the file does not exist or is not accessible
         }
 
@@ -183,7 +204,8 @@ public abstract class WorkbenchResource extends WorkbenchAdapter implements
      * @return whether there is a match
      */
     private boolean testProperty(IResource resource, boolean persistentFlag,
-            boolean projectFlag, String value) {
+            boolean projectFlag, String value) 
+    {
         String propertyName;
         String expectedVal;
         int i = value.indexOf('=');

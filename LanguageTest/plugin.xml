@@ -28,6 +28,10 @@
          <property
                name="windowImages"
                value="icons/languageBuddy16.png"/>
+         <property
+               name="licenseHref"
+               value="http://www.gnu.org/licenses/lgpl.html">
+         </property>
       </product>
    </extension>
    <extension

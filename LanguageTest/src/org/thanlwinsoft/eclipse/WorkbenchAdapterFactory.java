@@ -1,20 +1,31 @@
+/*
+ * -----------------------------------------------------------------------
+ *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/LanguageTest/src/org/thanlwinsoft/eclipse/WorkbenchAdapterFactory.java $
+ *  Revision        $LastChangedRevision: 852 $
+ *  Last Modified:  $LastChangedDate: 2007-06-09 16:02:23 +0700 (Sat, 09 Jun 2007) $
+ *  Last Change by: $LastChangedBy: keith $
+ * -----------------------------------------------------------------------
+ *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *  
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *  
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+ *  MA 02110-1301 USA
+ * -----------------------------------------------------------------------
+ */
 package org.thanlwinsoft.eclipse;
 
-
-/*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
-//package org.eclipse.ui.internal.ide.model;
-
 import org.eclipse.core.commands.operations.IUndoContext;
-//import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -30,7 +41,8 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
  * Returns IWorkbenchAdapter adapters, used for displaying,
  * navigating, and populating menus for core objects.
  */
-public class WorkbenchAdapterFactory implements IAdapterFactory {
+public class WorkbenchAdapterFactory implements IAdapterFactory 
+{
     //private Object workspaceAdapter = new WorkbenchWorkspace();
 
     private Object rootAdapter = new WorkbenchRootResource();
@@ -41,18 +53,16 @@ public class WorkbenchAdapterFactory implements IAdapterFactory {
 
     private Object fileAdapter = new WorkbenchFile();
 
-//    private Object markerAdapter = new WorkbenchMarker();
-
     private Object resourceFactory = new ResourceFactory();
-
-//    private Object workspaceFactory = new WorkspaceFactory();
-
     /**
      * Returns the IActionFilter for an object.
      */
-    protected Object getActionFilter(Object o) {
-        if (o instanceof IResource) {
-            switch (((IResource) o).getType()) {
+    protected Object getActionFilter(Object o) 
+    {
+        if (o instanceof IResource) 
+        {
+            switch (((IResource) o).getType()) 
+            {
             case IResource.FILE:
                 return fileAdapter;
             case IResource.FOLDER:
@@ -61,9 +71,6 @@ public class WorkbenchAdapterFactory implements IAdapterFactory {
                 return projectAdapter;
             }
         }
-//        if (o instanceof IMarker) {
-//            return markerAdapter;
-//        }
         return null;
     }
 
@@ -80,7 +87,8 @@ public class WorkbenchAdapterFactory implements IAdapterFactory {
      *    does not have an adapter of the given type for the
      *    given object
      */
-    public Object getAdapter(Object o, Class adapterType) {
+    public Object getAdapter(Object o, Class adapterType) 
+    {
         if (adapterType.isInstance(o)) {
             return o;
         }
@@ -113,7 +121,8 @@ public class WorkbenchAdapterFactory implements IAdapterFactory {
      *
      * @return the collection of adapter types
      */
-    public Class[] getAdapterList() {
+    public Class[] getAdapterList() 
+    {
         return new Class[] { IWorkbenchAdapter.class, IElementFactory.class,
                 IPersistableElement.class, IActionFilter.class, IUndoContext.class };
     }
@@ -123,13 +132,12 @@ public class WorkbenchAdapterFactory implements IAdapterFactory {
      * associated with the given object. Returns <code>null</code> if
      * no such object can be found.
      */
-    protected Object getElementFactory(Object o) {
-        if (o instanceof IResource) {
+    protected Object getElementFactory(Object o) 
+    {
+        if (o instanceof IResource) 
+        {
             return resourceFactory;
         }
-//        if (o instanceof IWorkspace) {
-//            return workspaceFactory;
-//        }
         return null;
     }
 
@@ -138,13 +146,12 @@ public class WorkbenchAdapterFactory implements IAdapterFactory {
      * associated with the given object. Returns <code>null</code> if
      * no such object can be found.
      */
-    protected Object getPersistableElement(Object o) {
-        if (o instanceof IResource) {
+    protected Object getPersistableElement(Object o) 
+    {
+        if (o instanceof IResource) 
+        {
             return new ResourceFactory((IResource) o);
         }
-//        if (o instanceof IWorkspace) {
-//            return workspaceFactory;
-//        }
         return null;
     }
 
@@ -153,9 +160,12 @@ public class WorkbenchAdapterFactory implements IAdapterFactory {
      * associated with the given object. Returns <code>null</code> if
      * no such object can be found.
      */
-    protected Object getWorkbenchElement(Object o) {
-        if (o instanceof IResource) {
-            switch (((IResource) o).getType()) {
+    protected Object getWorkbenchElement(Object o) 
+    {
+        if (o instanceof IResource) 
+        {
+            switch (((IResource) o).getType()) 
+            {
             case IResource.FILE:
                 return fileAdapter;
             case IResource.FOLDER:
@@ -164,15 +174,11 @@ public class WorkbenchAdapterFactory implements IAdapterFactory {
                 return projectAdapter;
             }
         }
-        if (o instanceof IWorkspaceRoot) {
+        if (o instanceof IWorkspaceRoot) 
+        {
             return rootAdapter;
         }
-//        if (o instanceof IWorkspace) {
-//            return workspaceAdapter;
-//        }
-//        if (o instanceof IMarker) {
-//            return markerAdapter;
-//        }
+
         return null;
     }
     
