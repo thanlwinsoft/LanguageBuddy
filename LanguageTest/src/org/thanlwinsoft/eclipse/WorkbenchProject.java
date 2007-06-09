@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/LanguageTest/src/org/thanlwinsoft/eclipse/WorkbenchProject.java $
- *  Revision        $LastChangedRevision: 852 $
- *  Last Modified:  $LastChangedDate: 2007-06-09 16:02:23 +0700 (Sat, 09 Jun 2007) $
+ *  Revision        $LastChangedRevision: 853 $
+ *  Last Modified:  $LastChangedDate: 2007-06-09 23:56:07 +0700 (Sat, 09 Jun 2007) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -32,8 +32,8 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.IJobManager;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IProjectActionFilter;
 import org.eclipse.ui.ISharedImages;
@@ -48,8 +48,7 @@ import org.thanlwinsoft.languagetest.eclipse.natures.LanguageUserNature;
 public class WorkbenchProject extends WorkbenchResource implements
         IProjectActionFilter 
 {
-    HashMap imageCache = new HashMap(11);
-    HashMap natureMap = new HashMap();
+    HashMap<String, String> natureMap = new HashMap<String, String>();
     /**
      *  Answer the appropriate base image to use for the passed resource, optionally
      *  considering the passed open status as well iff appropriate for the type of
@@ -80,23 +79,31 @@ public class WorkbenchProject extends WorkbenchResource implements
             {
                 if (!natureMap.containsKey(project.getName()))
                 {
-                    IJobManager jobMan = Platform.getJobManager();
+                    IJobManager jobMan = Job.getJobManager();
                     IProgressMonitor pm = jobMan.createProgressGroup();
-                    project.open(pm);
-                    IProjectDescription desc = project.getDescription(); 
-                    if (desc.hasNature(LanguageModuleNature.ID))
+                    try
                     {
-                        natureMap.put(project.getName(), LanguageModuleNature.ID);
+                        pm.beginTask("Project Nature", IProgressMonitor.UNKNOWN);
+                        project.open(pm);
+                        IProjectDescription desc = project.getDescription(); 
+                        if (desc.hasNature(LanguageModuleNature.ID))
+                        {
+                            natureMap.put(project.getName(), LanguageModuleNature.ID);
+                        }
+                        else if (desc.hasNature(LanguageUserNature.ID))
+                        {
+                            natureMap.put(project.getName(), LanguageUserNature.ID);
+                        }
+                        else
+                        {
+                            natureMap.put(project.getName(), "");
+                        }
+                        project.close(pm);
                     }
-                    else if (desc.hasNature(LanguageUserNature.ID))
+                    finally
                     {
-                        natureMap.put(project.getName(), LanguageUserNature.ID);
+                        pm.done();
                     }
-                    else
-                    {
-                        natureMap.put(project.getName(), "");
-                    }
-                    project.close(pm);
                 }
                 String nature = natureMap.get(project.getName()).toString();
                 if (nature.equals(LanguageModuleNature.ID))
