@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/LanguageTest/src/org/thanlwinsoft/languagetest/language/test/XmlBeansTestItem.java $
- *  Revision        $LastChangedRevision: 852 $
- *  Last Modified:  $LastChangedDate: 2007-06-09 16:02:23 +0700 (Sat, 09 Jun 2007) $
+ *  Revision        $LastChangedRevision: 854 $
+ *  Last Modified:  $LastChangedDate: 2007-06-09 23:57:13 +0700 (Sat, 09 Jun 2007) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -48,8 +48,8 @@ public class XmlBeansTestItem implements TestItem
     protected int testCount = 0;
     protected boolean passed = false;
     protected IPath soundFile = null;
-    protected int playStart = 0;
-    protected int playEnd = -1;
+    protected long playStart = 0;
+    protected long playEnd = -1;
     protected IPath imagePath = null;
     protected FontData nativeFontData = null;
     protected FontData foreignFontData = null;
@@ -171,11 +171,11 @@ public class XmlBeansTestItem implements TestItem
         passed = pass;
     }
     
-    public int getPlayStart()
+    public long getPlayStart()
     {
         return playStart;
     }
-    public int getPlayEnd()
+    public long getPlayEnd()
     {
         return playEnd;
     }

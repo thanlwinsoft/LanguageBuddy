@@ -24,11 +24,16 @@
     <xs:attribute type="xs:string" name="creator"/>
   </xs:complexType>
   <xs:complexType name="SoundFileType">
+  	<xs:annotation>
+      <xs:documentation xml:lang="en">
+      	The start, end, length parameters are in milliseconds
+      </xs:documentation>
+    </xs:annotation>
     <xs:simpleContent>
       <xs:extension base="xs:string">
-        <xs:attribute type="xs:short" name="start" use="optional"/>
-        <xs:attribute type="xs:short" name="end" use="optional"/>
-        <xs:attribute type="xs:short" name="length" use="optional"/>
+        <xs:attribute type="xs:long" name="start" use="optional"/>
+        <xs:attribute type="xs:long" name="end" use="optional"/>
+        <xs:attribute type="xs:long" name="length" use="optional"/>
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>

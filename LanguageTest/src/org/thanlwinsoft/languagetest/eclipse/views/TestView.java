@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/LanguageTest/src/org/thanlwinsoft/languagetest/eclipse/views/TestView.java $
- *  Revision        $LastChangedRevision: 852 $
- *  Last Modified:  $LastChangedDate: 2007-06-09 16:02:23 +0700 (Sat, 09 Jun 2007) $
+ *  Revision        $LastChangedRevision: 854 $
+ *  Last Modified:  $LastChangedDate: 2007-06-09 23:57:13 +0700 (Sat, 09 Jun 2007) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -634,7 +634,22 @@ public class TestView extends ViewPart implements ISelectionChangedListener
                 setText(FOREIGN_ID, "", null);
             }
             if (ti.isSetSoundFile())
+            {
                 controlPanel.player().setFile(ti.getSoundFile().getStringValue());
+                long start = 0;
+                long end = -1;
+                if (ti.getSoundFile().isSetStart())
+                {
+                    start = ti.getSoundFile().getStart();
+                }
+                if (ti.getSoundFile().isSetEnd())
+                {
+                    end = ti.getSoundFile().getEnd();
+                }
+                controlPanel.player().seek(start);
+                if (end > start)
+                    controlPanel.player().stopAfter(end - start);
+            }
             else
                 controlPanel.player().setFile(null);
             

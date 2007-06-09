@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/LanguageTest/src/org/thanlwinsoft/languagetest/eclipse/editors/TestItemEditor.java $
- *  Revision        $LastChangedRevision: 852 $
- *  Last Modified:  $LastChangedDate: 2007-06-09 16:02:23 +0700 (Sat, 09 Jun 2007) $
+ *  Revision        $LastChangedRevision: 854 $
+ *  Last Modified:  $LastChangedDate: 2007-06-09 23:57:13 +0700 (Sat, 09 Jun 2007) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -987,7 +987,9 @@ public class TestItemEditor extends EditorPart implements ISelectionProvider
                 ImageDescriptor id = null;
                 if (columnIndex == SOUND_COL_ID)
                 {
-                    if (ti.isSetSoundFile())
+                    if (ti.isSetSoundFile() && 
+                        ti.getSoundFile().getStringValue() != null &&
+                        ti.getSoundFile().getStringValue().length() > 0)
                     {
                         id = LanguageTestPlugin.getImageDescriptor("icons/audio.jpg");
                     }
@@ -998,7 +1000,8 @@ public class TestItemEditor extends EditorPart implements ISelectionProvider
                 }
                 else if (columnIndex == PICTURE_COL_ID)
                 {
-                    if (ti.isSetImg())
+                    if (ti.isSetImg() && ti.getImg() != null && 
+                        ti.getImg().length() > 0)
                     {
                         id = LanguageTestPlugin.getImageDescriptor("icons/picture.jpg");
                     }
