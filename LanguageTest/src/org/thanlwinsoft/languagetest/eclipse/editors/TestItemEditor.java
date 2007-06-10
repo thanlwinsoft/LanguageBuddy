@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/LanguageTest/src/org/thanlwinsoft/languagetest/eclipse/editors/TestItemEditor.java $
- *  Revision        $LastChangedRevision: 854 $
- *  Last Modified:  $LastChangedDate: 2007-06-09 23:57:13 +0700 (Sat, 09 Jun 2007) $
+ *  Revision        $LastChangedRevision: 855 $
+ *  Last Modified:  $LastChangedDate: 2007-06-10 07:02:09 +0700 (Sun, 10 Jun 2007) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -883,7 +883,7 @@ public class TestItemEditor extends EditorPart implements ISelectionProvider
             }
             catch (ArrayIndexOutOfBoundsException e)
             {
-                System.out.println(e);
+               LanguageTestPlugin.log(IStatus.ERROR, "Error setting up columns", e);
             }
             column.setResizable(true);
             column.setWidth(LANG_COL_WIDTH);

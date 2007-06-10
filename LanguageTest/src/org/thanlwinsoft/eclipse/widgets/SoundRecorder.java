@@ -47,6 +47,9 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -129,7 +132,8 @@ public class SoundRecorder extends Composite implements ISelectionChangedListene
     private static final int OGG = 2;
     private static final int NUM_ENCODINGS = 3;
     private static final int SPINNER2MS = 100; // spinner uses intervals of 0.1s
-    
+    private static final int INITIAL_LIMIT = 300; // 30s
+    private long lengthInMs = -1;
     private static final String [] EXTENSIONS = new String[] { "wav", "mp3", "ogg" };
     private static final String [] FILTERS = new String[] { "*.wav", "*.mp3", "*.ogg" };
     private static final String [] TYPES = new String[] { "Wave", "MP3", "OGG Vorbis" };
@@ -139,6 +143,7 @@ public class SoundRecorder extends Composite implements ISelectionChangedListene
     private ComboViewer comboViewer = null;
     private final static int MAX_SOUND_FILES = 10000;
     private Display display = null;
+    private boolean settingItem = false;
     private final DateFormat tempFormat = new SimpleDateFormat("yyyyMMddhhmmss");
     
     public static final String WAVTOMP3_CONVERTER_PREF = "WavToMP3Converter";
@@ -182,33 +187,35 @@ public class SoundRecorder extends Composite implements ISelectionChangedListene
                 record();
             }
         });
+        recordButton.setToolTipText(MessageUtil.getString("RecordTooltip"));
+        
         stopButton = new Button(this, SWT.NONE);
         stopButton.setImage(new Image(Display.getCurrent(), getClass().getResourceAsStream("/org/thanlwinsoft/languagetest/sound/icons/stopMini.png")));
         stopButton.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter()
         {
             public void widgetSelected(org.eclipse.swt.events.SelectionEvent e)
             {
-                spacerLabel.setText("");
                 stop();
             }
         });
+        stopButton.setToolTipText(MessageUtil.getString("StopTooltip"));
+        
         recordScale = new Scale(this, SWT.NONE);
         recordScale.setPageIncrement(10);
         recordScale.setMinimum(0);
-        recordScale.setMaximum(30);
+        recordScale.setMaximum(INITIAL_LIMIT);
         recordScale.setIncrement(1);
         recordScale.setLayoutData(gridData);
-        
         playButton = new Button(this, SWT.NONE);
         playButton.setImage(new Image(Display.getCurrent(), getClass().getResourceAsStream("/org/thanlwinsoft/languagetest/sound/icons/playMini.png")));
         playButton.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter()
         {
             public void widgetSelected(org.eclipse.swt.events.SelectionEvent e)
             {
-                spacerLabel.setText("");
                 play();
             }
         });
+        playButton.setToolTipText(MessageUtil.getString("PlayTooltip"));
         deleteButton = new Button(this, SWT.NONE);
         deleteButton.setImage(new Image(Display.getCurrent(), getClass().getResourceAsStream("/org/thanlwinsoft/languagetest/sound/icons/rubbishBin16.png")));
         deleteButton.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter()
@@ -224,19 +231,24 @@ public class SoundRecorder extends Composite implements ISelectionChangedListene
                     file.delete();
                     fileNameText.setText("");
                     fileNameText.setToolTipText("");
-                    spacerLabel.setText("");
+                    setEnabledStatus();
                 }
             }
         });
+        deleteButton.setToolTipText(MessageUtil.getString("DeleteAudioTooltip"));
+        
         startButton = new Button(this, SWT.LEFT);
         startSpinner = new Spinner(this, SWT.NONE);
-        startSpinner.setValues(0, 0, 3000, 1, 1, 10);
+        startSpinner.setValues(0, 0, INITIAL_LIMIT, 1, 1, 10);
         spacerLabel = new Label(this, SWT.LEAD);
         GridData spacerGridData = new GridData();
         spacerGridData.grabExcessHorizontalSpace = true;
+        spacerGridData.minimumWidth = 50;
+        spacerGridData.horizontalAlignment = SWT.FILL;
+        spacerLabel.setText("");
         spacerLabel.setLayoutData(spacerGridData);
         endSpinner = new Spinner(this, SWT.NONE);
-        endSpinner.setValues(0, 0, 30000, 1, 1, 10);
+        endSpinner.setValues(0, 0, INITIAL_LIMIT, 1, 1, 10);
         endButton = new Button(this, SWT.RIGHT);
         // Visual Editor doesn't like direct calls to MessageUtil in setText
         createEncodingCombo();
@@ -245,6 +257,7 @@ public class SoundRecorder extends Composite implements ISelectionChangedListene
         fileNameGridData.horizontalAlignment = GridData.FILL;
         fileNameText = new Text(this, SWT.BORDER);
         fileNameText.setLayoutData(fileNameGridData);
+        fileNameText.setToolTipText(MessageUtil.getString("AudioFileNameTooltip"));
         GridData browseGridData = new GridData();
         browseGridData.horizontalSpan = 2;
         browseButton = new Button(this, SWT.NONE);
@@ -262,11 +275,12 @@ public class SoundRecorder extends Composite implements ISelectionChangedListene
                 }
                 fileNameText.setText(dialog.open());
                 fileNameText.setToolTipText(fileNameText.getText());
-                spacerLabel.setText("");
             }
         });
         String s = MessageUtil.getString("PlaybackStartButton");
         startButton.setText(s);
+        s = MessageUtil.getString("PlaybackStartTooltip");
+        startButton.setToolTipText(s);
         startButton.setLayoutData(gridData1);
         startButton.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter()
         {
@@ -277,17 +291,22 @@ public class SoundRecorder extends Composite implements ISelectionChangedListene
                     endSpinner.getSelection() <= 0)
                 {
                     startSpinner.setSelection(value);
-                    setTestItem();
+                    updateTestItem();
                     spacerLabel.setText("");
+                    spacerLabel.setToolTipText("");
                 }
                 else
                 {
                     spacerLabel.setText(MessageUtil.getString("EndBeforeStart"));
+                    spacerLabel.setToolTipText(MessageUtil.getString("EndBeforeStart"));
+                    spacerLabel.redraw();
                 }
             }
         });
         s = MessageUtil.getString("PlaybackEndButton");
         endButton.setText(s);
+        s = MessageUtil.getString("PlaybackEndTooltip");
+        endButton.setToolTipText(s);
         endButton.setLayoutData(gridData2);
         endButton.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter()
         {
@@ -297,12 +316,16 @@ public class SoundRecorder extends Composite implements ISelectionChangedListene
                 if (value > 0 && value > startSpinner.getSelection())
                 {
                     endSpinner.setSelection(value);
-                    setTestItem();
+                    updateTestItem();
                     spacerLabel.setText("");
+                    spacerLabel.setToolTipText("");
+                    spacerLabel.redraw();
                 }
                 else
                 {
                     spacerLabel.setText(MessageUtil.getString("EndBeforeStart"));
+                    spacerLabel.setToolTipText(MessageUtil.getString("EndBeforeStart"));
+                    spacerLabel.redraw();
                 }
             }
         });
@@ -312,11 +335,13 @@ public class SoundRecorder extends Composite implements ISelectionChangedListene
             public void modifyText(ModifyEvent e)
             {
                 setLimits();
+                updateTestItem();
             }});
         endSpinner.addModifyListener(new ModifyListener(){
             public void modifyText(ModifyEvent e)
             {
                 setLimits();
+                updateTestItem();
             }});
         this.setLayout(gridLayout);
         setSize(new Point(300, 200));
@@ -370,7 +395,7 @@ public class SoundRecorder extends Composite implements ISelectionChangedListene
             }
             lineController.closeLines();
             recorder = null;
-            setTestItem();
+            updateTestItem();
         }
         else
         {
@@ -447,7 +472,7 @@ public class SoundRecorder extends Composite implements ISelectionChangedListene
             }
             
             recorder.initialise(targetFile);
-            
+            setEnabledStatus();
             
             if (recorder.isInitialised())
             {
@@ -478,10 +503,14 @@ public class SoundRecorder extends Composite implements ISelectionChangedListene
         }
     }
     
-    protected void setTestItem()
+    protected void updateTestItem()
     {
+        // don't update the test item while switch from one to another
+        if (settingItem)
+            return;
         IEditorPart editor = 
-            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+            PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+            .getActivePage().getActiveEditor();
         if (editor instanceof TestModuleEditor)
         {
             TestModuleEditor tme = (TestModuleEditor)editor;
@@ -516,6 +545,10 @@ public class SoundRecorder extends Composite implements ISelectionChangedListene
                             ti.getSoundFile().setEnd(endSpinner.getSelection() * SPINNER2MS);
                         else if (ti.getSoundFile().isSetEnd())
                             ti.getSoundFile().unsetEnd();
+                        if (lengthInMs > -1)
+                        {
+                            ti.getSoundFile().setLength(lengthInMs);
+                        }
                         tme.setDirty(true);
                         tie.setSelection(selection);
                     }
@@ -651,6 +684,21 @@ public class SoundRecorder extends Composite implements ISelectionChangedListene
         long startMs = startSpinner.getSelection() * SPINNER2MS;
         long endMs = endSpinner.getSelection() * SPINNER2MS;
         long thumbMs = recordScale.getSelection() * SPINNER2MS;
+        if (endMs > 0 && endMs < startMs)
+        {
+            if (spacerLabel.getText().length() == 0)
+            {
+            spacerLabel.setText(MessageUtil.getString("EndBeforeStart"));
+            spacerLabel.setToolTipText(MessageUtil.getString("EndBeforeStart"));
+            spacerLabel.redraw();
+            }
+            endMs = -1;
+        }
+        else
+        {
+            spacerLabel.setText("");
+            spacerLabel.setToolTipText("");
+        }
         // if the thumb is in between start and end, then start at the thumb
         // give a 1 second tolerance at the end
         if (thumbMs + 1000 < endMs && thumbMs > startMs)
@@ -714,6 +762,7 @@ public class SoundRecorder extends Composite implements ISelectionChangedListene
             }});
         comboViewer = new ComboViewer(encodingCombo);
         comboViewer.add(TYPES);
+        encodingCombo.setToolTipText(MessageUtil.getString("AudioFormatTooltip"));
     }
 
     /**
@@ -909,9 +958,33 @@ public class SoundRecorder extends Composite implements ISelectionChangedListene
                                     fileNameText.setText(newPath.toString());
                                     fileNameText.setToolTipText(newPath.toString());
                                     System.out.println(newPath.toString());
-                                    setTestItem();
+                                    updateTestItem();
                                     // may need a second conversion
                                     convertIfNeeded();
+                                    setEnabledStatus();
+                                    IWorkspace workspace = ResourcesPlugin.getWorkspace();
+                                    IWorkspaceRoot root = workspace.getRoot(); 
+                                    if (root.getRawLocation().isPrefixOf(newPath))
+                                    {
+                                        IFile f = root.getFile(newPath.removeFirstSegments(root.getRawLocation().segmentCount()));
+                                        IProgressMonitor pm = 
+                                            Job.getJobManager().createProgressGroup();
+                                        try
+                                        {
+                                            pm.beginTask("Refresh after conversion", 
+                                                IProgressMonitor.UNKNOWN);
+                                            f.refreshLocal(1, pm);
+                                        }
+                                        catch (CoreException e)
+                                        {
+                                            LanguageTestPlugin.log(IStatus.WARNING,
+                                                "Refresh error", e);
+                                        }
+                                        finally
+                                        {
+                                            pm.done();
+                                        }
+                                    }
                                 }
                             });
                             oldFile.delete(); // delete old format
@@ -944,10 +1017,14 @@ public class SoundRecorder extends Composite implements ISelectionChangedListene
         stop();
         if (fileNameText.isDisposed())
             return;
+        settingItem = true;
+        try
+        {
         if (event.getSelection() instanceof StructuredSelection)
         {
             StructuredSelection ss = (StructuredSelection)event.getSelection();
             TestItemType ti = null;
+            lengthInMs = -1;
             if (ss.getFirstElement() instanceof TestItemType)
             {
                 ti = (TestItemType)ss.getFirstElement();
@@ -967,14 +1044,37 @@ public class SoundRecorder extends Composite implements ISelectionChangedListene
                         break;
                     }
                 }
-                if (ti.getSoundFile().isSetStart())
-                    startSpinner.setSelection((int)(ti.getSoundFile().getStart() 
-                                                     / SPINNER2MS));
-                else startSpinner.setSelection(0);
+                int max = INITIAL_LIMIT;
+                if (ti.getSoundFile().isSetLength())
+                {
+                    max = (int)(ti.getSoundFile().getLength() / SPINNER2MS);
+                }
+                startSpinner.setMaximum(max);
+                endSpinner.setMaximum(max);
                 if (ti.getSoundFile().isSetEnd())
-                    endSpinner.setSelection((int) (ti.getSoundFile().getEnd() / 
-                                                   SPINNER2MS));
+                {
+                    int value = (int)(ti.getSoundFile().getEnd() / SPINNER2MS);
+                    if (max < value)
+                    {
+                        startSpinner.setMaximum(max);
+                        endSpinner.setMaximum(max);
+                    }
+                    endSpinner.setSelection(value);
+                }
                 else endSpinner.setSelection(0);
+                if (ti.getSoundFile().isSetStart())
+                {
+                    int value = (int)(ti.getSoundFile().getStart() / SPINNER2MS);
+                    if (max < value)
+                    {
+                        max = value;
+                        startSpinner.setMaximum(max);
+                        endSpinner.setMaximum(max);
+                    }
+                    startSpinner.setSelection(value);
+                }
+                else startSpinner.setSelection(0);
+                
             }
             else
             {
@@ -984,6 +1084,12 @@ public class SoundRecorder extends Composite implements ISelectionChangedListene
                 startSpinner.setSelection(0);
                 endSpinner.setSelection(0);
             }
+            setEnabledStatus();
+        }
+        }
+        finally
+        {
+            settingItem = false;
         }
     }
 
@@ -1026,17 +1132,39 @@ public class SoundRecorder extends Composite implements ISelectionChangedListene
         // use 0.1 sec as interval
         final int sTotalLength = (int)(msTotalLength/SPINNER2MS);
         final int sPosition = (int)(msPosition/SPINNER2MS);
+        if (msTotalLength > 0) lengthInMs = msTotalLength;
         display.asyncExec (new Runnable () {
             public void run () {
                 if (recordScale.isDisposed()) return;
                 int oldMax = recordScale.getMaximum();
-                if (sTotalLength > 0 && sTotalLength > oldMax)
+                if (sTotalLength > 0 && oldMax != sTotalLength)
+                {
                     recordScale.setMaximum(sTotalLength);
+                    startSpinner.setMaximum(sTotalLength);
+                    endSpinner.setMaximum(sTotalLength);
+                }
                 if (sPosition > oldMax)
+                {
                     recordScale.setMaximum(oldMax + 600); // add 1 minute
+                    startSpinner.setMaximum(oldMax + 600);
+                    endSpinner.setMaximum(oldMax + 600);
+                }
                 recordScale.setSelection(sPosition);
             }
          });
     }
-   
+    private void setEnabledStatus()
+    {
+        boolean enabled = false;
+        if (fileNameText.getText().length() > 0)
+        {
+            enabled = true;
+        }
+        deleteButton.setEnabled(enabled);
+        startButton.setEnabled(enabled);
+        endButton.setEnabled(enabled);
+        startSpinner.setEnabled(enabled);
+        endSpinner.setEnabled(enabled);
+        playButton.setEnabled(enabled);
+    }
 }

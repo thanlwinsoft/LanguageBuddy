@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:          $Source: /home/keith/cvsroot/projects/LanguageAids/uk/co/dabsol/stribley/util/RelativePath.java,v $
- *  Version:       $Revision: 852 $
- *  Last Modified: $Date: 2007-06-09 16:02:23 +0700 (Sat, 09 Jun 2007) $
+ *  Version:       $Revision: 855 $
+ *  Last Modified: $Date: 2007-06-10 07:02:09 +0700 (Sun, 10 Jun 2007) $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2003 Keith Stribley <tech@thanlwinsoft.org>
  *
@@ -29,6 +29,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.StringTokenizer;
 import java.util.NoSuchElementException;
+
+import org.eclipse.core.runtime.IStatus;
+import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 
 /**
  *
@@ -102,13 +105,13 @@ public class RelativePath
         catch (NoSuchElementException nsee)
         {
             // shouldn't happen because we're checking hasMoreTokens all the time
-            System.out.println(nsee.toString());
+            LanguageTestPlugin.log(IStatus.WARNING, "RelativePath", nsee);
             // default to absolute path, which doesn't throw exception
             relativePath = a.getAbsolutePath();
         }
         catch (IOException ioe)
         {
-            System.out.println(ioe.toString());
+            LanguageTestPlugin.log(IStatus.WARNING, "RelativePath", ioe);
             // default to absolute path, which doesn't throw exception
             relativePath = a.getAbsolutePath();
         }

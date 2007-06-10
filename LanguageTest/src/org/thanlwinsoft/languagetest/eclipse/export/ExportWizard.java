@@ -161,8 +161,8 @@ public class ExportWizard extends Wizard implements IExportWizard
         }
         catch (TransformerConfigurationException tce)
         {
-            System.out.println(tce.toString());
-            System.out.println(tce.getLocationAsString());
+            LanguageTestPlugin.log(IStatus.WARNING, "Error converting " +
+                tce.getMessageAndLocation(), tce);
             return false;
         }
         for (int i = 0; i < files.length; i++)

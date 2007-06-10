@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/LanguageTest/src/org/thanlwinsoft/languagetest/language/test/Test.java $
- *  Revision        $LastChangedRevision: 852 $
- *  Last Modified:  $LastChangedDate: 2007-06-09 16:02:23 +0700 (Sat, 09 Jun 2007) $
+ *  Revision        $LastChangedRevision: 855 $
+ *  Last Modified:  $LastChangedDate: 2007-06-10 07:02:09 +0700 (Sun, 10 Jun 2007) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2003 Keith Stribley <devel@thanlwinsoft.org>
@@ -174,7 +174,7 @@ public class Test
         this.random = new Random();
         // take copy of list
         remainingTests = new LinkedList(testList);
-        System.out.println("Number test items: " + testList.size());  
+        //System.out.println("Number test items: " + testList.size());  
         untested = testList.size();
     }
     /** Repeat the test for all items that were not passed first time*/

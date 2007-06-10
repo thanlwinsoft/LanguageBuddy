@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/LanguageTest/src/org/thanlwinsoft/languagetest/eclipse/LanguageTestPlugin.java $
- *  Revision        $LastChangedRevision: 852 $
- *  Last Modified:  $LastChangedDate: 2007-06-09 16:02:23 +0700 (Sat, 09 Jun 2007) $
+ *  Revision        $LastChangedRevision: 855 $
+ *  Last Modified:  $LastChangedDate: 2007-06-10 07:02:09 +0700 (Sun, 10 Jun 2007) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -145,9 +145,9 @@ public class LanguageTestPlugin extends AbstractUIPlugin
         }
         try
         {
-        Status s = new Status(status, ID, 
-                Status.OK, msg, exception);
-        getDefault().getLog().log(s);
+            Status s = new Status(status, ID, 
+                    Status.OK, msg, exception);
+            getDefault().getLog().log(s);
         }
         catch (IllegalArgumentException e)
         {

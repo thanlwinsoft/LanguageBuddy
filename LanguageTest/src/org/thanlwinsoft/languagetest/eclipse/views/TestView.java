@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/LanguageTest/src/org/thanlwinsoft/languagetest/eclipse/views/TestView.java $
- *  Revision        $LastChangedRevision: 854 $
- *  Last Modified:  $LastChangedDate: 2007-06-09 23:57:13 +0700 (Sat, 09 Jun 2007) $
+ *  Revision        $LastChangedRevision: 855 $
+ *  Last Modified:  $LastChangedDate: 2007-06-10 07:02:09 +0700 (Sun, 10 Jun 2007) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -38,7 +38,9 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ResourceManager;
@@ -102,6 +104,7 @@ import org.thanlwinsoft.schemas.languagetest.module.LangType;
 import org.thanlwinsoft.schemas.languagetest.module.LangTypeType;
 import org.thanlwinsoft.schemas.languagetest.module.LanguageModuleType;
 import org.thanlwinsoft.schemas.languagetest.module.NativeLangType;
+import org.thanlwinsoft.schemas.languagetest.module.SoundFileType;
 import org.thanlwinsoft.schemas.languagetest.module.TestItemType;
 
 /**
@@ -529,7 +532,7 @@ public class TestView extends ViewPart implements ISelectionChangedListener
     
     private void savePictureWeights()
     {
-//      cache old weights before we remove the picture
+        // cache old weights before we remove the picture
         if (picture.getImage() != null)
         {
             int [] weights = horizontalSash.getWeights();
@@ -544,14 +547,18 @@ public class TestView extends ViewPart implements ISelectionChangedListener
         try
         {
             savePictureWeights();
+            IEditorPart editor = getSite().getPage().getActiveEditor();
+            IContainer basePath = null;
+            if (editor != null && editor.getEditorInput() != null &&
+                editor.getEditorInput() instanceof FileEditorInput)
+            {
+                FileEditorInput fei = (FileEditorInput)editor.getEditorInput();
+                basePath = fei.getFile().getParent();
+            }
             if (ti.isSetImg() && ti.getImg() != null)
             {
-                IEditorPart editor = getSite().getPage().getActiveEditor();
-                if (editor != null && editor.getEditorInput() != null &&
-                    editor.getEditorInput() instanceof FileEditorInput)
+                if (basePath != null)
                 {
-                    FileEditorInput fei = (FileEditorInput)editor.getEditorInput();
-                    IContainer basePath = fei.getFile().getParent();
                     ImageLoader loader = new ImageLoader();
                     try
                     {
@@ -633,9 +640,23 @@ public class TestView extends ViewPart implements ISelectionChangedListener
             {
                 setText(FOREIGN_ID, "", null);
             }
-            if (ti.isSetSoundFile())
+            if (ti.isSetSoundFile() && 
+                ti.getSoundFile().getStringValue() != null)
             {
-                controlPanel.player().setFile(ti.getSoundFile().getStringValue());
+                IPath path = new Path(ti.getSoundFile().getStringValue());
+                if (path.isAbsolute() && path.toFile().exists())
+                {
+                    controlPanel.player().setFile(ti.getSoundFile().getStringValue());
+                }
+                else if (basePath != null && basePath.exists(path))
+                {
+                    IFile file = basePath.getFile(path);
+                    controlPanel.player().setFile(file.getRawLocation().toOSString());
+                }
+                else
+                {
+                    controlPanel.player().setFile(null);
+                }
                 long start = 0;
                 long end = -1;
                 if (ti.getSoundFile().isSetStart())
@@ -873,6 +894,12 @@ public class TestView extends ViewPart implements ISelectionChangedListener
                 controlPanel.player().setFile(soundFile.getRawLocation().toOSString());
             }
             else controlPanel.player().setFile(null);
+            long start = ti.getPlayStart();
+            long end = ti.getPlayEnd();
+            if (start > 0)
+                controlPanel.player().seek(start);
+            if (end > start)
+                controlPanel.player().stopAfter(end - start);
         }
         else
         {

@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/LanguageTest/src/org/thanlwinsoft/languagetest/eclipse/wizards/NewLanguagePage.java $
- *  Revision        $LastChangedRevision: 852 $
- *  Last Modified:  $LastChangedDate: 2007-06-09 16:02:23 +0700 (Sat, 09 Jun 2007) $
+ *  Revision        $LastChangedRevision: 855 $
+ *  Last Modified:  $LastChangedDate: 2007-06-10 07:02:09 +0700 (Sun, 10 Jun 2007) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -30,6 +30,7 @@ import java.util.Iterator;
 import java.util.SortedMap;
 import java.util.Vector;
 
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -47,6 +48,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.thanlwinsoft.languagetest.MessageUtil;
+import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.thanlwinsoft.languagetest.language.test.UniversalLanguage;
 import org.thanlwinsoft.languagetest.language.text.Iso15924;
 import org.thanlwinsoft.languagetest.language.text.Iso3166;
@@ -242,7 +244,7 @@ public class NewLanguagePage extends WizardPage implements ModifyListener, Selec
         }
         catch (IllegalArgumentException e)
         {
-            System.out.println(e);
+            LanguageTestPlugin.log(IStatus.WARNING, "Error validating Language Page", e);
             ul = null;
             ulCode.setText(e.getLocalizedMessage());
             ulCode.setToolTipText(e.getLocalizedMessage());

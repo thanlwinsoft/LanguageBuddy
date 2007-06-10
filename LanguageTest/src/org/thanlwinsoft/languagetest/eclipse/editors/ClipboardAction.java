@@ -176,7 +176,7 @@ public class ClipboardAction extends Action implements SelectionListener
         else
         {
             String textData = (String)clipboard.getContents(textTransfer);
-            if (textData != null) System.out.println("Text is "+textData);
+            //if (textData != null) System.out.println("Text is "+textData);
             String xmlData = (String)clipboard.getContents(xmlTransfer);
             if (xmlData != null)
             {

@@ -1,8 +1,8 @@
 /**
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/LanguageTest/src/org/thanlwinsoft/eclipse/widgets/SoundPlayer.java $
- *  Revision        $LastChangedRevision: 854 $
- *  Last Modified:  $LastChangedDate: 2007-06-09 23:57:13 +0700 (Sat, 09 Jun 2007) $
+ *  Revision        $LastChangedRevision: 855 $
+ *  Last Modified:  $LastChangedDate: 2007-06-10 07:02:09 +0700 (Sun, 10 Jun 2007) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -571,23 +571,23 @@ public class SoundPlayer extends Composite implements BasicPlayerListener
         /*-- End Of Media reached --*/
         int state = event.getCode();
         Object obj = event.getDescription();
-        if (state==BasicPlayerEvent.EOM)
+        if (state == BasicPlayerEvent.EOM)
         {
             if ((playerState == PAUSE) || (playerState == PLAY))
             {
                 
             }
         }
-        else if (state==BasicPlayerEvent.PLAYING)
+        else if (state == BasicPlayerEvent.PLAYING)
         {
             //lastScrollTime = System.currentTimeMillis(); 
             posValueJump = false;       
         }
-        else if (state==BasicPlayerEvent.SEEKING)
+        else if (state == BasicPlayerEvent.SEEKING)
         {
             posValueJump = true;    
         }
-        else if (state==BasicPlayerEvent.OPENING)
+        else if (state == BasicPlayerEvent.OPENING)
         {
             if ((obj instanceof URL) || (obj instanceof InputStream))
             {
@@ -614,6 +614,8 @@ public class SoundPlayer extends Composite implements BasicPlayerListener
     {
         try
         {
+            if (posValue >= 1.0)
+                posValue = 0;
             if (audioInfo.containsKey("audio.type"))
             {
                 String type = (String) audioInfo.get("audio.type");

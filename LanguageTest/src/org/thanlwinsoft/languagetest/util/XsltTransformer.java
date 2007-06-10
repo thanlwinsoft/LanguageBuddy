@@ -22,6 +22,9 @@ import javax.xml.parsers.*;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.*;
 import javax.xml.transform.stream.*;
+
+import org.eclipse.core.runtime.IStatus;
+import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.xml.sax.*;
 import java.io.File;
 import java.io.IOException;
@@ -82,8 +85,8 @@ public class XsltTransformer
         }
         catch (TransformerConfigurationException tce)
         {
-            System.out.println(tce.toString());
-            System.out.println(tce.getLocationAsString());
+            LanguageTestPlugin.log(IStatus.WARNING, "Xslt transformer " +
+                tce.getMessageAndLocation(), tce);
             return false;
         }
         return true;
@@ -101,8 +104,8 @@ public class XsltTransformer
         }
         catch (TransformerConfigurationException tce)
         {
-            System.out.println(tce.toString());
-            System.out.println(tce.getLocationAsString());
+            LanguageTestPlugin.log(IStatus.WARNING, "Xslt transformer " +
+                tce.getMessageAndLocation(), tce);
             return false;
         }
         return true;
@@ -190,9 +193,8 @@ public class XsltTransformer
         }
         catch (TransformerException te)
         {
-            System.out.println(te.toString());
-            //JOptionPane.showMessageDialog(album,te,"Transformation error using " + xslFile,
-            //                        JOptionPane.ERROR_MESSAGE);
+            LanguageTestPlugin.log(IStatus.WARNING, "Xslt transformer " +
+                te.getMessage(), te);
             ok = false;
         }
         return ok;
