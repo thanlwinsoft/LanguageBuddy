@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/LanguageTest/src/org/thanlwinsoft/languagetest/eclipse/editors/TestItemEditor.java $
- *  Revision        $LastChangedRevision: 855 $
- *  Last Modified:  $LastChangedDate: 2007-06-10 07:02:09 +0700 (Sun, 10 Jun 2007) $
+ *  Revision        $LastChangedRevision: 856 $
+ *  Last Modified:  $LastChangedDate: 2007-06-13 05:13:58 +0700 (Wed, 13 Jun 2007) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -90,7 +90,7 @@ import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
-import org.thanlwinsoft.languagetest.eclipse.Perspective;
+import org.thanlwinsoft.languagetest.eclipse.EditPerspective;
 import org.thanlwinsoft.languagetest.eclipse.TestModuleAdapter;
 import org.thanlwinsoft.languagetest.eclipse.export.ExportAction;
 import org.thanlwinsoft.languagetest.eclipse.views.MetaDataView;
@@ -245,16 +245,16 @@ public class TestItemEditor extends EditorPart implements ISelectionProvider
         labelProvider = new TestItemLabelProvider();
         tableViewer.setLabelProvider(labelProvider);
         // set a tall font, so rows are high enough
-        FontData fd = JFaceResources.getDialogFont().getFontData()[0];
-        FontData tallFont = new FontData(fd.getName(), TABLE_FONT_SIZE, fd.getStyle());
-        Font font = LanguageTestPlugin.getFont(tallFont);
-        tableViewer.getTable().setFont(font);
+        //FontData fd = JFaceResources.getDialogFont().getFontData()[0];
+        //FontData tallFont = new FontData(fd.getName(), TABLE_FONT_SIZE, fd.getStyle());
+        //Font font = LanguageTestPlugin.getFont(tallFont);
+        //tableViewer.getTable().setFont(font);
         tableViewer.getTable().setHeaderVisible(true);
         cellModifier = new TestItemCellModifier();
         tableViewer.setCellModifier(cellModifier);
         sorter = new TestItemSorter();
         IWorkbenchPage page = getEditorSite().getPage();
-        IViewPart testView = page.findView(Perspective.TEST_VIEW);
+        IViewPart testView = page.findView(EditPerspective.TEST_VIEW);
         if (testView != null)
             ((TestView)testView).addSelectionProvider(tableViewer);
         RecordingView recordingView = (RecordingView)page.findView(RecordingView.ID);
@@ -1146,7 +1146,7 @@ public class TestItemEditor extends EditorPart implements ISelectionProvider
      */
     public void dispose()
     {
-        IViewPart testView = getEditorSite().getPage().findView(Perspective.TEST_VIEW);
+        IViewPart testView = getEditorSite().getPage().findView(EditPerspective.TEST_VIEW);
         if (testView != null)
             tableViewer.removeSelectionChangedListener((TestView)testView);
         copyAction.dispose();

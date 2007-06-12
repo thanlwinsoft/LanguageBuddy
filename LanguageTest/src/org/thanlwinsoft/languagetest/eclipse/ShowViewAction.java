@@ -40,6 +40,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
@@ -56,10 +57,17 @@ public class ShowViewAction implements IWorkbenchAction
     private String viewId = null;
     private String label = "";
     private boolean enabled = true;
+    private String perspectiveId = null;
     public ShowViewAction(String viewId, String label)
     {
         this.viewId = viewId;
         this.label = label;
+    }
+    public ShowViewAction(String perspectiveId, String viewId, String label)
+    {
+        this.viewId = viewId;
+        this.label = label;
+        this.perspectiveId = perspectiveId;
     }
     /* (non-Javadoc)
      * @see org.eclipse.ui.actions.ActionFactory.IWorkbenchAction#dispose()
@@ -254,6 +262,15 @@ public class ShowViewAction implements IWorkbenchAction
             PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         try
         {
+            if (perspectiveId != null && 
+                page.getPerspective().getId().equals(perspectiveId) == false)
+            {
+                IPerspectiveDescriptor pd = 
+                    PlatformUI.getWorkbench().getPerspectiveRegistry()
+                    .findPerspectiveWithId(perspectiveId);
+                if (pd != null)
+                    page.setPerspective(pd);
+            }
             page.showView(viewId);
         }
         catch (PartInitException e)

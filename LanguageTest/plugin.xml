@@ -37,10 +37,25 @@
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
-            class="org.thanlwinsoft.languagetest.eclipse.Perspective"
+            class="org.thanlwinsoft.languagetest.eclipse.EditPerspective"
+            fixed="false"
             icon="icons/languageBuddy16.png"
-            id="org.thanlwinsoft.languagetest.perspective"
+            id="org.thanlwinsoft.languagetest.Perspective"
             name="%LanguageTest.perspective"/>
+      <perspective
+            class="org.thanlwinsoft.languagetest.eclipse.TestPerspective"
+            fixed="true"
+            icon="icons/startTest.png"
+            id="org.thanlwinsoft.languagetest.eclipse.TestPerspective"
+            name="%LanguagetTest.testPerspective">
+      </perspective>
+      <perspective
+            class="org.thanlwinsoft.languagetest.eclipse.HistoryPerspective"
+            fixed="false"
+            icon="icons/testHistory16.png"
+            id="org.thanlwinsoft.languagetest.eclipse.HistoryPerspective"
+            name="%LanguageTest.HistoryPerspective">
+      </perspective>
    </extension>
    <extension
          point="org.eclipse.ui.views">
@@ -209,6 +224,10 @@
       <filter
             pattern=".settings"
             selected="true"/>
+      <filter
+            pattern="*.lmf"
+            selected="true">
+      </filter>
    </extension>
    <extension point=
 "org.eclipse.ui.navigator.navigatorContent"

@@ -119,7 +119,9 @@ Require-Bundle: org.eclipse.core.filesystem,
  org.apache.batik,
  org.apache.fop,
  org.eclipse.ui.intro,
- org.eclipse.ui.intro.universal
+ org.eclipse.ui.intro.universal,
+ org.eclipse.core.runtime.compatibility,
+ org.eclipse.core.runtime.compatibility.auth
 Eclipse-LazyStart: true
 Bundle-Activator: org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin
 Bundle-Vendor: www.ThanLwinSoft.org

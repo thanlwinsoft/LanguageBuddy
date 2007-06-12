@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/LanguageTest/src/org/thanlwinsoft/languagetest/eclipse/ApplicationWorkbenchAdvisor.java $
- *  Revision        $LastChangedRevision: 852 $
- *  Last Modified:  $LastChangedDate: 2007-06-09 16:02:23 +0700 (Sat, 09 Jun 2007) $
+ *  Revision        $LastChangedRevision: 856 $
+ *  Last Modified:  $LastChangedDate: 2007-06-13 05:13:58 +0700 (Wed, 13 Jun 2007) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -29,15 +29,18 @@ import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 
-public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
+public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor 
+{
+	private static final String PERSPECTIVE_ID = EditPerspective.ID;
 
-	private static final String PERSPECTIVE_ID = "org.thanlwinsoft.languagetest.perspective";
-
-    public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer configurer) {
+    public WorkbenchWindowAdvisor 
+        createWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer configurer) 
+    {
         return new ApplicationWorkbenchWindowAdvisor(configurer);
     }
 
-	public String getInitialWindowPerspectiveId() {
+	public String getInitialWindowPerspectiveId()
+	{
 		return PERSPECTIVE_ID;
 	}
 }

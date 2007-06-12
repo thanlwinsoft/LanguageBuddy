@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/LanguageTest/src/org/thanlwinsoft/languagetest/eclipse/ApplicationWorkbenchWindowAdvisor.java $
- *  Revision        $LastChangedRevision: 852 $
- *  Last Modified:  $LastChangedDate: 2007-06-09 16:02:23 +0700 (Sat, 09 Jun 2007) $
+ *  Revision        $LastChangedRevision: 856 $
+ *  Last Modified:  $LastChangedDate: 2007-06-13 05:13:58 +0700 (Wed, 13 Jun 2007) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -64,6 +64,9 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
         configurer.setInitialSize(new Point(750, 550));
         configurer.setShowCoolBar(true);
         configurer.setShowStatusLine(true);
+        configurer.setShowPerspectiveBar(true);
+        configurer.setShowStatusLine(true);
+        configurer.setShowProgressIndicator(true);
         configurer.setTitle(MessageUtil.getString("dialogTitle"));
         IPreferencesService service = Platform.getPreferencesService();
         if (service != null)
@@ -121,7 +124,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
         IWorkbenchWindow w = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
         if (w != null)
         {
-            IViewPart nav = w.getActivePage().findView(Perspective.NAVIGATOR);
+            IViewPart nav = w.getActivePage().findView(EditPerspective.NAVIGATOR);
             if (nav instanceof ResourceNavigator)
             {
                 

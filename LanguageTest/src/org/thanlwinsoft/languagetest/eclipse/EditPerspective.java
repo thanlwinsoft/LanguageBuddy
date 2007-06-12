@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
- *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/LanguageTest/src/org/thanlwinsoft/languagetest/eclipse/Perspective.java $
- *  Revision        $LastChangedRevision: 852 $
- *  Last Modified:  $LastChangedDate: 2007-06-09 16:02:23 +0700 (Sat, 09 Jun 2007) $
+ *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/LanguageTest/src/org/thanlwinsoft/languagetest/eclipse/EditPerspective.java $
+ *  Revision        $LastChangedRevision: 856 $
+ *  Last Modified:  $LastChangedDate: 2007-06-13 05:13:58 +0700 (Wed, 13 Jun 2007) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -32,10 +32,14 @@ import org.eclipse.ui.IPlaceholderFolderLayout;
 import org.thanlwinsoft.languagetest.eclipse.views.ChartHistoryView;
 import org.thanlwinsoft.languagetest.eclipse.views.MetaDataView;
 import org.thanlwinsoft.languagetest.eclipse.views.RecordingView;
+import org.thanlwinsoft.languagetest.eclipse.views.TestHistoryView;
 
 
-public class Perspective implements IPerspectiveFactory 
+public class EditPerspective implements IPerspectiveFactory 
 {
+    public final static String ID = 
+        "org.thanlwinsoft.languagetest.Perspective";
+
     public final static String FOLDER_BOTTOM = 
         "org.thanlwinsoft.languagetest.FolderBottom";
     public final static String FOLDER_LEFT = 
@@ -50,8 +54,8 @@ public class Perspective implements IPerspectiveFactory
         "org.thanlwinsoft.languagetest.UserResults";
     public final static String NAVIGATOR = 
         "org.thanlwinsoft.languagetest.Navigator";
-    public final static String TEST_HISTORY_VIEW = 
-        "org.thanlwinsoft.languagetest.TestHistoryView";
+    public final static String TEST_HISTORY_VIEW = TestHistoryView.ID;
+
     public void createInitialLayout(IPageLayout layout) 
     {
         String editorArea = layout.getEditorArea();

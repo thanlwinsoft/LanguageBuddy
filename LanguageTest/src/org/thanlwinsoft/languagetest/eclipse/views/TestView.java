@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/LanguageTest/src/org/thanlwinsoft/languagetest/eclipse/views/TestView.java $
- *  Revision        $LastChangedRevision: 855 $
- *  Last Modified:  $LastChangedDate: 2007-06-10 07:02:09 +0700 (Sun, 10 Jun 2007) $
+ *  Revision        $LastChangedRevision: 856 $
+ *  Last Modified:  $LastChangedDate: 2007-06-13 05:13:58 +0700 (Wed, 13 Jun 2007) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -43,7 +43,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.TextViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -57,7 +56,6 @@ import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.StyledTextContent;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
@@ -69,15 +67,12 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.layout.RowData;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -89,7 +84,8 @@ import org.eclipse.ui.part.ViewPart;
 import org.thanlwinsoft.eclipse.widgets.SoundPlayer;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
-import org.thanlwinsoft.languagetest.eclipse.Perspective;
+import org.thanlwinsoft.languagetest.eclipse.EditPerspective;
+import org.thanlwinsoft.languagetest.eclipse.TestPerspective;
 import org.thanlwinsoft.languagetest.eclipse.editors.TestItemEditor;
 import org.thanlwinsoft.languagetest.eclipse.editors.TestModuleEditor;
 import org.thanlwinsoft.languagetest.language.test.Test;
@@ -104,7 +100,6 @@ import org.thanlwinsoft.schemas.languagetest.module.LangType;
 import org.thanlwinsoft.schemas.languagetest.module.LangTypeType;
 import org.thanlwinsoft.schemas.languagetest.module.LanguageModuleType;
 import org.thanlwinsoft.schemas.languagetest.module.NativeLangType;
-import org.thanlwinsoft.schemas.languagetest.module.SoundFileType;
 import org.thanlwinsoft.schemas.languagetest.module.TestItemType;
 
 /**
@@ -131,7 +126,7 @@ public class TestView extends ViewPart implements ISelectionChangedListener
     private int promptView = 0;
     private Font nativeFont = null;  //  @jve:decl-index=0:
     private Font foreignFont = null;
-    private HashSet selectionProviders = null;
+    private HashSet<ISelectionProvider> selectionProviders = null;
     public final static int [] EQUAL_WEIGHT = new int [] { 50, 50};
     private final static int [] NO_PICTURE_WEIGHTS = new int [] {99,1};
     private final static float MIN_WEIGHT = 0.1f;
@@ -147,7 +142,7 @@ public class TestView extends ViewPart implements ISelectionChangedListener
     
     public TestView()
     {
-        selectionProviders = new HashSet();
+        selectionProviders = new HashSet<ISelectionProvider>();
         LanguageTestPlugin.getPrefStore().setDefault(FLIP_PERIOD_PREF, 10000);
         LanguageTestPlugin.getPrefStore().setDefault(FLIP_REPEAT_PREF, 5);
         
@@ -461,8 +456,10 @@ public class TestView extends ViewPart implements ISelectionChangedListener
         {
             show(NATIVE_ID | FOREIGN_ID);
             IEditorPart editor = 
-                PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-            TestModuleEditor tme = (TestModuleEditor)editor.getAdapter(TestModuleEditor.class);
+                PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                .getActivePage().getActiveEditor();
+            TestModuleEditor tme = 
+                (TestModuleEditor)editor.getAdapter(TestModuleEditor.class);
             if (tme != null && tme.getDocument() != null)
             {
                 setTestModule(tme.getDocument().getLanguageModule());
@@ -578,8 +575,8 @@ public class TestView extends ViewPart implements ISelectionChangedListener
                         ImageData [] imageDatas = null;
                         if (imgFile != null && imgFile.exists())
                         {
-                            imageDatas = loader.load(imgFile.getRawLocation().toOSString());
-                            
+                            imageDatas = loader.load(imgFile.getRawLocation()
+                                                     .toOSString());
                         }
                         else
                         {
@@ -617,6 +614,7 @@ public class TestView extends ViewPart implements ISelectionChangedListener
             }
             else
             {
+                imageData = null;
             	picture.setImage(null);
             	picture.setToolTipText("");
             	horizontalSash.setWeights(NO_PICTURE_WEIGHTS);
@@ -695,7 +693,7 @@ public class TestView extends ViewPart implements ISelectionChangedListener
      */
     public void dispose()
     {
-        Iterator i = selectionProviders.iterator();
+        Iterator<ISelectionProvider> i = selectionProviders.iterator();
         while (i.hasNext())
         {
             ISelectionProvider p = (ISelectionProvider)i.next();
@@ -845,7 +843,11 @@ public class TestView extends ViewPart implements ISelectionChangedListener
         IWorkbenchPage page = window.getActivePage(); 
         try
         {
-            page.showView(Perspective.TEST_VIEW);
+            IPerspectiveDescriptor editPerspective = 
+                PlatformUI.getWorkbench().getPerspectiveRegistry()
+                .findPerspectiveWithId(EditPerspective.ID);
+            page.setPerspective(editPerspective);
+            page.showView(EditPerspective.TEST_VIEW);
             IViewReference viewRef = (IViewReference)page.getReference(this);
             if (viewRef != null && page.isPageZoomed() == true)
             {

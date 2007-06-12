@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/LanguageTest/src/org/thanlwinsoft/languagetest/eclipse/workspace/WorkspaceLanguageManager.java $
- *  Revision        $LastChangedRevision: 852 $
- *  Last Modified:  $LastChangedDate: 2007-06-09 16:02:23 +0700 (Sat, 09 Jun 2007) $
+ *  Revision        $LastChangedRevision: 856 $
+ *  Last Modified:  $LastChangedDate: 2007-06-13 05:13:58 +0700 (Wed, 13 Jun 2007) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -301,17 +301,19 @@ public class WorkspaceLanguageManager
         {
 		try
 		{
-            
-			InputStream is = langFile.getContents();
-	        XmlOptions options = new XmlOptions();
-	        options.setCharacterEncoding("UTF-8");
-	        options.setLoadUseDefaultResolver();
-	        options.setDocumentType(LanguageModuleDocument.type);
-	        LanguageModuleDocument langDoc = 
-	        	LanguageModuleDocument.Factory.parse(is);
-	        if (langDoc.getLanguageModule() == null)
-	        	langDoc.addNewLanguageModule();
-	        return langDoc;
+            if (langFile.isAccessible())
+            {
+    			InputStream is = langFile.getContents();
+    	        XmlOptions options = new XmlOptions();
+    	        options.setCharacterEncoding("UTF-8");
+    	        options.setLoadUseDefaultResolver();
+    	        options.setDocumentType(LanguageModuleDocument.type);
+    	        LanguageModuleDocument langDoc = 
+    	        	LanguageModuleDocument.Factory.parse(is);
+    	        if (langDoc.getLanguageModule() == null)
+    	        	langDoc.addNewLanguageModule();
+    	        return langDoc;
+            }
 		}
 		catch (CoreException e)
 		{

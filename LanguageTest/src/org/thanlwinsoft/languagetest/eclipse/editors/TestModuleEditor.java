@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/LanguageTest/src/org/thanlwinsoft/languagetest/eclipse/editors/TestModuleEditor.java $
- *  Revision        $LastChangedRevision: 855 $
- *  Last Modified:  $LastChangedDate: 2007-06-10 07:02:09 +0700 (Sun, 10 Jun 2007) $
+ *  Revision        $LastChangedRevision: 856 $
+ *  Last Modified:  $LastChangedDate: 2007-06-13 05:13:58 +0700 (Wed, 13 Jun 2007) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -55,7 +55,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
-import org.thanlwinsoft.languagetest.eclipse.Perspective;
+import org.thanlwinsoft.languagetest.eclipse.EditPerspective;
 import org.thanlwinsoft.languagetest.eclipse.views.RecordingView;
 import org.thanlwinsoft.languagetest.eclipse.views.TestView;
 import org.thanlwinsoft.languagetest.eclipse.workspace.WorkspaceLanguageManager;
@@ -380,7 +380,7 @@ public class TestModuleEditor extends MultiPageEditorPart
     protected void updateTestView()
     {
         IViewPart testViewPart = getEditorSite().getPage()
-            .findView(Perspective.TEST_VIEW);
+            .findView(EditPerspective.TEST_VIEW);
         if (testViewPart != null)
         {
             TestView testView = (TestView)testViewPart;

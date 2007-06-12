@@ -1,8 +1,8 @@
 /**
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/LanguageTest/src/org/thanlwinsoft/languagetest/eclipse/wizards/StartTestWizard.java $
- *  Revision        $LastChangedRevision: 852 $
- *  Last Modified:  $LastChangedDate: 2007-06-09 16:02:23 +0700 (Sat, 09 Jun 2007) $
+ *  Revision        $LastChangedRevision: 856 $
+ *  Last Modified:  $LastChangedDate: 2007-06-13 05:13:58 +0700 (Wed, 13 Jun 2007) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -35,16 +35,19 @@ import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
-import org.thanlwinsoft.languagetest.eclipse.Perspective;
+import org.thanlwinsoft.languagetest.eclipse.EditPerspective;
+import org.thanlwinsoft.languagetest.eclipse.TestPerspective;
 import org.thanlwinsoft.languagetest.eclipse.editors.TestModuleEditor;
 import org.thanlwinsoft.languagetest.eclipse.views.TestView;
 import org.thanlwinsoft.languagetest.language.test.Test;
@@ -100,9 +103,9 @@ public class StartTestWizard extends Wizard
         IWorkbenchPage page = window.getActivePage(); 
         try
         {
-            page.showView(Perspective.TEST_VIEW);
+            page.showView(EditPerspective.TEST_VIEW);
             Vector<TestItemFilter> filters = new Vector<TestItemFilter>(1);
-            TestView testView = (TestView)page.findView(Perspective.TEST_VIEW);
+            TestView testView = (TestView)page.findView(EditPerspective.TEST_VIEW);
             TestManager manager = new TestManager(
                     testTypePage.getUser(),
                     testTypePage.getNativeLanguage().getCode(),
@@ -141,6 +144,10 @@ public class StartTestWizard extends Wizard
             {
                 if (testTypePage.isSetMaxTestItems())
                     test.pruneTestToLimit(testTypePage.getMaxTestItems());
+                IPerspectiveDescriptor testPerspective = 
+                    PlatformUI.getWorkbench().getPerspectiveRegistry()
+                    .findPerspectiveWithId(TestPerspective.ID);
+                page.setPerspective(testPerspective);
                 IViewReference viewRef = (IViewReference)page.getReference(testView);
                 if (viewRef != null && page.isPageZoomed() == false)
                 {

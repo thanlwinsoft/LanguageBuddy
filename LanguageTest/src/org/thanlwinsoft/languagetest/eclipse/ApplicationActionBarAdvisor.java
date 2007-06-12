@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/LanguageTest/src/org/thanlwinsoft/languagetest/eclipse/ApplicationActionBarAdvisor.java $
- *  Revision        $LastChangedRevision: 852 $
- *  Last Modified:  $LastChangedDate: 2007-06-09 16:02:23 +0700 (Sat, 09 Jun 2007) $
+ *  Revision        $LastChangedRevision: 856 $
+ *  Last Modified:  $LastChangedDate: 2007-06-13 05:13:58 +0700 (Wed, 13 Jun 2007) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -148,20 +148,22 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         newEditorAction = ActionFactory.NEW_EDITOR.create(window);
         register(newEditorAction);
         
-        showTestViewAction = new ShowViewAction(TestView.ID, 
+        showTestViewAction = new ShowViewAction(EditPerspective.ID, TestView.ID, 
                         MessageUtil.getString("ShowTestView"));
-        showHistoryViewAction = new ShowViewAction(TestHistoryView.ID, 
-                        MessageUtil.getString("ShowHistoryView"));
-        showNavigatorViewAction = new ShowViewAction("org.thanlwinsoft.languagetest.Navigator", 
+        showHistoryViewAction = new ShowViewAction(HistoryPerspective.ID, 
+             TestHistoryView.ID, MessageUtil.getString("ShowHistoryView"));
+        showNavigatorViewAction = new ShowViewAction(
+            EditPerspective.ID, "org.thanlwinsoft.languagetest.Navigator", 
                         MessageUtil.getString("ShowNavigatorView"));
-        showRecordingViewAction = new ShowViewAction(RecordingView.ID, 
-                        MessageUtil.getString("ShowRecordingView"));
+        showRecordingViewAction = new ShowViewAction(EditPerspective.ID, 
+            RecordingView.ID, MessageUtil.getString("ShowRecordingView"));
         
-        showHistoryGraphViewAction = new ShowViewAction(ChartHistoryView.ID, 
+        showHistoryGraphViewAction = new ShowViewAction(
+                HistoryPerspective.ID, ChartHistoryView.ID, 
                 MessageUtil.getString("ShowHistoryGraphView"));
         
-        showMetaDataViewAction = new ShowViewAction(MetaDataView.ID, 
-                MessageUtil.getString("ShowMetaDataView"));
+        showMetaDataViewAction = new ShowViewAction(EditPerspective.ID, 
+            MetaDataView.ID, MessageUtil.getString("ShowMetaDataView"));
         
         register(showTestViewAction);
         register(showHistoryViewAction);
@@ -171,9 +173,6 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         
         welcomeAction = new WelcomeAction();
         register(welcomeAction);
-        //conversionWizardAction = new ConversionWizardAction();
-        // Open the wizard dialog
-        //wizardDialog.open();
     }
 
     protected void fillMenuBar(IMenuManager menuBar) 

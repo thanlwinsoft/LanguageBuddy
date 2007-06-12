@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/LanguageTest/src/org/thanlwinsoft/languagetest/eclipse/wizards/NewModuleProjectWizard.java $
- *  Revision        $LastChangedRevision: 852 $
- *  Last Modified:  $LastChangedDate: 2007-06-09 16:02:23 +0700 (Sat, 09 Jun 2007) $
+ *  Revision        $LastChangedRevision: 856 $
+ *  Last Modified:  $LastChangedDate: 2007-06-13 05:13:58 +0700 (Wed, 13 Jun 2007) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -48,7 +48,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.ui.views.navigator.ResourceNavigator;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
-import org.thanlwinsoft.languagetest.eclipse.Perspective;
+import org.thanlwinsoft.languagetest.eclipse.EditPerspective;
 
 /**
  * @author keith
@@ -108,7 +108,7 @@ public class NewModuleProjectWizard extends Wizard implements INewWizard
             }
             
             // attempt to find out why it doesn't work
-            IViewPart vp = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(Perspective.NAVIGATOR);
+            IViewPart vp = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(EditPerspective.NAVIGATOR);
             if (vp instanceof ResourceNavigator)
             {
                 ResourceNavigator rn = (ResourceNavigator)vp;
