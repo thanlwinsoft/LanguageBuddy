@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: XML Beans
+Bundle-SymbolicName: org.apache.xmlbeans
+Bundle-Version: 2.3.0
+Bundle-Vendor: xmlbeans.apache.org
+Bundle-Localization: plugin
+Export-Package: javax.xml.stream,
+ javax.xml.stream.events,
+ javax.xml.stream.util,
+ org.apache.xmlbeans
+Bundle-Classpath: lib/jsr173_1.0_api.jar,              lib/resolver.jar,              lib/xbean.jar,              lib/xbean_xpath.jar,              lib/xmlbeans-qname.jar,              lib/xmlpublic.jar
+Eclipse-LazyStart: true
