@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="**/.svn/|org/thanlwinsoft/languagetest/language/test/old/|org/thanlwinsoft/schemas/languagetest/|schemaorg_apache_xmlbeans/element/http_3A_2F_2Fwww_2Ethanlwinsoft_2Eorg_2Fschemas_2FLanguageTest/|schemaorg_apache_xmlbeans/javaname/org/thanlwinsoft/schemas/languageTest/|schemaorg_apache_xmlbeans/namespace/http_3A_2F_2Fwww_2Ethanlwinsoft_2Eorg_2Fschemas_2FLanguageTest/|schemaorg_apache_xmlbeans/src/|schemaorg_apache_xmlbeans/system/s90C627BBE79C9E86BA29B1BE29041412/|schemaorg_apache_xmlbeans/type/http_3A_2F_2Fwww_2Ethanlwinsoft_2Eorg_2Fschemas_2FLanguageTest/" kind="src" path="src"/>
+	<classpathentry exported="true" kind="lib" path="libs/LanguageTestTypes.jar" sourcepath="schemas/src"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry exported="true" kind="lib" path="libs/jspeex0.9.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/mp3spi1.9.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/vorbisspi1.0.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/commons-logging-api.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/jl1.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/jogg-0.0.7.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/jorbis-0.0.13.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="lib" path="libs/tritonus_share.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/jcommon-1.0.0-pre2.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/basicplayer2.3.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
