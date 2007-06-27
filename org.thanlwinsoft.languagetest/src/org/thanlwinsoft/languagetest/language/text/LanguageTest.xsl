@@ -2,8 +2,8 @@
 
 <!--
     File:          $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/org.thanlwinsoft.languagetest/src/org/thanlwinsoft/languagetest/language/text/LanguageTest.xsl $
-    Version:       $Revision: 852 $
-    Last Modified: $Date: 2007-06-09 16:02:23 +0700 (Sat, 09 Jun 2007) $
+    Version:       $Revision: 861 $
+    Last Modified: $Date: 2007-06-28 05:22:25 +0700 (Thu, 28 Jun 2007) $
 
     This is the XSLT file to transform the LanguageTest XML format into
     HTML for viewing in a web browser.
@@ -27,7 +27,7 @@
  
 -->
 
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format"  xmlns:lan="http://www.thanlwinsoft.org/schemas/languagetest">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format"  xmlns:lan="http://www.thanlwinsoft.org/schemas/languagetest/module">
 
 <xsl:template match="/">
 	<html>

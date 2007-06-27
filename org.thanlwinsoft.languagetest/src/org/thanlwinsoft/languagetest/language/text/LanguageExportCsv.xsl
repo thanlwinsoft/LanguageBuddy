@@ -2,8 +2,8 @@
 
 <!--
     File:          $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/org.thanlwinsoft.languagetest/src/org/thanlwinsoft/languagetest/language/text/LanguageExportCsv.xsl $
-    Version:       $Revision: 852 $
-    Last Modified: $Date: 2007-06-09 16:02:23 +0700 (Sat, 09 Jun 2007) $
+    Version:       $Revision: 861 $
+    Last Modified: $Date: 2007-06-28 05:22:25 +0700 (Thu, 28 Jun 2007) $
 
     This is the XSLT file to transform the LanguageTest XML format into
     text delimited format for import into other programs.
@@ -28,7 +28,7 @@
 -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 xmlns:fo="http://www.w3.org/1999/XSL/Format"
-xmlns:lan="http://www.thanlwinsoft.org/schemas/languagetest">
+xmlns:lan="http://www.thanlwinsoft.org/schemas/languagetest/module">
 <xsl:output method="text" />
 
 <xsl:template match="/"><xsl:apply-templates/>

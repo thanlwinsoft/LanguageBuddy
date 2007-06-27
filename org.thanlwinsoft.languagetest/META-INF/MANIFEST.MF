@@ -48,6 +48,7 @@ Require-Bundle: org.eclipse.core.filesystem,
  org.eclipse.ui.navigator.resources,
  org.eclipse.ui.workbench.texteditor,
  com.ibm.icu,
+ org.apache.xmlbeans,
  org.eclipse.search,
  org.apache.lucene,
  org.eclipse.ui.ide,
@@ -71,7 +72,7 @@ Require-Bundle: org.eclipse.core.filesystem,
  org.eclipse.ui.intro.universal,
  org.eclipse.core.runtime.compatibility,
  org.eclipse.core.runtime.compatibility.auth,
- org.apache.xmlbeans
+ org.sil.graphite
 Eclipse-LazyStart: true
 Bundle-Activator: org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin
 Bundle-Vendor: www.ThanLwinSoft.org

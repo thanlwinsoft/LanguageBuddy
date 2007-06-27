@@ -29,7 +29,7 @@
 
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 xmlns:fo="http://www.w3.org/1999/XSL/Format"  
-xmlns:lan="http://www.thanlwinsoft.org/schemas/languagetest">
+xmlns:lan="http://www.thanlwinsoft.org/schemas/languagetest/module">
 
 <!-- These parameters may be modified according to users wishes -->
 <xsl:param name="title">LanguageTest</xsl:param>

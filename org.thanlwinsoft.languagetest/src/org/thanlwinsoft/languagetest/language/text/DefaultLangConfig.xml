@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lan:LanguageModule creationTime="1160544635435" id="DEFAULT_CONFIG_ID" xmlns:lan="http://www.thanlwinsoft.org/schemas/languagetest/module">
+<lan:Config>
+<lan:MetaData metaId="Basic Grammar">
+<lan:Desc lang="en">Basic Grammar</lan:Desc>
+<lan:MetaData metaId="verb"><lan:Desc lang="en">verb</lan:Desc></lan:MetaData>
+<lan:MetaData metaId="noun"><lan:Desc lang="en">noun</lan:Desc></lan:MetaData>
+<lan:MetaData metaId="adverb"><lan:Desc lang="en">adverb</lan:Desc></lan:MetaData>
+<lan:MetaData metaId="adjective"><lan:Desc lang="en">adjective</lan:Desc></lan:MetaData>
+<lan:MetaData metaId="particle"><lan:Desc lang="en">particle</lan:Desc></lan:MetaData>
+<lan:MetaData metaId="classifier"><lan:Desc lang="en">classifier</lan:Desc></lan:MetaData>
+<lan:MetaData metaId="conjunction"><lan:Desc lang="en">conjunction</lan:Desc></lan:MetaData>
+<lan:MetaData metaId="phrase"><lan:Desc lang="en">phrase</lan:Desc></lan:MetaData>
+</lan:MetaData>
+</lan:Config>
+</lan:LanguageModule>
