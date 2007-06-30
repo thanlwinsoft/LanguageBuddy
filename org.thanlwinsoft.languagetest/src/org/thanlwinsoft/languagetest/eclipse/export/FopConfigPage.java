@@ -74,6 +74,7 @@ import org.osgi.framework.Bundle;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * @author keith
@@ -116,10 +117,13 @@ public class FopConfigPage extends WizardPage implements ExporterProperties, IEx
 //      Step 1: Construct a FopFactory
 //      (reuse if you plan to render multiple documents!)
         Bundle fopBundle = Platform.getBundle("org.apache.fop");
+        Bundle graphiteBundle = Platform.getBundle("org.sil.graphite");
         boolean success = false;
         try
         {
             fopBundle.loadClass("org.apache.fop.apps.FopFactory");
+            if (graphiteBundle != null)
+            	graphiteBundle.loadClass("org.sil.graphite.GraphiteFont");
 //            fopBundle.loadClass("org.apache.xmlgraphics.util.Service");
             if (fopFactory == null)
                 fopFactory = FopFactory.newInstance();
@@ -163,8 +167,8 @@ public class FopConfigPage extends WizardPage implements ExporterProperties, IEx
                Source src = new StreamSource(sourceFile);
             
                // Resulting SAX events (the generated FO) must be piped through to FOP
-               Result res = new SAXResult(fop.getDefaultHandler());
-                         
+               DefaultHandler dh = fop.getDefaultHandler();
+               Result res = new SAXResult(dh);
                // Step 6: Start XSLT transformation and FOP processing
                transformer.transform(src, res);
                success = true;
