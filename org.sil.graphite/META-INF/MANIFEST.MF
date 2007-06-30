@@ -4,3 +4,6 @@ Bundle-Name: Graphite Plug-in
 Bundle-SymbolicName: org.sil.graphite
 Bundle-Version: 0.0.1
 Bundle-Vendor: www.thanlwinsoft.org
+Bundle-ClassPath: libs/graphite-0.0.1.jar,
+ .
+Export-Package: org.sil.graphite
