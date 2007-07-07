@@ -94,9 +94,12 @@
 	<target name="jar" depends="compile-schema,compile" description="Create plugin jar">
 		<svn>
 			<info target="."/>
-			<status path="." textStatusProperty="svn.textStatus" propStatusProperty="svn.propStatus"/>
+			<wcVersion path="." prefix="svn."/>
 		</svn>
-		<jar basedir="${build}" destfile="${name}_${version}.svn${svn.info.lastRev}${svn.propStatus}.jar">
+		<condition property="modified.flag" value="m" else="">
+			<isset property="svn.modified"/>
+		</condition>
+		<jar basedir="${build}" destfile="${name}_${version}.svn${svn.info.lastRev}${modified.flag}.jar">
 			
 		</jar>
 	</target>
