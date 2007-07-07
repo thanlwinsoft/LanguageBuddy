@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="LanguageTest" default="default" basedir=".">
+<project name="org.thanlwinsoft.languagetest.xmlbeans" default="default" basedir=".">
     <description>Builds, tests, and runs the project LanguageTest.</description>
 	
 	<taskdef name="xmlbean" classname="org.apache.xmlbeans.impl.tool.XMLBean" 
