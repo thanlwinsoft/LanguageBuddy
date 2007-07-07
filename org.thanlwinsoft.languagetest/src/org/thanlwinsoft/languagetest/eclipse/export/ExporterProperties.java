@@ -64,7 +64,7 @@ public interface ExporterProperties
      * @param target
      * @return true on successful conversion
      */
-    public boolean convert(String source, String target);
+    public boolean convert(String source, String target, String [] properties, String [] values);
     /**
      * Toggle enable/disable status
      * When disabled the WizardPage must return true for isPageComplete()

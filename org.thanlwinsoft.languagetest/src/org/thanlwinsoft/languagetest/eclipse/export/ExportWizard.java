@@ -34,8 +34,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Vector;
 
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -66,6 +68,10 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.thanlwinsoft.languagetest.eclipse.editors.TestModuleEditor;
+import org.thanlwinsoft.languagetest.eclipse.print.LanguagePairDialog;
+import org.thanlwinsoft.languagetest.eclipse.workspace.WorkspaceLanguageManager;
+import org.thanlwinsoft.languagetest.language.test.UniversalLanguage;
+import org.thanlwinsoft.schemas.languagetest.module.LangType;
 
 /**
  * @author keith
@@ -103,21 +109,41 @@ public class ExportWizard extends Wizard implements IExportWizard
         final ExportTypePage.ExporterDetails ed = typePage.getSelectedExporter();
         if (ed == null)
             return false;
+        Vector<String> parameters = new Vector<String>();
+        Vector<String> values = new Vector<String>();
         if (files.length == 0)
         {
             MessageDialog.openWarning(shell, MessageUtil.getString("NoFiles"), 
                     MessageUtil.getString("NoFilesToExportMessage"));
+            return true;
         }
-        // these must be retreived in the display thread
-        String [] parameters = null;
-        String [] values = null;
+        else if (ed.isMultiLingual == false)
+        {
+        	LangType[] langs = WorkspaceLanguageManager.findUserLanguages();
+        	LanguagePairDialog lp = new LanguagePairDialog(shell, langs);
+        	if (lp.needDialog())
+        	{
+        		lp.open();
+        	}
+        	parameters.add("nativeLang");
+        	values.add(lp.getNativeLang().getLang());
+        	parameters.add("foreignLang");
+        	values.add(lp.getForeignLang().getLang());
+        	UniversalLanguage ul = new UniversalLanguage(lp.getNativeLang().getLang());
+        	parameters.add("nativeLangDesc");
+        	values.add(ul.getDescription());
+        	parameters.add("foreignLangDesc");
+        	ul = new UniversalLanguage(lp.getForeignLang().getLang());
+        	values.add(ul.getDescription());
+        }
         if (ed.properties != null)
         {
-            parameters = ed.properties.getParameters();
-            values = ed.properties.getValues();
+            // these must be retreived in the display thread
+            parameters.addAll(Arrays.asList(ed.properties.getParameters()));
+            values.addAll(Arrays.asList(ed.properties.getValues()));
         }
-        final String [] theParameters = parameters;
-        final String [] theValues = values;
+        final String [] theParameters = parameters.toArray(new String[parameters.size()]);
+        final String [] theValues = values.toArray(new String[values.size()]);
         
         Job job = new Job("Export")
         {
@@ -201,9 +227,11 @@ public class ExportWizard extends Wizard implements IExportWizard
                 }
                 if (ed.properties != null &&
                     ed.properties.convert(files[i].getRawLocation().toOSString(), 
-                                          outputPath.toOSString()))
+                                          outputPath.toOSString(),
+                                          parameters, values))
+                {
                     continue;
-                
+                }
                 is = files[i].getContents();
                 
                 

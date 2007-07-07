@@ -31,11 +31,17 @@
 xmlns:fo="http://www.w3.org/1999/XSL/Format"  
 xmlns:lan="http://www.thanlwinsoft.org/schemas/languagetest/module">
 
+<xsl:output method="xml" indent="yes"/>
+
 <!-- These parameters may be modified according to users wishes -->
 <xsl:param name="title">LanguageTest</xsl:param>
 <xsl:param name="colCount">1</xsl:param>
 <xsl:param name="useImage">1</xsl:param>
 <xsl:param name="pageSize">A4</xsl:param>
+<xsl:param name="nativeLang"></xsl:param>
+<xsl:param name="nativeLangDesc"></xsl:param>
+<xsl:param name="foreignLang"></xsl:param>
+<xsl:param name="foreignLangDesc"></xsl:param>
 
 <xsl:attribute-set name="default-style">
   <xsl:attribute name="font-size">12pt</xsl:attribute>
@@ -167,16 +173,16 @@ xmlns:lan="http://www.thanlwinsoft.org/schemas/languagetest/module">
 				<fo:table-header>
 	                <fo:table-row>
 		                <fo:table-cell >
-		                <xsl:for-each select="lan:LanguageModule/lan:Lang[@type='native']">
+		                <xsl:for-each select="lan:LanguageModule/lan:Lang[@type='native' and @lang=$nativeLang]">
 			                <fo:block>
-			                	<xsl:value-of select="@lang"/>
+			                	<xsl:value-of select="$nativeLangDesc"/>
 			            	</fo:block>
 			            </xsl:for-each>
 		                
 						</fo:table-cell>
 						<fo:table-cell >
-							<xsl:for-each select="lan:LanguageModule/lan:Lang[@type='foreign']">
-				                <fo:block><xsl:value-of select="@lang"/></fo:block>
+							<xsl:for-each select="lan:LanguageModule/lan:Lang[@type='foreign' and @lang=$foreignLang]">
+				                <fo:block><xsl:value-of select="$foreignLangDesc"/></fo:block>
 			                </xsl:for-each>
 	                	</fo:table-cell>
 						<xsl:if test="$useImage>0 and count(//lan:Img)>0">
@@ -202,7 +208,7 @@ xmlns:lan="http://www.thanlwinsoft.org/schemas/languagetest/module">
         <fo:table-row>
         	
             <fo:table-cell column-number="1" xsl:use-attribute-sets="cell-border">
-                <xsl:for-each select="lan:NativeLang">
+                <xsl:for-each select="lan:NativeLang[@lang=$nativeLang]">
 		            <xsl:element name="fo:block" xml:space="default" 
 		            	use-attribute-sets="default-style">
 		                <xsl:attribute name="font-family">
@@ -215,7 +221,7 @@ xmlns:lan="http://www.thanlwinsoft.org/schemas/languagetest/module">
 			    </xsl:for-each>
 	    	</fo:table-cell>
             <fo:table-cell column-number="2" xsl:use-attribute-sets="cell-border">
-                <xsl:for-each select="lan:ForeignLang">
+                <xsl:for-each select="lan:ForeignLang[@lang=$foreignLang]">
                 <xsl:element name="fo:block" xml:space="default"
                 	use-attribute-sets="default-style">
                     <xsl:attribute name="font-family">

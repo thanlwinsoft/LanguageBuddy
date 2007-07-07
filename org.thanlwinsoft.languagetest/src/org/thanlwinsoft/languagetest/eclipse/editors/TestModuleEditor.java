@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/org.thanlwinsoft.languagetest/src/org/thanlwinsoft/languagetest/eclipse/editors/TestModuleEditor.java $
- *  Revision        $LastChangedRevision: 856 $
- *  Last Modified:  $LastChangedDate: 2007-06-13 05:13:58 +0700 (Wed, 13 Jun 2007) $
+ *  Revision        $LastChangedRevision: 921 $
+ *  Last Modified:  $LastChangedDate: 2007-07-08 06:52:20 +0700 (Sun, 08 Jul 2007) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -32,7 +32,6 @@ import java.util.Date;
 
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlOptions;
-//import org.apache.xmlbeans.xml.stream.Comment;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -61,7 +60,6 @@ import org.thanlwinsoft.languagetest.eclipse.views.TestView;
 import org.thanlwinsoft.languagetest.eclipse.workspace.WorkspaceLanguageManager;
 import org.thanlwinsoft.languagetest.language.test.XmlBeansTestModule;
 import org.thanlwinsoft.schemas.languagetest.module.LanguageModuleDocument;
-import org.thanlwinsoft.schemas.languagetest.module.LanguageModuleType;
 import org.thanlwinsoft.schemas.languagetest.module.TestItemType;
 import org.w3c.dom.Document;
 import org.w3c.dom.Comment;
@@ -95,17 +93,21 @@ public class TestModuleEditor extends MultiPageEditorPart
     {
         
     }
-    /* (non-Javadoc)
-     * @see org.eclipse.ui.part.MultiPageEditorPart#getAdapter(java.lang.Class)
-     */
-    public Object getAdapter(Class adapter)
+    
+    
+    public TestItemEditor getAdapter(Class<TestItemEditor> adapter)
     {
-        if (adapter.equals(testItemEditor.getClass()) ||
-            adapter.equals(ISelectionProvider.class))
-            return testItemEditor;
-        if (adapter.equals(languagePart.getClass()))
-            return languagePart;
-        return super.getAdapter(adapter);
+    	return testItemEditor;
+    }
+    
+    public ISelectionProvider getAdapter(Class<ISelectionProvider> adapter)
+    {
+    	return testItemEditor;
+    }
+    
+    public ModuleLanguagePart getAdapter(Class<ModuleLanguagePart> adapter)
+    {
+    	return languagePart;
     }
     /* (non-Javadoc)
      * @see org.eclipse.ui.part.EditorPart#doSave(org.eclipse.core.runtime.IProgressMonitor)

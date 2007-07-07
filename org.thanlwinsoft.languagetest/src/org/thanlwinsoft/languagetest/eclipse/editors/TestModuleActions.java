@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/org.thanlwinsoft.languagetest/src/org/thanlwinsoft/languagetest/eclipse/editors/TestModuleActions.java $
- *  Revision        $LastChangedRevision: 852 $
- *  Last Modified:  $LastChangedDate: 2007-06-09 16:02:23 +0700 (Sat, 09 Jun 2007) $
+ *  Revision        $LastChangedRevision: 921 $
+ *  Last Modified:  $LastChangedDate: 2007-07-08 06:52:20 +0700 (Sun, 08 Jul 2007) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -26,8 +26,8 @@
 package org.thanlwinsoft.languagetest.eclipse.editors;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.IJobManager;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.ui.IActionBars;
@@ -36,6 +36,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.MultiPageEditorActionBarContributor;
+import org.thanlwinsoft.languagetest.eclipse.print.PrintModuleAction;
 
 /**
  * @author keith
@@ -66,7 +67,7 @@ public class TestModuleActions extends MultiPageEditorActionBarContributor
             {
                 if (editor != null)
                 {
-                    IJobManager jobMan = Platform.getJobManager();
+                    IJobManager jobMan = Job.getJobManager();
                     IProgressMonitor pm = jobMan.createProgressGroup();
                     editor.doSave(pm);
                 }
@@ -89,6 +90,7 @@ public class TestModuleActions extends MultiPageEditorActionBarContributor
     {        
         bars.setGlobalActionHandler(ActionFactory.SAVE.getId(), saveAction);
         bars.setGlobalActionHandler(ActionFactory.COPY.getId(), copyAction);
+        bars.setGlobalActionHandler(ActionFactory.PRINT.getId(), new PrintModuleAction());
         super.init(bars, page);
     }
 

@@ -108,6 +108,7 @@ public class ExportTypePage extends WizardPage
                 details.name = ce[j].getAttribute("name");
                 details.stylesheet = ce[j].getAttribute("xslt");
                 details.extension = ce[j].getAttribute("extension");
+                details.isMultiLingual = Boolean.parseBoolean(ce[j].getAttribute("multiLingual"));
                 WizardPage page = null;
                 try
                 {   
@@ -203,6 +204,7 @@ public class ExportTypePage extends WizardPage
         String name = "";
         String extension = "";
         String stylesheet = null;
+        boolean isMultiLingual = true;
         WizardPage page = null;
         ExporterProperties properties = null;
     }

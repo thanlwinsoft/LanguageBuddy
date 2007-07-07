@@ -59,13 +59,22 @@ public class PrintModuleAction extends Action
 				final String title = fei.getFile().getFullPath().removeFileExtension().lastSegment();
 				final TestItemType [] items = 
 					doc.getLanguageModule().getTestItemArray();
-				IProject [] up = WorkspaceLanguageManager.findUserProjects();
-				if (up.length == 0) return;
-				final LangType [] nLangs = 
-					WorkspaceLanguageManager.findUserLanguages(LangTypeType.NATIVE);
-				final LangType [] fLangs = 
-					WorkspaceLanguageManager.findUserLanguages(LangTypeType.FOREIGN);
-							
+//				IProject [] up = WorkspaceLanguageManager.findUserProjects();
+//				if (up.length == 0) return;
+//				final LangType [] nLangs = 
+//					WorkspaceLanguageManager.findUserLanguages(LangTypeType.NATIVE);
+//				final LangType [] fLangs = 
+//					WorkspaceLanguageManager.findUserLanguages(LangTypeType.FOREIGN);
+				
+				LangType [] langs = doc.getLanguageModule().getLangArray();
+				LanguagePairDialog lp = new LanguagePairDialog(shell, langs);
+				if (lp.needDialog())
+				{
+					lp.open();
+				}
+				final LangType nLang = lp.getNativeLang();
+				final LangType fLang = lp.getForeignLang();
+
 				IRunnableWithProgress runnable = new IRunnableWithProgress()
 				{
 	
@@ -74,7 +83,7 @@ public class PrintModuleAction extends Action
 							throws InvocationTargetException, InterruptedException
 					{
 						PrintTestItems printModule = new PrintTestItems(data, 
-								title, items, nLangs[0], fLangs[0]);
+								title, items, nLang, fLang);
 						printModule.doPrint(monitor);
 					}
 					

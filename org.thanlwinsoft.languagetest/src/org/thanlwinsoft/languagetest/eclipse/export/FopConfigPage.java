@@ -110,7 +110,7 @@ public class FopConfigPage extends WizardPage implements ExporterProperties, IEx
     /* (non-Javadoc)
      * @see org.thanlwinsoft.languagetest.eclipse.export.ExporterProperties#convert(java.lang.String, java.lang.String)
      */
-    public boolean convert(String source, String target)
+    public boolean convert(String source, String target, String [] properties, String [] values)
     {
 //      mustn't access any widgets because this isn't run in a display thread
         System.out.println(source + " " + target);
@@ -137,14 +137,9 @@ public class FopConfigPage extends WizardPage implements ExporterProperties, IEx
                FOUserAgent userAgent = fopFactory.newFOUserAgent();
 //                userAgent.setProducer("Language Test <www.thanlwinsoft.org> using FOP");
 //                userAgent.setTitle(title);
-                String userHome = System.getProperty("user.home");
-//                File fontBase = new File(userHome + File.separator + ".fonts");
-//                //userAgent.setFontBaseURL(fontBase.toURI().toURL().toExternalForm());
-//                userAgent.setBaseURL(fontBase.toURI().toURL().toExternalForm());
                 DefaultConfigurationBuilder cfgBuilder = new DefaultConfigurationBuilder();
                 InputStream fopConfig = 
                     getClass().getResourceAsStream("/org/thanlwinsoft/languagetest/language/text/fop.xconf");
-                //Configuration cfg = cfgBuilder.buildFromFile(new File(userHome + "/.fop/fop.xconf"));
                 Configuration cfg = cfgBuilder.build(fopConfig);
                 fopFactory.setUserConfig(cfg);
                // Step 3: Construct fop with desired output format
@@ -159,9 +154,15 @@ public class FopConfigPage extends WizardPage implements ExporterProperties, IEx
                Transformer transformer = factory.newTransformer(xslt);
                
                transformer.setParameter("title", title);
-               transformer.setParameter("colCount", values[1]);
-               transformer.setParameter("useImage", values[2]);
-               transformer.setParameter("pageSize", values[3]);
+               
+//               transformer.setParameter("colCount", values[1]);
+//               transformer.setParameter("useImage", values[2]);
+//               transformer.setParameter("pageSize", values[3]);
+               for (int i = 0; i < properties.length; i++)
+               {
+            	   transformer.setParameter(properties[i], values[i]);
+               }
+
                // Step 5: Setup input and output for XSLT transformation 
                // Setup input stream
                Source src = new StreamSource(sourceFile);

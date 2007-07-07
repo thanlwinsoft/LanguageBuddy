@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/org.thanlwinsoft.languagetest/src/org/thanlwinsoft/languagetest/eclipse/ApplicationActionBarAdvisor.java $
- *  Revision        $LastChangedRevision: 856 $
- *  Last Modified:  $LastChangedDate: 2007-06-13 05:13:58 +0700 (Wed, 13 Jun 2007) $
+ *  Revision        $LastChangedRevision: 921 $
+ *  Last Modified:  $LastChangedDate: 2007-07-08 06:52:20 +0700 (Sun, 08 Jul 2007) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -84,6 +84,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
     private IWorkbenchAction exportAction;
     
     private WelcomeAction welcomeAction;
+	private IWorkbenchAction printAction;
     
     public ApplicationActionBarAdvisor(IActionBarConfigurer configurer) {
         super(configurer);
@@ -112,6 +113,9 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         
         pasteAction = ActionFactory.PASTE.create(window);
         register(pasteAction);
+        
+        printAction = ActionFactory.PRINT.create(window);
+        register(printAction);
         
         newWizardAction = ActionFactory.NEW_WIZARD_DROP_DOWN.create(window);
         register(newWizardAction);
@@ -210,6 +214,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         fileMenu.add(saveAllAction);
         fileMenu.add(closeAction);
         fileMenu.add(closeAllAction);
+        fileMenu.add(printAction);
         fileMenu.add(exportAction);
         
         fileMenu.add(new GroupMarker("File/additions"));
@@ -258,6 +263,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         toolBar.add(cutAction);
         toolBar.add(copyAction);
         toolBar.add(pasteAction);
+        toolBar.add(printAction);
         toolBar.add(new GroupMarker("Bar/additions"));
         //toolBar.add(preferencesAction);
     }

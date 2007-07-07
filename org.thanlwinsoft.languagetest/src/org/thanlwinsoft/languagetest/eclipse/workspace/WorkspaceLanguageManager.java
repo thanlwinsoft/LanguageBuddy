@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/org.thanlwinsoft.languagetest/src/org/thanlwinsoft/languagetest/eclipse/workspace/WorkspaceLanguageManager.java $
- *  Revision        $LastChangedRevision: 856 $
- *  Last Modified:  $LastChangedDate: 2007-06-13 05:13:58 +0700 (Wed, 13 Jun 2007) $
+ *  Revision        $LastChangedRevision: 921 $
+ *  Last Modified:  $LastChangedDate: 2007-07-08 06:52:20 +0700 (Sun, 08 Jul 2007) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -31,6 +31,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.TreeSet;
 import java.util.Vector;
 
 import org.apache.xmlbeans.XmlException;
@@ -213,6 +214,19 @@ public class WorkspaceLanguageManager
         }
         return get().userLanguages;
     }
+    
+    public static LangType [] findUserLanguages(LangTypeType.Enum type)
+    {
+        LangType [] langs = findUserLanguages();
+        Vector<LangType> langSet = new Vector<LangType>();
+        for(LangType l : langs)
+        {
+        	if (l.getType().equals(type))
+        		langSet.add((LangType)l.copy());
+        }
+        return langSet.toArray(new LangType[langSet.size()]);
+    }
+    
     /**
      * Find the active languages of a given type for a project.
      * User langauges are appended to the project list.
