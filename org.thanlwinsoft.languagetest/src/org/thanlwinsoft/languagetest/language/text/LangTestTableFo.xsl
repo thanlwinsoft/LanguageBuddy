@@ -50,6 +50,13 @@ xmlns:lan="http://www.thanlwinsoft.org/schemas/languagetest/module">
   <xsl:attribute name="text-align">left</xsl:attribute>
 </xsl:attribute-set>
 
+<xsl:attribute-set name="table-header-style">
+  <xsl:attribute name="font-size">12pt</xsl:attribute>
+  <xsl:attribute name="font-weight">bold</xsl:attribute>
+  <xsl:attribute name="line-height">150%</xsl:attribute>
+  <xsl:attribute name="text-align">left</xsl:attribute>
+</xsl:attribute-set>
+
 <xsl:attribute-set name="footer">
   <xsl:attribute name="font-size">8pt</xsl:attribute>
   <xsl:attribute name="font-weight">normal</xsl:attribute>
@@ -173,21 +180,19 @@ xmlns:lan="http://www.thanlwinsoft.org/schemas/languagetest/module">
 				<fo:table-header>
 	                <fo:table-row>
 		                <fo:table-cell >
-		                <xsl:for-each select="lan:LanguageModule/lan:Lang[@type='native' and @lang=$nativeLang]">
-			                <fo:block>
+			                <fo:block xsl:use-attribute-sets="table-header-style">
 			                	<xsl:value-of select="$nativeLangDesc"/>
 			            	</fo:block>
-			            </xsl:for-each>
 		                
 						</fo:table-cell>
 						<fo:table-cell >
-							<xsl:for-each select="lan:LanguageModule/lan:Lang[@type='foreign' and @lang=$foreignLang]">
-				                <fo:block><xsl:value-of select="$foreignLangDesc"/></fo:block>
-			                </xsl:for-each>
+			            	<fo:block xsl:use-attribute-sets="table-header-style">
+				                <xsl:value-of select="$foreignLangDesc"/>
+			            	</fo:block>
 	                	</fo:table-cell>
 						<xsl:if test="$useImage>0 and count(//lan:Img)>0">
 						<fo:table-cell>
-		                	<fo:block>Image</fo:block>
+		                	<fo:block xsl:use-attribute-sets="table-header-style">Image</fo:block>
 		                </fo:table-cell>	
 		                </xsl:if>
 						
@@ -208,42 +213,26 @@ xmlns:lan="http://www.thanlwinsoft.org/schemas/languagetest/module">
         <fo:table-row>
         	
             <fo:table-cell column-number="1" xsl:use-attribute-sets="cell-border">
-                <xsl:for-each select="lan:NativeLang[@lang=$nativeLang]">
-		            <xsl:element name="fo:block" xml:space="default" 
-		            	use-attribute-sets="default-style">
-		                <xsl:attribute name="font-family">
-		                <xsl:call-template name="findFont">
-		                    <xsl:with-param name="lang"><xsl:value-of select="@lang"/></xsl:with-param>
-		                </xsl:call-template>
-		                </xsl:attribute>
-		                <xsl:value-of select="."/>
-			    	</xsl:element>
-			    </xsl:for-each>
+                <xsl:element name="fo:block" xml:space="default" 
+	            	use-attribute-sets="default-style">
+	                <xsl:attribute name="font-family">
+	                <xsl:call-template name="findFont">
+	                    <xsl:with-param name="lang"><xsl:value-of select="$nativeLang"/></xsl:with-param>
+	                </xsl:call-template>
+	                </xsl:attribute>
+	                <xsl:value-of select="lan:NativeLang[@lang=$nativeLang]"/>
+		    	</xsl:element>
 	    	</fo:table-cell>
             <fo:table-cell column-number="2" xsl:use-attribute-sets="cell-border">
-                <xsl:for-each select="lan:ForeignLang[@lang=$foreignLang]">
                 <xsl:element name="fo:block" xml:space="default"
                 	use-attribute-sets="default-style">
                     <xsl:attribute name="font-family">
                     <xsl:call-template name="findFont">
-                    <xsl:with-param name="lang"><xsl:value-of select="@lang"/></xsl:with-param>
+                    <xsl:with-param name="lang"><xsl:value-of select="$foreignLang"/></xsl:with-param>
                     </xsl:call-template>
                     </xsl:attribute>
-                    <xsl:choose>
-                        <xsl:when test="count(../lan:SoundFile)>0">
-                            <!-- <xsl:element name="fo:basic-link" xml:space="default">
-                                <xsl:attribute name="external-destination"><xsl:value-of select="../lan:SoundFile"/></xsl:attribute>
-                                <fo:inline>
-                                <xsl:value-of select="."/>
-                                </fo:inline>
-                            </xsl:element>-->
-                        </xsl:when>
-                        <xsl:otherwise>
-                            <xsl:value-of select="."/>
-                        </xsl:otherwise>
-                    </xsl:choose>
+	                <xsl:value-of select="lan:ForeignLang[@lang=$foreignLang]"/>
                 </xsl:element>
-                </xsl:for-each>
             </fo:table-cell>
             <xsl:if test="$useImage>0 and count(lan:Img)>0">
                 <fo:table-cell column-number="3" xsl:use-attribute-sets="cell-border">
@@ -270,7 +259,7 @@ xmlns:lan="http://www.thanlwinsoft.org/schemas/languagetest/module">
 
 <xsl:template match="lan:TestItem">
 <fo:block>
-        		<xsl:value-of select="@creationTime"/>        		
+    <xsl:value-of select="@creationTime"/>
 </fo:block>
 </xsl:template>
 
