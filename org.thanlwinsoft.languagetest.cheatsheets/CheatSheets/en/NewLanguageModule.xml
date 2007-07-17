@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cheatsheet title="Create a New Language Module">
+   <intro>
+      <description>
+         <b>Create a New Language Module</b>
+A Language Module is used to store words and phrases on a similar topic.
+      </description>
+   </intro>
+   <item title="Start the New Language Module Wizard" dialog="true" skip="false">
+      <description>
+         Choose <b>File-&gt;New Language Module</b> from the menu.
+      </description>
+      <command serialization="org.eclipse.ui.newWizard(newWizardId=org.thanlwinsoft.languagetest.wizards.NewLangModuleWizard)" confirm="false">
+      </command>
+   </item>
+   <item title="Choose where to save the Language Module" dialog="true" skip="false">
+      <description>
+         Click <b>Browse...</b> to choose the container for the Language Module. This will normally be under your User Project or a sub-folder of it.
+      </description>
+      <command serialization="org.eclipse.ui.cheatsheets.views.CheatSheetView" confirm="false">
+      </command>
+   </item>
+   <item title="Name the Language Module" dialog="true" skip="false">
+      <description>
+         Give the Language Module a <b>file name</b>. This should reflect the Topic of the module.&lt;br /&gt;
+Click Finish.
+      </description>
+   </item>
+   <item title="Create a Test Item" dialog="true" skip="false">
+      <description>
+         The <b>Test Module Editor</b> should have openned in the centre of the window.
+      </description>
+      <subitem label="Click at the top of the column just below the title of your own language. Type the meaning of a word or phrase in your own language." skip="false">
+      </subitem>
+      <subitem label="Click at the top of the column just below the title of the language which you are learning. Type the word or phrase that you want to learn." skip="false">
+      </subitem>
+      <subitem label="You can also add an &lt;b&gt;image&lt;/b&gt; to your Test Item. Click at the top of the Picture column. A ... button should appear. Click on this to browse to a picture in JPEG, GIF or PNG format. This picture will be displayed below in the Language Test view. This is a preview of what the Test Item will look like during a test." skip="true">
+      </subitem>
+   </item>
+   <item title="Configuring the languages" dialog="true" skip="true">
+      <description>
+         You can configure the languages which are displayed in the columns in the Language Module Editor by clicking on the <b>Languages</b> tab beneath the editor.&lt;br /&gt;
+Click on the Enabled, Font or Font size cells to modify the value.&lt;br /&gt;
+When you have finished click on the <b>Test Items</b> tab beneath the editor to display the Test Item table again.
+      </description>
+   </item>
+   <item title="Recording" dialog="true" skip="false">
+      <description>
+         <b>Record</b> your language helper or teacher saying this word or phrase.
+      </description>
+      <subitem label="Switch to the &lt;b&gt;Record Audio&lt;/b&gt; view by clicking on its tab in the bottom page." skip="false">
+         <command serialization="org.eclipse.ui.views.showView(org.eclipse.ui.views.showView.viewId=org.thanlwinsoft.languagetest.eclipse.views.RecordingView)" confirm="false">
+         </command>
+      </subitem>
+      <subitem label="Click on the circle to start recording. A sound filename will automatically be selected. Click the square to stop recording." skip="false">
+      </subitem>
+      <subitem label="Play back your recording to check it is OK by clicking on the Triangle." skip="false">
+      </subitem>
+      <subitem label="To re-Record, just click the circle as before. You will be prompted whether you want to overwrite the recording." skip="true">
+      </subitem>
+      <subitem label="Convert your recording to a compressed File format. &lt;br /&gt;You will need to configure this first, which may require you to download and install additional programs. You can configure this from the Preferences dialogue.&lt;br/&gt; You can then choose a different format from the &lt;b&gt;Wave&lt;/b&gt; drop-down list." skip="false">
+         <command serialization="org.eclipse.ui.window.preferences(preferencePageId=org.thanlwinsoft.languagetest.eclipse.prefs.RecordingPreferencePage)" confirm="false">
+         </command>
+      </subitem>
+   </item>
+   <item title="Add additional Items" dialog="true" skip="false">
+      <description>
+         You can add Additional Test Items in the same way. Just click in the appropriate column underneath the first Test Item.
+      </description>
+   </item>
+   <item title="Save" dialog="true" skip="false">
+      <description>
+         From the menu choose <b>File-&gt;Save</b> to save your changes.
+      </description>
+   </item>
+</cheatsheet>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cheatsheet title="Create a New User Project">
+   <intro>
+      <description>
+         <b>Body</b>
+      </description>
+   </intro>
+   <item title="New User" dialog="true" skip="false">
+      <description>
+         Open the <b>New User Wizard</b> from the menu File-&gt;New User. Or click the button.
+      </description>
+      <command serialization="org.eclipse.ui.newWizard(newWizardId=org.thanlwinsoft.languagetest.wizards.NewUserWizard)" confirm="false">
+      </command>
+   </item>
+   <item title="Username" dialog="true" skip="false">
+      <description>
+         <b>Username</b>
+Enter your name. This will be used to store your personal test results and settings. Click Next.
+      </description>
+   </item>
+   <item title="Your own Language" dialog="true" skip="false">
+      <description>
+         Select <b>your own language</b> or another language that you are already fluent in, that you will use to help you learn the new language. If you are going to use multiple scripts (alphabets), you can specify the Script as well. Click Next.
+      </description>
+   </item>
+   <item title="Language to learn" dialog="true" skip="false">
+      <description>
+         Select the <b>Language that you are learning</b>. If you intend to store text in multiple scripts (e.g. an Asian script and a transliteration into Latin script), then specify the script that you want to use. You can add other scripts later.
+      </description>
+      <subitem label="Specify a font that will be used for this language. If you are learning a non-European language with its own script, then you will probably want to specify the font to use with it." skip="true">
+      </subitem>
+   </item>
+   <item title="Finish" dialog="true" skip="false">
+      <description>
+         Click <b>Finish</b> to close the Wizard and create the User Project.
+      </description>
+   </item>
+</cheatsheet>

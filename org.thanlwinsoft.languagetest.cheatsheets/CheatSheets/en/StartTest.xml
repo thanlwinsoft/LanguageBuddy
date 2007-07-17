@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cheatsheet title="Start Test">
+   <intro>
+      <description>
+         <b>Start a test</b>
+You are now ready to start testing yourself.
+      </description>
+   </intro>
+   <item title="Start test" dialog="true" skip="false">
+      <description>
+         From the menu, choose <b>File-&gt;Start test on this module</b>. The Start Test Wizard should appear.
+      </description>
+      <command serialization="org.eclipse.ui.newWizard(newWizardId=org.thanlwinsoft.languagetest.StartTestWizard)" confirm="false">
+      </command>
+   </item>
+   <item title="Test Options" dialog="true" skip="false">
+      <description>
+         Specify what <b>type of test</b> you want to perform. For your first test, Flashcards may be most appropriate. Later, you can try the other types of test.&lt;br /&gt;
+If you already have lots of Test Items, then you may want to limit the Test to a certain number.&lt;br /&gt;
+Click <b>Next</b> to continue.
+      </description>
+   </item>
+   <item title="Select Modules" dialog="true" skip="false">
+      <description>
+         <b>Select Modules</b>
+Click to select the modules that you would like to be tested on. &lt;br /&gt;
+After you have run a few tests, you can perform a revision test by selecting test items automatically, but that won&apos;t work for your first test.
+      </description>
+   </item>
+   <item title="Test" dialog="true" skip="false">
+      <description>
+         Click <b>Finish</b> to start the actual test.
+      </description>
+      <subitem label="Try to remember the word in the language which is not shown. (Only applicable if you did not choose Flash-Cards)." skip="false">
+      </subitem>
+      <subitem label="Click &lt;b&gt;Show Answer&lt;/b&gt; to display the correct answer." skip="false">
+      </subitem>
+      <subitem label="Mark yourself Correct or Wrong according to whether you remembered correctly. It is up to you to be honest with yourself!" skip="false">
+      </subitem>
+      <subitem label="The next Test Item will now appear. Repeat this process until you know all the words. Words that you get wrong will be repeated continuously, in a random order, until you remember them all." skip="false">
+      </subitem>
+   </item>
+   <item title="Repeat test" dialog="true" skip="false">
+      <description>
+         If you got any items wrong, then a dialog will appear. You can choose to repeat the Test Items that you got wrong first time.
+      </description>
+   </item>
+</cheatsheet>

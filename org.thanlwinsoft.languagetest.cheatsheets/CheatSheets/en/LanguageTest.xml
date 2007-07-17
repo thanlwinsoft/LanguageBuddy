@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<compositeCheatsheet name="Language Buddy">
+   <taskGroup kind="set" name="Language Buddy Cheat Sheets" skip="false">
+      <intro>
+         <b>Introduction</b>
+            These Cheat Sheets help you to learn how to use Language Buddy.
+      </intro>
+      <onCompletion>
+         <b>Conclusion</b>
+            Hopefully you know have a better idea how to use Language Buddy. 
+            For more information please see Help or the web site.
+      </onCompletion>
+      <taskGroup kind="set" name="Getting Started" skip="false">
+         <intro>
+            <b>Introduction</b>
+This cheat sheet will walk you through creating a User Project and creating your first Language Module.
+         </intro>
+         <onCompletion>
+            <b>Conclusion</b>
+You have now set up your own User Project and created your first Language Module.
+         </onCompletion>
+         <task kind="cheatsheet" name="Create a New User" skip="false">
+            <intro>
+               <b>Introduction</b>
+Create a New User Project. Each user of Language Buddy should create their own User Project otherwise test results will get confused.
+            </intro>
+            <onCompletion>
+               <b>Conclusion</b>
+You should now be able to see your name in the Navigator view.
+            </onCompletion>
+            <param name="path" value="NewUser.xml">
+            </param>
+         </task>
+         <task kind="cheatsheet" name="Create a folder" skip="true">
+            <intro>
+               <b>Introduction</b> It is often useful to store Test Modules in folders and sub-folders.
+            </intro>
+            <onCompletion>
+               <b>Conclusion</b>
+You can now add more folders in the same way, which can be sub-folders of the one you have just created or Folders at the top level of your project.
+            </onCompletion>
+            <param name="path" value="NewFolder.xml">
+            </param>
+         </task>
+         <task kind="cheatsheet" name="New Language Module" skip="false">
+            <intro>
+               <b>Introduction</b>
+This walks you through the process of creating a Language Module.
+            </intro>
+            <onCompletion>
+               <b>Conclusion</b>
+You should now have created your first Language Module. You can now create more modules or start a test.
+            </onCompletion>
+            <param name="path" value="NewLanguageModule.xml">
+            </param>
+         </task>
+         <task kind="cheatsheet" name="Start a Test" skip="false">
+            <intro>
+               <b>Introduction</b>
+            </intro>
+            <onCompletion>
+               <b>Conclusion</b>
+            </onCompletion>
+            <param name="path" value="StartTest.xml">
+            </param>
+         </task>
+      </taskGroup>
+      <taskGroup kind="set" name="Advanced" skip="false">
+         <intro>
+            <b>Introduction</b>
+         </intro>
+         <onCompletion>
+            <b>Conclusion</b>
+         </onCompletion>
+         <task kind="cheatsheet" name="Searching" skip="false">
+            <intro>
+               <b>Introduction</b>
+Once you have created several Test Modules it is useful to be able to search them for words in either your own language or the language which you are learning.
+            </intro>
+            <onCompletion>
+               <b>Conclusion</b>
+You can now search by in multiple languages and by tags.
+            </onCompletion>
+            <param name="path" value="Search.xml">
+            </param>
+         </task>
+         <task kind="cheatsheet" name="Tagging" skip="false">
+            <intro>
+               <b>Introduction</b>
+            </intro>
+            <onCompletion>
+               <b>Conclusion</b>
+            </onCompletion>
+         </task>
+         <task kind="cheatsheet" name="Viewing Test Results" skip="false">
+            <intro>
+               <b>Introduction</b>
+            </intro>
+            <onCompletion>
+               <b>Conclusion</b>
+            </onCompletion>
+         </task>
+         <task kind="cheatsheet" name="Printing" skip="false">
+            <intro>
+               <b>Introduction</b>
+            </intro>
+            <onCompletion>
+               <b>Conclusion</b>
+            </onCompletion>
+         </task>
+         <task kind="cheatsheet" name="Copying data from other sources" skip="false">
+            <intro>
+               <b>Introduction</b>
+            </intro>
+            <onCompletion>
+               <b>Conclusion</b>
+            </onCompletion>
+         </task>
+         <task kind="cheatsheet" name="Exporting" skip="false">
+            <intro>
+               <b>Introduction</b>
+            </intro>
+            <onCompletion>
+               <b>Conclusion</b>
+            </onCompletion>
+         </task>
+         <task kind="cheatsheet" name="Additional Languages" skip="false">
+            <intro>
+               <b>Introduction</b>
+            </intro>
+            <onCompletion>
+               <b>Conclusion</b>
+            </onCompletion>
+         </task>
+      </taskGroup>
+   </taskGroup>
+</compositeCheatsheet>

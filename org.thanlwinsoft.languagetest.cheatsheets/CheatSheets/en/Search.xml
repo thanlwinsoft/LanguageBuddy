@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cheatsheet title="Search">
+   <intro>
+      <description>
+         You can search for words in any of your configured languages or by tag.
+      </description>
+   </intro>
+   <item title="Search" dialog="true" skip="false">
+      <description>
+         Choose <b>Search-&gt;Search</b> from the menu.
+      </description>
+      <command serialization="org.eclipse.search.ui.openSearchDialog" confirm="false">
+      </command>
+   </item>
+   <item title="Choose your search Options" dialog="true" skip="false">
+      <description>
+         You can search by word or by tag.
+      </description>
+      <subitem label="Click on the language of the word that you want to search. (This will set an appropriate font in the &lt;b&gt;Search for:&lt;/b&gt; box.) Type the word or words that you want to search for." skip="true">
+      </subitem>
+      <subitem label="If you want to filter on Tags Click on the &lt;b&gt;Choose&lt;/b&gt; button to select them. If you also typed a search word, then it will only match Test Items containing both the word and a selected tag." skip="true">
+      </subitem>
+      <subitem label="Click &lt;b&gt;Search&lt;/b&gt; to perform the search." skip="false">
+      </subitem>
+   </item>
+   <item title="Search results" dialog="true" skip="false">
+      <description>
+         The Search results should appear in the <b>Search</b> view. Double click on a result to open the corresponding Test Module.
+      </description>
+      <command serialization="org.eclipse.search.ui.views.SearchView" confirm="false">
+      </command>
+   </item>
+   <item title="Tree/Table View" dialog="true" skip="false">
+      <description>
+         You can view the results in a sortable table. Click on the small downward pointing triangle in the top right of the Search View and choose <b>Show as List</b> to view the items in a table rather than a tree. You can use the same menu to switch back to the tree view.
+      </description>
+   </item>
+</cheatsheet>
