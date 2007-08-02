@@ -85,6 +85,7 @@ public class FopConfigPage extends WizardPage implements ExporterProperties, IEx
     private String xsltPath = null;
     private boolean enabled = false;
     private FopFactory fopFactory = null;
+    private FOUserAgent userAgent = null;
     private Button useImagesButton = null;
     private Combo pageSizeCombo = null;
     private Combo columnCombo = null;
@@ -110,43 +111,43 @@ public class FopConfigPage extends WizardPage implements ExporterProperties, IEx
     /* (non-Javadoc)
      * @see org.thanlwinsoft.languagetest.eclipse.export.ExporterProperties#convert(java.lang.String, java.lang.String)
      */
-    public boolean convert(String source, String target, String [] properties, String [] values)
-    {
+   public boolean convert(String source, String target, String [] properties, String [] values)
+   {
 //      mustn't access any widgets because this isn't run in a display thread
-        System.out.println(source + " " + target);
+       System.out.println(source + " " + target);
 //      Step 1: Construct a FopFactory
 //      (reuse if you plan to render multiple documents!)
-        Bundle fopBundle = Platform.getBundle("org.apache.fop");
-        Bundle graphiteBundle = Platform.getBundle("org.sil.graphite");
-        boolean success = false;
-        try
-        {
-            fopBundle.loadClass("org.apache.fop.apps.FopFactory");
-            if (graphiteBundle != null)
-            	graphiteBundle.loadClass("org.sil.graphite.GraphiteFont");
-//            fopBundle.loadClass("org.apache.xmlgraphics.util.Service");
-            if (fopFactory == null)
-                fopFactory = FopFactory.newInstance();
-            File sourceFile = new File(source);
-            String title = new Path(source).removeFileExtension().lastSegment();
+        
+        //Bundle fopBundle = Platform.getBundle("org.apache.fop");
+        //Bundle graphiteBundle = Platform.getBundle("org.sil.graphite");
+       boolean success = false;
+       try
+       {
+           //fopBundle.loadClass("org.apache.fop.apps.FopFactory");
+           //if (graphiteBundle != null)
+           //	graphiteBundle.loadClass("org.sil.graphite.GraphiteFont");
+           if (fopFactory == null)
+        	   fopFactory = FopFactory.newInstance();
+           File sourceFile = new File(source);
+           String title = new Path(source).removeFileExtension().lastSegment();
             //      Step 2: Set up output stream.
             //      Note: Using BufferedOutputStream for performance reasons (helpful with FileOutputStreams).
-            OutputStream out = new BufferedOutputStream(new FileOutputStream(new File(target)));
+           OutputStream out = new BufferedOutputStream(new FileOutputStream(new File(target)));
             
-            try {
-               FOUserAgent userAgent = fopFactory.newFOUserAgent();
-//                userAgent.setProducer("Language Test <www.thanlwinsoft.org> using FOP");
-//                userAgent.setTitle(title);
-                DefaultConfigurationBuilder cfgBuilder = new DefaultConfigurationBuilder();
-                InputStream fopConfig = 
-                    getClass().getResourceAsStream("/org/thanlwinsoft/languagetest/language/text/fop.xconf");
-                Configuration cfg = cfgBuilder.build(fopConfig);
-                fopFactory.setUserConfig(cfg);
+           try 
+           {
+        	   //if (userAgent == null)
+        	   {
+        		   userAgent = fopFactory.newFOUserAgent();
+        		   DefaultConfigurationBuilder cfgBuilder = new DefaultConfigurationBuilder();
+	               InputStream fopConfig = 
+	                    getClass().getResourceAsStream("/org/thanlwinsoft/languagetest/language/text/fop.xconf");
+	               Configuration cfg = cfgBuilder.build(fopConfig);
+	               fopFactory.setUserConfig(cfg);
+	           }
                // Step 3: Construct fop with desired output format
-
                Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, userAgent, out);
-               //Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, out);
-            
+
                // Step 4: Setup JAXP using identity transformer
                TransformerFactory factory = TransformerFactory.newInstance();
                //Transformer transformer = factory.newTransformer(); // identity transformer
@@ -155,9 +156,6 @@ public class FopConfigPage extends WizardPage implements ExporterProperties, IEx
                
                transformer.setParameter("title", title);
                
-//               transformer.setParameter("colCount", values[1]);
-//               transformer.setParameter("useImage", values[2]);
-//               transformer.setParameter("pageSize", values[3]);
                for (int i = 0; i < properties.length; i++)
                {
             	   transformer.setParameter(properties[i], values[i]);
@@ -198,6 +196,7 @@ public class FopConfigPage extends WizardPage implements ExporterProperties, IEx
             {
                //Clean-up
                out.close();
+               //fopFactory = null;
             }
         }
         catch (FileNotFoundException e)
@@ -210,10 +209,10 @@ public class FopConfigPage extends WizardPage implements ExporterProperties, IEx
             e.printStackTrace();
             LanguageTestPlugin.log(IStatus.WARNING, e.getMessage(), e);
         }
-        catch (ClassNotFoundException e)
-        {
-            LanguageTestPlugin.log(IStatus.WARNING, e.getMessage(), e);
-        }
+//        catch (ClassNotFoundException e)
+//        {
+//            LanguageTestPlugin.log(IStatus.WARNING, e.getMessage(), e);
+//        }
 
         return success;
     }
@@ -318,5 +317,21 @@ public class FopConfigPage extends WizardPage implements ExporterProperties, IEx
     {
         
     }
-
+    
+    public static void main(String [] argv)
+    {
+    	FopConfigPage fopCP = new FopConfigPage();
+    	String [] properties = { "nativeLang","foreignLang","nativeLangDesc","foreignLangDesc"};
+    	String [] values = { "en", "my[Mymr]", "English", "Myanmar" };
+    	String source = "/home/keith/runtime-LanguageBuddy/testme/MyanmarVocab/Unicode/RainySeason.xml";
+    	String targetA = "/home/keith/tmp/testA.pdf";
+    	String targetB = "/home/keith/tmp/testB.pdf";
+    	fopCP.setXslt("/org/thanlwinsoft/languagetest/language/text/LangTestTableFo.xsl");
+    	fopCP.convert(source, targetA, properties, values);
+    	//fopCP = null;
+    	//fopCP = new FopConfigPage();
+    	fopCP.setXslt("/org/thanlwinsoft/languagetest/language/text/LangTestTableFo.xsl");
+    	fopCP.convert(source, targetB, properties, values);
+    	
+    }
 }

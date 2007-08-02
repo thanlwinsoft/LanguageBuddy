@@ -1,7 +1,7 @@
 /* -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/org.thanlwinsoft.languagetest/src/org/thanlwinsoft/languagetest/language/test/XmlBeansTestModule.java $
- *  Revision        $LastChangedRevision: 852 $
- *  Last Modified:  $LastChangedDate: 2007-06-09 16:02:23 +0700 (Sat, 09 Jun 2007) $
+ *  Revision        $LastChangedRevision: 936 $
+ *  Last Modified:  $LastChangedDate: 2007-08-03 05:14:14 +0700 (Fri, 03 Aug 2007) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -33,6 +33,7 @@ import org.apache.xmlbeans.XmlException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
+import org.thanlwinsoft.languagetest.eclipse.wizards.NewLangModuleWizardPage;
 import org.thanlwinsoft.schemas.languagetest.module.LanguageModuleDocument;
 import org.thanlwinsoft.schemas.languagetest.module.LanguageModuleType;
 
@@ -51,7 +52,8 @@ public class XmlBeansTestModule implements TestModule
     public final static String XSL_FILENAME = "LanguageTest.xsl";
     public final static String XSL_TARGET = "xml-stylesheet";
     public final static String XSL_DATA = "href=\"" + XSL_FILENAME + "\" type=\"text/xsl\"";
-    public final static String FOLDER_EXT = ".lmf";
+    public final static String FOLDER_EXT = "lmf";
+    public final static String TEST_MODULE_EXT = NewLangModuleWizardPage.EXTENSION;
     
     public XmlBeansTestModule(IPath path) throws XmlException, IOException
     {

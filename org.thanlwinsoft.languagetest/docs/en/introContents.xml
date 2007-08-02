@@ -6,11 +6,15 @@
     		id="intro" style-id="left">
             <text>Find out what Language Buddy is all about</text>
         </link>
-        <!-- 
         <link label="GettingStarted" url="gettingStarted.xhtml" 
     		id="intro" style-id="left">
             <text>Getting started</text>
         </link>
+            <link label="New User" id="newUser" style-id="left"
+                url="http://org.eclipse.ui.intro/runAction?pluginId=org.thanlwinsoft.languagetest&amp;class=org.thanlwinsoft.languagetest.eclipse.wizards.NewUserProjectAction&amp;id=org.thanlwinsoft.languagetest.NewUserProjectAction">
+                <text>Add a new user</text>
+                <img id="newUserIcon" src="icons/newUser.png" alt="New User"/>
+            </link>
         <link label="Contents" url="http://org.eclipse.ui.intro/showPage?id=index" 
     		id="root" style-id="left">
             <text>Contents</text>
@@ -19,7 +23,6 @@
     		id="trouble" style-id="left">
             <text>Troubleshooting</text>
         </link>
-        -->
         <link label="ThanLwinSoft" url="http://www.thanlwinsoft.org/" 
     		id="thanlwinsoft" style-id="left">
             <text>ThanLwinSoft.org Web page</text>

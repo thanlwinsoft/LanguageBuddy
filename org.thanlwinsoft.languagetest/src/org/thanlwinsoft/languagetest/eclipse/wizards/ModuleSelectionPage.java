@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/org.thanlwinsoft.languagetest/src/org/thanlwinsoft/languagetest/eclipse/wizards/ModuleSelectionPage.java $
- *  Revision        $LastChangedRevision: 852 $
- *  Last Modified:  $LastChangedDate: 2007-06-09 16:02:23 +0700 (Sat, 09 Jun 2007) $
+ *  Revision        $LastChangedRevision: 936 $
+ *  Last Modified:  $LastChangedDate: 2007-08-03 05:14:14 +0700 (Fri, 03 Aug 2007) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -33,12 +33,15 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.Vector;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
+import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -190,7 +193,7 @@ public class ModuleSelectionPage extends WizardPage
         viewer.setCellEditors(new CellEditor[] { 
                 new CheckboxCellEditor()});
         
-        ModuleContentProvider provider = new ModuleContentProvider();
+        final ModuleContentProvider provider = new ModuleContentProvider();
         viewer.setContentProvider(provider);
         viewer.setLabelProvider(new LabelProvider() {
 
@@ -208,6 +211,7 @@ public class ModuleSelectionPage extends WizardPage
             
         });
         viewer.setInput(ResourcesPlugin.getWorkspace().getRoot());
+        viewer.setAutoExpandLevel(CheckboxTreeViewer.ALL_LEVELS);
         viewer.addPostSelectionChangedListener(new ISelectionChangedListener() {
 
             public void selectionChanged(SelectionChangedEvent event)
@@ -226,7 +230,23 @@ public class ModuleSelectionPage extends WizardPage
                 }
             }
         });
+        // implement recursive checking for folder checks
+        viewer.addCheckStateListener(new ICheckStateListener(){
 
+			@Override
+			public void checkStateChanged(CheckStateChangedEvent event)
+			{
+				Object element = event.getElement();
+				if (element instanceof IContainer)
+				{
+					if (provider.hasChildren(element))
+					{
+						setCheckStateRecursively(event.getChecked(),
+								provider, element);
+					}
+				}
+			}
+		});
         scrolledComposite.setContent(tree);
         scrolledComposite.setExpandHorizontal(true);
         scrolledComposite.setExpandVertical(true);
@@ -234,6 +254,19 @@ public class ModuleSelectionPage extends WizardPage
         scrolledComposite.setLayoutData(treeRowData);
         //scrolledComposite.setMinSize(200, 200);
         //scrolledComposite.setMinSize(tree.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+    }
+    
+    private void setCheckStateRecursively(boolean state, ModuleContentProvider provider, Object parent)
+    {
+    	Object [] children = provider.getChildren(parent);
+    	for (Object child : children)
+    	{
+    		if (provider.hasChildren(child))
+    		{
+    			setCheckStateRecursively(state, provider, child);
+    		}
+    		viewer.setChecked(child, state);
+    	}
     }
     
     public boolean isRevisionTest()

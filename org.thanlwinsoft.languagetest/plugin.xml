@@ -47,7 +47,7 @@
             fixed="true"
             icon="icons/startTest.png"
             id="org.thanlwinsoft.languagetest.eclipse.TestPerspective"
-            name="%LanguagetTest.testPerspective">
+            name="%LanguageTest.testPerspective">
       </perspective>
       <perspective
             class="org.thanlwinsoft.languagetest.eclipse.HistoryPerspective"
@@ -156,6 +156,29 @@
       </wizard>
       <primaryWizard id="org.thanlwinsoft.languagetest.eclipse.wizards.NewModuleWizard"/>
       <primaryWizard id="org.thanlwinsoft.languagetest.wizards.NewUserWizard"/>
+      <wizard
+            category="org.thanlwinsoft.languagetest.newWizardCategory"
+            class="org.thanlwinsoft.languagetest.eclipse.wizards.StartTestWizard"
+            hasPages="true"
+            icon="icons/startTest.png"
+            id="org.thanlwinsoft.languagetest.StartTestWizard"
+            name="%LanguageTest.startTestWizard">
+         <description>
+            Starts a New Test.
+         </description>
+         <selection
+               class="org.eclipse.core.internal.resources.Folder">
+         </selection>
+         <selection
+               class="org.eclipse.core.internal.resources.File">
+         </selection>
+         <selection
+               class="org.thanlwinsoft.languagetest.eclipse.editors.TestItemEditor">
+         </selection>
+      </wizard>
+      <primaryWizard
+            id="org.thanlwinsoft.languagetest.wizards.NewUserWizard">
+      </primaryWizard>
    </extension>
    <extension
          point="org.eclipse.ui.actionSets">
@@ -235,7 +258,7 @@
 <commonWizard
       menuGroupId="group.new"
       type="new"
-      wizardId="org.eclipse.ui.wizards.new.folder">
+      wizardId="org.eclipse.ui.wizards.newresource.BasicNewFolderResourceWizard">
 <enablement>
 <or>
 <adapt type=
@@ -286,6 +309,7 @@ wizardId=
       labelProvider="org.thanlwinsoft.languagetest.eclipse.ProjectFileLabelProvider"
       name="LanguageTest.navigatorContent1"/>
 <commonWizard
+      associatedExtensionId="org.thanlwinsoft.languagetest"
       menuGroupId="additions"
       type="new"
       wizardId="org.thanlwinsoft.languagetest.wizards.NewUserWizard">
@@ -517,11 +541,13 @@ wizardId=
          xslt="/org/thanlwinsoft/languagetest/language/text/LanguageTest.xsl"/>
    <exporter
          extension="pdf"
+         multiLingual="false"
          name="PDF"
          wizardPage="org.thanlwinsoft.languagetest.eclipse.export.FopConfigPage"
          xslt="/org/thanlwinsoft/languagetest/language/text/LangTestTableFo.xsl"/>
    <exporter
          extension="csv"
+         multiLingual="true"
          name="CSV"
          xslt="/org/thanlwinsoft/languagetest/language/text/LanguageExportCsv.xsl"/>
 </extension>

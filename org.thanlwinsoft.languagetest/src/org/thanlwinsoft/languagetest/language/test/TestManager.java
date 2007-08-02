@@ -65,7 +65,7 @@ public class TestManager
     public final static String ID_DATA_SEPARATOR = "-";
     public final static String HISTORY_DIR = "TestHistory";
     public final static String HISTORY_EXT = ".xml";
-    /** Construct a test manager for a given user and language selectio
+    /** Construct a test manager for a given user and language selection
      * 
      * @param userProject
      * @param nativeLang

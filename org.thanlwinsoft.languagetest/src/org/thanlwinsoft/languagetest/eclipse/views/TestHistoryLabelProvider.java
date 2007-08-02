@@ -46,6 +46,8 @@ import org.eclipse.swt.graphics.Image;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.thanlwinsoft.languagetest.eclipse.views.TestHistoryProvider.XmlFamily;
+import org.thanlwinsoft.languagetest.language.test.TestManager;
+import org.thanlwinsoft.languagetest.language.test.UniversalLanguage;
 import org.thanlwinsoft.schemas.languagetest.history.ItemType;
 import org.thanlwinsoft.schemas.languagetest.module.LanguageModuleDocument;
 import org.thanlwinsoft.schemas.languagetest.module.LanguageModuleType;
@@ -115,7 +117,17 @@ public class TestHistoryLabelProvider extends LabelProvider
     {
         if (element instanceof IResource)
         {
-            return ((IResource)element).getName();
+        	String name = ((IResource)element).getName();
+        	if (name.equals(TestManager.HISTORY_DIR))
+            	name = ((IResource)element).getProject().getName();
+        	else if (name.contains("-"))
+        	{
+        		int hyphen = name.indexOf("-");
+        		UniversalLanguage ulN = new UniversalLanguage(name.substring(0, hyphen));
+        		UniversalLanguage ulF = new UniversalLanguage(name.substring(hyphen + 1));
+        		name = ulN.getDescription() + " / " + ulF.getDescription(); 
+        	}
+        	return name;
         }
         else if (element instanceof TestHistoryProvider.XmlFamily)
         {

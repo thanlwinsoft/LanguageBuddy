@@ -169,11 +169,10 @@ public class ClipboardAction extends Action implements SelectionListener
             if (mode == CUT)
             {
                 if (langCode == null) editor.deleteSelection();
-                editor.getParent().setDirty(true);
-                editor.getParent().firePropertyChange(TestItemEditor.PROP_DIRTY);
+                setDirty();
             }
         }
-        else
+        else // Paste
         {
             String textData = (String)clipboard.getContents(textTransfer);
             //if (textData != null) System.out.println("Text is "+textData);
@@ -190,14 +189,17 @@ public class ClipboardAction extends Action implements SelectionListener
                             editor.pasteItems(doc.getLanguageModule().getTestItemArray());
                         else
                             editor.pasteItems(doc.getLanguageModule().getTestItemArray(), langCode);
+                        setDirty();
+                        return;
                     }
                 } 
                 catch (XmlException e)
                 {
-                    e.printStackTrace();
+                	// it may be opendoc or some other xml
+                    //e.printStackTrace();
                 }
             }
-            else if (textData != null)
+            if (textData != null)
             {
                 String [] lines = null;
                 // if the lines start with quotes assume they all do
@@ -210,9 +212,16 @@ public class ClipboardAction extends Action implements SelectionListener
                 if (langCode != null && lines.length > 0)
                 {
                     editor.pasteItems(lines, langCode);
+                    setDirty();
                 }
             }
         }
+    }
+    
+    protected void setDirty()
+    {
+        editor.getParent().setDirty(true);
+        editor.getParent().firePropertyChange(TestItemEditor.PROP_DIRTY);
     }
     /* (non-Javadoc)
      * @see org.eclipse.jface.action.Action#runWithEvent(org.eclipse.swt.widgets.Event)

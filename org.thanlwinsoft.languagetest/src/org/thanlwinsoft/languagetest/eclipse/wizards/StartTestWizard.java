@@ -1,8 +1,8 @@
 /**
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/org.thanlwinsoft.languagetest/src/org/thanlwinsoft/languagetest/eclipse/wizards/StartTestWizard.java $
- *  Revision        $LastChangedRevision: 856 $
- *  Last Modified:  $LastChangedDate: 2007-06-13 05:13:58 +0700 (Wed, 13 Jun 2007) $
+ *  Revision        $LastChangedRevision: 936 $
+ *  Last Modified:  $LastChangedDate: 2007-08-03 05:14:14 +0700 (Fri, 03 Aug 2007) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -31,6 +31,7 @@ import java.util.Vector;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.widgets.Composite;
@@ -42,6 +43,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchWizard;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.thanlwinsoft.languagetest.MessageUtil;
@@ -62,7 +64,7 @@ import org.eclipse.ui.views.navigator.ResourceNavigator;
  * @author keith
  *
  */
-public class StartTestWizard extends Wizard
+public class StartTestWizard extends Wizard implements IWorkbenchWizard
 {
     private ModuleSelectionPage moduleSelectionPage = null;  //  @jve:decl-index=0:
     private TestTypePage testTypePage = null;
@@ -71,6 +73,7 @@ public class StartTestWizard extends Wizard
     public StartTestWizard()
     {
         super();
+        this.setWindowTitle(MessageUtil.getString("StartTestWizard"));
     }
     /**
      * Adding the page to the wizard.
@@ -203,4 +206,10 @@ public class StartTestWizard extends Wizard
         if (items != null) 
             moduleSelectionPage.select(items);
     }
+	@Override
+	public void init(IWorkbench workbench, IStructuredSelection selection)
+	{
+		// TODO Auto-generated method stub
+		
+	}
 }

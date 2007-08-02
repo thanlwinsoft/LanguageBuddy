@@ -65,7 +65,6 @@ Breton	breton	bre	br
 Buginese	bugi	bug	 
 Bulgarian	bulgare	bul	bg
 Buriat	bouriate	bua	 
-Burmese	birman	bur/mya*	my
 Caddo	caddo	cad	 
 Carib	caribe	car	 
 Castilian; Spanish	castillan; espagnol	spa	es
@@ -310,6 +309,7 @@ Mongolian	mongol	mon	mn
 Mossi	moré	mos	 
 Multiple languages	multilingue	mul	 
 Munda languages	mounda, langues	mun	 
+Myanmar	birman	bur/mya*	my
 Nahuatl	nahuatl	nah	 
 Nauru	nauruan	nau	na
 Navaho, Navajo	navaho	nav	nv

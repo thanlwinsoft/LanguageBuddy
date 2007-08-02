@@ -615,7 +615,7 @@ public class SoundRecorder extends Composite implements ISelectionChangedListene
         else if (moduleFile != null)
         {
             IContainer moduleParent = (IContainer)moduleFile.getParent();
-            IPath folderPath = new Path(moduleBaseName + XmlBeansTestModule.FOLDER_EXT);
+            IPath folderPath = new Path(moduleBaseName + "." + XmlBeansTestModule.FOLDER_EXT);
             IFolder folder = moduleParent.getFolder(folderPath);
             if (!folder.exists())
             {

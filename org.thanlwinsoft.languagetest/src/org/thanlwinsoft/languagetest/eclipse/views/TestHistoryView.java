@@ -62,6 +62,7 @@ public class TestHistoryView extends ViewPart
         mainGroup.setLayout(new FillLayout());
         tree = new Tree(mainGroup, SWT.V_SCROLL | SWT.H_SCROLL);
         viewer = new TreeViewer(tree);
+        viewer.setAutoExpandLevel(TreeViewer.ALL_LEVELS);
         
         provider = new TestHistoryProvider();
         viewer.setContentProvider(provider);

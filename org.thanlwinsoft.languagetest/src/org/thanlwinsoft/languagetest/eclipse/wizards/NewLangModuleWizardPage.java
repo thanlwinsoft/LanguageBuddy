@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/org.thanlwinsoft.languagetest/src/org/thanlwinsoft/languagetest/eclipse/wizards/NewLangModuleWizardPage.java $
- *  Revision        $LastChangedRevision: 852 $
- *  Last Modified:  $LastChangedDate: 2007-06-09 16:02:23 +0700 (Sat, 09 Jun 2007) $
+ *  Revision        $LastChangedRevision: 936 $
+ *  Last Modified:  $LastChangedDate: 2007-08-03 05:14:14 +0700 (Fri, 03 Aug 2007) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -46,6 +46,9 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 import org.thanlwinsoft.languagetest.MessageUtil;
 
+import com.ibm.icu.text.DecimalFormat;
+import com.ibm.icu.text.NumberFormat;
+
 /**
  * The "New" wizard page allows setting the container for the new file as well
  * as the file name. The page will only accept file name without the extension
@@ -59,7 +62,6 @@ public class NewLangModuleWizardPage extends WizardPage {
 	public final static String EXTENSION = "xml";
     public final static String XML = "xml";
 	private ISelection selection;
-
 	/**
 	 * Constructor for SampleNewWizardPage.
 	 * 
@@ -121,6 +123,10 @@ public class NewLangModuleWizardPage extends WizardPage {
 	 */
 
 	private void initialize() {
+		int count = 1;
+		final String extension = "." + EXTENSION;
+		NumberFormat nf = new DecimalFormat("000");
+		String fileName = MessageUtil.getString("NewLanguageModule","001") + extension;
 		if (selection != null && selection.isEmpty() == false
 				&& selection instanceof IStructuredSelection) {
 			IStructuredSelection ssel = (IStructuredSelection) selection;
@@ -134,9 +140,14 @@ public class NewLangModuleWizardPage extends WizardPage {
 				else
 					container = ((IResource) obj).getParent();
 				containerText.setText(container.getFullPath().toString());
+				if (container.exists(new Path(fileName)))
+				{
+					fileName = MessageUtil.getString("NewLanguageModule", 
+							nf.format(++count)) + extension;
+				}
 			}
 		}
-		fileText.setText("NewLanguageModule." + EXTENSION);
+		fileText.setText(fileName);
 	}
 
 	/**

@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/org.thanlwinsoft.languagetest/src/org/thanlwinsoft/languagetest/eclipse/ApplicationWorkbenchWindowAdvisor.java $
- *  Revision        $LastChangedRevision: 856 $
- *  Last Modified:  $LastChangedDate: 2007-06-13 05:13:58 +0700 (Wed, 13 Jun 2007) $
+ *  Revision        $LastChangedRevision: 936 $
+ *  Last Modified:  $LastChangedDate: 2007-08-03 05:14:14 +0700 (Fri, 03 Aug 2007) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -32,18 +32,23 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 //import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
+import org.eclipse.ui.cheatsheets.ICheatSheetViewer;
+import org.eclipse.ui.cheatsheets.OpenCheatSheetAction;
 import org.eclipse.ui.views.navigator.ResourceNavigator;
 import org.osgi.service.prefs.Preferences;
 import org.thanlwinsoft.languagetest.MessageUtil;
@@ -130,6 +135,31 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
                 
                 
             }
+            IViewPart cheatSheet = null;
+			try
+			{
+				cheatSheet = w.getActivePage().showView("org.eclipse.ui.cheatsheets.views.CheatSheetView",
+						null, IWorkbenchPage.VIEW_VISIBLE);
+				if (cheatSheet != null)
+	            {
+					final IAction a = new OpenCheatSheetAction("org.thanlwinsoft.languagetest.cheatsheets.cheatsheet");
+					w.getShell().getDisplay().asyncExec(new Runnable() {
+
+						@Override
+						public void run()
+						{
+							a.run();
+						}});
+					
+	            	//ICheatSheetViewer csv = (ICheatSheetViewer)cheatSheet;
+	            	//csv.setInput("org.thanlwinsoft.languagetest.cheatsheets.cheatsheet");
+	            }
+			}
+			catch (PartInitException e)
+			{
+				LanguageTestPlugin.log(IStatus.WARNING, "Failed to show cheat sheet",e);
+			}
+            
         }
     }
 

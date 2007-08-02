@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/org.thanlwinsoft.languagetest/src/org/thanlwinsoft/languagetest/eclipse/wizards/ModuleContentProvider.java $
- *  Revision        $LastChangedRevision: 852 $
- *  Last Modified:  $LastChangedDate: 2007-06-09 16:02:23 +0700 (Sat, 09 Jun 2007) $
+ *  Revision        $LastChangedRevision: 936 $
+ *  Last Modified:  $LastChangedDate: 2007-08-03 05:14:14 +0700 (Fri, 03 Aug 2007) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -37,6 +37,9 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.thanlwinsoft.languagetest.eclipse.natures.LanguageModuleNature;
+import org.thanlwinsoft.languagetest.eclipse.natures.LanguageUserNature;
+import org.thanlwinsoft.languagetest.language.test.TestManager;
+import org.thanlwinsoft.languagetest.language.test.XmlBeansTestModule;
 
 /**
  * @author keith
@@ -75,14 +78,21 @@ public class ModuleContentProvider implements ITreeContentProvider
                 Vector foldersModules = new Vector(members.length);
                 for (int i = 0; i < members.length; i++)
                 {
+                	String extension = members[i].getFileExtension();
                     if (members[i] instanceof IContainer)
                     {
-                        if (((IContainer)members[i]).members().length > 0)
+                    	if (members[i].getName().equals(TestManager.HISTORY_DIR))
+                    		continue;
+                        if (((IContainer)members[i]).members().length > 0 &&
+                        	members[i].getName().startsWith(".") == false &&
+                        	(extension == null || !(extension
+                        	.equalsIgnoreCase(XmlBeansTestModule.FOLDER_EXT))))
                         {
                             foldersModules.add(members[i]);
                         }
                     }
-                    else if (members[i].getName().endsWith(EXTENSION) &&
+                    else if (extension != null && 
+                    		 extension.equalsIgnoreCase(EXTENSION) &&
                              members[i].getName().startsWith(".") == false)
                     {
                         foldersModules.add(members[i]);
@@ -152,7 +162,8 @@ public class ModuleContentProvider implements ITreeContentProvider
                         if (members[i] instanceof IProject)
                         {
                             IProject p = (IProject)members[i];
-                            if (p.hasNature(LanguageModuleNature.ID))
+                            if (p.hasNature(LanguageModuleNature.ID) ||
+                            	p.hasNature(LanguageUserNature.ID))
                             {
                                 l.add(p);
                             }

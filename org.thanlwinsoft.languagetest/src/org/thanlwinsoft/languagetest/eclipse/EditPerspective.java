@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/org.thanlwinsoft.languagetest/src/org/thanlwinsoft/languagetest/eclipse/EditPerspective.java $
- *  Revision        $LastChangedRevision: 856 $
- *  Last Modified:  $LastChangedDate: 2007-06-13 05:13:58 +0700 (Wed, 13 Jun 2007) $
+ *  Revision        $LastChangedRevision: 936 $
+ *  Last Modified:  $LastChangedDate: 2007-08-03 05:14:14 +0700 (Fri, 03 Aug 2007) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -50,8 +50,10 @@ public class EditPerspective implements IPerspectiveFactory
         "org.thanlwinsoft.languagetest.TestView";
     public final static String RECORDING = 
         "org.thanlwinsoft.languagetest.Recording";
-    public final static String USER_RESULTS = 
-        "org.thanlwinsoft.languagetest.UserResults";
+    //public final static String USER_RESULTS = 
+    //    "org.thanlwinsoft.languagetest.UserResults";
+    //public final static String CHEAT_SHEET = 
+    //	"org.thanlwinsoft.languagetest.CheatSheet";
     public final static String NAVIGATOR = 
         "org.thanlwinsoft.languagetest.Navigator";
     public final static String TEST_HISTORY_VIEW = TestHistoryView.ID;
@@ -68,16 +70,15 @@ public class EditPerspective implements IPerspectiveFactory
         folderBottom.addView(TEST_VIEW);
         folderBottom.addView(RecordingView.ID);
         folderBottom.addView(MetaDataView.ID);
-        //layout.addStandaloneViewPlaceholder(USER_RESULTS,  
-        //        IPageLayout.RIGHT, 0.8f, editorArea, true);
+        folderBottom.addPlaceholder("org.eclipse.search.ui.views.SearchView");
         IFolderLayout folderLeft = layout.createFolder(FOLDER_LEFT,
                 IPageLayout.LEFT, 0.25f, editorArea);
         folderLeft.addView("org.eclipse.ui.views.ResourceNavigator");
-        folderLeft.addView(TEST_HISTORY_VIEW);
-        
-        IPlaceholderFolderLayout folderRight = layout.createPlaceholderFolder(FOLDER_RIGHT,
-                IPageLayout.RIGHT, 0.3f, editorArea);
-        folderRight.addPlaceholder(ChartHistoryView.ID);
+        //folderLeft.addView(TEST_HISTORY_VIEW);
+        //IFolderLayout folderRight = layout.createFolder(FOLDER_RIGHT,
+        //        IPageLayout.RIGHT, 0.3f, editorArea);
+        //folderRight.addView("org.eclipse.ui.cheatsheets.views.CheatSheetView");
+        //folderRight.addPlaceholder(ChartHistoryView.ID);
 	}
     
     

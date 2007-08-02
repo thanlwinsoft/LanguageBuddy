@@ -2,8 +2,8 @@
 
 <!--
     File:          $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/org.thanlwinsoft.languagetest/src/org/thanlwinsoft/languagetest/language/text/LanguageTest.xsl $
-    Version:       $Revision: 861 $
-    Last Modified: $Date: 2007-06-28 05:22:25 +0700 (Thu, 28 Jun 2007) $
+    Version:       $Revision: 936 $
+    Last Modified: $Date: 2007-08-03 05:14:14 +0700 (Fri, 03 Aug 2007) $
 
     This is the XSLT file to transform the LanguageTest XML format into
     HTML for viewing in a web browser.
@@ -32,10 +32,11 @@
 <xsl:template match="/">
 	<html>
         <head>
-            <title>
-            <xsl:for-each select="lan:LanguageModule/lan:Lang[@type='native']">
+            <title><xsl:text>Language Test Module</xsl:text>
+            <!-- <xsl:for-each select="lan:LanguageModule/lan:Lang[@type='native']">
             <xsl:value-of select="."/>
             </xsl:for-each>
+             -->
             </title>
             <style>
 	        body {
@@ -86,14 +87,17 @@
 					text-align: center;
 					width: 1.2em;
 					height: 1.2em;
-					left: -1em;
-					float: left;
 					margin: 0px;
-					margin-bottom: 0.5em;
 					padding: 0px;
+					left: -1em;
+					top: 0em;
 					position: relative;
+					/*
+					float: left;
+					margin-bottom: 0em;
 					border: 1px solid black;
-					font-size: xx-small;
+					*/
+					font-size: large;
 					cursor: pointer;
 				}
 				.noPrint {
@@ -161,12 +165,12 @@
 					if (div.style.display == "none")
 					{
 						div.style.display = "";
-						toggle.innerHTML = "&#x2212;";
+						toggle.innerHTML = "&#x229F;";
 					}
 					else
 					{
 						div.style.display = "none";
-						toggle.innerHTML = "+";
+						toggle.innerHTML = "&#x229E;";
 					}
 				}
 			}
@@ -217,16 +221,32 @@
 					}
 				}
 			}
+			function setTitle()
+			{
+				var name = new String(document.location);
+            	var lastSlash = name.lastIndexOf('/');
+            	if (lastSlash == -1)
+            		lastSlash = name.lastIndexOf('\\');
+            	var lastDot = name.lastIndexOf('.');
+            	name = name.substring(lastSlash + 1, lastDot);
+            	document.getElementById('title').innerHTML = name;
+			}
 			</script>
         </head>
-        <body>
-            <h1>
+        <body onload="setTitle()">
+            <h1 id="title">
+            	<!-- 
                 <xsl:for-each select="lan:LanguageModule/lan:Lang[@type='native']">
                 <xsl:value-of select="."/><br />
                 </xsl:for-each>
+                -->
             </h1>
-			<p onclick="toggleDiv(this,'instructions')" class="toggle">&#x2212;</p>
+            <div>
+			<p onclick="toggleDiv(this,'instructions')" class="toggle">&#x229F;</p>
+			</div>
 			<div id="instructions">
+			<p>This is a Test Module for <a href="http://www.thanlwinsoft.org/">Language Buddy</a>. 
+			If you want the full features of Language Buddy, please reopen inside the Language Buddy software.</p>
 			<p>Once you have learnt these words you can test yourself:</p>
 			<p>
 			<ol><li><a href="javascript:randomizeRows()">Randomize the word order</a></li>

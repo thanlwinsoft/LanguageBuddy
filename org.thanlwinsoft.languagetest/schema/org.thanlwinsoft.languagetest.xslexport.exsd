@@ -78,6 +78,13 @@
                </appInfo>
             </annotation>
          </attribute>
+         <attribute name="multiLingual" type="boolean" use="default" value="true">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 

@@ -32,13 +32,20 @@ import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.thanlwinsoft.languagetest.eclipse.natures.LanguageUserNature;
+import org.thanlwinsoft.languagetest.language.test.TestManager;
+import org.thanlwinsoft.languagetest.language.test.XmlBeansTestModule;
 import org.thanlwinsoft.schemas.languagetest.history.ItemType;
 import org.thanlwinsoft.schemas.languagetest.history.ModuleHistoryDocument;
 import org.thanlwinsoft.schemas.languagetest.history.ModuleHistoryType;
@@ -69,7 +76,9 @@ public class TestHistoryProvider implements ITreeContentProvider
                 Vector v = new Vector(members.length);
                 for (int i = 0; i < members.length; i++)
                 {
-                    if (members[i] instanceof IFile)
+                    if (members[i] instanceof IFile && 
+                    	members[i].getFileExtension().equalsIgnoreCase(
+                    			XmlBeansTestModule.TEST_MODULE_EXT))
                     {
                         IFile f = (IFile)members[i];
                         try
@@ -244,6 +253,7 @@ public class TestHistoryProvider implements ITreeContentProvider
     {
         if (inputElement instanceof IWorkspaceRoot)
         {
+        	final IPath historyPath = new Path(TestManager.HISTORY_DIR);
             IWorkspaceRoot r = (IWorkspaceRoot)inputElement;
             root = r;
             IResource[] projects = null;
@@ -259,7 +269,13 @@ public class TestHistoryProvider implements ITreeContentProvider
                         if (projects[i].isAccessible() && 
                             projects[i].getProject().hasNature(LanguageUserNature.ID))
                         {
-                            v.add(projects[i]);
+                        	IProject p = (IProject)projects[i];
+                        	if (p.exists(historyPath))
+                        	{
+                        		IFolder historyFolder = p.getFolder(historyPath);
+                        		if (historyFolder.isAccessible())
+                        			v.add(historyFolder);
+                        	}
                         }
                     }
                     catch (CoreException e)
@@ -289,8 +305,9 @@ public class TestHistoryProvider implements ITreeContentProvider
             }
             catch (CoreException e)
             {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                LanguageTestPlugin.log(IStatus.WARNING, 
+                		"Error in TestHistoryProvider for " 
+                		+ ((p == null)? "" : p.getName()), e);
             }
             
         }

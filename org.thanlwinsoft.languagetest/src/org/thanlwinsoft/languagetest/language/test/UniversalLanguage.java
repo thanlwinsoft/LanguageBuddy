@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/org.thanlwinsoft.languagetest/src/org/thanlwinsoft/languagetest/language/test/UniversalLanguage.java $
- *  Revision        $LastChangedRevision: 852 $
- *  Last Modified:  $LastChangedDate: 2007-06-09 16:02:23 +0700 (Sat, 09 Jun 2007) $
+ *  Revision        $LastChangedRevision: 936 $
+ *  Last Modified:  $LastChangedDate: 2007-08-03 05:14:14 +0700 (Fri, 03 Aug 2007) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2004 Keith Stribley <devel@thanlwinsoft.org>
@@ -49,9 +49,9 @@ public class UniversalLanguage
     private String completeCode = "";
     private static final Pattern langPattern = Pattern.compile("[a-z]{2,3}");
     private static final Pattern countryPattern = Pattern.compile("[A-Z]{2}");
-    private static final Pattern variantPattern = Pattern.compile("[A-Za-z]*");
+    private static final Pattern variantPattern = Pattern.compile("[A-Za-z0-9]*");
     private static final Pattern scriptPattern = Pattern.compile("[A-Z][a-z]{3}");
-    private static final Pattern encodingPattern = Pattern.compile("[A-Za-z-]*");
+    private static final Pattern encodingPattern = Pattern.compile("[A-Za-z0-9-_]*");
     
     public static final int NATIVE_LANG = 0;
     public static final int FOREIGN_LANG = 1;
