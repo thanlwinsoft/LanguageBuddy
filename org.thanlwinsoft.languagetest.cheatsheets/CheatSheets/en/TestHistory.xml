@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cheatsheet title="Test History">
+   <intro>
+      <description>
+         The <b>Test History</b> Perspective allows you to view your Test results for each Module and a Graph of your results over time.
+      </description>
+   </intro>
+   <item title="Open the Test History perspective" dialog="true" skip="false">
+      <description>
+         The <b>Test History Perspective</b> will open automatically if you select either of the History views from the <b>Window</b> menu.
+      </description>
+      <command serialization="org.eclipse.ui.perspectives.showPerspective(org.eclipse.ui.perspectives.showPerspective.perspectiveId=org.thanlwinsoft.languagetest.eclipse.HistoryPerspective)" confirm="false">
+      </command>
+   </item>
+   <item title="Examine the individual results" dialog="true" skip="false">
+      <description>
+         Choose <b>Window-&gt;History View</b> from the menu. The <b>Test History</b> view should appear on the left hand side. Click just to the left of the text to expand or collapse the tree. If you expand the tree all the way down you should see the individual results and whether you passed or failed on each date.
+      </description>
+      <command serialization="org.eclipse.ui.views.showView(org.eclipse.ui.views.showView.viewId=org.thanlwinsoft.languagetest.TestHistoryView)" confirm="false">
+      </command>
+   </item>
+   <item title="Test History Graph" dialog="true" skip="false">
+      <description>
+         From the Menu choose <b>Window-&gt;Test History Graph</b>, if it is not already visible.&lt;br /&gt;
+You can use the drop down selection boxes at the top of the graph to choose which type of test data to display. (If you haven&apos;t done any tests, then there won&apos;t be anything displayed).
+      </description>
+      <command serialization="org.eclipse.ui.views.showView(org.eclipse.ui.views.showView.viewId=org.thanlwinsoft.languagetest.eclipse.views.ChartHistoryView)" confirm="false">
+      </command>
+   </item>
+   <item title="Return to the Module Editor perspective" dialog="true" skip="false">
+      <description>
+         Click on the <b>Edit Modules</b> button on the task bar to switch back to the normal Edit perspective.
+      </description>
+      <command serialization="org.eclipse.ui.perspectives.showPerspective(org.eclipse.ui.perspectives.showPerspective.perspectiveId=org.thanlwinsoft.languagetest.Perspective)" confirm="false">
+      </command>
+   </item>
+</cheatsheet>

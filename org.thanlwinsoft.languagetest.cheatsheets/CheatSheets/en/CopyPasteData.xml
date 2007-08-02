@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cheatsheet title="Using data from another source">
+   <intro>
+      <description>
+         You may already have some tables of Test Items in a spreadsheet. This Cheat Sheet explains how to copy this data and paste it into a Language Module.
+      </description>
+   </intro>
+   <item title="Create or Open a Test Module" dialog="true" skip="false">
+      <description>
+         Create a New Module in the normal way (<b>File-&gt;New Language Module</b>)or open an existing one.
+      </description>
+      <command serialization="org.eclipse.ui.newWizard(newWizardId=org.eclipse.pde.ui.NewCheatSheetWizard)" confirm="false">
+      </command>
+   </item>
+   <item title="Copy and Paste the data into a column" dialog="true" skip="false">
+      <description>
+         Open the spreadsheet containing the data.
+      </description>
+      <subitem label="Select a column of data in your spreadsheet representing the data in your own language." skip="false">
+      </subitem>
+      <subitem label="Select the Test Items that you want to paste the data into. Use Ctrl+Click to select multiple items, Shift+Click to select a range. Make sure that the number of rows selected matches the number of rows that you copied from the spreadsheet." skip="false">
+      </subitem>
+      <subitem label="Right Click in the &lt;b&gt;Test Items&lt;/b&gt; Table of the &lt;b&gt;Test Module&lt;/b&gt; Editor. Choose &lt;b&gt;Paste Into-&gt;Column&lt;/b&gt;, where column is the appropriate column name." skip="false">
+      </subitem>
+      <subitem label="Repeat this process for each column that you want to copy and save the results with &lt;b&gt;File-&gt;Save&lt;/b&gt;." skip="false">
+      </subitem>
+   </item>
+</cheatsheet>

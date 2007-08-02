@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cheatsheet title="Exporting">
+   <intro>
+      <description>
+         You can currently export to PDF, CSV and HTML formats.
+      </description>
+   </intro>
+   <item title="Start the Export Wizard" dialog="true" skip="false">
+      <description>
+         Right click on a Test Module and choose Export. In the Export dialog expand the Language Buddy section and choose <b>Export Language Test Module</b>.
+      </description>
+      <subitem label="Choose the File Format to export." skip="false">
+      </subitem>
+      <subitem label="The &lt;b&gt;PDF&lt;/b&gt; export has some additional options that you can specify in the second page of the wizard." skip="false">
+      </subitem>
+      <subitem label="Click Finish to perform the export. The exported file should be visible in the same folder as the orginal file with the same filename except for the extension." skip="true">
+      </subitem>
+   </item>
+</cheatsheet>

@@ -87,50 +87,60 @@ You can now search by in multiple languages and by tags.
          <task kind="cheatsheet" name="Tagging" skip="false">
             <intro>
                <b>Introduction</b>
+You can add <b>Tags</b> to Test Items to make it easier to find items in different modules. These can highlight different properties such as grammar, level of difficulty or topic.
             </intro>
             <onCompletion>
                <b>Conclusion</b>
+You can now know how to create tags, apply them to Test Items, use them to search for Test Items and filter your tests.
             </onCompletion>
+            <param name="path" value="Tagging.xml">
+            </param>
+         </task>
+         <task kind="cheatsheet" name="Using data from other sources" skip="false">
+            <intro>
+               <b>Introduction</b>
+This CheatSheet will guide you how to copy data into a Language Module from a spreadsheet.
+            </intro>
+            <onCompletion>
+               <b>Conclusion</b>
+You can now import data from a spreadsheet or other table into Language Buddy.
+            </onCompletion>
+            <param name="path" value="CopyPasteData.xml">
+            </param>
          </task>
          <task kind="cheatsheet" name="Viewing Test Results" skip="false">
             <intro>
                <b>Introduction</b>
+This Cheat Sheet shows you how to see your Test results and graph them.
             </intro>
             <onCompletion>
                <b>Conclusion</b>
             </onCompletion>
-         </task>
-         <task kind="cheatsheet" name="Printing" skip="false">
-            <intro>
-               <b>Introduction</b>
-            </intro>
-            <onCompletion>
-               <b>Conclusion</b>
-            </onCompletion>
-         </task>
-         <task kind="cheatsheet" name="Copying data from other sources" skip="false">
-            <intro>
-               <b>Introduction</b>
-            </intro>
-            <onCompletion>
-               <b>Conclusion</b>
-            </onCompletion>
+            <param name="path" value="TestHistory.xml">
+            </param>
          </task>
          <task kind="cheatsheet" name="Exporting" skip="false">
             <intro>
                <b>Introduction</b>
+This CheatSheet will guide you through exporting your data into PDF, HTML or CSV.
             </intro>
             <onCompletion>
                <b>Conclusion</b>
             </onCompletion>
+            <param name="path" value="Exporting.xml">
+            </param>
          </task>
          <task kind="cheatsheet" name="Additional Languages" skip="false">
             <intro>
                <b>Introduction</b>
+This Cheat Sheet will explain how to add extra languages to your workspace.
             </intro>
             <onCompletion>
                <b>Conclusion</b>
+You can now add multiple languages or different script variants and use them in your Language Modules.
             </onCompletion>
+            <param name="path" value="NewLanguages.xml">
+            </param>
          </task>
       </taskGroup>
    </taskGroup>

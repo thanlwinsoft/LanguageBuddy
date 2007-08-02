@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cheatsheet title="New Languages">
+   <intro>
+      <description>
+         This will guide you through adding extra languages to your workspace. &lt;br /&gt;
+This is helpful if speakers of several different languages are all trying to learn the same foreign language and want to share language modules. The foreign words and there recordings will be the same, but each user can translate the words into their own language.&lt;br /&gt;
+This is also useful if the same foreign language has more than one script or a transliteration. You can store both the transliteration and the real script in the same Language Module. The sound recording will be the same and you can choose to test yourself in either the transliteration or the native script.
+      </description>
+   </intro>
+   <item title="Add a Language" dialog="true" skip="false">
+      <description>
+         Right click on your <b>username</b> in the <b>Navigator</b> view on the left hand-side and choose <b>Add Language</b>.
+      </description>
+   </item>
+   <item title="Choose the Type of Language" dialog="true" skip="false">
+      <description>
+         Specify the <b>Type of Language</b> - is this a variant of the language that you want to learn or one that you already know. e.g. A German speaker might want to add German translations to a module created by someone in English if they are both learning the same third language.
+      </description>
+   </item>
+   <item title="Choose the language" dialog="true" skip="false">
+      <description>
+         Click on the <b>Choose a language</b> drop down to select the language.
+      </description>
+   </item>
+   <item title="Choose the script" dialog="true" skip="false">
+      <description>
+         If you want to distinguish between 2 different scripts (alphabets) for the same language then select the new script from the drop down menu.
+      </description>
+   </item>
+   <item title="Font" dialog="true" skip="false">
+      <description>
+         Click the <b>Font</b> button to select a font to use with this language/script.
+      </description>
+   </item>
+   <item title="Advanced Options" dialog="true" skip="true">
+      <description>
+         Tick <b>Show advanced options</b> if you want to specify a country or some other dialect of the language or that the text is stored in a particular encoding.
+      </description>
+   </item>
+   <item title="Using the extra language" dialog="true" skip="false">
+      <description>
+         Once you have added the language, it should become selectable in the <b>Start Test Wizard</b> and in the Test Module Editor if you click on the <b>Languages</b> tab at the bottom of the editor pane. If the language is enabled on the editor <b>Languages</b> tab, then it should appear as a column on the <b>Test Items</b> tab.
+      </description>
+   </item>
+</cheatsheet>

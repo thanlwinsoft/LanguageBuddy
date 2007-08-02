@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cheatsheet title="Tagging Test Items">
+   <intro>
+      <description>
+         This Cheat Sheet will explain how to create a hierarchical structure of tags and how to apply them to Test Items.
+      </description>
+   </intro>
+   <item title="Show the Tag view" dialog="true" skip="false">
+      <description>
+         Click on the <b>Tag</b> tab in the bottom view pane. You should see some example Tags under the title &quot;Basic Grammar&quot;.
+      </description>
+      <command serialization="org.eclipse.ui.views.showView(org.eclipse.ui.views.showView.viewId=org.thanlwinsoft.languagetest.eclipse.views.MetaDataView)" confirm="false">
+      </command>
+   </item>
+   <item title="Add a new Tag Category" dialog="true" skip="false">
+      <description>
+         Right click on the Tag View and choose <b>Add Tag</b>.
+      </description>
+      <subitem label="Choose the Category that you want the new Category to be under. If you choose / then it will appear at the top level." skip="false">
+      </subitem>
+      <subitem label="Type an Id for the tag. e.g. Level" skip="false">
+      </subitem>
+      <subitem label="You can give it a different name from the ID and specify the language for the name.  This is only useful if you are using the software with users of several languages and want to reuse the same Tag ID with an appropriate Name in each language." skip="true">
+      </subitem>
+      <subitem label="Click OK to finish adding the new tag category." skip="false">
+      </subitem>
+   </item>
+   <item title="Add a new Tag" dialog="true" skip="false">
+      <description>
+         Right click on the Tag that you just created and choose Add. The Category should already be the Tag that you clicked on. You can then give it an ID and Name as before. e.g. If you created a top level category of &quot;Level&quot;, you might create a tag called &quot;Basic&quot;.
+      </description>
+   </item>
+   <item title="How to Tag Test Items" dialog="true" skip="false">
+      <description>
+         Open the <b>Test Module Editor</b> by double clicking on a Test Module in the <b>Navigator</b> view, if it is not already open.
+      </description>
+      <subitem label="Select the Test Item that you want to Tag in the Editor pane." skip="false">
+      </subitem>
+      <subitem label="Click the tick-box in the Tag view beside the relevant tags." skip="false">
+      </subitem>
+      <subitem label="Repeat this for each Test Item in the Module" skip="false">
+      </subitem>
+      <subitem label="Save your changes &lt;b&gt;File-&gt;Save&lt;/b&gt;." skip="false">
+         <command serialization="org.eclipse.ui.file.save" confirm="false">
+         </command>
+      </subitem>
+   </item>
+   <item title="Searching" dialog="true" skip="true">
+      <description>
+         You can find all the Test Items which are marked with a certain tag by right clicking on that tag and choosing <b>Search for References</b>.
+      </description>
+   </item>
+   <item title="Filtering a Test by Tag" dialog="true" skip="true">
+      <description>
+         The <b>Start Test Wizard</b> has a page that allows you to filter by Tag. Tick <b>Enable Filter by Tag</b> and choose the tags that you want to be tested on.
+      </description>
+   </item>
+</cheatsheet>
