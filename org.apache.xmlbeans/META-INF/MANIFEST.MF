@@ -4,10 +4,7 @@ Bundle-Name: XML Beans
 Bundle-SymbolicName: org.apache.xmlbeans
 Bundle-Version: 2.3.0
 Bundle-Vendor: xmlbeans.apache.org
-Export-Package: javax.xml.namespace,
- javax.xml.stream,
- javax.xml.stream.events,
- javax.xml.stream.util,
+Export-Package: org.apache.env,
  org.apache.xml.resolver,
  org.apache.xml.resolver.apps,
  org.apache.xml.resolver.etc,
@@ -147,6 +144,10 @@ Export-Package: javax.xml.namespace,
  schemaorg_apache_xmlbeans.type.http_3A_2F_2Fwww_2Ebea_2Ecom_2F2003_2F01_2Fxmlbean_2Fxsdownload,
  schemaorg_apache_xmlbeans.type.http_3A_2F_2Fwww_2Ebea_2Ecom_2F2003_2F05_2Fxmlbean_2Fltgfmt,
  schemaorg_apache_xmlbeans.type.http_3A_2F_2Fwww_2Ew3_2Eorg_2F2001_2FXMLSchema
-Bundle-Classpath: lib/jsr173_1.0_api.jar,              lib/resolver.jar,              lib/xbean.jar,              lib/xbean_xpath.jar,              lib/xmlbeans-qname.jar,              lib/xmlpublic.jar
-Eclipse-LazyStart: true
-Require-Bundle: org.w3c.dom
+Bundle-Classpath: lib/resolver.jar,
+ lib/xbean.jar,
+ lib/xbean_xpath.jar,
+ lib/xmlpublic.jar
+Eclipse-LazyStart: false
+Import-Package: javax.xml.stream,
+ org.w3c.dom
