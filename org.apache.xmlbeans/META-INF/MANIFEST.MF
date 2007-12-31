@@ -4,6 +4,7 @@ Bundle-Name: XML Beans
 Bundle-SymbolicName: org.apache.xmlbeans
 Bundle-Version: 2.3.0
 Bundle-Vendor: xmlbeans.apache.org
+Bundle-Localization: plugin
 Export-Package: org.apache.env,
  org.apache.xml.resolver,
  org.apache.xml.resolver.apps,
