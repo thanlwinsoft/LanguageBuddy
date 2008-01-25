@@ -75,21 +75,28 @@
 				<include name="README.txt"/>
 				<include name="bin/"/>
 				<include name="build.properties"/>
-				<include name="lib/jsr173_1.0_api.jar"/>
 				<include name="lib/resolver.jar"/>
 				<include name="lib/xbean.jar"/>
 				<include name="lib/xbean_xpath.jar"/>
-				<include name="lib/xmlbeans-qname.jar"/>
 				<include name="lib/xmlpublic.jar"/>
 				<include name="plugin.xml"/>
+				<include name="about.html"/>
+				<include name="lib/jsr173_1.0_api.jar"/>
+				<include name="lib/xmlbeans-qname.jar"/>
 			</fileset>
 		</copy>
+		<eclipse.versionReplacer path="${destination.temp.folder}/org.apache.xmlbeans_2.3.0" version="2.3.0"/>
 	</target>
 
 	<target name="build.zips" depends="init">
 	</target>
 
 	<target name="gather.sources" depends="init" if="destination.temp.folder">
+		<copy todir="${destination.temp.folder}/org.apache.xmlbeans_2.3.0" failonerror="false" overwrite="false">
+			<fileset dir="${basedir}">
+				<include name="lib/xmlbeans-2.3.0-src.zip"/>
+			</fileset>
+		</copy>
 	</target>
 
 	<target name="gather.logs" depends="init" if="destination.temp.folder">
@@ -102,7 +109,7 @@
 	</target>
 
 	<target name="refresh" depends="init" if="eclipse.running" description="Refresh this folder.">
-		<eclipse.convertPath fileSystemPath="/home/keith/projects/LanguageTestWorkspace/trunk/org.apache.xmlbeans" property="resourcePath"/>
+		<eclipse.convertPath fileSystemPath="/home/keith/projects/DocCharConvert/org.thanlwinsoft.doccharconvert.update/headless-build/tmp/plugins/org.apache.xmlbeans" property="resourcePath"/>
 		<eclipse.refreshLocal resource="${resourcePath}" depth="infinite"/>
 	</target>
 

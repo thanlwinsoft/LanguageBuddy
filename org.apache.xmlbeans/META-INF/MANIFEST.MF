@@ -148,7 +148,9 @@ Export-Package: org.apache.env,
 Bundle-Classpath: lib/resolver.jar,
  lib/xbean.jar,
  lib/xbean_xpath.jar,
- lib/xmlpublic.jar
+ lib/xmlpublic.jar,
+ lib/xmlbeans-qname.jar
 Eclipse-LazyStart: false
 Import-Package: javax.xml.stream,
+ javax.xml.namespace,
  org.w3c.dom
