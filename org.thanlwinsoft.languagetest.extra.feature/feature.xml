@@ -633,6 +633,22 @@ END OF TERMS AND CONDITIONS
       <discovery label="ThanLwinSoft.org Updates" url="http://www.thanlwinsoft.org/ThanLwinSoft/Downloads/updates/"/>
    </url>
 
+   <requires>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.thanlwinsoft.languagetest"/>
+      <import plugin="org.eclipse.birt.core"/>
+      <import plugin="org.eclipse.birt.chart.runtime"/>
+      <import plugin="org.eclipse.birt.chart.device.pdf"/>
+      <import plugin="org.eclipse.birt.chart.device.swt"/>
+      <import plugin="org.eclipse.birt.chart.device.svg"/>
+      <import plugin="org.eclipse.birt.chart.device.extension"/>
+      <import plugin="org.mozilla.rhino"/>
+      <import plugin="org.eclipse.birt.chart.engine"/>
+      <import plugin="org.eclipse.birt.chart.engine.extension"/>
+      <import plugin="org.apache.batik"/>
+   </requires>
+
    <plugin
          id="org.thanlwinsoft.languagetest.chart"
          download-size="0"
