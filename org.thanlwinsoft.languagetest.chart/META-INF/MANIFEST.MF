@@ -1,10 +1,21 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: LanguageTest Chart Plug-in
-Bundle-SymbolicName: org.thanlwinsoft.languagetest.chart
+Bundle-SymbolicName: org.thanlwinsoft.languagetest.chart;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: org.thanlwinsoft.languagetest.chart.Activator
 Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime
+ org.eclipse.core.runtime,
+ org.thanlwinsoft.languagetest,
+ org.eclipse.birt.core,
+ org.eclipse.birt.chart.runtime,
+ org.eclipse.birt.chart.device.pdf,
+ org.eclipse.birt.chart.device.swt,
+ org.eclipse.birt.chart.device.svg,
+ org.eclipse.birt.chart.device.extension,
+ org.mozilla.rhino,
+ org.eclipse.birt.chart.engine,
+ org.eclipse.birt.chart.engine.extension,
+ org.apache.batik
 Eclipse-LazyStart: true
 Export-Package: org.thanlwinsoft.languagetest.eclipse.chart

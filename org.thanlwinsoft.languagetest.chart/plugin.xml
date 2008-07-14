@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+	<extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.thanlwinsoft.languagetest.eclipse.chart.view.HistoryPerspective"
+            fixed="false"
+            icon="icons/testHistory16.png"
+            id="org.thanlwinsoft.languagetest.eclipse.HistoryPerspective"
+            name="%LanguageTest.HistoryPerspective">
+      </perspective>
+   </extension>
+</plugin>
