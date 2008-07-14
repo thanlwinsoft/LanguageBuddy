@@ -2,7 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Language Buddy Cheat Sheets
 Bundle-SymbolicName: org.thanlwinsoft.languagetest.cheatsheets; singleton:=true
-Bundle-Version: 0.0.1
+Bundle-Version: 0.0.1.qualifier
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui.cheatsheets
 Eclipse-LazyStart: true
+Bundle-Vendor: www.ThanLwinSoft.org
