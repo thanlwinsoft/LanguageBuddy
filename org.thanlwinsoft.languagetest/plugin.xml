@@ -44,13 +44,6 @@
             id="org.thanlwinsoft.languagetest.eclipse.TestPerspective"
             name="%LanguageTest.testPerspective">
       </perspective>
-      <perspective
-            class="org.thanlwinsoft.languagetest.eclipse.HistoryPerspective"
-            fixed="false"
-            icon="icons/testHistory16.png"
-            id="org.thanlwinsoft.languagetest.eclipse.HistoryPerspective"
-            name="%LanguageTest.HistoryPerspective">
-      </perspective>
    </extension>
    <extension
          point="org.eclipse.ui.views">

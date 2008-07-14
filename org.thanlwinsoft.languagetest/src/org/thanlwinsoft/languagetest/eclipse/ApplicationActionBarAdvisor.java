@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/org.thanlwinsoft.languagetest/src/org/thanlwinsoft/languagetest/eclipse/ApplicationActionBarAdvisor.java $
- *  Revision        $LastChangedRevision: 921 $
- *  Last Modified:  $LastChangedDate: 2007-07-08 06:52:20 +0700 (Sun, 08 Jul 2007) $
+ *  Revision        $LastChangedRevision: 1243 $
+ *  Last Modified:  $LastChangedDate: 2008-07-14 14:33:58 +0700 (Mon, 14 Jul 2008) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -26,7 +26,6 @@
 package org.thanlwinsoft.languagetest.eclipse;
 
 import org.eclipse.jface.action.GroupMarker;
-import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.ICoolBarManager;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
@@ -36,7 +35,6 @@ import org.eclipse.jface.action.ToolBarContributionItem;
 import org.eclipse.jface.action.ToolBarManager;
 import org.thanlwinsoft.languagetest.eclipse.WelcomeAction;
 import org.thanlwinsoft.languagetest.MessageUtil;
-import org.thanlwinsoft.languagetest.eclipse.views.ChartHistoryView;
 import org.thanlwinsoft.languagetest.eclipse.views.MetaDataView;
 import org.thanlwinsoft.languagetest.eclipse.views.RecordingView;
 import org.thanlwinsoft.languagetest.eclipse.views.TestHistoryView;
@@ -154,17 +152,17 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         
         showTestViewAction = new ShowViewAction(EditPerspective.ID, TestView.ID, 
                         MessageUtil.getString("ShowTestView"));
-        showHistoryViewAction = new ShowViewAction(HistoryPerspective.ID, 
-             TestHistoryView.ID, MessageUtil.getString("ShowHistoryView"));
+//        showHistoryViewAction = new ShowViewAction(HistoryPerspective.ID, 
+//             TestHistoryView.ID, MessageUtil.getString("ShowHistoryView"));
         showNavigatorViewAction = new ShowViewAction(
             EditPerspective.ID, "org.thanlwinsoft.languagetest.Navigator", 
                         MessageUtil.getString("ShowNavigatorView"));
         showRecordingViewAction = new ShowViewAction(EditPerspective.ID, 
             RecordingView.ID, MessageUtil.getString("ShowRecordingView"));
         
-        showHistoryGraphViewAction = new ShowViewAction(
-                HistoryPerspective.ID, ChartHistoryView.ID, 
-                MessageUtil.getString("ShowHistoryGraphView"));
+//        showHistoryGraphViewAction = new ShowViewAction(
+//                HistoryPerspective.ID, ChartHistoryView.ID, 
+//                MessageUtil.getString("ShowHistoryGraphView"));
         
         showMetaDataViewAction = new ShowViewAction(EditPerspective.ID, 
             MetaDataView.ID, MessageUtil.getString("ShowMetaDataView"));
