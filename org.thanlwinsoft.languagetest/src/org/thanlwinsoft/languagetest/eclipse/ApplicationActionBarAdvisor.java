@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/org.thanlwinsoft.languagetest/src/org/thanlwinsoft/languagetest/eclipse/ApplicationActionBarAdvisor.java $
- *  Revision        $LastChangedRevision: 1243 $
- *  Last Modified:  $LastChangedDate: 2008-07-14 14:33:58 +0700 (Mon, 14 Jul 2008) $
+ *  Revision        $LastChangedRevision: 1251 $
+ *  Last Modified:  $LastChangedDate: 2008-07-15 00:11:11 +0700 (Tue, 15 Jul 2008) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -37,7 +37,6 @@ import org.thanlwinsoft.languagetest.eclipse.WelcomeAction;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.views.MetaDataView;
 import org.thanlwinsoft.languagetest.eclipse.views.RecordingView;
-import org.thanlwinsoft.languagetest.eclipse.views.TestHistoryView;
 import org.thanlwinsoft.languagetest.eclipse.views.TestView;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.IWorkbenchActionConstants;
@@ -168,10 +167,10 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
             MetaDataView.ID, MessageUtil.getString("ShowMetaDataView"));
         
         register(showTestViewAction);
-        register(showHistoryViewAction);
+        //register(showHistoryViewAction);
         register(showNavigatorViewAction);
         register(showRecordingViewAction);
-        register(showHistoryGraphViewAction);
+        //register(showHistoryGraphViewAction);
         
         welcomeAction = new WelcomeAction();
         register(welcomeAction);
@@ -230,17 +229,17 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         editMenu.add(copyAction);
         editMenu.add(pasteAction);
         editMenu.add(new GroupMarker("org.eclipse.ui.edit.text.gotoLastEditPosition"));
-        
-        
+
+
         windowMenu.add(preferencesAction);
         //windowMenu.add(showViewAction);
         //windowMenu.add(newWindowAction);
         windowMenu.add(newEditorAction);
         windowMenu.add(showTestViewAction);
-        windowMenu.add(showHistoryViewAction);
+        //windowMenu.add(showHistoryViewAction);
         windowMenu.add(showNavigatorViewAction);
         windowMenu.add(showRecordingViewAction);
-        windowMenu.add(showHistoryGraphViewAction);
+        //windowMenu.add(showHistoryGraphViewAction);
         windowMenu.add(showMetaDataViewAction);
         // Help
         helpMenu.add(welcomeAction);
