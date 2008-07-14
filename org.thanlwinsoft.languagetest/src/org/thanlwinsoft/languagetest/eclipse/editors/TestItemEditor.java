@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/org.thanlwinsoft.languagetest/src/org/thanlwinsoft/languagetest/eclipse/editors/TestItemEditor.java $
- *  Revision        $LastChangedRevision: 921 $
- *  Last Modified:  $LastChangedDate: 2007-07-08 06:52:20 +0700 (Sun, 08 Jul 2007) $
+ *  Revision        $LastChangedRevision: 1250 $
+ *  Last Modified:  $LastChangedDate: 2008-07-15 00:05:30 +0700 (Tue, 15 Jul 2008) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -1456,7 +1456,9 @@ public class TestItemEditor extends EditorPart implements ISelectionProvider
         { 
             if (e.keyCode == '\r')
             {
-                tableViewer.editElement(getSelectedItem(), nextColumn);
+            	TestItemType item = getSelectedItem();
+            	if (item != null)
+            		tableViewer.editElement(item, nextColumn);
             }
         }
 
@@ -1464,7 +1466,9 @@ public class TestItemEditor extends EditorPart implements ISelectionProvider
         {
             if (e.keyCode == SWT.TAB)
             {
-                tableViewer.editElement(getSelectedItem(), nextColumn);
+            	TestItemType item = getSelectedItem();
+            	if (item != null)
+            		tableViewer.editElement(getSelectedItem(), nextColumn);
             }
         }
         /* (non-Javadoc)
