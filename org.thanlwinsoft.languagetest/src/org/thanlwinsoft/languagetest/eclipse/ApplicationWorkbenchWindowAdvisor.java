@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/org.thanlwinsoft.languagetest/src/org/thanlwinsoft/languagetest/eclipse/ApplicationWorkbenchWindowAdvisor.java $
- *  Revision        $LastChangedRevision: 936 $
- *  Last Modified:  $LastChangedDate: 2007-08-03 05:14:14 +0700 (Fri, 03 Aug 2007) $
+ *  Revision        $LastChangedRevision: 1238 $
+ *  Last Modified:  $LastChangedDate: 2008-07-14 13:49:25 +0700 (Mon, 14 Jul 2008) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -114,9 +114,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
      */
     public void createWindowContents(Shell shell)
     {
-        // TODO Auto-generated method stub
         super.createWindowContents(shell);
-        
     }
 
     /* (non-Javadoc)
@@ -129,15 +127,27 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
         IWorkbenchWindow w = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
         if (w != null)
         {
-            IViewPart nav = w.getActivePage().findView(EditPerspective.NAVIGATOR);
-            if (nav instanceof ResourceNavigator)
-            {
-                
-                
-            }
-            IViewPart cheatSheet = null;
 			try
 			{
+	            IViewPart nav;// = w.getActivePage().findView(EditPerspective.NAVIGATOR);
+	            nav = w.getActivePage().showView(EditPerspective.NAVIGATOR,
+						null, IWorkbenchPage.VIEW_VISIBLE);
+	            if (nav instanceof ResourceNavigator)
+	            {
+	            	// hard coded patterns, since they don't seem to use the 
+	            	// extension point values for a custom navigator
+	                ResourceNavigator rn = (ResourceNavigator)nav;
+	                String [] filters = {
+	                		"*.project",
+	                		"*.languages.xml",
+	                		"*.xsl",
+	                		"*.settings"
+	                };
+	                rn.getPatternFilter().setPatterns(filters);
+	                String [] p = rn.getPatternFilter().getPatterns();
+	                rn.setFiltersPreference(filters);
+	            }
+	            IViewPart cheatSheet = null;
 				cheatSheet = w.getActivePage().showView("org.eclipse.ui.cheatsheets.views.CheatSheetView",
 						null, IWorkbenchPage.VIEW_VISIBLE);
 				if (cheatSheet != null)

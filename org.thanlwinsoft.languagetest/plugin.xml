@@ -20,17 +20,12 @@
             description="%LanguageTest.desc"
             name="%LanguageTest">
          <property
-               name="aboutText"
-               value="%LanguageTest.about"/>
-         <property
-               name="aboutImage"
-               value="icons/languageBuddy32.png"/>
-         <property
-               name="windowImages"
-               value="icons/languageBuddy16.png"/>
-         <property
                name="licenseHref"
                value="http://www.gnu.org/licenses/lgpl.html">
+         </property>
+         <property
+               name="appName"
+               value="%LanguageTest">
          </property>
       </product>
    </extension>
@@ -230,6 +225,7 @@
             file-extensions="lm.xml"/>
    </extension>
    <extension
+         id="org.thanlwinsoft.languagetest.Navigator"
          point="org.eclipse.ui.ide.resourceFilters">
       <filter
             pattern="*.project"
@@ -320,11 +316,6 @@ wizardId=
       </or>
    </enablement>
 </commonWizard>
-
-</extension>
- <extension point=
-"org.eclipse.ui.navigator.navigatorContent"
->
 
 </extension>
  <extension

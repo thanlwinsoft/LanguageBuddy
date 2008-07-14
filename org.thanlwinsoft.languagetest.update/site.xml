@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <description url="http://www.thanlwinsoft.org/ThanLwinSoft/Downloads/updates/">
+      ThanLwinSoft.org
+   </description>
+   <feature url="features/org.thanlwinsoft.languagetest.feature_2.0.0.qualfier.jar" id="org.thanlwinsoft.languagetest.feature" version="2.0.0.qualfier">
+      <category name="org.thanlwinsoft.languagetest"/>
+   </feature>
+   <category-def name="org.thanlwinsoft.languagetest" label="Language Buddy">
+      <description>
+         Language learning tool
+      </description>
+   </category-def>
+</site>

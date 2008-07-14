@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/org.thanlwinsoft.languagetest/src/org/thanlwinsoft/languagetest/eclipse/views/TestView.java $
- *  Revision        $LastChangedRevision: 856 $
- *  Last Modified:  $LastChangedDate: 2007-06-13 05:13:58 +0700 (Wed, 13 Jun 2007) $
+ *  Revision        $LastChangedRevision: 1238 $
+ *  Last Modified:  $LastChangedDate: 2008-07-14 13:49:25 +0700 (Mon, 14 Jul 2008) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -85,7 +85,6 @@ import org.thanlwinsoft.eclipse.widgets.SoundPlayer;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.thanlwinsoft.languagetest.eclipse.EditPerspective;
-import org.thanlwinsoft.languagetest.eclipse.TestPerspective;
 import org.thanlwinsoft.languagetest.eclipse.editors.TestItemEditor;
 import org.thanlwinsoft.languagetest.eclipse.editors.TestModuleEditor;
 import org.thanlwinsoft.languagetest.language.test.Test;
@@ -646,7 +645,7 @@ public class TestView extends ViewPart implements ISelectionChangedListener
                 {
                     controlPanel.player().setFile(ti.getSoundFile().getStringValue());
                 }
-                else if (basePath != null && basePath.exists(path))
+                else if (basePath != null && basePath.exists(path) && path.segmentCount() > 0)
                 {
                     IFile file = basePath.getFile(path);
                     controlPanel.player().setFile(file.getRawLocation().toOSString());

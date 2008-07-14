@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/org.thanlwinsoft.languagetest/src/org/thanlwinsoft/languagetest/eclipse/EditPerspective.java $
- *  Revision        $LastChangedRevision: 936 $
- *  Last Modified:  $LastChangedDate: 2007-08-03 05:14:14 +0700 (Fri, 03 Aug 2007) $
+ *  Revision        $LastChangedRevision: 1238 $
+ *  Last Modified:  $LastChangedDate: 2008-07-14 13:49:25 +0700 (Mon, 14 Jul 2008) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -73,7 +73,8 @@ public class EditPerspective implements IPerspectiveFactory
         folderBottom.addPlaceholder("org.eclipse.search.ui.views.SearchView");
         IFolderLayout folderLeft = layout.createFolder(FOLDER_LEFT,
                 IPageLayout.LEFT, 0.25f, editorArea);
-        folderLeft.addView("org.eclipse.ui.views.ResourceNavigator");
+        //folderLeft.addView("org.eclipse.ui.views.ResourceNavigator");
+        folderLeft.addView(NAVIGATOR);
         //folderLeft.addView(TEST_HISTORY_VIEW);
         //IFolderLayout folderRight = layout.createFolder(FOLDER_RIGHT,
         //        IPageLayout.RIGHT, 0.3f, editorArea);

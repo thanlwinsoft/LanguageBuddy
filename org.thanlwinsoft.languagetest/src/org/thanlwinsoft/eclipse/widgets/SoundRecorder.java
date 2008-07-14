@@ -395,6 +395,23 @@ public class SoundRecorder extends Composite implements ISelectionChangedListene
             }
             lineController.closeLines();
             recorder = null;
+            IProgressMonitor pm = 
+                Job.getJobManager().createProgressGroup();
+            try
+            {
+            	IWorkspace workspace = ResourcesPlugin.getWorkspace();
+                IWorkspaceRoot root = workspace.getRoot(); 
+                pm.beginTask("Refresh after conversion", 
+                    IProgressMonitor.UNKNOWN);
+                // TODO make this less expensive, by only refreshing the
+                // relevant directory
+                root.refreshLocal(IResource.DEPTH_INFINITE, pm);
+            }
+            catch (CoreException e)
+            {
+                LanguageTestPlugin.log(IStatus.WARNING,
+                    "Refresh error", e);
+            }
             updateTestItem();
         }
         else
@@ -420,10 +437,12 @@ public class SoundRecorder extends Composite implements ISelectionChangedListene
             }
             if (recorder == null)
             {
-                recorder = new Recorder(lineController);
-                recorder.addPlayListener(this);
+            	// setting the spinner resets the recorder, so this must be 
+            	// before the recorder is created
                 startSpinner.setSelection(0);
                 endSpinner.setSelection(0);
+                recorder = new Recorder(lineController);
+                recorder.addPlayListener(this);
             }
             else return;
             
@@ -973,7 +992,7 @@ public class SoundRecorder extends Composite implements ISelectionChangedListene
                                         {
                                             pm.beginTask("Refresh after conversion", 
                                                 IProgressMonitor.UNKNOWN);
-                                            f.refreshLocal(1, pm);
+                                            f.refreshLocal(IResource.DEPTH_INFINITE, pm);
                                         }
                                         catch (CoreException e)
                                         {

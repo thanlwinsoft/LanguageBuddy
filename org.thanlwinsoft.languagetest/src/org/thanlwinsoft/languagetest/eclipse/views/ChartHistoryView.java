@@ -90,6 +90,7 @@ public class ChartHistoryView extends ViewPart
     private Combo graphTypeCombo = null;
     private IProject userProject = null;
     private ChartHistoryProvider provider = null;
+	protected static final String HISTORY_EXTENSION = TestManager.HISTORY_EXT;
     
     public ChartHistoryView()
     {
@@ -292,7 +293,8 @@ public class ChartHistoryView extends ViewPart
                             members = hFolder.members();
                             for (int i = 0; i < members.length; i++)
                             {
-                                if (members[i] instanceof IFile)
+                                if (members[i] instanceof IFile &&
+                                	members[i].getName().endsWith(HISTORY_EXTENSION))
                                 {
                                     IFile file = (IFile)members[i];
                                     InputStream is = file.getContents();
