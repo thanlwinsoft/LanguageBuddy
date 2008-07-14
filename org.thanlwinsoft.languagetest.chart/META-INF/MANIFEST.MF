@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: LanguageTest Chart Plug-in
+Bundle-SymbolicName: org.thanlwinsoft.languagetest.chart
+Bundle-Version: 1.0.0
+Bundle-Activator: org.thanlwinsoft.languagetest.chart.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime
+Eclipse-LazyStart: true
+Export-Package: org.thanlwinsoft.languagetest.eclipse.chart
