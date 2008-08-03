@@ -195,40 +195,12 @@ public class MetaNode
                 return true;
             }
         }
-//        ArrayDeque<MetaNode> nodeAxis = getNodeAxis();
-//        MetaNode top = nodeAxis.removeFirst();
-//        
-//        for (MetaDataType md : item.getMetaDataArray())
-//        {
-//            if (md.getMetaId().equals(top.data.getMetaId()))
-//            {
-//                boolean match = true;
-//                while (top != this)
-//                {
-//                    top = nodeAxis.removeFirst();
-//                    match = false;
-//                    for (MetaDataType mdChild : md.getMetaDataArray())
-//                    {
-//                        if (mdChild.getMetaId().equals(top.data.getMetaId()))
-//                        {
-//                            md = mdChild;
-//                            match = true;
-//                            break;
-//                        }
-//                    }
-//                    if (!match) break;
-//                }
-//                if (top == this)
-//                    return match;
-//                break;
-//            }
-//        }
         return false;
     }
     public void setOnItem(TestItemType item, boolean state)
     {
-        //ArrayDeque<MetaNode> nodeAxis = getNodeAxis();
-        //TagType [] data = item.getTagArray();
+    	if (item == null) // may be null when used in search dialog
+    		return;
         String ref = toPath().toPortableString();
         for (int i = 0; i < item.sizeOfTagArray(); i++)
         {
@@ -244,43 +216,6 @@ public class MetaNode
             }
         }
         item.addNewTag().setRef(ref);
-//        MetaDataType prev = null;
-//        while (nodeAxis.size() > 0)
-//        {
-//            MetaNode n = nodeAxis.removeFirst();
-//            for (int i = 0; i < data.length; i++)
-//            {
-//                MetaDataType md = data[i];
-//                if (md.getMetaId().equals(n.data.getMetaId()))
-//                {
-//                    if (n == this && state == false)
-//                    {
-//                        prev.removeMetaData(i);
-//                        return;
-//                    }
-//                    else
-//                    {
-//                        data = md.getMetaDataArray();
-//                        prev = md;
-//                    }
-//                    break;
-//                }
-//            }
-//            // node doesn't exist, so a add a new node
-//            MetaDataType newMD = null;
-//            if (n.parent == null)
-//            {
-//                newMD = item.addNewMetaData();
-//            }
-//            else
-//            {
-//                newMD = prev.addNewMetaData();
-//            }
-//            newMD.setMetaId(n.data.getMetaId());
-//            newMD.setDescArray(n.data.getDescArray().clone());
-//            data = newMD.getMetaDataArray();
-//            prev = newMD;
-//        }
     }
     public static MetaNode [] getTopLevelNodes(ConfigType config)
     {

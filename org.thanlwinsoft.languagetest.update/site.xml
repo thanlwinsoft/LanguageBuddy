@@ -3,7 +3,7 @@
    <description url="http://www.thanlwinsoft.org/ThanLwinSoft/Downloads/updates/">
       ThanLwinSoft.org
    </description>
-   <feature url="features/org.thanlwinsoft.languagetest.feature_2.0.0.qualfier.jar" id="org.thanlwinsoft.languagetest.feature" version="2.0.0.qualfier">
+   <feature url="features/org.thanlwinsoft.languagetest.feature_2.0.0.jar" id="org.thanlwinsoft.languagetest.feature" version="2.0.0">
       <category name="org.thanlwinsoft.languagetest"/>
    </feature>
    <category-def name="org.thanlwinsoft.languagetest" label="Language Buddy">

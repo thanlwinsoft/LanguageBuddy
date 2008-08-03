@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/org.thanlwinsoft.languagetest/src/org/thanlwinsoft/languagetest/eclipse/editors/TestItemEditor.java $
- *  Revision        $LastChangedRevision: 1250 $
- *  Last Modified:  $LastChangedDate: 2008-07-15 00:05:30 +0700 (Tue, 15 Jul 2008) $
+ *  Revision        $LastChangedRevision: 1260 $
+ *  Last Modified:  $LastChangedDate: 2008-08-03 16:06:30 +0700 (Sun, 03 Aug 2008) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -661,54 +661,64 @@ public class TestItemEditor extends EditorPart implements ISelectionProvider
         int [] selection = tableViewer.getTable().getSelectionIndices(); 
         String message = MessageUtil.getString("PasteBeforeOrAfter");
         String [] buttonText;
-        if (selection.length == items.length)
+        int insertionIndex = 0;
+        int choice = 0;
+        LanguageModuleType lm = parent.getDocument().getLanguageModule();
+        if ((selection.length == 1) && tableViewer.getTable().getItemCount() == 
+        	selection[0] + 1)
         {
-            message = MessageUtil.getString("PasteOverwriteBeforeOrAfter");
-            buttonText = new String[4];
-            buttonText[0] = MessageUtil.getString("PasteBefore");
-            buttonText[1] = MessageUtil.getString("PasteAfter");
-            buttonText[2] = MessageUtil.getString("Overwrite");
-            buttonText[3] = MessageUtil.getString("Cancel");
+        	// don't need to ask, just insert at end
+        	insertionIndex = selection[0];
         }
         else
         {
-            buttonText = new String[3];
-            buttonText[0] = MessageUtil.getString("InsertBefore");
-            buttonText[1] = MessageUtil.getString("InsertAfter");
-            buttonText[2] = MessageUtil.getString("Cancel");
-        }
-        MessageDialog dialog = new MessageDialog(this.getSite().getShell(),
-                MessageUtil.getString("PasteTitle"), null, message,
-                MessageDialog.QUESTION, buttonText, 1);
-        int choice = dialog.open();
-        int insertionIndex = 0;
-        
-        LanguageModuleType lm = parent.getDocument().getLanguageModule();
-        if (choice == buttonText.length - 1) return ;
-        switch (choice)
-        {
-        case 0:
-            if (selection.length > 0)
-            {
-                insertionIndex = selection[0];
-            }
-            break;
-        case 1:
-            
-            if (selection.length == 0)
-                insertionIndex = tableViewer.getTable().getItemCount();
-            else
-                insertionIndex = selection[selection.length - 1] + 1;
-            break;
-        case 2:
-            for (int i = 0; i < items.length; i++)
-            {
-                lm.setTestItemArray(selection[i], items[i]);
-            }
-            parent.setDirty(true);
-            parent.firePropertyChange(PROP_DIRTY);
-            tableViewer.refresh();
-            return;
+	        if (selection.length == items.length)
+	        {
+	            message = MessageUtil.getString("PasteOverwriteBeforeOrAfter");
+	            buttonText = new String[4];
+	            buttonText[0] = MessageUtil.getString("PasteBefore");
+	            buttonText[1] = MessageUtil.getString("PasteAfter");
+	            buttonText[2] = MessageUtil.getString("Overwrite");
+	            buttonText[3] = MessageUtil.getString("Cancel");
+	        }
+	        else
+	        {
+	            buttonText = new String[3];
+	            buttonText[0] = MessageUtil.getString("InsertBefore");
+	            buttonText[1] = MessageUtil.getString("InsertAfter");
+	            buttonText[2] = MessageUtil.getString("Cancel");
+	        }
+	        MessageDialog dialog = new MessageDialog(this.getSite().getShell(),
+	                MessageUtil.getString("PasteTitle"), null, message,
+	                MessageDialog.QUESTION, buttonText, 1);
+	        choice = dialog.open();
+	        
+	        if (choice == buttonText.length - 1) return ;
+	        switch (choice)
+	        {
+	        case 0:
+	            if (selection.length > 0)
+	            {
+	                insertionIndex = selection[0];
+	            }
+	            break;
+	        case 1:
+	            
+	            if (selection.length == 0)
+	                insertionIndex = tableViewer.getTable().getItemCount();
+	            else
+	                insertionIndex = selection[selection.length - 1] + 1;
+	            break;
+	        case 2:
+	            for (int i = 0; i < items.length; i++)
+	            {
+	                lm.setTestItemArray(selection[i], items[i]);
+	            }
+	            parent.setDirty(true);
+	            parent.firePropertyChange(PROP_DIRTY);
+	            tableViewer.refresh();
+	            return;
+	        }
         }
         for (int i = 0; i < items.length; i++)
         {
@@ -1212,7 +1222,7 @@ public class TestItemEditor extends EditorPart implements ISelectionProvider
                         Font font = labelProvider.getFont(element, col);
                         control.setFont(font);
                         final int nextColumn = col + 1;
-                        if (nextColumn < tableViewer.getTable().getColumnCount())
+                        //if (nextColumn < tableViewer.getTable().getColumnCount())
                         {
                             KeyListener kl = new CellKeyListener(editor, nextColumn);
                             control.addKeyListener(kl);
@@ -1360,7 +1370,8 @@ public class TestItemEditor extends EditorPart implements ISelectionProvider
                 // is this a place holder empty node for new entries?
                 if (testItem.getDomNode().getParentNode() == null)
                 {
-                    TestItemType ti = parent.getDocument().getLanguageModule().addNewTestItem();
+                	LanguageModuleType module = parent.getDocument().getLanguageModule();
+                    TestItemType ti = module.addNewTestItem();
                     IProject [] up = WorkspaceLanguageManager.findUserProjects();
                     if (up.length > 0)
                     {
@@ -1375,6 +1386,19 @@ public class TestItemEditor extends EditorPart implements ISelectionProvider
                     tableViewer.refresh();
                     StructuredSelection ss = new StructuredSelection(ti);
                     tableViewer.setSelection(ss, true);
+                    final int nextLangCol = langIds.indexOf(property) + 1;
+                    final int row = module.sizeOfTestItemArray();
+                    tableViewer.getControl().getDisplay().asyncExec(new Runnable(){
+
+						@Override
+						public void run() {
+							if (nextLangCol < langIds.size())
+		                    	tableViewer.editElement(tableViewer.getElementAt(row-1), NUM_NON_LANG_COL + nextLangCol);
+		                    else
+		                    	tableViewer.editElement(tableViewer.getElementAt(row),
+		                    			NUM_NON_LANG_COL);
+						}});
+                    
                 }
                 else
                 {
@@ -1457,8 +1481,23 @@ public class TestItemEditor extends EditorPart implements ISelectionProvider
             if (e.keyCode == '\r')
             {
             	TestItemType item = getSelectedItem();
-            	if (item != null)
-            		tableViewer.editElement(item, nextColumn);
+            	if (item != null && item.getDomNode().getParentNode() != null)
+            	{
+            		if (nextColumn < tableViewer.getTable().getColumnCount())
+            			tableViewer.editElement(item, nextColumn);
+            		else
+            		{
+            			TestItemType tryItem = (TestItemType)tableViewer.getElementAt(0);
+            			int i = 0;
+            			while (tryItem != item && tryItem != null)
+            			{
+            				tryItem = (TestItemType)tableViewer.getElementAt(++i);
+            			}
+            			if (tryItem == item) 
+            				tryItem = (TestItemType)tableViewer.getElementAt(++i);
+            			tableViewer.editElement(tryItem, NUM_NON_LANG_COL);
+            		}
+            	}
             }
         }
 
@@ -1467,7 +1506,8 @@ public class TestItemEditor extends EditorPart implements ISelectionProvider
             if (e.keyCode == SWT.TAB)
             {
             	TestItemType item = getSelectedItem();
-            	if (item != null)
+            	if (item != null &&  item.getDomNode().getParentNode() != null &&
+            		nextColumn < tableViewer.getTable().getColumnCount())
             		tableViewer.editElement(getSelectedItem(), nextColumn);
             }
         }

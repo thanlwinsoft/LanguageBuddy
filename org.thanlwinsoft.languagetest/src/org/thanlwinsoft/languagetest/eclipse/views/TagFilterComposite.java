@@ -67,6 +67,7 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.thanlwinsoft.languagetest.MessageUtil;
+import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.thanlwinsoft.languagetest.eclipse.editors.TestModuleEditor;
 import org.thanlwinsoft.languagetest.eclipse.search.TestItemQuery;
 import org.thanlwinsoft.languagetest.eclipse.search.TestItemSearchEngine;
@@ -359,7 +360,9 @@ public class TagFilterComposite extends ScrolledComposite implements ICheckState
         {
             if (elements[i] instanceof MetaNode)
             {
-                paths.add(((MetaNode)elements[i]).toPath());
+            	MetaNode mn = (MetaNode)elements[i];
+            	if (!mn.hasChildren())
+            		paths.add(mn.toPath());
             }
         }
         return paths.toArray(new IPath[paths.size()]);
@@ -502,6 +505,17 @@ public class TagFilterComposite extends ScrolledComposite implements ICheckState
         this.testItem = ti;
         checkedPaths = getCheckedTagPaths();
         tree.setToolTipText(getTagPathDescription());
+    }
+    
+    public void setSelectedTags(IPath [] tags)
+    {
+    	for (IPath t : tags)
+        {
+            TreePath element = pathToTreePath(t);
+            if (!viewer.setChecked(element, true))
+            	LanguageTestPlugin.log(IStatus.WARNING, "Tag " + t + " may not exist anymore.");
+        }
+    	checkedPaths = tags;
     }
     
     class MenuAction extends Action implements SelectionListener 

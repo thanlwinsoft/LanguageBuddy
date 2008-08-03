@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/org.thanlwinsoft.languagetest/src/org/thanlwinsoft/languagetest/eclipse/search/LanguageTestItemSearch.java $
- *  Revision        $LastChangedRevision: 855 $
- *  Last Modified:  $LastChangedDate: 2007-06-10 07:02:09 +0700 (Sun, 10 Jun 2007) $
+ *  Revision        $LastChangedRevision: 1260 $
+ *  Last Modified:  $LastChangedDate: 2008-08-03 16:06:30 +0700 (Sun, 03 Aug 2008) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -111,7 +111,7 @@ public class LanguageTestItemSearch extends DialogPage implements ISearchPage
         }
         // we only have one type of filter at the moment
         TestItemFilter [] filters;
-        if (tags.length > 0)
+        if (tags != null && tags.length > 0)
         {
             filters = new TestItemFilter[1];
             if (allButton.getSelection())
@@ -389,6 +389,8 @@ public class LanguageTestItemSearch extends DialogPage implements ISearchPage
         {
             Composite composite = (Composite) super.createDialogArea(parent);
             tfc = new TagFilterComposite(composite, SWT.H_SCROLL | SWT.V_SCROLL);
+            if (tags != null)
+            	tfc.setSelectedTags(tags);
             return composite;
         }
         TagFilterComposite getTagFilterComposite() { return tfc; }

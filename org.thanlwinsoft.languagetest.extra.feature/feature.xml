@@ -2,7 +2,7 @@
 <feature
       id="org.thanlwinsoft.languagetest.extra.feature"
       label="Language Test Extra Functionality"
-      version="1.0.0.qualifier"
+      version="1.0.0"
       provider-name="www.ThanLwinSoft.org"
       plugin="org.thanlwinsoft.languagetest">
 
