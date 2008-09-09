@@ -27,9 +27,7 @@ package org.thanlwinsoft.languagetest.eclipse.editors;
 
 import org.apache.xmlbeans.XmlException;
 import org.eclipse.jface.action.Action;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.Clipboard;
-import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.HTMLTransfer;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
@@ -37,7 +35,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.ui.actions.ActionFactory;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.schemas.languagetest.module.ForeignLangType;
 import org.thanlwinsoft.schemas.languagetest.module.LanguageModuleDocument;

@@ -72,7 +72,7 @@ import org.eclipse.birt.chart.model.type.ScatterSeries;
 import org.eclipse.birt.chart.model.type.impl.ScatterSeriesImpl;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
-import org.thanlwinsoft.languagetest.eclipse.views.ChartHistoryProvider;
+import org.thanlwinsoft.languagetest.eclipse.chart.view.ChartHistoryProvider;
 import org.thanlwinsoft.schemas.languagetest.history.ItemType;
 import org.thanlwinsoft.schemas.languagetest.history.ModuleHistoryType;
 import org.thanlwinsoft.schemas.languagetest.history.ResultType;

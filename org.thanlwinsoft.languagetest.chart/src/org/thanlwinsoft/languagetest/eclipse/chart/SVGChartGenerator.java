@@ -65,7 +65,7 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.osgi.framework.Bundle;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
-import org.thanlwinsoft.languagetest.eclipse.views.ChartHistoryView;
+import org.thanlwinsoft.languagetest.eclipse.chart.view.ChartHistoryView;
 
 import com.ibm.icu.util.ULocale;
 

@@ -11,4 +11,55 @@
             name="%LanguageTest.HistoryPerspective">
       </perspective>
    </extension>
+   <extension
+      point="org.eclipse.ui.viewActions">
+       <viewContribution
+             id="org.thanlwinsoft.languagetest.chartHistoryViewContribution"
+             targetID="org.thanlwinsoft.languagetest.eclipse.views.ChartHistoryView">
+          <action
+                class="org.thanlwinsoft.languagetest.eclipse.chart.SVGChartGenerator"
+                enablesFor="*"
+                id="org.thanlwinsoft.languagetest.SVGChartGenerator"
+                label="%LanguageTest.saveChart"
+                style="push"
+                toolbarPath="Bar/additions/Save"
+                tooltip="%LanguageTest.SVGChartGenerator"/>
+          <menu
+                id="org.thanlwinsoft.languagetest.SVGChartGeneratorMenu"
+                label="%LanguageTest.saveChart"
+                path="slot1">
+             <groupMarker name="org.thanlwinsoft.languagetest.chart.SaveMenu"/>
+          </menu>
+          <action
+                class="org.thanlwinsoft.languagetest.eclipse.chart.PNGChartGenerator"
+                enablesFor="*"
+                id="org.thanlwinsoft.languagetest.SVGChartGenerator.PNG"
+                label="%LanguageTest.saveChartAsPng"
+                menubarPath="org.thanlwinsoft.languagetest.chart.SaveMenu"
+                style="push"/>
+          <action
+                class="org.thanlwinsoft.languagetest.eclipse.chart.JPEGChartGenerator"
+                enablesFor="*"
+                id="org.thanlwinsoft.languagetest.SVGChartGenerator.JPEG"
+                label="%LanguageTest.saveChartAsJpeg"
+                menubarPath="org.thanlwinsoft.languagetest.chart.SaveMenu"
+                style="push"/>
+          <action
+                class="org.thanlwinsoft.languagetest.eclipse.chart.SVGChartGenerator"
+                enablesFor="*"
+                id="org.thanlwinsoft.languagetest.SVGChartGenerator"
+                label="%LanguageTest.saveChartAsSvg"
+                menubarPath="org.thanlwinsoft.languagetest.chart.SaveMenu"
+                style="push"/>
+       </viewContribution>
+    </extension>
+    <extension point="org.eclipse.ui.views">
+        <view
+            allowMultiple="true"
+            category="org.thanlwinsoft.languagetest.views"
+            class="org.thanlwinsoft.languagetest.eclipse.chart.view.ChartHistoryView"
+            icon="icons/testHistory16.png"
+            id="org.thanlwinsoft.languagetest.eclipse.views.ChartHistoryView"
+            name="%LanguageTest.ChartHistoryView"/>
+    </extension>
 </plugin>
