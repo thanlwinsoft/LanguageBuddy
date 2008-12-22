@@ -4,9 +4,7 @@ Bundle-Name: XML Beans
 Bundle-SymbolicName: org.apache.xmlbeans;singleton:=true
 Bundle-Version: 2.3.0
 Bundle-Vendor: xmlbeans.apache.org
-Bundle-Localization: plugin
-Export-Package: javax.xml.namespace,
- org.apache.env,
+Export-Package: org.apache.env,
  org.apache.xml.resolver;uses:="org.apache.xml.resolver.helpers,org.apache.xml.resolver.readers",
  org.apache.xml.resolver.apps;uses:="org.xml.sax",
  org.apache.xml.resolver.etc,
@@ -221,7 +219,6 @@ Export-Package: javax.xml.namespace,
  org.apache.xmlbeans.xml.stream;uses:="org.apache.xmlbeans.xml.stream.utils",
  org.apache.xmlbeans.xml.stream.events,
  org.apache.xmlbeans.xml.stream.utils,
- org.w3c.dom,
  repackage,
  schemaorg_apache_xmlbeans.attribute.http_3A_2F_2Fwww_2Ew3_2Eorg_2FXML_2F1998_2Fnamespace,
  schemaorg_apache_xmlbeans.attributegroup.http_3A_2F_2Fwww_2Ew3_2Eorg_2F2001_2FXMLSchema,
@@ -311,7 +308,8 @@ Bundle-Classpath: lib/resolver.jar,
  lib/xbean_xpath.jar,
  lib/xmlpublic.jar,
  lib/xmlbeans-qname.jar
-Eclipse-LazyStart: false
 Import-Package: javax.xml.stream,
  javax.xml.namespace,
  org.w3c.dom
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
