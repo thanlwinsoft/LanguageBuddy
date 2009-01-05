@@ -308,8 +308,5 @@ Bundle-Classpath: lib/resolver.jar,
  lib/xbean_xpath.jar,
  lib/xmlpublic.jar,
  lib/xmlbeans-qname.jar
-Import-Package: javax.xml.stream,
- javax.xml.namespace,
- org.w3c.dom
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
