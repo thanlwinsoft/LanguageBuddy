@@ -41,8 +41,6 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -59,7 +57,7 @@ public class ExportTypePage extends WizardPage
 {
     final static String EXT_POINT = "org.thanlwinsoft.languagetest.xslexport";
     
-    private Vector exporters = new Vector();
+    private Vector<ExporterDetails> exporters = new Vector<ExporterDetails>();
     private List exporterList = null;
     private Button autoOpen = null;
     private ExportWizard wizard = null;
@@ -109,7 +107,6 @@ public class ExportTypePage extends WizardPage
                 details.stylesheet = ce[j].getAttribute("xslt");
                 details.extension = ce[j].getAttribute("extension");
                 details.isMultiLingual = Boolean.parseBoolean(ce[j].getAttribute("multiLingual"));
-                WizardPage page = null;
                 try
                 {   
                     if (ce[j].getAttribute("wizardPage") != null)

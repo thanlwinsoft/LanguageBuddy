@@ -37,7 +37,6 @@ import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.JPEGTranscoder;
 import org.apache.batik.transcoder.image.PNGTranscoder;
-import org.apache.fop.svg.PDFTranscoder;
 import org.eclipse.birt.chart.device.IDeviceRenderer;
 import org.eclipse.birt.chart.device.svg.SVGRendererImpl;
 import org.eclipse.birt.chart.exception.ChartException;
@@ -56,7 +55,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.program.Program;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.ui.IViewActionDelegate;
 import org.eclipse.ui.IViewPart;
@@ -105,14 +103,14 @@ public class SVGChartGenerator  implements IWorkbenchWindowActionDelegate, IView
         //Tell chart engine that we are running in stand alone mode.  Note running in an eclipse environment.
         System.setProperty("STANDALONE", "true"); //$NON-NLS-1$ //$NON-NLS-2$
         
-        String svnFileName = fileName;
+        String svgFileName = fileName;
         IPath path = new Path(fileName);
         if (!"svg".equals(path.getFileExtension()))
         {
-            svnFileName = path.removeFileExtension().toOSString();
-            if (!svnFileName.endsWith("."))
-                svnFileName += ".";
-            svnFileName += "svg";
+            svgFileName = path.removeFileExtension().toOSString();
+            if (!svgFileName.endsWith("."))
+                svgFileName += ".";
+            svgFileName += "svg";
         }
         //Create the pdf renderer
         IDeviceRenderer idr = new SVGRendererImpl();
@@ -130,21 +128,25 @@ public class SVGChartGenerator  implements IWorkbenchWindowActionDelegate, IView
             gcs = gr.build( idr.getDisplayServer( ), cm, bo, null, rtc, null );
 
             //Specify the file to write to. 
-            idr.setProperty( IDeviceRenderer.FILE_IDENTIFIER, svnFileName ); //$NON-NLS-1$
+            idr.setProperty( IDeviceRenderer.FILE_IDENTIFIER, svgFileName ); //$NON-NLS-1$
 
             //generate the chart
             gr.render( idr, gcs );
-            if (fileName.endsWith(".jpg"))
-                exportSvgToJPEG(svnFileName, fileName);
-            else if (fileName.endsWith(".png"))
-                exportSvgToPNG(svnFileName, fileName);
-            else if (fileName.endsWith(".pdf"))
-                exportSvgToPDF(svnFileName, fileName);
+            
+            
         }
         catch ( ChartException ce )
         {
             ce.printStackTrace( );
         }       
+    }
+    
+    protected void exportSvg(String svgFileName, String fileName)
+    {
+    	if (fileName.endsWith(".jpg"))
+            exportSvgToJPEG(svgFileName, fileName);
+        else if (fileName.endsWith(".png"))
+            exportSvgToPNG(svgFileName, fileName);
     }
     
     private void exportSvgToPNG(String svnFileName, String fileName)
@@ -196,58 +198,6 @@ public class SVGChartGenerator  implements IWorkbenchWindowActionDelegate, IView
         }
     }
     
-    private void exportSvgToPDF(String svnFileName, String fileName)
-    {
-        try
-        {
-            Bundle batikBundle = Platform.getBundle("org.apache.fop");
-            batikBundle.loadClass("org.apache.fop.svg.PDFTranscoder");
-            batikBundle.loadClass("org.apache.batik.transcoder.TranscoderInput");
-            batikBundle.loadClass("org.apache.batik.transcoder.TranscoderOutput");
-            // Create a PNG transcoder
-            PDFTranscoder t = new PDFTranscoder();// throws an exception
-            
-            // Create the transcoder input.
-            String svgURI = new File(svnFileName).toURI().toString();
-            
-            TranscoderInput input = new TranscoderInput(svgURI);
-            
-            // Create the transcoder output.
-            OutputStream ostream;
-        
-            ostream = new FileOutputStream(fileName);
-            TranscoderOutput output = new TranscoderOutput(ostream);
-            // preload class
-            batikBundle.loadClass("org.apache.batik.transcoder.TranscoderInput");
-            // Save the image.
-            t.transcode(input, output);
-
-            // Flush and close the stream.
-            ostream.flush();
-            ostream.close();
-        } 
-        catch (FileNotFoundException e)
-        {
-            LanguageTestPlugin.log(IStatus.WARNING, "ChartGenerator error", e);
-        } 
-        catch (IOException e)
-        {
-            LanguageTestPlugin.log(IStatus.WARNING, "ChartGenerator error", e);
-        } 
-        catch (TranscoderException e)
-        {
-            LanguageTestPlugin.log(IStatus.WARNING, "ChartGenerator error", e);
-        }
-        catch (ClassNotFoundException e)
-        {
-            LanguageTestPlugin.log(IStatus.WARNING, "ChartGenerator error", e);
-        }
-        catch (Throwable e)
-        {
-            LanguageTestPlugin.log(IStatus.WARNING, "ChartGenerator error", e);
-        }
-        
-    }
     
     
     private void exportSvgToJPEG(String svnFileName, String fileName)

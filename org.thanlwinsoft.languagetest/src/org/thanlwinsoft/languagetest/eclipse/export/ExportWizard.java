@@ -342,8 +342,8 @@ public class ExportWizard extends Wizard implements IExportWizard
      */
     public void init(IWorkbench workbench, IStructuredSelection selection)
     {
-        Iterator si = selection.iterator();
-        HashSet set = new HashSet();
+        Iterator<?> si = selection.iterator();
+        HashSet<IFile> set = new HashSet<IFile>();
         files = new IFile[selection.size()];
         while (si.hasNext())
         {

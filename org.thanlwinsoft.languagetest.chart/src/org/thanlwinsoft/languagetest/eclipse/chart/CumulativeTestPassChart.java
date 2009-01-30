@@ -41,28 +41,21 @@ import org.eclipse.birt.chart.model.Chart;
 import org.eclipse.birt.chart.model.ChartWithAxes;
 import org.eclipse.birt.chart.model.attribute.Anchor;
 import org.eclipse.birt.chart.model.attribute.AxisType;
-import org.eclipse.birt.chart.model.attribute.DataPoint;
-import org.eclipse.birt.chart.model.attribute.DataPointComponentType;
 import org.eclipse.birt.chart.model.attribute.FontDefinition;
 import org.eclipse.birt.chart.model.attribute.IntersectionType;
-import org.eclipse.birt.chart.model.attribute.LineAttributes;
 import org.eclipse.birt.chart.model.attribute.LineStyle;
 import org.eclipse.birt.chart.model.attribute.Marker;
 import org.eclipse.birt.chart.model.attribute.MarkerType;
 import org.eclipse.birt.chart.model.attribute.TickStyle;
 import org.eclipse.birt.chart.model.attribute.impl.ColorDefinitionImpl;
-import org.eclipse.birt.chart.model.attribute.impl.DataPointComponentImpl;
 import org.eclipse.birt.chart.model.attribute.impl.FontDefinitionImpl;
-import org.eclipse.birt.chart.model.attribute.impl.JavaNumberFormatSpecifierImpl;
 import org.eclipse.birt.chart.model.component.Axis;
 import org.eclipse.birt.chart.model.component.Series;
 import org.eclipse.birt.chart.model.component.impl.SeriesImpl;
-import org.eclipse.birt.chart.model.data.DataElement;
 import org.eclipse.birt.chart.model.data.DateTimeDataSet;
 import org.eclipse.birt.chart.model.data.NumberDataElement;
 import org.eclipse.birt.chart.model.data.NumberDataSet;
 import org.eclipse.birt.chart.model.data.SeriesDefinition;
-import org.eclipse.birt.chart.model.data.impl.DataPackageImpl;
 import org.eclipse.birt.chart.model.data.impl.DateTimeDataSetImpl;
 import org.eclipse.birt.chart.model.data.impl.NumberDataElementImpl;
 import org.eclipse.birt.chart.model.data.impl.NumberDataSetImpl;
@@ -94,7 +87,7 @@ public class CumulativeTestPassChart implements ChartHistoryProvider
     private final static int NUM_BINS = 4;
     
     private int type = CUMULATIVE_PASSES;
-    private SortedMap resultMap = null; //<long time, int[]>
+    private SortedMap <Date,Integer[]>resultMap = null; //<long time, int[]>
     
     private DateTimeDataSet timeValues = null;
     private NumberDataSet passValues = null;
@@ -390,14 +383,14 @@ public class CumulativeTestPassChart implements ChartHistoryProvider
             calendar.set(Calendar.MINUTE, 0);
             calendar.set(Calendar.SECOND, 0);
             calendar.set(Calendar.MILLISECOND, 0);
-            int [] bins = null;
+            Integer [] bins = null;
             if (resultMap.containsKey(calendar.getTime()))
             {
-                bins = (int [])resultMap.get(calendar.getTime());
+                bins = (Integer [])resultMap.get(calendar.getTime());
             }
             else
             {
-                bins = new int [NUM_BINS];
+                bins = new Integer [NUM_BINS];
                 Arrays.fill(bins, 0);
                 resultMap.put(calendar.getTime(), bins);
             }
