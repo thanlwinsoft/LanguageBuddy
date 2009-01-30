@@ -5,6 +5,11 @@ Bundle-SymbolicName: org.thanlwinsoft.languagetest.fop
 Bundle-Version: 1.0.0
 Bundle-Activator: org.thanlwinsoft.languagetest.fop.Activator
 Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime
+ org.eclipse.core.runtime,
+ org.sil.graphite;bundle-version="0.0.1",
+ org.apache.fop;bundle-version="0.93.20070622",
+ org.thanlwinsoft.languagetest;bundle-version="1.9.0",
+ org.apache.batik.transcoder;bundle-version="1.6.0",
+ org.thanlwinsoft.languagetest.chart;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
