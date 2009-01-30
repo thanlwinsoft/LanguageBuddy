@@ -1,7 +1,7 @@
 /* -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/org.thanlwinsoft.languagetest/src/org/thanlwinsoft/languagetest/eclipse/search/TestItemMatch.java $
- *  Revision        $LastChangedRevision: 852 $
- *  Last Modified:  $LastChangedDate: 2007-06-09 16:02:23 +0700 (Sat, 09 Jun 2007) $
+ *  Revision        $LastChangedRevision: 1387 $
+ *  Last Modified:  $LastChangedDate: 2009-01-30 22:15:16 +0700 (Fri, 30 Jan 2009) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -42,11 +42,11 @@ public class TestItemMatch extends Match
     private int itemIndex = 0;
     private String langCode = "";
     private String entry = null;
-    private HashMap fontMap = null;
+    private HashMap<String,FontData> fontMap = null;
     private TestItemType testItem = null;
     public TestItemMatch(IFile file, int item, TestItemType testItem, 
                          LangEntryType let, int offset, 
-                         int length, HashMap fontMap)
+                         int length, HashMap<String,FontData> fontMap)
     {
         super(file, offset, length);
         this.itemIndex = item;
@@ -81,7 +81,7 @@ public class TestItemMatch extends Match
      * Retreive the map of language codes to fonts
      * @return
      */
-    public Map getFontMap()
+    public Map<String,FontData> getFontMap()
     {
         return fontMap;
     }

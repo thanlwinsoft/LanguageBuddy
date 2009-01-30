@@ -190,3 +190,4 @@ Export-Package: javax.servlet,
  org.apache.fop.util,
  org.apache.xml.utils,
  org.apache.xml.utils.res
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

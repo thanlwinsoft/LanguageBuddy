@@ -202,8 +202,7 @@ public class TestManager
             MessageDialog.openWarning(PlatformUI.getWorkbench()
                     .getActiveWorkbenchWindow().getShell(), 
                 MessageUtil.getString("ModuleNotFoundTitle"), 
-                MessageUtil.getString("ModuleNotFoundMessage", 
-                        moduleFile.getLocation().toOSString()));
+                MessageUtil.getString("ModuleNotFoundMessage", path));
         }
         else
         {

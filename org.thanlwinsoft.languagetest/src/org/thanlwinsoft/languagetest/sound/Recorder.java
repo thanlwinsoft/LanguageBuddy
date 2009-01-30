@@ -65,7 +65,7 @@ public class Recorder implements Runnable
     private boolean recordError = false;
     private StringBuffer errorDescription = null;
     private LineController lineController = null;
-    private Vector listeners = null;
+    private Vector<AudioPlayListener> listeners = null;
     private AudioFileFormat.Type vorbisFileFormat = null;
     /** Creates a new instance of Recorder */
     public Recorder(LineController lineController)
@@ -73,7 +73,7 @@ public class Recorder implements Runnable
         this.lineController = lineController;
         errorDescription = new StringBuffer();
         rawFormat = lineController.getRecLineFormat();
-        listeners = new Vector();
+        listeners = new Vector<AudioPlayListener>();
     }
     
     public synchronized boolean isFinished() { return hasFinished; }
@@ -645,7 +645,7 @@ public class Recorder implements Runnable
     {
         long position = (long)(1000.0 * (double)bytes / 
             (double)(rawFormat.getFrameSize() * rawFormat.getFrameRate()));
-        Iterator l = listeners.iterator();
+        Iterator<AudioPlayListener> l = listeners.iterator();
         while (l.hasNext())
         {
             ((AudioPlayListener)l.next())

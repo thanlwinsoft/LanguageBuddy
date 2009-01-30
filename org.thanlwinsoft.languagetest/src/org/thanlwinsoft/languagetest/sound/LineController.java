@@ -28,6 +28,8 @@ import javax.sound.sampled.Line;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.Mixer.Info;
+
 import java.util.Vector;
 
 /**
@@ -51,8 +53,8 @@ public class LineController implements Runnable
     private DataLine.Info recLineInfo = null;
     private DataLine.Info playLineInfo = null;
     
-    private Vector recMixers = null;
-    private Vector playMixers = null;
+    private Vector<Info> recMixers = null;
+    private Vector<Info> playMixers = null;
     private int playIndex = -1;
     private int recIndex = -1;
     public final static int PLAY_MODE = 1;
@@ -67,17 +69,17 @@ public class LineController implements Runnable
     {
         maxSampleRate = MAX_SAMPLE_RATE; // could be configurable in future
         new Thread(this).start();
-        recMixers = new Vector();
-        playMixers = new Vector();
+        recMixers = new Vector<Info>();
+        playMixers = new Vector<Info>();
         this.mode = mode;
     }
     
-    public Vector getPlayMixers()
+    public Vector<Mixer.Info> getPlayMixers()
     {
         return playMixers;
     }
     
-    public Vector getRecMixers()
+    public Vector<Mixer.Info> getRecMixers()
     {
         return recMixers;
     }

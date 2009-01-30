@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/org.thanlwinsoft.languagetest/src/org/thanlwinsoft/eclipse/WorkbenchAdapterFactory.java $
- *  Revision        $LastChangedRevision: 852 $
- *  Last Modified:  $LastChangedDate: 2007-06-09 16:02:23 +0700 (Sat, 09 Jun 2007) $
+ *  Revision        $LastChangedRevision: 1387 $
+ *  Last Modified:  $LastChangedDate: 2009-01-30 22:15:16 +0700 (Fri, 30 Jan 2009) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -87,7 +87,8 @@ public class WorkbenchAdapterFactory implements IAdapterFactory
      *    does not have an adapter of the given type for the
      *    given object
      */
-    public Object getAdapter(Object o, Class adapterType) 
+    @SuppressWarnings("unchecked")
+	public Object getAdapter(Object o, Class adapterType) 
     {
         if (adapterType.isInstance(o)) {
             return o;
@@ -121,7 +122,8 @@ public class WorkbenchAdapterFactory implements IAdapterFactory
      *
      * @return the collection of adapter types
      */
-    public Class[] getAdapterList() 
+    @SuppressWarnings("unchecked")
+	public Class[] getAdapterList() 
     {
         return new Class[] { IWorkbenchAdapter.class, IElementFactory.class,
                 IPersistableElement.class, IActionFilter.class, IUndoContext.class };

@@ -1,8 +1,8 @@
 /**
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/org.thanlwinsoft.languagetest/src/org/thanlwinsoft/languagetest/eclipse/LanguageTestAdapterFactory.java $
- *  Revision        $LastChangedRevision: 852 $
- *  Last Modified:  $LastChangedDate: 2007-06-09 16:02:23 +0700 (Sat, 09 Jun 2007) $
+ *  Revision        $LastChangedRevision: 1387 $
+ *  Last Modified:  $LastChangedDate: 2009-01-30 22:15:16 +0700 (Fri, 30 Jan 2009) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -37,7 +37,8 @@ public class LanguageTestAdapterFactory implements IAdapterFactory
     /* (non-Javadoc)
      * @see org.eclipse.core.runtime.IAdapterFactory#getAdapter(java.lang.Object, java.lang.Class)
      */
-    public Object getAdapter(Object adaptableObject, Class adapterType)
+    @SuppressWarnings("unchecked")
+	public Object getAdapter(Object adaptableObject, Class adapterType)
     {
         // TODO Auto-generated method stub
         return null;
@@ -46,7 +47,8 @@ public class LanguageTestAdapterFactory implements IAdapterFactory
     /* (non-Javadoc)
      * @see org.eclipse.core.runtime.IAdapterFactory#getAdapterList()
      */
-    public Class[] getAdapterList()
+    @SuppressWarnings("unchecked")
+	public Class[] getAdapterList()
     {
         // TODO Auto-generated method stub
         return null;

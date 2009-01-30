@@ -115,7 +115,7 @@ public class ChartHistoryView extends ViewPart
             // this is a bit of a hack to make sure that the relevant classes
             // are found. If this isn't done, you get class not found exceptions
             Bundle bcds = Platform.getBundle("org.eclipse.birt.chart.device.swt");
-            Class swtRenderer = 
+            //Class<?> swtRenderer = 
                 bcds.loadClass("org.eclipse.birt.chart.device.swt.SwtRendererImpl");
            
             

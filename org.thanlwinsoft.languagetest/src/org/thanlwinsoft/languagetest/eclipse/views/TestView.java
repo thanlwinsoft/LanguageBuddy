@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/org.thanlwinsoft.languagetest/src/org/thanlwinsoft/languagetest/eclipse/views/TestView.java $
- *  Revision        $LastChangedRevision: 1238 $
- *  Last Modified:  $LastChangedDate: 2008-07-14 13:49:25 +0700 (Mon, 14 Jul 2008) $
+ *  Revision        $LastChangedRevision: 1387 $
+ *  Last Modified:  $LastChangedDate: 2009-01-30 22:15:16 +0700 (Fri, 30 Jan 2009) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -1014,7 +1014,8 @@ public class TestView extends ViewPart implements ISelectionChangedListener
     /* (non-Javadoc)
      * @see org.eclipse.ui.part.WorkbenchPart#getAdapter(java.lang.Class)
      */
-    public Object getAdapter(Class adapter)
+    @SuppressWarnings("unchecked")
+	public Object getAdapter(Class adapter)
     {
         if (adapter == this.getClass()) return this;
         if (adapter == SoundPlayer.class)

@@ -28,14 +28,14 @@ import java.util.HashMap;
  */
 public final class Iso3166
 {
-    private HashMap codeMap = null;
-    private TreeSet countries = null;
+    private HashMap<String,IsoCountry> codeMap = null;
+    private TreeSet<IsoCountry> countries = null;
     private static Iso3166 instance = null;
     /** Creates a new instance of Iso3166 */
     public Iso3166()
     {
-        codeMap = new HashMap();
-        countries = new TreeSet();
+        codeMap = new HashMap<String,IsoCountry>();
+        countries = new TreeSet<IsoCountry>();
         String [] countryCodes = Locale.getISOCountries();
         
         for (int c = 0; c<countryCodes.length; c++)
@@ -44,7 +44,8 @@ public final class Iso3166
             IsoCountry ic = new IsoCountry(countryCodes[c],
                 tempLocale.getDisplayCountry());
             countries.add(ic);
-            codeMap.put(countryCodes[c],  tempLocale.getDisplayCountry());
+            //codeMap.put(countryCodes[c], tempLocale.getDisplayCountry());
+            codeMap.put(countryCodes[c], ic);
         }
     }
     
@@ -84,7 +85,7 @@ public final class Iso3166
     }
     
     
-    public final class IsoCountry implements Comparable
+    public final class IsoCountry implements Comparable<IsoCountry>
     {
         private String code = null;
         private String description = null;
@@ -113,12 +114,12 @@ public final class Iso3166
             }
             return false;
         }
-        
-        public int compareTo(Object o)
-        {
-            IsoCountry ic = (IsoCountry)o;
-            return description.compareTo(ic.getDescription());
-        }
+
+        @Override
+		public int compareTo(IsoCountry arg0)
+		{
+			return description.compareTo(arg0.getDescription());
+		}
         
     }
 }

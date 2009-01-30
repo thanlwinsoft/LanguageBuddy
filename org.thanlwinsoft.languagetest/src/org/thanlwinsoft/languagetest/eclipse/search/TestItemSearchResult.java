@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/org.thanlwinsoft.languagetest/src/org/thanlwinsoft/languagetest/eclipse/search/TestItemSearchResult.java $
- *  Revision        $LastChangedRevision: 852 $
- *  Last Modified:  $LastChangedDate: 2007-06-09 16:02:23 +0700 (Sat, 09 Jun 2007) $
+ *  Revision        $LastChangedRevision: 1387 $
+ *  Last Modified:  $LastChangedDate: 2009-01-30 22:15:16 +0700 (Fri, 30 Jan 2009) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -52,7 +52,7 @@ public class TestItemSearchResult extends AbstractTextSearchResult
 {
     private ISearchQuery query;
     
-    private SortedSet languages = new TreeSet();
+    private SortedSet<String> languages = new TreeSet<String>();
     public TestItemSearchResult(TestItemQuery query)
     {
         super();
@@ -196,14 +196,14 @@ public class TestItemSearchResult extends AbstractTextSearchResult
             Map fontMap = ((TestItemMatch)match).getFontMap();
             if (fontMap != null)
             {
-                Set langIds = fontMap.keySet();
-                Iterator i = langIds.iterator();
+                Set<String> langIds = fontMap.keySet();
+                Iterator<String> i = langIds.iterator();
                 while (i.hasNext())
                 {
                     Object o = i.next();
                     if (!languages.contains(o))
                     {
-                        languages.add(o);
+                        languages.add(o.toString());
                     }
                 }
             }
@@ -215,7 +215,7 @@ public class TestItemSearchResult extends AbstractTextSearchResult
     {
         return languages.size();
     }
-    public Set getLanguages()
+    public Set<String> getLanguages()
     {
         return languages;
     }

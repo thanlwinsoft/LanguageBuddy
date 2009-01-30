@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/org.thanlwinsoft.languagetest/src/org/thanlwinsoft/languagetest/eclipse/search/TestItemSearchViewPage.java $
- *  Revision        $LastChangedRevision: 852 $
- *  Last Modified:  $LastChangedDate: 2007-06-09 16:02:23 +0700 (Sat, 09 Jun 2007) $
+ *  Revision        $LastChangedRevision: 1387 $
+ *  Last Modified:  $LastChangedDate: 2009-01-30 22:15:16 +0700 (Fri, 30 Jan 2009) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -26,17 +26,14 @@
 package org.thanlwinsoft.languagetest.eclipse.search;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Vector;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.jface.resource.FontRegistry;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.viewers.IFontProvider;
-import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -326,10 +323,10 @@ public class TestItemSearchViewPage extends AbstractTextSearchViewPage
                             width = (int)Math.floor((float)totalWidth / 
                                     (float)(result.getLanguageCount() + 1));
                         }
-                        Iterator i = result.getLanguages().iterator();
+                        Iterator<String> i = result.getLanguages().iterator();
                         colLangId = new String[result.getLanguageCount()];
                         int c = 0;
-                        Font font = JFaceResources.getTextFont();
+                        //Font font = JFaceResources.getTextFont();
                         
                         while (i.hasNext())
                         {
@@ -354,7 +351,7 @@ public class TestItemSearchViewPage extends AbstractTextSearchViewPage
                                                 c, "File", null));
                     }
                     Object [] files = result.getElements();
-                    Vector v = new Vector(files.length);
+                    Vector<Match> v = new Vector<Match>(files.length);
                     for (int i = 0; i < files.length; i++)
                     {
                         Match [] matches = result.getMatches(files[i]);
@@ -473,9 +470,9 @@ public class TestItemSearchViewPage extends AbstractTextSearchViewPage
          */
         public Object[] getElements(Object inputElement)
         {
-            if (inputElement instanceof Collection)
+            if (inputElement instanceof Collection<?>)
             {
-                return ((Collection)inputElement).toArray();
+                return ((Collection<?>)inputElement).toArray();
             }
             return null;
         }
@@ -502,8 +499,7 @@ public class TestItemSearchViewPage extends AbstractTextSearchViewPage
     public class TestItemTableLabelProvider extends LabelProvider implements ITableLabelProvider, IFontProvider, ITableFontProvider
     {
         private Image image = null;
-        private HashMap fontMap = new HashMap();
-        private Font font = null;
+        //private HashMap<String,FontData> fontMap = new HashMap<String,FontData>();
         public TestItemTableLabelProvider()
         {
             image = LanguageTestPlugin.getImageDescriptor("icons/module.png").createImage();

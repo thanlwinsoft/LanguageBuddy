@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:          $Source: /home/keith/cvsroot/projects/LanguageAids/uk/co/dabsol/stribley/sound/SimplePlayer.java,v $
- *  Version:       $Revision: 852 $
- *  Last Modified: $Date: 2007-06-09 16:02:23 +0700 (Sat, 09 Jun 2007) $
+ *  Version:       $Revision: 1387 $
+ *  Last Modified: $Date: 2009-01-30 22:15:16 +0700 (Fri, 30 Jan 2009) $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2004 Keith Stribley <tech@thanlwinsoft.org>
  *
@@ -57,14 +57,14 @@ public class SimplePlayer implements AudioPlayer, Runnable, LineListener
     private long offset = 0;
     private long markOffset  = 0;
     private Thread playThread = null;
-    private Vector listeners = null;
+    private Vector<AudioPlayListener> listeners = null;
     private long totalLength = -1;
     private boolean initialised = false;
     private boolean boundsChanged = false;
     /** Creates a new instance of SimplePlayer */
     public SimplePlayer() 
     {
-        listeners = new Vector();
+        listeners = new Vector<AudioPlayListener>();
     }
     
     /** Stops any file currently playing and opens the new audio file ready for 
@@ -649,7 +649,7 @@ public class SimplePlayer implements AudioPlayer, Runnable, LineListener
      */
     protected void showPlayPosition()
     {
-        Iterator l = listeners.iterator();
+        Iterator<AudioPlayListener> l = listeners.iterator();
         while (l.hasNext())
         {
             ((AudioPlayListener)l.next())
@@ -955,7 +955,7 @@ public class SimplePlayer implements AudioPlayer, Runnable, LineListener
        {
            initialised = false;
        }
-       Iterator l = listeners.iterator();
+       Iterator<AudioPlayListener> l = listeners.iterator();
        while (l.hasNext())
        {
            ((AudioPlayListener)l.next()).initialisationProgress(percent);

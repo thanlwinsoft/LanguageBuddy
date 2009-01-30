@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/org.thanlwinsoft.languagetest/src/org/thanlwinsoft/languagetest/eclipse/wizards/ModuleContentProvider.java $
- *  Revision        $LastChangedRevision: 936 $
- *  Last Modified:  $LastChangedDate: 2007-08-03 05:14:14 +0700 (Fri, 03 Aug 2007) $
+ *  Revision        $LastChangedRevision: 1387 $
+ *  Last Modified:  $LastChangedDate: 2009-01-30 22:15:16 +0700 (Fri, 30 Jan 2009) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -154,7 +154,7 @@ public class ModuleContentProvider implements ITreeContentProvider
             try
             {
                 IResource[] members = ((IContainer)inputElement).members();
-                ArrayList l = new ArrayList(members.length);
+                ArrayList<IResource> l = new ArrayList<IResource>(members.length);
                 for (int i = 0; i < members.length; i++)
                 {
                     if (members[i].isAccessible())

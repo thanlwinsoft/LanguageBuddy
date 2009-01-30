@@ -34,8 +34,8 @@ import java.net.URL;
 public final class Iso639
 {
     private static Iso639 instance;
-    private HashMap langMap = null;
-    private Vector langList = null;
+    private HashMap<String,IsoLanguage> langMap = null;
+    private Vector<IsoLanguage> langList = null;
     private static final String LANG_NAME_RE = "([^\\t]+)";
     private static final String THREE_LETTER_RE = "(\\w{3}+)";
     private static final String TWO_LETTER_RE = "(\\w{2}+)";
@@ -47,8 +47,8 @@ public final class Iso639
     {
         URL isoDataUrl = 
             this.getClass().getResource("/org/thanlwinsoft/languagetest/language/text/iso639-2.txt");
-        langMap = new HashMap();
-        langList = new Vector();
+        langMap = new HashMap<String,IsoLanguage>();
+        langList = new Vector<IsoLanguage>();
         try
         {
             loadIsoData(isoDataUrl);
@@ -84,7 +84,7 @@ public final class Iso639
     }
     
     
-    public static Vector getLanguages()
+    public static Vector<IsoLanguage> getLanguages()
     {
         if (instance == null)
         {
@@ -153,12 +153,12 @@ public final class Iso639
         String enDescription = null;
         String frDescription = null;
         String twoLetter = null;
-        Vector threeLetter = null;
+        Vector<String> threeLetter = null;
         public IsoLanguage(String enDescription, String frDescription)
         {
             this.enDescription = enDescription;
             this.frDescription = frDescription;
-            threeLetter = new Vector();
+            threeLetter = new Vector<String>();
         }
         public void add2LetterCode(String code)
         {

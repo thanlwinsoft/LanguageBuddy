@@ -7,3 +7,4 @@ Bundle-Vendor: www.thanlwinsoft.org
 Bundle-ClassPath: libs/graphite-0.0.1.jar,
  .
 Export-Package: org.sil.graphite
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

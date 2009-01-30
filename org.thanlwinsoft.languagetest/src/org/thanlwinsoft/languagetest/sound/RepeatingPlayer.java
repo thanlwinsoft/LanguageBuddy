@@ -34,12 +34,12 @@ public class RepeatingPlayer implements AudioPlayer, AudioPlayListener
     private final static int SOURCE_LINE_BUFFER = 17640; // 0.1 seconds
     private InputLineController inputController = null;
     private OutputLineController outputController = null;
-    private Vector listeners = null;
+    private Vector<AudioPlayListener> listeners = null;
     private LineController lineController = null;
     /** Creates a new instance of RepeatingPlayer */
     public RepeatingPlayer(LineController lineController)
     {
-        listeners = new Vector();
+        listeners = new Vector<AudioPlayListener>();
         this.lineController = lineController;
     }
     
@@ -157,7 +157,7 @@ public class RepeatingPlayer implements AudioPlayer, AudioPlayListener
      */
     public synchronized void playPosition(long position, long length)
     {
-        Iterator l = listeners.iterator();
+        Iterator<AudioPlayListener> l = listeners.iterator();
         while (l.hasNext())
         {
             ((AudioPlayListener)l.next())
@@ -168,7 +168,7 @@ public class RepeatingPlayer implements AudioPlayer, AudioPlayListener
     public synchronized void initialisationProgress(int percent)
     {
         int percentToShow = percent;
-        Iterator l = listeners.iterator();
+        Iterator<AudioPlayListener> l = listeners.iterator();
         if (outputController != null)
         {
             if (outputController.isOpen() == false) percentToShow = -1;

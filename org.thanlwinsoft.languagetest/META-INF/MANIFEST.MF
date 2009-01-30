@@ -88,3 +88,4 @@ Eclipse-LazyStart: true
 Bundle-Activator: org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin
 Bundle-Vendor: www.ThanLwinSoft.org
 Import-Package: org.apache.xmlbeans
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
