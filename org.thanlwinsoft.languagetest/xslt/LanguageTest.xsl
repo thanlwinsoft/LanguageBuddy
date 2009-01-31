@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
-    File:          $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/org.thanlwinsoft.languagetest/src/org/thanlwinsoft/languagetest/language/text/LanguageTest.xsl $
-    Version:       $Revision: 936 $
-    Last Modified: $Date: 2007-08-03 05:14:14 +0700 (Fri, 03 Aug 2007) $
+    File:          $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/org.thanlwinsoft.languagetest/xslt/LanguageTest.xsl $
+    Version:       $Revision: 1390 $
+    Last Modified: $Date: 2009-01-31 19:41:46 +0700 (Sat, 31 Jan 2009) $
 
     This is the XSLT file to transform the LanguageTest XML format into
     HTML for viewing in a web browser.

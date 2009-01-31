@@ -448,12 +448,12 @@ wizardId=
    <exporter
          extension="html"
          name="HTML"
-         xslt="/org/thanlwinsoft/languagetest/language/text/LanguageTest.xsl"/>
+         xslt="/xslt/LanguageTest.xsl"/>
    <exporter
          extension="csv"
          multiLingual="true"
          name="CSV"
-         xslt="/org/thanlwinsoft/languagetest/language/text/LanguageExportCsv.xsl"/>
+         xslt="/xslt/LanguageExportCsv.xsl"/>
 </extension>
 <extension
       point="org.eclipse.ui.intro.config">

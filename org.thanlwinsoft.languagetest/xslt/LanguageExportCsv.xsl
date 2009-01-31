@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
-    File:          $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/org.thanlwinsoft.languagetest/src/org/thanlwinsoft/languagetest/language/text/LanguageExportCsv.xsl $
-    Version:       $Revision: 861 $
-    Last Modified: $Date: 2007-06-28 05:22:25 +0700 (Thu, 28 Jun 2007) $
+    File:          $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/org.thanlwinsoft.languagetest/xslt/LanguageExportCsv.xsl $
+    Version:       $Revision: 1390 $
+    Last Modified: $Date: 2009-01-31 19:41:46 +0700 (Sat, 31 Jan 2009) $
 
     This is the XSLT file to transform the LanguageTest XML format into
     text delimited format for import into other programs.
