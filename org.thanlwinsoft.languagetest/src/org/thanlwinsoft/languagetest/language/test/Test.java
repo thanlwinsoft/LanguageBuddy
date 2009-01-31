@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/org.thanlwinsoft.languagetest/src/org/thanlwinsoft/languagetest/language/test/Test.java $
- *  Revision        $LastChangedRevision: 855 $
- *  Last Modified:  $LastChangedDate: 2007-06-10 07:02:09 +0700 (Sun, 10 Jun 2007) $
+ *  Revision        $LastChangedRevision: 1388 $
+ *  Last Modified:  $LastChangedDate: 2009-01-31 19:32:00 +0700 (Sat, 31 Jan 2009) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2003 Keith Stribley <devel@thanlwinsoft.org>
@@ -38,8 +38,8 @@ import java.util.Random;
 public class Test
 {
     private boolean repeatTillLearnt;
-    private List testList;
-    private List remainingTests;
+    private List<TestItem> testList;
+    private List<TestItem> remainingTests;
     private Random random;
     private TestItem currentTest;
     private int passCount = 0;
@@ -159,7 +159,7 @@ public class Test
      * @param repeatTillLearnt Flag whether items that are marked wrong should be repeatedly
      * tested until they are correct.
      */
-    public Test(LinkedList items, TestType type, boolean repeatTillLearnt)
+    public Test(LinkedList<TestItem> items, TestType type, boolean repeatTillLearnt)
     {
         this.type = type;
         this.repeatTillLearnt = repeatTillLearnt;
@@ -173,7 +173,7 @@ public class Test
     {
         this.random = new Random();
         // take copy of list
-        remainingTests = new LinkedList(testList);
+        remainingTests = new LinkedList<TestItem>(testList);
         //System.out.println("Number test items: " + testList.size());  
         untested = testList.size();
     }
@@ -181,13 +181,13 @@ public class Test
     public void retestUnknown()
     {
         retest = true;
-        List oldList = testList;
+        List<TestItem> oldList = testList;
         passCount = 0; 
         testCount = 0;
         retestCount = 0;
         firstTimePasses = 0;
-        testList = new LinkedList();
-        Iterator i = oldList.iterator();
+        testList = new LinkedList<TestItem>();
+        Iterator<TestItem> i = oldList.iterator();
         while (i.hasNext())
         {
             TestItem item = (TestItem)i.next();
@@ -197,7 +197,7 @@ public class Test
                 testList.add(item);
             }
         }
-        remainingTests = new LinkedList(testList);
+        remainingTests = new LinkedList<TestItem>(testList);
         untested = testList.size();
     }
     
@@ -221,7 +221,7 @@ public class Test
             remainingTests.remove(number);
         }
         untested = remainingTests.size();
-        testList = new LinkedList(remainingTests);
+        testList = new LinkedList<TestItem>(remainingTests);
     }
     
     /** Gets the next item in the test. The actual item returned will be random
@@ -321,7 +321,7 @@ public class Test
      * setting flags on items, not for performing the test itself.
      * @return Iterator for internal linked list.
      */    
-    public Iterator getItemIterator() { return testList.iterator(); }
+    public Iterator<TestItem> getItemIterator() { return testList.iterator(); }
     /**
      * Set max number of redisplays in flip card mode
      */

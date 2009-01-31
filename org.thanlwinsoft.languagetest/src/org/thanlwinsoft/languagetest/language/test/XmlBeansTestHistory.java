@@ -25,10 +25,7 @@
  */
 package org.thanlwinsoft.languagetest.language.test;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Iterator;
 
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlOptions;
@@ -230,11 +227,11 @@ public class XmlBeansTestHistory implements TestHistory
     /* (non-Javadoc)
      * @see org.thanlwinsoft.languagetest.language.test.TestHistory#iterator(org.thanlwinsoft.languagetest.language.test.TestType)
      */
-    public Iterator iterator(TestType type)
-    {
-        throw new UnsupportedOperationException(getClass().getName() 
-                + " iterator not implemented");
-    }
+    //public Iterator iterator(TestType type)
+    //{
+    //    throw new UnsupportedOperationException(getClass().getName() 
+    //            + " iterator not implemented");
+    //}
 
     /* (non-Javadoc)
      * @see org.thanlwinsoft.languagetest.language.test.TestHistory#savePermanent()

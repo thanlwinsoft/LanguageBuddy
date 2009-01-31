@@ -87,7 +87,7 @@ public class TestManager
     public Test createTestFromModuleList(Object [] modules, TestOptions options)
     {
         options.includeNew = true;
-        LinkedList items = new LinkedList();
+        LinkedList<TestItem> items = new LinkedList<TestItem>();
         for (int i = 0; i < modules.length; i++)
         {
             if (modules[i] instanceof IFile)
@@ -134,7 +134,7 @@ public class TestManager
     {
         Test test = null;
         options.includeNew = false;
-        LinkedList items = new LinkedList();
+        LinkedList<TestItem> items = new LinkedList<TestItem>();
         try
         {
             IFolder historyFolder = userProject.getFolder(HISTORY_DIR);
@@ -277,7 +277,7 @@ public class TestManager
      * @param module
      * @param options
      */
-    protected void addModuleItems(LinkedList items, TestHistory history, 
+    protected void addModuleItems(LinkedList<TestItem> items, TestHistory history, 
             LanguageModuleType module, IPath modulePath, TestOptions options)
     {
         XmlBeansTestModule xbtm = new XmlBeansTestModule(modulePath, module);
@@ -341,7 +341,7 @@ public class TestManager
      * @param xbti
      * @param options
      */
-    private void addIfAppropriate(TestHistory history, LinkedList items, XmlBeansTestItem xbti, TestOptions options)
+    private void addIfAppropriate(TestHistory history, LinkedList<TestItem> items, XmlBeansTestItem xbti, TestOptions options)
     {
         try
         {

@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/org.thanlwinsoft.languagetest/src/org/thanlwinsoft/languagetest/eclipse/workspace/WorkspaceLanguageManager.java $
- *  Revision        $LastChangedRevision: 921 $
- *  Last Modified:  $LastChangedDate: 2007-07-08 06:52:20 +0700 (Sun, 08 Jul 2007) $
+ *  Revision        $LastChangedRevision: 1388 $
+ *  Last Modified:  $LastChangedDate: 2009-01-31 19:32:00 +0700 (Sat, 31 Jan 2009) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -31,7 +31,6 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.TreeSet;
 import java.util.Vector;
 
 import org.apache.xmlbeans.XmlException;
@@ -234,9 +233,9 @@ public class WorkspaceLanguageManager
      * @param langType
      * @return mapping of language codes to UniversalLanguage objects
      */
-    public static HashMap findActiveLanguages(IProject project, LangTypeType.Enum langType)
+    public static HashMap<String, LangType> findActiveLanguages(IProject project, LangTypeType.Enum langType)
     {
-        HashMap langs = new HashMap();
+        HashMap<String, LangType> langs = new HashMap<String, LangType>();
         LangType [] userLangs = findUserLanguages();
         if (userLangs != null)
         {
@@ -263,7 +262,7 @@ public class WorkspaceLanguageManager
 	public static IProject [] findUserProjects()
 	{
 		int openCount = 0;
-		HashSet userProjects = new HashSet();
+		HashSet<IProject> userProjects = new HashSet<IProject>();
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IProject [] projects = workspace.getRoot().getProjects();
 		for (int i = 0; i < projects.length; i++)
@@ -288,7 +287,7 @@ public class WorkspaceLanguageManager
 				e.printStackTrace();
 			}
 		}
-		return (IProject[])(userProjects.toArray(new IProject[userProjects.size()]));
+		return (userProjects.toArray(new IProject[userProjects.size()]));
 	}
     
     static public ConfigType getProjectLangConfig(IProject project)

@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/org.thanlwinsoft.languagetest/src/org/thanlwinsoft/languagetest/eclipse/search/TestItemSearchEngine.java $
- *  Revision        $LastChangedRevision: 852 $
- *  Last Modified:  $LastChangedDate: 2007-06-09 16:02:23 +0700 (Sat, 09 Jun 2007) $
+ *  Revision        $LastChangedRevision: 1388 $
+ *  Last Modified:  $LastChangedDate: 2009-01-31 19:32:00 +0700 (Sat, 31 Jan 2009) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -42,10 +42,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.search.core.text.TextSearchEngine;
 import org.eclipse.search.core.text.TextSearchRequestor;
 import org.eclipse.search.core.text.TextSearchScope;
-import org.eclipse.search.ui.ISearchQuery;
-import org.eclipse.search.ui.SearchResultEvent;
 import org.eclipse.search.ui.text.Match;
-import org.eclipse.search.ui.text.MatchEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 import org.thanlwinsoft.languagetest.MessageUtil;
@@ -63,15 +60,15 @@ import org.thanlwinsoft.schemas.languagetest.module.TestItemType;
  */
 public class TestItemSearchEngine extends TextSearchEngine
 {
-    private HashSet langSet = null;
+    private HashSet<String> langSet = null;
     private TestItemFilter [] filters = null;
     private TestItemSearchResult searchResult = null;
     // internal variables for TestModule currently being processed
-    private HashMap fontMap = null;
+    private HashMap<String, FontData> fontMap = null;
     private LanguageModuleType lm = null;
     private int maxLanguages = 0;
     
-    public TestItemSearchEngine(HashSet langSet, TestItemFilter[] filters)
+    public TestItemSearchEngine(HashSet<String> langSet, TestItemFilter[] filters)
     {
         this.langSet = langSet;
         this.filters = filters;
@@ -203,7 +200,7 @@ public class TestItemSearchEngine extends TextSearchEngine
     {
         if (lm != null)
         {
-            fontMap = new HashMap(lm.sizeOfLangArray());
+            fontMap = new HashMap<String, FontData>(lm.sizeOfLangArray());
             for (int i = 0; i < lm.sizeOfLangArray(); i++)
             {
                 LangType lt = lm.getLangArray(i);

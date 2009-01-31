@@ -107,7 +107,8 @@ public class CumulativeTestPassChart implements ChartHistoryProvider
     /* (non-Javadoc)
      * @see org.thanlwinsoft.languagetest.eclipse.views.ChartHistoryProvider#createChart()
      */
-    public Chart createChart()
+    @SuppressWarnings("unchecked")
+	public Chart createChart()
     {
         if (resultMap.size() == 0) return null;
         
@@ -271,12 +272,12 @@ public class CumulativeTestPassChart implements ChartHistoryProvider
     private double [] getIntArray(int bin)
     {
         double [] values = new double [resultMap.size()];
-        Iterator iBin = resultMap.entrySet().iterator();
+        Iterator<Map.Entry<Date,Integer[]>> iBin = resultMap.entrySet().iterator();
         int i = 0;
         while (iBin.hasNext())
         {
-            Map.Entry me = (Map.Entry)iBin.next();
-            int [] bins = (int[])me.getValue();
+            Map.Entry<Date,Integer[]> me = iBin.next();
+            Integer [] bins = me.getValue();
             values[i++] = bins[bin];
         }
         return values;
@@ -289,13 +290,13 @@ public class CumulativeTestPassChart implements ChartHistoryProvider
     private double [] getIntegratedArray(int bin)
     {
         double [] values = new double [resultMap.size()];
-        Iterator iBin = resultMap.entrySet().iterator();
+        Iterator<Map.Entry<Date,Integer[]>> iBin = resultMap.entrySet().iterator();
         int i = 0;
         int sum = 0;
         while (iBin.hasNext())
         {
-            Map.Entry me = (Map.Entry)iBin.next();
-            int [] bins = (int[])me.getValue();
+            Map.Entry<Date,Integer[]> me = iBin.next();
+            Integer [] bins = me.getValue();
             sum +=  bins[bin];
             values[i++] = sum;
         }
@@ -309,35 +310,35 @@ public class CumulativeTestPassChart implements ChartHistoryProvider
     {
         long [] values = new long [resultMap.size()];
         if (resultMap.size() == 0) return values;
-        Iterator iBin = resultMap.keySet().iterator();
+        Iterator<Date> iBin = resultMap.keySet().iterator();
         int i = 0;
         while (iBin.hasNext())
         {
-            Date date = (Date)iBin.next();
+            Date date = iBin.next();
             values[i++] = date.getTime();
         }
         return values;
     }
     
-    /**
-     * @return
-     */
-    private double [] getDayArray()
-    {
-        double [] values = new double [resultMap.size()];
-        if (resultMap.size() == 0) return values;
-        Iterator iBin = resultMap.keySet().iterator();
-        int i = 0;
-        final double MSEC_IN_DAY = 3600 * 24 * 1000;
-        values[i++] = 0;
-        Date startDate = (Date)iBin.next();
-        while (iBin.hasNext())
-        {
-            Date date = (Date)iBin.next();
-            values[i++] = (date.getTime() - startDate.getTime()) / MSEC_IN_DAY;
-        }
-        return values;
-    }
+//    /**
+//     * @return
+//     */
+//    private double [] getDayArray()
+//    {
+//        double [] values = new double [resultMap.size()];
+//        if (resultMap.size() == 0) return values;
+//        Iterator<Date> iBin = resultMap.keySet().iterator();
+//        int i = 0;
+//        final double MSEC_IN_DAY = 3600 * 24 * 1000;
+//        values[i++] = 0;
+//        Date startDate = iBin.next();
+//        while (iBin.hasNext())
+//        {
+//            Date date = iBin.next();
+//            values[i++] = (date.getTime() - startDate.getTime()) / MSEC_IN_DAY;
+//        }
+//        return values;
+//    }
 
     /* (non-Javadoc)
      * @see org.thanlwinsoft.languagetest.eclipse.views.ChartHistoryProvider#parse(org.thanlwinsoft.schemas.languagetest.ModuleHistoryType, org.thanlwinsoft.schemas.languagetest.TestType)
@@ -386,7 +387,7 @@ public class CumulativeTestPassChart implements ChartHistoryProvider
             Integer [] bins = null;
             if (resultMap.containsKey(calendar.getTime()))
             {
-                bins = (Integer [])resultMap.get(calendar.getTime());
+                bins = resultMap.get(calendar.getTime());
             }
             else
             {
@@ -418,7 +419,7 @@ public class CumulativeTestPassChart implements ChartHistoryProvider
      */
     public void reset()
     {
-        resultMap = new TreeMap();
+        resultMap = new TreeMap<Date, Integer[]>();
     }
 
     /* (non-Javadoc)

@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 import org.apache.xmlbeans.XmlException;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.action.Action;
@@ -21,9 +20,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.thanlwinsoft.languagetest.eclipse.editors.TestModuleEditor;
-import org.thanlwinsoft.languagetest.eclipse.workspace.WorkspaceLanguageManager;
 import org.thanlwinsoft.schemas.languagetest.module.LangType;
-import org.thanlwinsoft.schemas.languagetest.module.LangTypeType;
 import org.thanlwinsoft.schemas.languagetest.module.LanguageModuleDocument;
 import org.thanlwinsoft.schemas.languagetest.module.TestItemType;
 

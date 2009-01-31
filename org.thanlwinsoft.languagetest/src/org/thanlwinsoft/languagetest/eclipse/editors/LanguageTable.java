@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/org.thanlwinsoft.languagetest/src/org/thanlwinsoft/languagetest/eclipse/editors/LanguageTable.java $
- *  Revision        $LastChangedRevision: 852 $
- *  Last Modified:  $LastChangedDate: 2007-06-09 16:02:23 +0700 (Sat, 09 Jun 2007) $
+ *  Revision        $LastChangedRevision: 1388 $
+ *  Last Modified:  $LastChangedDate: 2009-01-31 19:32:00 +0700 (Sat, 31 Jan 2009) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -25,12 +25,12 @@
  */
 package org.thanlwinsoft.languagetest.eclipse.editors;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.math.BigDecimal;
 
+import org.apache.xmlbeans.XmlObject;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -70,9 +70,9 @@ public class LanguageTable extends Composite
 {
 	//private final static int LANG_DEPTH = 5;
 	private TreeViewer tableViewer = null;
-    private HashMap availableTypes = null;// String, LangType
-    private HashMap inUseTypes = null;// String, LangType
-    private HashSet modifyListeners = null;
+    private HashMap<String, LangType> availableTypes = null;// String, LangType
+    private HashMap<String, XmlObject> inUseTypes = null;// String, LangType
+    private HashSet<ModifyListener> modifyListeners = null;
     private final int LANG_NAME_COL = 0;
     private final int IN_USE_COL = 1;
     private final int LANG_FONT_COL = 2;
@@ -95,10 +95,10 @@ public class LanguageTable extends Composite
 	public LanguageTable(Composite parent, int style) 
 	{
 		super(parent, style);
-        modifyListeners = new HashSet();
+        modifyListeners = new HashSet<ModifyListener>();
         this.setLayout(new FillLayout());
-        availableTypes = new HashMap();
-        inUseTypes = new HashMap();
+        availableTypes = new HashMap<String, LangType>();
+        inUseTypes = new HashMap<String, XmlObject>();
         tableViewer = new TreeViewer(this, SWT.H_SCROLL | SWT.V_SCROLL |
                 SWT.SINGLE | SWT.FULL_SELECTION);
         labelProvider = new LanguageLabelProvider();
@@ -194,7 +194,7 @@ public class LanguageTable extends Composite
      * The project languages are defined in the root of the project tree.
      * @param array of languages
      */
-    public void setProjectLangs(HashMap langs)
+    public void setProjectLangs(HashMap<String, LangType> langs)
     {
         languages = new UniversalLanguage[langs.size()];
         Object [] langKeys = langs.keySet().toArray();
@@ -232,7 +232,7 @@ public class LanguageTable extends Composite
      *  Keys are String language codes, Values are LangType
      * @param langs
      */
-    public void setModuleLangs(HashMap langs)
+    public void setModuleLangs(HashMap<String, XmlObject> langs)
     {
         inUseTypes.clear();
         inUseTypes = langs;
@@ -244,23 +244,23 @@ public class LanguageTable extends Composite
     public LangType [] getModuleLangs()
     {
         LangType [] array = new LangType[inUseTypes.size()];
-        return (LangType [])inUseTypes.values().toArray(array);
+        return inUseTypes.values().toArray(array);
     }
     
     public LangType [] getProjectLangs()
     {
         LangType [] array = new LangType[availableTypes.size()];
-        return (LangType [])availableTypes.values().toArray(array);
+        return availableTypes.values().toArray(array);
     }
     
     public void saveProjectLangs(IProject project, IProgressMonitor monitor, boolean notInUseOnly)
     {
-        Iterator it = availableTypes.keySet().iterator();
+        Iterator<String> it = availableTypes.keySet().iterator();
         while (it.hasNext())
         {
             String key = it.next().toString();
             if (notInUseOnly && inUseTypes.containsKey(key)) continue;
-            LangType lt = (LangType)availableTypes.get(key);
+            LangType lt = availableTypes.get(key);
             WorkspaceLanguageManager.addLanguage(project, lt, monitor);
         }
     }
@@ -271,7 +271,7 @@ public class LanguageTable extends Composite
         if (s.getFirstElement() instanceof UniversalLanguage)
         {
             UniversalLanguage ul = (UniversalLanguage)s.getFirstElement();
-            return (LangType)availableTypes.get(ul.getCode());
+            return availableTypes.get(ul.getCode());
         }
         return null;
     }
@@ -317,7 +317,7 @@ public class LanguageTable extends Composite
             }
             if (ul != null)
             {
-                LangType lt = (LangType)availableTypes.get(ul.getCode());
+                LangType lt = availableTypes.get(ul.getCode());
                 boolean inUse = false;
                 if (lt != null && inUseTypes.containsKey(ul.getCode()))
                 {
@@ -375,7 +375,7 @@ public class LanguageTable extends Composite
 		 * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
 		 */
 		public Object[] getChildren(Object parentElement) {
-			HashSet set = new HashSet();
+			HashSet<UniversalLanguage> set = new HashSet<UniversalLanguage>();
 			if (parentElement instanceof String[])
 			{
 				String [] nodeArray = (String[])parentElement;
@@ -479,7 +479,7 @@ public class LanguageTable extends Composite
                 {
                     return uls;
                 }
-                HashSet langSet = new HashSet(uls.length);
+                HashSet<String> langSet = new HashSet<String>(uls.length);
                 
                 for (int i = 0; i < uls.length; i++)
                 {
@@ -487,7 +487,7 @@ public class LanguageTable extends Composite
                         langSet.add(uls[i].getLanguageCode());
                 }
                 String [] elements = new String[langSet.size()];
-                Iterator ils = langSet.iterator();
+                Iterator<String> ils = langSet.iterator();
                 int i = 0;
                 while (ils.hasNext()) elements[i++] = ils.next().toString();
                 return elements;
@@ -577,7 +577,7 @@ public class LanguageTable extends Composite
                 {
                     
                     UniversalLanguage ul = (UniversalLanguage)ti.getData();
-                    LangType lt = (LangType)availableTypes.get(ul.getCode());
+                    LangType lt = availableTypes.get(ul.getCode());
                     
                     if (property.equals(LANG_FONT))
                     {
@@ -624,7 +624,7 @@ public class LanguageTable extends Composite
                             if (!inUseTypes.containsKey(ul.getCode()))
                             {
                                 LangType lang = 
-                                    ((LangType)availableTypes.get(ul.getCode()));
+                                    availableTypes.get(ul.getCode());
                                 inUseTypes.put(ul.getCode(), lang.copy());
                             }
                         }
@@ -654,10 +654,10 @@ public class LanguageTable extends Composite
     {
         if (dirtyNow)
         {
-            Iterator i = modifyListeners.iterator();
+            Iterator<ModifyListener> i = modifyListeners.iterator();
             while (i.hasNext())
             {
-                ModifyListener ml = (ModifyListener)i.next();
+                ModifyListener ml = i.next();
                 Event e = new Event();
                 e.widget = tableViewer.getTree();
                 

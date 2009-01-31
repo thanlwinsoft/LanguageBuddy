@@ -26,9 +26,7 @@
 package org.thanlwinsoft.languagetest.eclipse;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
-import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.thanlwinsoft.languagetest.eclipse.prefs.RecordingPreferencePage;
 
 

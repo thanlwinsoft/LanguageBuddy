@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/org.thanlwinsoft.languagetest/src/org/thanlwinsoft/languagetest/eclipse/editors/TestItemEditor.java $
- *  Revision        $LastChangedRevision: 1260 $
- *  Last Modified:  $LastChangedDate: 2008-08-03 16:06:30 +0700 (Sun, 03 Aug 2008) $
+ *  Revision        $LastChangedRevision: 1388 $
+ *  Last Modified:  $LastChangedDate: 2009-01-31 19:32:00 +0700 (Sat, 31 Jan 2009) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -755,7 +755,8 @@ public class TestItemEditor extends EditorPart implements ISelectionProvider
         return item;
     }
     
-    public TestItemType [] getSelectedItems()
+    @SuppressWarnings("unchecked")
+	public TestItemType [] getSelectedItems()
     {
         TestItemType [] items = null;
         ISelection s = tableViewer.getSelection();

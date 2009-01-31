@@ -40,7 +40,7 @@ import org.eclipse.ui.PlatformUI;
 public class AddLanguageAction implements IWorkbenchWindowActionDelegate
 {
     private IWorkbenchWindow window = null;
-    private ISelection selection = null;
+    //private ISelection selection = null;
     
     public AddLanguageAction()
     {
@@ -84,7 +84,7 @@ public class AddLanguageAction implements IWorkbenchWindowActionDelegate
      */
     public void selectionChanged(IAction action, ISelection selection)
     {
-        this.selection = selection;
+        //this.selection = selection;
     }
 
 }

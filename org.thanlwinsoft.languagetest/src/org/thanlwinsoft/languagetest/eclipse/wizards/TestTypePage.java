@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/org.thanlwinsoft.languagetest/src/org/thanlwinsoft/languagetest/eclipse/wizards/TestTypePage.java $
- *  Revision        $LastChangedRevision: 852 $
- *  Last Modified:  $LastChangedDate: 2007-06-09 16:02:23 +0700 (Sat, 09 Jun 2007) $
+ *  Revision        $LastChangedRevision: 1388 $
+ *  Last Modified:  $LastChangedDate: 2009-01-31 19:32:00 +0700 (Sat, 31 Jan 2009) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -31,7 +31,6 @@ import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
-import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
@@ -46,6 +45,7 @@ import org.thanlwinsoft.languagetest.eclipse.workspace.WorkspaceLanguageManager;
 import org.thanlwinsoft.languagetest.language.test.TestType;
 import org.thanlwinsoft.languagetest.language.test.UniversalLanguage;
 import org.thanlwinsoft.languagetest.language.text.Iso639;
+import org.thanlwinsoft.schemas.languagetest.module.LangType;
 import org.thanlwinsoft.schemas.languagetest.module.LangTypeType;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.events.SelectionEvent;
@@ -262,8 +262,8 @@ public class TestTypePage extends WizardPage
         nativeCombo = new Combo(group, SWT.NONE);
         IProject userProject = WorkspaceLanguageManager.getUserProject();
         LangTypeType.Enum type = LangTypeType.NATIVE;
-        HashMap map = WorkspaceLanguageManager.findActiveLanguages(userProject, type);
-        Iterator ie = map.entrySet().iterator();
+        HashMap<String, LangType> map = WorkspaceLanguageManager.findActiveLanguages(userProject, type);
+        Iterator<Map.Entry<String,LangType>> ie = map.entrySet().iterator();
         String [] items = new String[map.size()];
         nativeLangs = new UniversalLanguage[map.size()];
         String prevLang = getPrefStore(userProject).getString(FOREIGN_TEST_LANG_PREF);
@@ -271,7 +271,7 @@ public class TestTypePage extends WizardPage
         int i = 0;
         while (ie.hasNext())
         {
-            Map.Entry entry = (Map.Entry)ie.next();
+            Map.Entry<String,LangType> entry = ie.next();
             nativeLangs[i] = new UniversalLanguage(entry.getKey().toString());
             items[i] = nativeLangs[i].getDescription();
             if (nativeLangs[i].getCode().equals(prevLang))
@@ -304,8 +304,8 @@ public class TestTypePage extends WizardPage
         foreignCombo = new Combo(group, SWT.NONE);
         IProject userProject = WorkspaceLanguageManager.getUserProject();
         LangTypeType.Enum type = LangTypeType.FOREIGN;
-        HashMap map = WorkspaceLanguageManager.findActiveLanguages(userProject, type);
-        Iterator ie = map.entrySet().iterator();
+        HashMap<String, LangType> map = WorkspaceLanguageManager.findActiveLanguages(userProject, type);
+        Iterator<Map.Entry<String,LangType>> ie = map.entrySet().iterator();
         String [] items = new String[map.size()];
         foreignLangs = new UniversalLanguage[map.size()];
         int i = 0;
@@ -314,7 +314,7 @@ public class TestTypePage extends WizardPage
         int selection = 0;
         while (ie.hasNext())
         {
-            Map.Entry entry = (Map.Entry)ie.next();
+            Map.Entry<String,LangType> entry = ie.next();
             foreignLangs[i] = new UniversalLanguage(entry.getKey().toString());
             items[i] = foreignLangs[i].getDescription();
             if (foreignLangs[i].getCode().equals(prevLang))

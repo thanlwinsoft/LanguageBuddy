@@ -58,7 +58,8 @@ import org.thanlwinsoft.schemas.languagetest.history.TestType;
  */
 public class TestHistoryProvider implements ITreeContentProvider
 {
-    private IContainer root = null;
+    @SuppressWarnings("unused")
+	private IContainer root = null;
     public TestHistoryProvider()
     {
         
@@ -73,7 +74,7 @@ public class TestHistoryProvider implements ITreeContentProvider
             try
             {
                 IResource [] members = ((IContainer)parentElement).members();
-                Vector v = new Vector(members.length);
+                Vector<Object> v = new Vector<Object>(members.length);
                 for (int i = 0; i < members.length; i++)
                 {
                     if (members[i] instanceof IFile && 
@@ -162,7 +163,7 @@ public class TestHistoryProvider implements ITreeContentProvider
             }
             else if (xf.child instanceof ItemType)
             {
-                Vector v = new Vector(3);
+                Vector<XmlFamily> v = new Vector<XmlFamily>(3);
                 ItemType item = (ItemType)xf.child;
                 if (item.isSetFL()) v.add(new XmlFamily(xf, item.getFL()));
                 if (item.isSetFR()) v.add(new XmlFamily(xf, item.getFR()));
@@ -198,7 +199,8 @@ public class TestHistoryProvider implements ITreeContentProvider
             XmlFamily xf = ((XmlFamily)element).parent;
             if (xf == null)
             {
-                return xf.file.getParent();
+                //return xf.file.getParent();
+            	return null;
             }
             else return xf.child;
         }
@@ -261,7 +263,7 @@ public class TestHistoryProvider implements ITreeContentProvider
             {
                 projects = r.members();
             
-                Vector v = new Vector(projects.length);
+                Vector<IFolder> v = new Vector<IFolder>(projects.length);
                 for (int i = 0; i < projects.length; i++)
                 {
                     try

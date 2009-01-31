@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/org.thanlwinsoft.languagetest/src/org/thanlwinsoft/languagetest/language/test/UserConfig.java $
- *  Revision        $LastChangedRevision: 852 $
- *  Last Modified:  $LastChangedDate: 2007-06-09 16:02:23 +0700 (Sat, 09 Jun 2007) $
+ *  Revision        $LastChangedRevision: 1388 $
+ *  Last Modified:  $LastChangedDate: 2009-01-31 19:32:00 +0700 (Sat, 31 Jan 2009) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2003 Keith Stribley <devel@thanlwinsoft.org>
@@ -28,6 +28,7 @@ package org.thanlwinsoft.languagetest.language.test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Vector;
 import java.util.Iterator;
@@ -79,7 +80,7 @@ public class UserConfig
     private int maxFlipRepeats = 10;
     private int flipPeriodSec = 5;
     private String defaultSoundExtension = DEFAULT_SOUND_EXT;
-    private static Vector listeners = null;
+    private static Vector<UserConfigListener> listeners = null;
     private final static String LEARNT_PASS_COUNT = "learntPassCount";
     private final static String MIN_RETEST_PERIOD = "minRetestPeriod";
     private final static String INITIAL_REV_PERIOD = "initialRevPeriod";
@@ -91,9 +92,9 @@ public class UserConfig
     //private final static String CONFIG_PATH = "ConfigPath";
     private final static String MAX_NUM_TEST_ITEMS = "maxNumTestItems";
     private Preferences userNode = null;
-    private HashMap [] languages = null;
-    private HashMap nativeLanguages = null;
-    private HashMap foreignLanguages = null;
+    private HashMap<UniversalLanguage, FontData> [] languages = null;
+    private HashMap<UniversalLanguage, FontData> nativeLanguages = null;
+    private HashMap<UniversalLanguage, FontData> foreignLanguages = null;
     //private IProject userProject = null;
 //    private RecentFilesList recentFilesList = null;
     private int maxNumTestItems = -1;
@@ -157,15 +158,16 @@ public class UserConfig
             // create listeners object before creating test history
             if (listeners == null)
             {
-                listeners = new Vector();
+                listeners = new Vector<UserConfigListener>();
             }
 //            if (testHistory.getModuleCount() == 0)
 //            {
 //                cloneHistory();
 //            }
-            languages = new HashMap[2];
-            nativeLanguages = new HashMap();
-            foreignLanguages = new HashMap();
+
+            languages = new ArrayList<HashMap<UniversalLanguage, FontData>>(2).toArray(languages);
+            nativeLanguages = new HashMap<UniversalLanguage, FontData>();
+            foreignLanguages = new HashMap<UniversalLanguage, FontData>();
             languages[UniversalLanguage.NATIVE_LANG] = nativeLanguages;
             languages[UniversalLanguage.FOREIGN_LANG] = foreignLanguages;
             // parse site config first, then user config
@@ -215,17 +217,17 @@ public class UserConfig
 //        }
 //    }
     
-    public Set getLanguages(int langType)
+    public Set<UniversalLanguage> getLanguages(int langType)
     {
         return languages[langType].keySet();
     }
     
-    public Set getNativeLanguages()
+    public Set<UniversalLanguage> getNativeLanguages()
     {
         return nativeLanguages.keySet();
     }
     
-    public Set getForeignLanguages()
+    public Set<UniversalLanguage> getForeignLanguages()
     {
         return foreignLanguages.keySet();
     }
@@ -272,7 +274,7 @@ public class UserConfig
     {
         if (nativeLanguages.containsKey(ul))
         {
-            return (FontData)nativeLanguages.get(ul);
+            return nativeLanguages.get(ul);
         }
         return null;
     }
@@ -281,7 +283,7 @@ public class UserConfig
     {
         if (foreignLanguages.containsKey(ul))
         {
-            return (FontData)foreignLanguages.get(ul);
+            return foreignLanguages.get(ul);
         }
         return null;
     }
@@ -883,16 +885,16 @@ public class UserConfig
     }
     protected void notifyConfigListeners()
     {
-        Iterator l = listeners.iterator();
+        Iterator<UserConfigListener> l = listeners.iterator();
         while (l.hasNext())
         {
-            ((UserConfigListener)l.next())
+            l.next()
                 .userConfigChanged(this);
         }
     }
     public static void addListener(UserConfigListener ucl)
     {
-        if (listeners == null) listeners = new Vector();
+        if (listeners == null) listeners = new Vector<UserConfigListener>();
         listeners.add(ucl);
     }
     public static void removeListener(UserConfigListener ucl)

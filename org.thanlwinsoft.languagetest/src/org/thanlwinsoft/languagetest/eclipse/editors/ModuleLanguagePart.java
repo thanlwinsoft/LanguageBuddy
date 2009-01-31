@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/org.thanlwinsoft.languagetest/src/org/thanlwinsoft/languagetest/eclipse/editors/ModuleLanguagePart.java $
- *  Revision        $LastChangedRevision: 852 $
- *  Last Modified:  $LastChangedDate: 2007-06-09 16:02:23 +0700 (Sat, 09 Jun 2007) $
+ *  Revision        $LastChangedRevision: 1388 $
+ *  Last Modified:  $LastChangedDate: 2009-01-31 19:32:00 +0700 (Sat, 31 Jan 2009) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -28,6 +28,7 @@ package org.thanlwinsoft.languagetest.eclipse.editors;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import org.apache.xmlbeans.XmlObject;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
@@ -175,15 +176,15 @@ public class ModuleLanguagePart extends EditorPart implements ModifyListener {
             project = fei.getFile().getProject();
             if (parent.getDocument() == null) return;
             LangType[] enabled = parent.getDocument().getLanguageModule().getLangArray();
-            HashSet enabledNative = new HashSet();
-            HashSet enabledForeign = new HashSet();
+            HashSet<XmlObject> enabledNative = new HashSet<XmlObject>();
+            HashSet<XmlObject> enabledForeign = new HashSet<XmlObject>();
             // TBD: optimise to have one call to find Active languages that
             // supplies both in one call
-            HashMap nLangs = 
+            HashMap<String, LangType> nLangs = 
                 WorkspaceLanguageManager.findActiveLanguages(project, 
                 LangTypeType.NATIVE);
             
-            HashMap fLangs = 
+            HashMap<String, LangType> fLangs = 
                 WorkspaceLanguageManager.findActiveLanguages(project, 
                 LangTypeType.FOREIGN);
             // Loop over module languages and see which languages are enabled
@@ -227,10 +228,8 @@ public class ModuleLanguagePart extends EditorPart implements ModifyListener {
             }
             nativeTable.setProjectLangs(nLangs);
             foreignTable.setProjectLangs(fLangs);
-            nativeTable.setModuleLangs((LangType[])
-                enabledNative.toArray(new LangType[enabledNative.size()]));
-            foreignTable.setModuleLangs((LangType[])
-                enabledForeign.toArray(new LangType[enabledForeign.size()]));
+            nativeTable.setModuleLangs(enabledNative.toArray(new LangType[enabledNative.size()]));
+            foreignTable.setModuleLangs(enabledForeign.toArray(new LangType[enabledForeign.size()]));
         }
         
     }

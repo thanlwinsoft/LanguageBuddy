@@ -1,8 +1,8 @@
 /**
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/org.thanlwinsoft.languagetest/src/org/thanlwinsoft/eclipse/widgets/SoundPlayer.java $
- *  Revision        $LastChangedRevision: 855 $
- *  Last Modified:  $LastChangedDate: 2007-06-10 07:02:09 +0700 (Sun, 10 Jun 2007) $
+ *  Revision        $LastChangedRevision: 1388 $
+ *  Last Modified:  $LastChangedDate: 2009-01-31 19:32:00 +0700 (Sat, 31 Jan 2009) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -83,7 +83,7 @@ public class SoundPlayer extends Composite implements BasicPlayerListener
     private long msAmount = 0;
     private long msStopValue = -1;
     private BasicController theSoundPlayer = null;
-    private Map audioInfo = null;
+    private Map<?,?> audioInfo = null;
     private boolean posValueJump = false;
 
     private String currentFileOrURL = null;
@@ -461,7 +461,8 @@ public class SoundPlayer extends Composite implements BasicPlayerListener
     /**
      * Open callback, stream is ready to play.
      */
-    public void opened(Object stream, Map properties)
+    @SuppressWarnings("unchecked")
+	public void opened(Object stream, Map properties)
     {
         audioInfo = properties;
         LanguageTestPlugin.log(IStatus.INFO, properties.toString());
@@ -470,7 +471,8 @@ public class SoundPlayer extends Composite implements BasicPlayerListener
     /**
      * Progress callback while playing.
      */
-    public void progress(int bytesread, long microseconds, byte[] pcmdata, Map properties)
+    @SuppressWarnings("unchecked")
+	public void progress(int bytesread, long microseconds, byte[] pcmdata, Map properties)
     {
         int byteslength = -1;
         long total = -1;
@@ -647,7 +649,8 @@ public class SoundPlayer extends Composite implements BasicPlayerListener
     /**
      * Try to compute time length in milliseconds.
      */
-    public long getTimeLengthEstimation(Map properties)
+    @SuppressWarnings("unchecked")
+	public long getTimeLengthEstimation(Map properties)
     {
         long milliseconds = -1;
         int byteslength = -1;

@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/org.thanlwinsoft.languagetest/src/org/thanlwinsoft/languagetest/language/test/NativeComparator.java $
- *  Revision        $LastChangedRevision: 852 $
- *  Last Modified:  $LastChangedDate: 2007-06-09 16:02:23 +0700 (Sat, 09 Jun 2007) $
+ *  Revision        $LastChangedRevision: 1388 $
+ *  Last Modified:  $LastChangedDate: 2009-01-31 19:32:00 +0700 (Sat, 31 Jan 2009) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2003 Keith Stribley <devel@thanlwinsoft.org>
@@ -30,7 +30,7 @@ package org.thanlwinsoft.languagetest.language.test;
  *
  * @author  Keith Stribley
  */
-public class NativeComparator implements java.util.Comparator
+public class NativeComparator implements java.util.Comparator<TestItem>
 {
     
     /** Creates a new instance of NativeComparator */
@@ -38,31 +38,28 @@ public class NativeComparator implements java.util.Comparator
     {
     }
     
-    public int compare(Object a, Object b)
+    public int compare(TestItem itemA, TestItem itemB)
     {
         int comp = -1;
-        if (a.getClass() == TestItem.class &&
-            b.getClass() == TestItem.class)
+        if (itemA != null && itemB != null)
         {
-            TestItem itemA = (TestItem)a;
-            TestItem itemB = (TestItem)b;
-            comp = itemA.getNativeText()
-                .compareToIgnoreCase(itemB.getNativeText());
-            if (comp == 0 && itemA != itemB)
-            {
-                // if both objects have the same native string, then generate
-                // an arbitrary, but repeatable order from the hash code
-                comp = a.hashCode() - b.hashCode();
-            }
+	        comp = itemA.getNativeText()
+	            .compareToIgnoreCase(itemB.getNativeText());
+	        if (comp == 0 && itemA != itemB)
+	        {
+	            // if both objects have the same native string, then generate
+	            // an arbitrary, but repeatable order from the hash code
+	            comp = itemA.hashCode() - itemB.hashCode();
+	        }
         }
-        else if (a == null)
+        else if (itemA == null)
         {
-            if (b == null) comp = 0;
+            if (itemB == null) comp = 0;
             else comp = 1;
         }
         else
         {
-            comp = a.toString().compareTo(b.toString());
+            comp = -1;
         }
         return comp;
     }

@@ -30,9 +30,7 @@ package org.thanlwinsoft.languagetest.language.test.meta;
 
 import java.util.ArrayDeque;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.TreeSet;
-import java.util.Vector;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;

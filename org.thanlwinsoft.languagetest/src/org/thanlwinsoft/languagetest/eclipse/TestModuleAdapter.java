@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/org.thanlwinsoft.languagetest/src/org/thanlwinsoft/languagetest/eclipse/TestModuleAdapter.java $
- *  Revision        $LastChangedRevision: 852 $
- *  Last Modified:  $LastChangedDate: 2007-06-09 16:02:23 +0700 (Sat, 09 Jun 2007) $
+ *  Revision        $LastChangedRevision: 1388 $
+ *  Last Modified:  $LastChangedDate: 2009-01-31 19:32:00 +0700 (Sat, 31 Jan 2009) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -71,7 +71,7 @@ public class TestModuleAdapter
     public static LangType [] getLangs(LanguageModuleType module, LangTypeType.Enum type)
     {
         LangType[] enabled = module.getLangArray();
-        HashSet langs = new HashSet();
+        HashSet<LangType> langs = new HashSet<LangType>();
         for (int i = 0; i < enabled.length; i++)
         {
             if (enabled[i].getType().equals(type))

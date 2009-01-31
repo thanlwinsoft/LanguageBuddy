@@ -31,29 +31,22 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.IJobManager;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.preference.IPreferencePageContainer;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.events.TraverseListener;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.ui.IWorkbenchPropertyPage;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.editors.LanguageTable;
@@ -223,7 +216,7 @@ public class LangPropertyPage extends PropertyPage
                                     new UniversalLanguage(deletable.getLang()).getDescription()));
                     if (reallyDelete)
                     {
-                        IJobManager jobMan = Platform.getJobManager();
+                        IJobManager jobMan = Job.getJobManager();
                         IProgressMonitor monitor = jobMan.createProgressGroup();
                         WorkspaceLanguageManager.removeLanguage(project, deletable, monitor);
                     }
@@ -278,8 +271,8 @@ public class LangPropertyPage extends PropertyPage
             {
                 try
                 {
-                    HashSet nativeLang = new HashSet();
-                    HashSet foreignLang = new HashSet();
+                    HashSet<LangType> nativeLang = new HashSet<LangType>();
+                    HashSet<LangType> foreignLang = new HashSet<LangType>();
                     for (int i = 0; i < langs.length; i++)
                     {
                         if (langs[i].getType().equals(LangTypeType.NATIVE))
@@ -291,8 +284,8 @@ public class LangPropertyPage extends PropertyPage
                             foreignLang.add(langs[i]);
                         }
                     }
-                    LangType [] nLangs = (LangType [])nativeLang.toArray(new LangType[nativeLang.size()]);
-                    LangType [] fLangs = (LangType [])foreignLang.toArray(new LangType[foreignLang.size()]);
+                    LangType [] nLangs = nativeLang.toArray(new LangType[nativeLang.size()]);
+                    LangType [] fLangs = foreignLang.toArray(new LangType[foreignLang.size()]);
                     
                     nLangTable.setProjectLangs(nLangs);
                     fLangTable.setProjectLangs(fLangs);

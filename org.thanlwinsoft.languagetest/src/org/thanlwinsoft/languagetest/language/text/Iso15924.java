@@ -37,9 +37,9 @@ import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 public final class Iso15924
 {
     private static Iso15924 instance;
-    private HashMap codeMap = null;
-    private HashMap idMap = null;
-    private Vector scriptList = null;
+    private HashMap<String, IsoScript> codeMap = null;
+    private HashMap<Integer, IsoScript> idMap = null;
+    private Vector<IsoScript> scriptList = null;
     private static final String CODE_RE = "([\\w]+)";
     private static final String ID_RE = "([\\d]+)";
     private static final String DESC_RE = "(.*)";
@@ -50,9 +50,9 @@ public final class Iso15924
     {
         URL isoDataUrl = 
             this.getClass().getResource("/org/thanlwinsoft/languagetest/language/text/iso15924-2000.txt");
-        codeMap = new HashMap();
-        idMap = new HashMap();
-        scriptList = new Vector();
+        codeMap = new HashMap<String, IsoScript>();
+        idMap = new HashMap<Integer, IsoScript>();
+        scriptList = new Vector<IsoScript>();
         try
         {
             loadIsoData(isoDataUrl);
@@ -73,7 +73,7 @@ public final class Iso15924
         return instance.getDescriptionFromCode(code);
     }
     
-    public static Vector getScripts()
+    public static Vector<IsoScript> getScripts()
     {
         if (instance == null)
         {
@@ -118,7 +118,7 @@ public final class Iso15924
     {
         if (codeMap.containsKey(code))
         {
-            IsoScript il = (IsoScript)codeMap.get(code);
+            IsoScript il = codeMap.get(code);
             return il.getDescription();
         }
         return "Unknown Script: " + code;
@@ -133,7 +133,7 @@ public final class Iso15924
         Integer theId = new Integer(id);
         if (instance.idMap.containsKey(theId))
         {
-            IsoScript il = (IsoScript)instance.idMap.get(theId);
+            IsoScript il = instance.idMap.get(theId);
             return il.getDescription();
         }
         return "Unknown Script Id: " + id;
@@ -147,7 +147,7 @@ public final class Iso15924
         }   
         if (instance.codeMap.containsKey(code))
         {
-            IsoScript is = (IsoScript)(instance.codeMap.get(code));
+            IsoScript is = (instance.codeMap.get(code));
             return is;
         }
         return null;

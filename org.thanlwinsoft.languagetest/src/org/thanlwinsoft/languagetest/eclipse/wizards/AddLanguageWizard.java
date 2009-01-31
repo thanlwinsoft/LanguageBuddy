@@ -28,24 +28,15 @@ package org.thanlwinsoft.languagetest.eclipse.wizards;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.IJobManager;
-import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.wizard.IWizard;
-import org.eclipse.jface.wizard.IWizardContainer;
-import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
 import org.eclipse.ui.PlatformUI;
-import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.workspace.WorkspaceLanguageManager;
-import org.thanlwinsoft.schemas.languagetest.module.LangTypeType;
 
 /**
  * @author keith
@@ -89,7 +80,7 @@ public class AddLanguageWizard extends Wizard
                 IResource resource = (IResource)selection.getFirstElement();
                 IProject project = resource.getProject();
                 if (project == null) return true;
-                IJobManager jobMan = Platform.getJobManager();
+                IJobManager jobMan = Job.getJobManager();
                 IProgressMonitor pm = jobMan.createProgressGroup();
                 WorkspaceLanguageManager.addLanguage(project, 
                                 languagePage.getLangType(), 

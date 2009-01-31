@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/org.thanlwinsoft.languagetest/src/org/thanlwinsoft/languagetest/eclipse/ApplicationWorkbenchWindowAdvisor.java $
- *  Revision        $LastChangedRevision: 1238 $
- *  Last Modified:  $LastChangedDate: 2008-07-14 13:49:25 +0700 (Mon, 14 Jul 2008) $
+ *  Revision        $LastChangedRevision: 1388 $
+ *  Last Modified:  $LastChangedDate: 2009-01-31 19:32:00 +0700 (Sat, 31 Jan 2009) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -47,7 +47,6 @@ import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
-import org.eclipse.ui.cheatsheets.ICheatSheetViewer;
 import org.eclipse.ui.cheatsheets.OpenCheatSheetAction;
 import org.eclipse.ui.views.navigator.ResourceNavigator;
 import org.osgi.service.prefs.Preferences;
@@ -144,7 +143,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 	                		"*.settings"
 	                };
 	                rn.getPatternFilter().setPatterns(filters);
-	                String [] p = rn.getPatternFilter().getPatterns();
+	                //String [] p = rn.getPatternFilter().getPatterns();
 	                rn.setFiltersPreference(filters);
 	            }
 	            IViewPart cheatSheet = null;

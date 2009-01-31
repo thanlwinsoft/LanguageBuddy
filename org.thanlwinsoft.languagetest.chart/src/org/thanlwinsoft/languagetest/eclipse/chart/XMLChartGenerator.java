@@ -41,18 +41,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import org.apache.batik.css.engine.value.svg.ImageRenderingManager;
-import org.eclipse.birt.chart.device.IDeviceRenderer;
-import org.eclipse.birt.chart.device.pdf.PDFRendererImpl;
-import org.eclipse.birt.chart.device.svg.SVGRendererImpl;
-import org.eclipse.birt.chart.exception.ChartException;
-import org.eclipse.birt.chart.factory.GeneratedChartState;
-import org.eclipse.birt.chart.factory.Generator;
-import org.eclipse.birt.chart.factory.RunTimeContext;
 import org.eclipse.birt.chart.model.Chart;
 import org.eclipse.birt.chart.model.Serializer;
-import org.eclipse.birt.chart.model.attribute.Bounds;
-import org.eclipse.birt.chart.model.attribute.impl.BoundsImpl;
 import org.eclipse.birt.chart.model.impl.SerializerImpl;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -70,10 +60,8 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.thanlwinsoft.languagetest.MessageUtil;
-import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.thanlwinsoft.languagetest.eclipse.chart.view.ChartHistoryView;
 
-import com.ibm.icu.util.ULocale;
 
 /**
  * Example class that generates a PDF file based on a BIRT Chart Model.  

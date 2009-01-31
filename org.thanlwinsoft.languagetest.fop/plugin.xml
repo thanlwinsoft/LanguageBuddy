@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+    <extension
+      point="org.thanlwinsoft.languagetest.xslexport">
+         <exporter
+         extension="pdf"
+         multiLingual="false"
+         name="PDF"
+         wizardPage="org.thanlwinsoft.languagetest.eclipse.export.FopConfigPage"
+         xslt="/xsl/LangTestTableFo.xsl"/>
+    </extension>
+</plugin>

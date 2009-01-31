@@ -26,8 +26,6 @@
 package org.thanlwinsoft.languagetest.eclipse.wizards;
 
 
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -69,19 +67,19 @@ public class NewLangModuleAction implements IWorkbenchWindowActionDelegate
                 wizard);
         if (selection != null && selection instanceof IStructuredSelection)
         {
-            Object o = ((IStructuredSelection)selection).getFirstElement();
-            if (o instanceof IResource)
-            {
-                IContainer container = null;
-                if (o instanceof IContainer)
-                {
-                    container = (IContainer)o;
-                }
-                else
-                {
-                    container = ((IResource)o).getParent();
-                }
-            }
+//            Object o = ((IStructuredSelection)selection).getFirstElement();
+//            if (o instanceof IResource)
+//            {
+//                IContainer container = null;
+//                if (o instanceof IContainer)
+//                {
+//                    container = (IContainer)o;
+//                }
+//                else
+//                {
+//                    container = ((IResource)o).getParent();
+//                }
+//            }
             wizard.init(window.getWorkbench(), (IStructuredSelection)selection);
         }
         wizardDialog.setMinimumPageSize(400, 300);

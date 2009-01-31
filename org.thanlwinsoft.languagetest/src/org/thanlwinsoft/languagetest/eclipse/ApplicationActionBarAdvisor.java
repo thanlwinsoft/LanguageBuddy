@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/org.thanlwinsoft.languagetest/src/org/thanlwinsoft/languagetest/eclipse/ApplicationActionBarAdvisor.java $
- *  Revision        $LastChangedRevision: 1251 $
- *  Last Modified:  $LastChangedDate: 2008-07-15 00:11:11 +0700 (Tue, 15 Jul 2008) $
+ *  Revision        $LastChangedRevision: 1388 $
+ *  Last Modified:  $LastChangedDate: 2009-01-31 19:32:00 +0700 (Sat, 31 Jan 2009) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -67,9 +67,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
     private IWorkbenchAction closeAllAction;
     private IWorkbenchAction showViewAction;
     private IWorkbenchAction showTestViewAction;
-    private IWorkbenchAction showHistoryViewAction;
     private IWorkbenchAction showRecordingViewAction;
-    private IWorkbenchAction showHistoryGraphViewAction;
     private IWorkbenchAction showMetaDataViewAction;
     
     private IWorkbenchAction newWindowAction;

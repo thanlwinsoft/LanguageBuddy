@@ -642,7 +642,6 @@ END OF TERMS AND CONDITIONS
    </url>
 
    <requires>
-      <import plugin="org.apache.xerces" version="2.8.0" match="compatible"/>
       <import plugin="org.eclipse.core.filesystem" version="1.1.0" match="compatible"/>
       <import plugin="org.eclipse.core.jobs" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.core.resources" version="3.2.0" match="compatible"/>
@@ -663,43 +662,20 @@ END OF TERMS AND CONDITIONS
       <import plugin="org.eclipse.search"/>
       <import plugin="org.apache.lucene" version="1.9.1" match="compatible"/>
       <import plugin="org.eclipse.ui.ide" version="3.3.0" match="compatible"/>
+      <import plugin="org.apache.xerces" version="2.8.0" match="compatible"/>
       <import plugin="org.eclipse.emf.ecore" version="2.2.0" match="compatible"/>
       <import plugin="org.eclipse.emf.common" version="2.3.0" match="compatible"/>
-      <import plugin="org.eclipse.birt.core" version="2.1.0" match="compatible"/>
-      <import plugin="org.eclipse.birt.chart.runtime"/>
-      <import plugin="org.eclipse.birt.chart.device.pdf"/>
-      <import plugin="org.eclipse.birt.chart.device.swt"/>
-      <import plugin="org.eclipse.birt.chart.device.svg" version="2.1.0" match="compatible"/>
-      <import plugin="org.eclipse.birt.chart.device.extension" version="2.1.0" match="compatible"/>
-      <import plugin="org.mozilla.rhino" version="1.6.0" match="compatible"/>
-      <import plugin="org.eclipse.birt.chart.engine" version="2.1.0" match="compatible"/>
-      <import plugin="org.eclipse.birt.chart.engine.extension"/>
       <import plugin="org.eclipse.emf.ecore.xmi" version="2.2.0" match="compatible"/>
       <import plugin="org.eclipse.emf.common.ui"/>
-      <import plugin="org.apache.batik"/>
       <import plugin="org.eclipse.ui.intro" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.ui.intro.universal"/>
       <import plugin="org.eclipse.core.runtime.compatibility"/>
       <import plugin="org.eclipse.core.runtime.compatibility.auth"/>
       <import plugin="org.eclipse.ui.cheatsheets"/>
-      <import plugin="org.eclipse.osgi"/>
    </requires>
 
    <plugin
          id="com.ibm.icu"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.fop"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.sil.graphite"
          download-size="0"
          install-size="0"
          version="0.0.0"

@@ -28,17 +28,11 @@
  */
 package org.thanlwinsoft.languagetest.eclipse.wizards;
 
-import org.eclipse.jface.action.AbstractAction;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.action.IMenuCreator;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.swt.events.HelpListener;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.IActionDelegate;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;

@@ -38,7 +38,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
@@ -50,8 +49,6 @@ import org.eclipse.search.ui.NewSearchUI;
 import org.eclipse.search.ui.text.FileTextSearchScope;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -493,7 +490,7 @@ public class TagFilterComposite extends ScrolledComposite implements ICheckState
     {
         this.testItem = null;
         labelProvider.setTestItem(ti);
-        viewer.setAllChecked(false);
+        viewer.setSubtreeChecked(viewer.getTree().getTopItem(), false);
         if (ti != null && ti.sizeOfTagArray() > 0)
         {
             for (TagType t : ti.getTagArray())

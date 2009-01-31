@@ -22,7 +22,8 @@ Require-Bundle: org.eclipse.ui,
  org.apache.batik.svggen;bundle-version="1.6.0",
  org.apache.batik.xml;bundle-version="1.6.0",
  org.apache.batik.transcoder;bundle-version="1.6.0"
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Export-Package: org.thanlwinsoft.languagetest.eclipse.chart
 Import-Package: org.apache.batik.css.engine.value.svg,
  org.apache.xmlbeans
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

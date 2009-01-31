@@ -47,18 +47,14 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Layout;
 import org.eclipse.ui.part.ViewPart;
 import org.osgi.framework.Bundle;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
@@ -66,7 +62,6 @@ import org.thanlwinsoft.languagetest.eclipse.chart.CumulativeTestPassChart;
 import org.thanlwinsoft.languagetest.eclipse.workspace.WorkspaceLanguageManager;
 import org.thanlwinsoft.languagetest.language.test.TestManager;
 import org.thanlwinsoft.languagetest.language.test.TestType;
-import org.thanlwinsoft.languagetest.language.test.XmlBeansTestHistory;
 import org.thanlwinsoft.schemas.languagetest.history.ModuleHistoryDocument;
 import org.thanlwinsoft.schemas.languagetest.history.ModuleHistoryType;
 
@@ -83,7 +78,7 @@ public class ChartHistoryView extends ViewPart
     private Canvas canvas = null;
     private Chart chart = null;
     private ChartDisplay chartDisplay = null;
-    private Vector users = null;
+    private Vector<IProject> users = null;
     private Combo userCombo = null;
     private Combo langCombo = null;
     private Combo testTypeCombo = null;
@@ -95,7 +90,7 @@ public class ChartHistoryView extends ViewPart
     public ChartHistoryView()
     {
         this.provider = new CumulativeTestPassChart();
-        users = new Vector();
+        users = new Vector<IProject>();
     }
     
     /* (non-Javadoc)
@@ -232,7 +227,7 @@ public class ChartHistoryView extends ViewPart
         if (userCombo.getSelectionIndex() > -1 &&
             userProject != users.elementAt(userCombo.getSelectionIndex()))
         {
-            userProject = (IProject)users.elementAt(userCombo.getSelectionIndex());
+            userProject = users.elementAt(userCombo.getSelectionIndex());
             langCombo.removeAll();
             IFolder folder = userProject.getFolder(TestManager.HISTORY_DIR);
             if (folder != null)

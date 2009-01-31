@@ -60,13 +60,6 @@
             icon="icons/moduleProject.png"
             id="org.thanlwinsoft.languagetest.Navigator"
             name="%LanguageTest.navigator"/>
-      <view
-            allowMultiple="false"
-            category="org.thanlwinsoft.languagetest.views"
-            class="org.thanlwinsoft.languagetest.eclipse.views.TestHistoryView"
-            icon="icons/testHistory16.png"
-            id="org.thanlwinsoft.languagetest.TestHistoryView"
-            name="%LanguageTest.testHistoryView"/>
       <category
             id="org.thanlwinsoft.languagetest.views"
             name="%LanguageTest.viewCategory"/>
@@ -105,7 +98,7 @@
       <wizard
             category="org.thanlwinsoft.languagetest.newWizardCategory"
             class="org.thanlwinsoft.languagetest.eclipse.wizards.NewModuleProjectWizard"
-            finalPerspective="org.thanlwinsoft.languagetest.perspective"
+            finalPerspective="org.thanlwinsoft.languagetest.Perspective"
             hasPages="true"
             icon="icons/newModuleProject.png"
             id="org.thanlwinsoft.languagetest.eclipse.wizards.NewModuleWizard"
@@ -148,12 +141,6 @@
          <description>
             Starts a New Test.
          </description>
-         <selection
-               class="org.eclipse.core.internal.resources.Folder">
-         </selection>
-         <selection
-               class="org.eclipse.core.internal.resources.File">
-         </selection>
          <selection
                class="org.thanlwinsoft.languagetest.eclipse.editors.TestItemEditor">
          </selection>
@@ -306,25 +293,6 @@ wizardId=
 
 </extension>
  <extension
-         id="org.eclipse.ui.ide.resourceMappingAdapters"
-         point="org.eclipse.core.runtime.adapters">
-       <factory
-            class="org.eclipse.ui.internal.ide.model.WorkingSetAdapterFactory"
-            adaptableType="org.eclipse.ui.IWorkingSet">
-            <adapter type="org.eclipse.ui.IContributorResourceAdapter"/>
-       </factory>
-       <factory
-            class="org.eclipse.ui.internal.ide.model.WorkingSetAdapterFactory"
-            adaptableType="org.eclipse.ui.IWorkingSet">
-            <adapter type="org.eclipse.ui.model.IWorkbenchAdapter"/>
-       </factory>
-       <factory
-            class="org.eclipse.ui.internal.ide.model.WorkingSetAdapterFactory"
-            adaptableType="org.eclipse.ui.IWorkingSet">
-            <adapter type="org.eclipse.core.resources.mapping.ResourceMapping"/>
-       </factory>
-   </extension>
- <extension
          point="org.eclipse.ui.elementFactories">
       <factory
             class="org.eclipse.ui.part.FileEditorInputFactory"
@@ -423,8 +391,13 @@ wizardId=
          class="org.thanlwinsoft.languagetest.eclipse.views.LangPropertyPage"
          icon="icons/FlagOutline16.png"
          id="org.thanlwinsoft.languagetest.eclipse.views.LangPropertyPage"
-         name="%LanguageTest.langPropertyPage"
-         objectClass="org.eclipse.core.resources.IResource"/>
+         name="%LanguageTest.langPropertyPage">
+      <enabledWhen>
+         <instanceof
+               value="org.eclipse.core.resources.IResource">
+         </instanceof>
+      </enabledWhen>
+   </page>
 </extension>
 <extension
       point="org.eclipse.search.searchPages">
@@ -476,12 +449,6 @@ wizardId=
          extension="html"
          name="HTML"
          xslt="/org/thanlwinsoft/languagetest/language/text/LanguageTest.xsl"/>
-   <exporter
-         extension="pdf"
-         multiLingual="false"
-         name="PDF"
-         wizardPage="org.thanlwinsoft.languagetest.eclipse.export.FopConfigPage"
-         xslt="/org/thanlwinsoft/languagetest/language/text/LangTestTableFo.xsl"/>
    <exporter
          extension="csv"
          multiLingual="true"

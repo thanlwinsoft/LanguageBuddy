@@ -30,27 +30,19 @@ package org.thanlwinsoft.languagetest.eclipse.views;
 
 import java.util.HashSet;
 
-import org.eclipse.jface.viewers.AbstractTreeViewer;
-import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Tree;
-import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.part.ViewPart;
-import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.editors.TestItemEditor;
 import org.thanlwinsoft.languagetest.eclipse.editors.TestModuleEditor;
 import org.thanlwinsoft.languagetest.eclipse.workspace.MetaDataManager;
@@ -64,8 +56,8 @@ import org.thanlwinsoft.schemas.languagetest.module.TestItemType;
  */
 public class MetaDataView extends ViewPart implements ISelectionChangedListener
 {
-    private Tree dataTree = null;
-    private TreeViewer viewer = null;
+//    private Tree dataTree = null;
+//    private TreeViewer viewer = null;
     //private ITreeContentProvider provider = null;
     //private MetaDataLabelProvider labelProvider = null;
     //private MetaDataCellModifier cellModifier = null;

@@ -30,7 +30,6 @@ package org.thanlwinsoft.languagetest.eclipse;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
-import org.thanlwinsoft.languagetest.MessageUtil;
 
 /**
  * @author keith

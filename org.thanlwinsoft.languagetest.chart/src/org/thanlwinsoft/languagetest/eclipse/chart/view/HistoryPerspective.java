@@ -30,7 +30,6 @@ package org.thanlwinsoft.languagetest.eclipse.chart.view;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
-import org.eclipse.ui.IPlaceholderFolderLayout;
 import org.thanlwinsoft.languagetest.eclipse.views.TestHistoryView;
 
 /**

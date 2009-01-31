@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------
  *  File:           $HeadURL: http://keith-laptop/svn/krs/LanguageTest/trunk/org.thanlwinsoft.languagetest/src/org/thanlwinsoft/languagetest/eclipse/wizards/NewLanguagePage.java $
- *  Revision        $LastChangedRevision: 855 $
- *  Last Modified:  $LastChangedDate: 2007-06-10 07:02:09 +0700 (Sun, 10 Jun 2007) $
+ *  Revision        $LastChangedRevision: 1388 $
+ *  Last Modified:  $LastChangedDate: 2009-01-31 19:32:00 +0700 (Sat, 31 Jan 2009) $
  *  Last Change by: $LastChangedBy: keith $
  * -----------------------------------------------------------------------
  *  Copyright (C) 2007 Keith Stribley <devel@thanlwinsoft.org>
@@ -53,7 +53,9 @@ import org.thanlwinsoft.languagetest.language.test.UniversalLanguage;
 import org.thanlwinsoft.languagetest.language.text.Iso15924;
 import org.thanlwinsoft.languagetest.language.text.Iso3166;
 import org.thanlwinsoft.languagetest.language.text.Iso639;
+import org.thanlwinsoft.languagetest.language.text.Iso15924.IsoScript;
 import org.thanlwinsoft.languagetest.language.text.Iso3166.IsoCountry;
+import org.thanlwinsoft.languagetest.language.text.Iso639.IsoLanguage;
 import org.thanlwinsoft.schemas.languagetest.module.LangTypeType;
 
 /** Wizard page to define a language in terms of the main Language name,
@@ -120,12 +122,12 @@ public class NewLanguagePage extends WizardPage implements ModifyListener, Selec
         final Label langLabel = new Label(mainControl, SWT.LEFT | SWT.WRAP);
         langLabel.setText(MessageUtil.getString("LangChoice"));
         langCombo = new Combo(mainControl, SWT.DROP_DOWN | SWT.READ_ONLY);
-        Vector langCodes = Iso639.getLanguages(); 
+        Vector<IsoLanguage> langCodes = Iso639.getLanguages(); 
         String [] langNames = new String[langCodes.size()];
-        Iterator il = langCodes.iterator();
+        Iterator<IsoLanguage> il = langCodes.iterator();
         int i = 0;
         while (il.hasNext()) 
-            langNames[i++] = ((Iso639.IsoLanguage)il.next()).getDescription();
+            langNames[i++] = il.next().getDescription();
         langCombo.setItems(langNames);
         langCombo.addSelectionListener(this);
         
@@ -147,12 +149,12 @@ public class NewLanguagePage extends WizardPage implements ModifyListener, Selec
         final Label scriptLabel = new Label(mainControl, SWT.LEFT| SWT.WRAP);
         scriptLabel.setText(MessageUtil.getString("ScriptChoice"));
         scriptCombo = new Combo(mainControl, SWT.DROP_DOWN | SWT.READ_ONLY);
-        Vector scripts = Iso15924.getScripts();
+        Vector<IsoScript> scripts = Iso15924.getScripts();
         String [] scriptNames = new String[scripts.size()];
-        Iterator is = scripts.iterator();
+        Iterator<IsoScript> is = scripts.iterator();
         i = 0;
         while (is.hasNext()) 
-            scriptNames[i++] = ((Iso15924.IsoScript)is.next()).getDescription();
+            scriptNames[i++] = is.next().getDescription();
         scriptCombo.setItems(scriptNames);
         scriptCombo.addSelectionListener(this);
         
@@ -160,7 +162,7 @@ public class NewLanguagePage extends WizardPage implements ModifyListener, Selec
         final Label encodingLabel = new Label(mainControl, SWT.LEFT | SWT.WRAP);
         encodingLabel.setText(MessageUtil.getString("EncodingChoice"));
         encodingCombo = new Combo(mainControl, SWT.DROP_DOWN);
-        SortedMap charsets = Charset.availableCharsets();
+        SortedMap<String,Charset> charsets = Charset.availableCharsets();
         encodingCombo.setItems((String [])charsets.keySet()
                                .toArray(new String[charsets.size()]));
         encodingCombo.addSelectionListener(this);

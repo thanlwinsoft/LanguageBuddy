@@ -28,9 +28,6 @@
  */
 package org.thanlwinsoft.languagetest.eclipse;
 
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.util.IPropertyChangeListener;
@@ -44,7 +41,6 @@ import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.actions.WorkspaceAction;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.thanlwinsoft.languagetest.MessageUtil;
 

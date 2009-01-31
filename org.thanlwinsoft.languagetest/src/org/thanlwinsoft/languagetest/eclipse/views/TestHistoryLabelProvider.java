@@ -64,7 +64,7 @@ public class TestHistoryLabelProvider extends LabelProvider
 {
     private Image correct = null;
     private Image wrong = null;
-    private String langModulePath = null;
+    //private String langModulePath = null;
     private LanguageModuleType langModule = null;
     private ITreeContentProvider treeContentProvider;
     private NumberFormat percentNF = null;
@@ -161,7 +161,7 @@ public class TestHistoryLabelProvider extends LabelProvider
                         {
                             LanguageModuleDocument doc = 
                                 LanguageModuleDocument.Factory.parse(moduleFile.getContents());
-                            langModulePath = mht.getPath();
+                            //langModulePath = mht.getPath();
                             langModule = doc.getLanguageModule(); 
                             for (int i = 0; i < langModule.sizeOfTestItemArray(); i++)
                             {
