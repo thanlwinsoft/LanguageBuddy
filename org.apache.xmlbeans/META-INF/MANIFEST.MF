@@ -71,3 +71,4 @@ Export-Package: javax.xml.namespace,
  schemaorg_apache_xmlbeans.system.sXMLTOOLS
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.eclipse.ant.core;bundle-version="3.2.0"
