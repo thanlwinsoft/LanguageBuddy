@@ -2,8 +2,10 @@
 <project name="org.thanlwinsoft.languagetest.xmlbeans" default="default" basedir=".">
     <description>Builds, tests, and runs the project LanguageTest.</description>
 	
-	<taskdef name="xmlbean" classname="org.apache.xmlbeans.impl.tool.XMLBean" 
-		classpath="libs/xbean.jar"/>
+	<taskdef name="xmlbean"
+	     classname="org.apache.xmlbeans.impl.tool.XMLBean"
+	     classpath="../org.apache.xmlbeans/lib/xbean.jar:../org.apache.xmlbeans/lib/jsr173_1.0_api.jar" />
+
 	<!-- - - - - - - - - - - - - - - - - - 
           target: default                      
          - - - - - - - - - - - - - - - - - -->
