@@ -14,10 +14,10 @@
     </target>
 
 	<path id="xmlbeans.cp">
-		<pathelement location="libs/xbean.jar"/>
-		<pathelement location="libs/xbean_xpath.jar"/>
-		<pathelement location="libs/xmlpublic.jar"/>
-		<pathelement location="libs/resolver.jar"/>
+		<pathelement location="../org.apache.xmlbeans/lib/xbean.jar"/>
+		<pathelement location="../org.apache.xmlbeans/lib/xbean_xpath.jar"/>
+		<pathelement location="../org.apache.xmlbeans/lib/xmlpublic.jar"/>
+		<pathelement location="../org.apache.xmlbeans/lib/resolver.jar"/>
 	</path>
     <!-- ================================= 
           target: compile-schema              
