@@ -33,6 +33,8 @@
 				destPath="${buildDirectory}/features/org.thanlwinsoft.languagetest.feature"/>
 			<export srcUrl="${svnUrl}/${svnLanguageTest}/org.thanlwinsoft.languagetest.extra.feature"
 				destPath="${buildDirectory}/features/org.thanlwinsoft.languagetest.extra.feature"/>			
+            <export srcUrl="${svnUrl}/${svnLanguageTest}/org.thanlwinsoft.languagetest.update/headless-build/maps"
+                destPath="${buildDirectory}/maps"/>         
 		</svn>
 	</target>
 	
@@ -95,6 +97,9 @@
 			<arg value="-Dtimestamp=${timestamp}" />
 			<classpath>
 				<pathelement location="${baseLocation}/plugins/org.eclipse.equinox.launcher_${equinoxLauncherPluginVersion}.jar" />
+				<fileset dir="${buildDirectory}/plugins/org.apache.xmlbeans/lib">
+				     <include name="*.jar"/>
+				</fileset>
 			</classpath>
 		</java>
 	</target>
@@ -152,8 +157,6 @@
 	
 	<!--This target is responsible for cleaning up the build-directory-->
 	<target name="clean">
-		<delete dir="${release.path}/features"/>
-		<delete dir="${release.path}/plugins"/>
 		<delete dir="${buildDirectory}" />
 	</target>
 
