@@ -16,6 +16,7 @@
 	<typedef resource="org/tigris/subversion/svnant/svnantlib.xml" 
 			classpathref="svnant.class.path" onerror="fail"/>
 
+	<!--
 	<target name="checkout">
 		<mkdir dir="${buildDirectory}/features"/>
 		<mkdir dir="${buildDirectory}/plugins"/>
@@ -37,18 +38,58 @@
                 destPath="${buildDirectory}/maps"/>         
 		</svn>
 	</target>
-	
+	-->
+	<pathconvert targetos="unix" property="hg.repository">
+			<path location="${buildDirectory}/../"/>
+	</pathconvert>
+	<target name="clone">
+		<mkdir dir="${buildDirectory}"/>
+		<exec executable="hg" dir="${buildDirectory}">
+			<arg value="clone"/>
+			<arg value="${hg.repository}"/>
+			<arg value="${buildBase}-${languagetest.version}"/>
+		</exec>
+	</target>
+
 	<target name="src-tar">
 		<tstamp/>
+		<tar compression="bzip2" destfile="${buildDirectory}/${buildBase}-${DSTAMP}${TSTAMP}.tar.bz2" longfile="gnu">
+			<tarfileset dir="${buildDirectory}/${buildBase}-${languagetest.version}">
+				<include name="**/*"/>
+				<exclude name=".hg"/>
+				<exclude name=".hg/**/*"/>
+				<exclude name="org.apache.fop"/>
+				<exclude name="org.sil.graphite"/>
+				<exclude name="org.thanlwinsoft.languagetest.fop"/>
+				
+			</tarfileset>
+		</tar>
+		<!--
 		<tar compression="bzip2" destfile="${buildDirectory}/${buildBase}-${DSTAMP}${TSTAMP}.tar.bz2">
 			<tarfileset dir="${buildDirectory}/..">
 				<include name="${buildBase}/plugins/**/*"/>
 				<include name="${buildBase}/features/**/*"/>
 			</tarfileset>
 		</tar>
+		-->
 	</target>
-	
-	<target name="build-schemas">
+
+	<target name="split-plugins-features">
+		<move todir="${buildDirectory}/features">
+		    <fileset dir="${buildDirectory}/${buildBase}-${languagetest.version}">
+		    	<include name="org.thanlwinsoft.languagetest*feature*/**/*"/>		    	
+			</fileset>
+		</move>
+		<move todir="${buildDirectory}/plugins">
+		    <fileset dir="${buildDirectory}/${buildBase}-${languagetest.version}">
+		    	<include name="org.thanlwinsoft.languagetest*/**/*"/>
+		    	<include name="org.apache.xmlbeans/**/*"/>
+			</fileset>
+		</move>
+		<delete dir="${buildDirectory}/${buildBase}-${languagetest.version}"/>
+	</target>
+
+	<target name="build-schemas" depends="clean,clone,src-tar,split-plugins-features">
 		<ant antfile="${buildDirectory}/plugins/org.thanlwinsoft.languagetest/build-xmlbeans.xml"
 				dir="${buildDirectory}/plugins/org.thanlwinsoft.languagetest">
 		</ant>
@@ -106,37 +147,40 @@
 	
 	<target name="add-executables">
 		<!-- Not sure why PDE doesn't add these itself, but this hack solves the problem -->
-		<zip destfile="${buildDirectory}/I.languagetest/languagetest-win32.win32.x86.zip" update="true">
+		<zip destfile="${buildDirectory}/I.${product.name}/languagetest-win32.win32.x86.zip" update="true">
 			<zipfileset prefix="eclipse" dir="${baseLocation}/features/org.eclipse.equinox.executable_${equinoxExecutableVersion}/bin/win32/win32/x86">
 			    <include name="*"/>
 			</zipfileset>
 		</zip>
-        <zip destfile="${buildDirectory}/I.languagetest/languagetest-linux.gtk.x86.zip" update="true">
+        <zip destfile="${buildDirectory}/I.${product.name}/languagetest-linux.gtk.x86.zip" update="true">
             <zipfileset prefix="eclipse" dir="${baseLocation}/features/org.eclipse.equinox.executable_${equinoxExecutableVersion}/bin/gtk/linux/x86">
                 <include name="*"/>
             </zipfileset>
         </zip>
-        <zip destfile="${buildDirectory}/I.languagetest/languagetest-linux.gtk.x86_64.zip" update="true">
+        <zip destfile="${buildDirectory}/I.${product.name}/languagetest-linux.gtk.x86_64.zip" update="true">
             <zipfileset prefix="eclipse" dir="${baseLocation}/features/org.eclipse.equinox.executable_${equinoxExecutableVersion}/bin/gtk/linux/x86_64">
                 <include name="*"/>
             </zipfileset>
         </zip>
-        <unzip src="${buildDirectory}/I.languagetest/languagetest-win32.win32.x86.zip" dest="${buildDirectory}/languagetest"/>
+        <unzip src="${buildDirectory}/I.${product.name}/languagetest-win32.win32.x86.zip" dest="${buildDirectory}/${product.name}"/>
 	</target>
 	
 	<target name="nsis" description="Build NSIS Installer">
 		<path id="nsis.path.rel">
-		        <pathelement path="${basedir}/../nsis"/>
+		        <pathelement path="${basedir}/../nsis/LanguageBuddy.nsi"/>
 		</path>
-		<pathconvert refid="nsis.path.rel" targetos="windows" property="nsis.path"/> 
+		<condition property="nsisPathType" value="windows" else="unix">
+			<os family="windows"/>
+		</condition>
+		<pathconvert refid="nsis.path.rel" targetos="${nsisPathType}" property="nsis.path"/> 
 		    
-		<exec executable="${nsisHome}/makensis.exe" dir="${buildDirectory}"
+		<exec executable="${nsisPath}" dir="${buildDirectory}"
 			logerror="true" output="${buildDirectory}/nsis_win32_x86.log">
-			<env key="PATH" path="${signtoolPath}"/>
-			<arg value="${nsis.path}\languagetest.nsi"/>
+			<!--<env key="PATH" path="${signtoolPath}"/>-->
+			<arg value="${nsis.path}"/>
 		</exec>
 		<!--<delete dir="${buildDirectory}/languagetest"/>-->
-		
+<!--		
 		<exec executable="${signtoolPath}/signtool.exe" dir="${buildDirectory}">
 			<arg value="sign"/>
 			<arg value="/f"/>
@@ -148,6 +192,7 @@
 			<arg value="LanguageTest Installer"/>
             <arg value="${buildDirectory}/languagetest-${languagetest.version}.exe"/>
 		</exec>
+-->
 	</target>
 	
 	<target name="test-installer" description="Test the NSIS Installer">
@@ -160,6 +205,6 @@
 		<delete dir="${buildDirectory}" />
 	</target>
 
-	<!--This target defines the run-order of the targets-->
-	<target name="build" depends="clean,checkout,src-tar,build-schemas,pde-product,add-executables,pde-build,nsis" />
+	<!--This target defines the run-order of the targets pde-build,-->
+	<target name="build" depends="clean,clone,src-tar,build-schemas,pde-product,add-executables,nsis" />
 </project>

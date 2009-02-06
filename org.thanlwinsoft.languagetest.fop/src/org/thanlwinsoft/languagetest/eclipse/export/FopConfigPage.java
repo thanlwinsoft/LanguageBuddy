@@ -35,7 +35,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
 
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
@@ -58,19 +57,14 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExecutableExtension;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
-import org.osgi.framework.Bundle;
 import org.thanlwinsoft.languagetest.MessageUtil;
 import org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin;
 import org.xml.sax.SAXException;
@@ -83,7 +77,8 @@ import org.xml.sax.helpers.DefaultHandler;
 public class FopConfigPage extends WizardPage implements ExporterProperties, IExecutableExtension
 {
     private String xsltPath = null;
-    private boolean enabled = false;
+    @SuppressWarnings("unused")
+	private boolean enabled = false;
     private FopFactory fopFactory = null;
     private FOUserAgent userAgent = null;
     private Button useImagesButton = null;

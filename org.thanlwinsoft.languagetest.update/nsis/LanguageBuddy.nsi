@@ -1,14 +1,13 @@
 ;NSIS Modern User Interface
-;DocCharConvert NSIS Installer script
+;LanguageBuddy NSIS Installer script
 ;Written by Keith Stribley
 
 ; Some useful definitions that may need changing for different font versions
 !ifndef VERSION
-  !define VERSION '1.9.1'
+  !define VERSION '2.0.0'
 !endif
 
 !define APP_NAME 'LanguageBuddy'
-;!define SRC_ARCHIVE "..\org.thanlwinsoft.doccharconvert-src-${VERSION}.tgz"
 !define INSTALL_SUFFIX "ThanLwinSoft.org"
 
 ;--------------------------------
@@ -24,10 +23,7 @@
   Caption "A Program for Language Learning."
 
   OutFile "${APP_NAME}-${VERSION}.exe"
-  ;OutFile "${FONT_REG_FILE}"
-  ;OutFile "${FONT_BOLD_FILE}"
   InstallDir $PROGRAMFILES\${INSTALL_SUFFIX}
-
   
   ;Get installation folder from registry if available
   InstallDirRegKey HKLM "Software\${INSTALL_SUFFIX}\${APP_NAME}" ""
@@ -60,23 +56,23 @@
   !insertmacro MUI_LANGUAGE "English"
 
 ;--------------------------------
-  Icon "..\org.thanlwinsoft.languagetest\icons\languageBuddy.ico"
-  UninstallIcon "..\org.thanlwinsoft.languagetest\icons\languageBuddy.ico"
+  Icon "../../languagebuddy/plugins/org.thanlwinsoft.languagetest/icons/languageBuddy.ico"
+  UninstallIcon "../../languagebuddy/plugins/org.thanlwinsoft.languagetest/icons/uninstallLanguageBuddy.ico"
 ;Installer Sections
 
 Function findJavaHome
 	StrCpy $0 0
+	ReadRegStr $1 HKLM "Software\JavaSoft\Java Runtime Environment\1.8" "JavaHome"
+	  StrCmp $1 "" 0 done
 	ReadRegStr $1 HKLM "Software\JavaSoft\Java Runtime Environment\1.7" "JavaHome"
 	  StrCmp $1 "" 0 done
 	ReadRegStr $1 HKLM "Software\JavaSoft\Java Runtime Environment\1.6" "JavaHome"
 	  StrCmp $1 "" 0 done
-	ReadRegStr $1 HKLM "Software\JavaSoft\Java Runtime Environment\1.5" "JavaHome"
+	ReadRegStr $1 HKLM "Software\JavaSoft\Java Development Kit\1.8" "JavaHome"
 	  StrCmp $1 "" 0 done
 	ReadRegStr $1 HKLM "Software\JavaSoft\Java Development Kit\1.7" "JavaHome"
 	  StrCmp $1 "" 0 done
 	ReadRegStr $1 HKLM "Software\JavaSoft\Java Development Kit\1.6" "JavaHome"
-	  StrCmp $1 "" 0 done
-	ReadRegStr $1 HKLM "Software\JavaSoft\Java Development Kit\1.5" "JavaHome"
 	  StrCmp $1 "" noJava done
 	
 	noJava:
@@ -109,13 +105,14 @@ NoOverwrite:
 
   
   SetOutPath "$INSTDIR"
-  
+  File /oname=license.txt "lgpl-2.1.txt"
+
+  !cd "../../languagebuddy"
   ;File /r "..\release\win32.win32.x86\${APP_NAME}"
-  File /r "..\product\${APP_NAME}"
+  File /r "${APP_NAME}"
   
   SetOutPath "$INSTDIR\${APP_NAME}"
-  File /oname=license.txt "lgpl-2.1.txt"
-  File "..\org.thanlwinsoft.languagetest\icons\languageBuddy.ico"
+  File "plugins\org.thanlwinsoft.languagetest\icons\languageBuddy.ico"
   ;File "Uninstall.ico"
   
   CreateDirectory "$INSTDIR\${APP_NAME}\features"
@@ -165,6 +162,12 @@ NoOverwrite:
 				 
   
 
+SectionEnd
+
+;Optional source - as a compressed archive
+Section /o "Source" SecSource
+	SetOutPath "$INSTDIR\${APP_NAME}"
+	File languagebuddy-*.tar.bz2
 SectionEnd
 
 
