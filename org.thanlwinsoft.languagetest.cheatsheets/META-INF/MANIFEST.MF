@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Language Buddy Cheat Sheets
+Bundle-Name: Language Buddy Quick Tips
 Bundle-SymbolicName: org.thanlwinsoft.languagetest.cheatsheets; singleton:=true
 Bundle-Version: 0.0.1.qualifier
 Bundle-Localization: plugin

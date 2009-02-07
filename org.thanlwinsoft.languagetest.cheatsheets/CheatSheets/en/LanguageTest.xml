@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <compositeCheatsheet name="Language Buddy">
-   <taskGroup kind="set" name="Language Buddy Cheat Sheets" skip="false">
+   <taskGroup kind="set" name="Language Buddy Quick Tips" skip="false">
       <intro>
          <b>Introduction</b>
             These Cheat Sheets help you to learn how to use Language Buddy.
@@ -13,7 +13,7 @@
       <taskGroup kind="set" name="Getting Started" skip="false">
          <intro>
             <b>Introduction</b>
-This cheat sheet will walk you through creating a User Project and creating your first Language Module.
+This tips will walk you through creating a User Project and creating your first Language Module.
          </intro>
          <onCompletion>
             <b>Conclusion</b>

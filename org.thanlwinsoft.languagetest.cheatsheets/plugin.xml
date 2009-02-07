@@ -10,7 +10,7 @@
             id="org.thanlwinsoft.languagetest.cheatsheets.cheatsheet"
             name="%org.thanlwinsoft.languagetest.cheatsheets.cheatsheet">
          <description>
-            Cheatsheets for creating Language Modules and testing yourself with them.
+            %org.thanlwinsoft.languagetest.cheatsheets.cheatsheet.desc
          </description>
       </cheatsheet>
       <category
