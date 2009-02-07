@@ -1,6 +1,6 @@
 plugin@org.apache.xmlbeans=SVN,trunk,http://10.10.10.2/svn/krs,LanguageTest,org.apache.xmlbeans
 feature@org.thanlwinsoft.languagetest.feature=SVN,trunk,http://10.10.10.2/svn/krs,LanguageTest,org.thanlwinsoft.languagetest.feature
+feature@org.thanlwinsoft.languagetest.extra.feature=SVN,trunk,http://10.10.10.2/svn/krs,LanguageTest,org.thanlwinsoft.languagetest.extra.feature
 plugin@org.thanlwinsoft.languagetest=SVN,trunk,http://10.10.10.2/svn/krs,LanguageTest,org.thanlwinsoft.languagetest
 plugin@org.thanlwinsoft.languagetest.chart=SVN,trunk,http://10.10.10.2/svn/krs,LanguageTest,org.thanlwinsoft.languagetest.chart
 plugin@org.thanlwinsoft.languagetest.cheatsheets=SVN,trunk,http://10.10.10.2/svn/krs,LanguageTest,org.thanlwinsoft.languagetest.cheatsheets
-feature@org.thanlwinsoft.languagetest.extra.feature=SVN,trunk,http://10.10.10.2/svn/krs,LanguageTest,org.thanlwinsoft.languagetest.extra.feature
