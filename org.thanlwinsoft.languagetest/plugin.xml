@@ -27,6 +27,14 @@
                name="appName"
                value="%LanguageTest">
          </property>
+         <property
+               name="aboutImage"
+               value="icons/languageBuddy48.png">
+         </property>
+         <property
+               name="windowImages"
+               value="icons/languageBuddy16.png,icons/languageBuddy32.png,icons/languageBuddy48.png,icons/languageBuddy64.png">
+         </property>
       </product>
    </extension>
    <extension

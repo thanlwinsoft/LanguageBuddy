@@ -62,7 +62,8 @@ Require-Bundle: org.apache.xmlbeans,
  org.eclipse.emf.common.ui,
  org.eclipse.ui.intro,
  org.eclipse.core.runtime.compatibility,
- org.eclipse.ui.cheatsheets
+ org.eclipse.ui.cheatsheets,
+ org.mozilla.rhino;bundle-version="1.6.7"
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.thanlwinsoft.languagetest.eclipse.LanguageTestPlugin
 Bundle-Vendor: www.ThanLwinSoft.org
