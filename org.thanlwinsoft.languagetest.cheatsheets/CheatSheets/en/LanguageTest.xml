@@ -3,7 +3,7 @@
    <taskGroup kind="set" name="Language Buddy Quick Tips" skip="false">
       <intro>
          <b>Introduction</b>
-            These Cheat Sheets help you to learn how to use Language Buddy.
+            These tips will help you to learn how to use Language Buddy.
       </intro>
       <onCompletion>
          <b>Conclusion</b>
@@ -13,7 +13,7 @@
       <taskGroup kind="set" name="Getting Started" skip="false">
          <intro>
             <b>Introduction</b>
-This tips will walk you through creating a User Project and creating your first Language Module.
+This tip will walk you through creating a User Project and creating your first Language Module.
          </intro>
          <onCompletion>
             <b>Conclusion</b>
