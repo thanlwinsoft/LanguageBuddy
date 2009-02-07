@@ -634,24 +634,16 @@ END OF TERMS AND CONDITIONS
    </url>
 
    <requires>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.thanlwinsoft.languagetest"/>
-      <import plugin="org.eclipse.birt.core"/>
-      <import plugin="org.eclipse.birt.chart.runtime"/>
-      <import plugin="org.eclipse.birt.chart.device.pdf"/>
-      <import plugin="org.eclipse.birt.chart.device.swt"/>
-      <import plugin="org.eclipse.birt.chart.device.svg"/>
-      <import plugin="org.eclipse.birt.chart.device.extension"/>
-      <import plugin="org.mozilla.rhino"/>
-      <import plugin="org.eclipse.birt.chart.engine"/>
-      <import plugin="org.eclipse.birt.chart.engine.extension"/>
-      <import plugin="org.apache.xmlbeans" version="2.3.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.resources" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.apache.batik.svggen" version="1.6.0" match="greaterOrEqual"/>
-      <import plugin="org.apache.batik.xml" version="1.6.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.apache.xmlbeans" version="2.3.0" match="greaterOrEqual"/>
+      <import plugin="org.thanlwinsoft.languagetest"/>
+      <import plugin="org.eclipse.birt.chart.device.svg"/>
+      <import plugin="org.eclipse.birt.chart.engine"/>
       <import plugin="org.apache.batik.transcoder" version="1.6.0" match="greaterOrEqual"/>
-      <import plugin="org.apache.batik.css"/>
+      <import plugin="org.eclipse.birt.chart.device.extension" version="2.3.1" match="greaterOrEqual"/>
+      <import plugin="org.apache.xerces" version="2.9.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.emf.common.ui" version="2.4.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
