@@ -15,6 +15,8 @@
 
    <windowImages i16="/org.thanlwinsoft.languagetest/icons/languageBuddy16.png" i32="/org.thanlwinsoft.languagetest/icons/languageBuddy32.png" i48="/org.thanlwinsoft.languagetest/icons/languageBuddy48.png" i64="/org.thanlwinsoft.languagetest/icons/languageBuddy64.png"/>
 
+   <splash
+      location="org.thanlwinsoft.languagetest" />
    <launcher>
       <linux icon="/org.thanlwinsoft.languagetest/icons/languageBuddy32.xpm"/>
       <solaris/>
