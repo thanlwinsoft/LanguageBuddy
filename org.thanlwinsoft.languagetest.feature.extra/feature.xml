@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.thanlwinsoft.languagetest.extra.feature"
+      id="org.thanlwinsoft.languagetest.feature.extra"
       label="Language Test Extra Functionality"
       version="1.0.0"
       provider-name="www.ThanLwinSoft.org"

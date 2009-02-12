@@ -157,24 +157,24 @@
 	
 	<target name="add-executables">
 		<!-- Not sure why PDE doesn't add these itself, but this hack solves the problem -->
-		<zip destfile="${buildDirectory}/I.${languagetest.productName}/${productName}-win32.win32.x86.zip" update="true">
+		<zip destfile="${buildDirectory}/I.${languagetest.productName}/${languagetest.productName}-win32.win32.x86.zip" update="true">
 			<zipfileset prefix="eclipse" dir="${baseLocation}/features/org.eclipse.equinox.executable_${equinoxExecutableVersion}/bin/win32/win32/x86">
 			    <include name="*"/>
 			</zipfileset>
 		</zip>
-        <zip destfile="${buildDirectory}/I.${languagetest.productName}/${productName}-linux.gtk.x86.zip" update="true">
+        <zip destfile="${buildDirectory}/I.${languagetest.productName}/${languagetest.productName}-linux.gtk.x86.zip" update="true">
             <zipfileset prefix="eclipse" dir="${baseLocation}/features/org.eclipse.equinox.executable_${equinoxExecutableVersion}/bin/gtk/linux/x86">
                 <include name="*"/>
             </zipfileset>
         </zip>
-        <zip destfile="${buildDirectory}/I.${languagetest.productName}/${productName}-linux.gtk.x86_64.zip" update="true">
+        <zip destfile="${buildDirectory}/I.${languagetest.productName}/${languagetest.productName}-linux.gtk.x86_64.zip" update="true">
             <zipfileset prefix="eclipse" dir="${baseLocation}/features/org.eclipse.equinox.executable_${equinoxExecutableVersion}/bin/gtk/linux/x86_64">
                 <include name="*"/>
             </zipfileset>
         </zip>
-		<unzip src="${buildDirectory}/I.${languagetest.productName}/${productName}-linux.gtk.x86.zip" dest="${buildDirectory}/${productName}-linux.gtk.x86"/>
+		<unzip src="${buildDirectory}/I.${languagetest.productName}/${languagetest.productName}-linux.gtk.x86.zip" dest="${buildDirectory}/${languagetest.productName}-linux.gtk.x86"/>
 		<chmod file="${buildDirectory}/${languagetest.productName}-linux.gtk.x86/eclipse/launcher" perm="ugo+rx"/>
-		<tar compression="bzip2" destfile="${buildDirectory}/I.${productName}/${productName}-linux.gtk.x86.tar.bz2" longfile="gnu">
+		<tar compression="bzip2" destfile="${buildDirectory}/I.${languagetest.productName}/${languagetest.productName}-linux.gtk.x86.tar.bz2" longfile="gnu">
 			<tarfileset dir="${buildDirectory}/${languagetest.productName}-linux.gtk.x86">
 				<include name="**/*"/>
 				<exclude name="eclipse/launcher"/>
@@ -183,12 +183,12 @@
 				<include name="eclipse/launcher"/>
 			</tarfileset>
 		</tar>
-		<!--<delete file="${buildDirectory}/I.${languagetest.productName}/${productName}-linux.gtk.x86.zip"/>-->
+		<!--<delete file="${buildDirectory}/I.${languagetest.productName}/${languagetest.productName}-linux.gtk.x86.zip"/>-->
 		<delete file="${buildDirectory}/${languagetest.productName}-linux.gtk.x86"/>
 
-		<unzip src="${buildDirectory}/I.${languagetest.productName}/${languagetest.productName}-linux.gtk.x86_64.zip" dest="${buildDirectory}/${productName}-linux.gtk.x86_64"/>
+		<unzip src="${buildDirectory}/I.${languagetest.productName}/${languagetest.productName}-linux.gtk.x86_64.zip" dest="${buildDirectory}/${languagetest.productName}-linux.gtk.x86_64"/>
 		<chmod file="${buildDirectory}/${languagetest.productName}-linux.gtk.x86_64/eclipse/launcher" perm="ugo+rx" />
-		<tar compression="bzip2" destfile="${buildDirectory}/I.${languagetest.productName}/${productName}-linux.gtk.x86_64.tar.bz2" longfile="gnu">
+		<tar compression="bzip2" destfile="${buildDirectory}/I.${languagetest.productName}/${languagetest.productName}-linux.gtk.x86_64.tar.bz2" longfile="gnu">
 			<tarfileset dir="${buildDirectory}/${languagetest.productName}-linux.gtk.x86_64">
 				<include name="**/*"/>
 				<exclude name="eclipse/launcher"/>
@@ -198,11 +198,23 @@
 			</tarfileset>
 		</tar>
 <!--		<delete file="${buildDirectory}/I.${productName}/${productName}-linux.gtk.x86_64.zip"/>-->
-		<delete file="${buildDirectory}/${languagetest.productName}"/>
+		<delete file="${buildDirectory}/${languagetest.productName}-linux.gtk.x86_64"/>
 
-        <unzip src="${buildDirectory}/I.${languagetest.productName}/${languagetest.productName}-win32.win32.x86.zip" dest="${buildDirectory}/${productName}"/>
+        <unzip src="${buildDirectory}/I.${languagetest.productName}/${languagetest.productName}-win32.win32.x86.zip" dest="${buildDirectory}/${languagetest.productName}"/>
 	</target>
-	
+
+	<target name="linux-test" description="test linux tar ball">
+		<delete file="/tmp/${languagetest.productName}"/>
+		<mkdir dir="/tmp/${languagetest.productName}"/>
+		<!-- ant untar doesn't preserve exec permission, so use system one -->
+		<exec executable="/bin/tar" dir="/tmp/${languagetest.productName}">
+			<arg value="-jxf"/>
+			<arg value="${buildDirectory}/I.${languagetest.productName}/${languagetest.productName}-linux.gtk.${osgi.arch}.tar.bz2"/>
+		</exec>
+		<exec executable="/tmp/${languagetest.productName}/eclipse/launcher"/>
+		<delete file="/tmp/${languagetest.productName}"/>
+	</target>
+
 	<target name="nsis" description="Build NSIS Installer">
 		<path id="nsis.path.rel">
 		        <pathelement path="${basedir}/../nsis/LanguageBuddy.nsi"/>
