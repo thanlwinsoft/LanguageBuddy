@@ -18,7 +18,6 @@
    </license>
 
    <requires>
-      <import plugin="org.apache.lucene" version="1.9.1" match="compatible"/>
       <import plugin="javax.xml" version="1.3.4" match="compatible"/>
       <import plugin="org.apache.xml.resolver" version="1.2.0" match="compatible"/>
       <import plugin="org.apache.xml.serializer" version="2.7.1" match="compatible"/>
@@ -27,34 +26,12 @@
       <import plugin="org.eclipse.core.runtime" version="3.2.0" match="compatible"/>
       <import plugin="org.apache.commons.codec" version="1.3.0" match="compatible"/>
       <import plugin="org.eclipse.birt.chart.engine" version="2.1.0" match="compatible"/>
-      <import plugin="org.eclipse.birt.chart.device.svg" version="2.1.0" match="compatible"/>
-      <import plugin="org.apache.batik.transcoder" version="1.6.0" match="compatible"/>
       <import plugin="org.eclipse.birt.chart.device.extension" version="2.1.0" match="compatible"/>
-      <import plugin="org.apache.batik.pdf" version="1.6.0" match="compatible"/>
-      <import plugin="org.apache.batik.util" version="1.6.0" match="compatible"/>
-      <import plugin="org.apache.batik.dom" version="1.6.0" match="compatible"/>
-      <import plugin="org.apache.batik.bridge" version="1.6.0" match="compatible"/>
-      <import plugin="org.apache.batik.css" version="1.6.0" match="compatible"/>
-      <import plugin="org.apache.batik.dom.svg" version="1.6.0" match="compatible"/>
-      <import plugin="org.apache.batik.ext.awt" version="1.6.0" match="compatible"/>
-      <import plugin="org.apache.batik.extension" version="1.6.0" match="compatible"/>
-      <import plugin="org.apache.batik.parser" version="1.6.0" match="compatible"/>
-      <import plugin="org.apache.batik.svggen" version="1.6.0" match="compatible"/>
-      <import plugin="org.apache.batik.swing" version="1.6.0" match="compatible"/>
-      <import plugin="org.apache.batik.util.gui" version="1.6.0" match="compatible"/>
-      <import plugin="org.apache.batik.xml" version="1.6.0" match="compatible"/>
-      <import plugin="org.w3c.dom.svg" version="1.1.0" match="compatible"/>
-      <import plugin="org.apache.xerces" version="2.8.0" match="compatible"/>
-      <import plugin="org.eclipse.swt" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.emf.ecore" version="2.2.0" match="compatible"/>
       <import plugin="org.eclipse.emf.ecore.xmi" version="2.2.0" match="compatible"/>
       <import plugin="org.eclipse.birt.core" version="2.1.0" match="compatible"/>
-      <import plugin="org.eclipse.ui" version="3.2.0" match="compatible"/>
-      <import plugin="org.eclipse.birt.core.ui" version="2.1.0" match="compatible"/>
-      <import plugin="org.eclipse.birt.chart.ui" version="2.1.0" match="compatible"/>
       <import plugin="com.ibm.icu" version="3.4.4" match="compatible"/>
       <import plugin="org.mozilla.rhino" version="1.6.0" match="compatible"/>
-      <import plugin="org.eclipse.jface" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.ui" version="3.3.0" match="compatible"/>
       <import plugin="org.eclipse.core.resources" version="3.3.0" match="compatible"/>
       <import plugin="org.eclipse.jface.text" version="3.3.0" match="compatible"/>
@@ -67,16 +44,9 @@
       <import plugin="org.eclipse.equinox.common" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.equinox.preferences" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.equinox.registry" version="3.2.0" match="compatible"/>
-      <import plugin="org.eclipse.core.databinding" version="1.0.0" match="compatible"/>
       <import plugin="org.eclipse.core.runtime" version="3.3.0" match="compatible"/>
       <import plugin="org.eclipse.text" version="3.4.0" match="compatible"/>
       <import plugin="org.eclipse.core.filesystem" version="1.1.0" match="compatible"/>
-      <import plugin="org.eclipse.equinox.security" version="1.0.0" match="compatible"/>
-      <import plugin="org.eclipse.equinox.common" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.equinox.preferences" version="3.2.200" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.osgi" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.equinox.registry" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.net" version="1.1.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.expressions" version="3.1.0" match="compatible"/>
       <import plugin="org.eclipse.core.resources" version="3.4.0" match="compatible"/>
       <import plugin="org.eclipse.osgi" version="3.2.0" match="compatible"/>
@@ -86,43 +56,20 @@
       <import plugin="org.eclipse.equinox.app" version="1.0.0" match="compatible"/>
       <import plugin="org.eclipse.update.configurator" version="3.1.100" match="compatible"/>
       <import plugin="org.eclipse.equinox.registry" version="3.3.0"/>
-      <import plugin="org.eclipse.core.variables" version="3.2.0" match="compatible"/>
-      <import plugin="org.eclipse.core.expressions" version="3.4.0" match="compatible"/>
-      <import plugin="org.eclipse.ui" version="3.4.0" match="compatible"/>
-      <import plugin="org.eclipse.ui.console" version="3.2.0" match="compatible"/>
-      <import plugin="org.eclipse.help" version="3.3.0" match="compatible"/>
-      <import plugin="org.eclipse.debug.core" version="3.4.0" match="compatible"/>
-      <import plugin="org.eclipse.ecf.provider.filetransfer" version="2.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ecf" version="2.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.runtime" version="3.4.0" match="compatible"/>
+      <import plugin="org.eclipse.ui" version="3.4.0" match="compatible"/>
       <import plugin="org.eclipse.emf.common" version="2.4.0" match="compatible"/>
       <import plugin="org.eclipse.emf.ecore" version="2.4.1" match="compatible"/>
-      <import plugin="org.eclipse.equinox.launcher" version="1.0.0" match="equivalent"/>
-      <import plugin="org.sat4j.core" version="2.0.0" match="greaterOrEqual"/>
-      <import plugin="org.sat4j.pb" version="2.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.equinox.common" version="3.3.0" match="compatible"/>
-      <import plugin="org.eclipse.osgi" version="3.4.0" match="compatible"/>
-      <import plugin="org.eclipse.ecf" version="1.2.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ecf.filetransfer" version="2.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.equinox.p2.touchpoint.eclipse" version="0.1.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.equinox.security.ui" version="1.0.0" match="compatible"/>
-      <import plugin="org.eclipse.equinox.p2.metadata.repository" version="0.1.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.equinox.p2.artifact.repository" version="0.1.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.equinox.preferences" version="3.2.200" match="compatible"/>
+      <import plugin="org.eclipse.osgi.services"/>
       <import plugin="org.eclipse.core.runtime" version="3.1.0" match="compatible"/>
       <import plugin="org.eclipse.core.expressions" version="3.3.0" match="compatible"/>
-      <import plugin="org.apache.lucene.analysis" version="1.9.1" match="compatible"/>
-      <import plugin="org.eclipse.core.runtime" version="3.3.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.help.base" version="3.3.0" match="compatible"/>
-      <import plugin="org.eclipse.help.base" version="3.1.0" match="compatible"/>
-      <import plugin="org.apache.jasper" version="5.5.17" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.equinox.jsp.jasper.registry" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.equinox.http.registry" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.swt" version="3.4.0" match="compatible"/>
       <import plugin="org.eclipse.core.commands" version="3.4.0" match="compatible"/>
+      <import plugin="org.eclipse.core.databinding" version="1.0.0" match="compatible"/>
+      <import plugin="org.eclipse.swt" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.jface" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.jface" version="3.4.0" match="compatible"/>
-      <import plugin="com.jcraft.jsch" version="0.1.28" match="compatible"/>
-      <import plugin="org.eclipse.core.net" version="1.0.0" match="compatible"/>
+      <import plugin="org.eclipse.core.expressions" version="3.4.0" match="compatible"/>
       <import plugin="org.eclipse.core.filebuffers" version="3.4.0" match="compatible"/>
       <import plugin="org.eclipse.core.commands" version="3.3.0" match="compatible"/>
       <import plugin="org.eclipse.ltk.core.refactoring" version="3.4.0" match="compatible"/>
@@ -131,28 +78,21 @@
       <import plugin="org.eclipse.compare" version="3.3.0" match="compatible"/>
       <import plugin="org.eclipse.team.core" version="3.3.0" match="compatible"/>
       <import plugin="org.eclipse.team.ui" version="3.3.0" match="compatible"/>
-      <import plugin="org.eclipse.ui.intro" version="3.2.0" match="compatible"/>
-      <import plugin="org.eclipse.ui.intro.universal" version="3.2.0" match="compatible"/>
-      <import plugin="org.eclipse.ui.ide.application" version="1.0.0" match="compatible"/>
-      <import plugin="org.eclipse.help" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.ui.workbench.texteditor" version="3.4.0" match="compatible"/>
       <import plugin="org.eclipse.ui.forms" version="3.3.0" match="compatible"/>
       <import plugin="org.eclipse.ltk.ui.refactoring" version="3.4.0" match="compatible"/>
       <import plugin="org.eclipse.swt" version="3.0.0" match="compatible"/>
       <import plugin="org.eclipse.ui.navigator.resources" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.core.commands" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.equinox.common" version="3.3.0" match="compatible"/>
       <import plugin="org.eclipse.swt" version="3.3.0" match="compatible"/>
       <import plugin="org.eclipse.ui.workbench" version="3.4.0" match="compatible"/>
+      <import plugin="org.eclipse.ui" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.help" version="3.1.0" match="compatible"/>
       <import plugin="org.eclipse.core.resources" version="3.2.0" match="compatible"/>
-      <import plugin="org.eclipse.debug.core" version="3.2.0" match="compatible"/>
-      <import plugin="org.eclipse.debug.ui" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.core.filesystem" version="1.0.0" match="compatible"/>
+      <import plugin="org.eclipse.help" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.jface.text" version="3.2.0" match="compatible"/>
-      <import plugin="org.eclipse.ui.ide" version="3.4.0" match="compatible"/>
-      <import plugin="org.eclipse.ui.navigator.resources" version="3.2.100" match="compatible"/>
-      <import plugin="org.eclipse.update.core" version="3.1.100" match="compatible"/>
-      <import plugin="com.ibm.icu" version="3.8.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.workbench" version="3.2.1" match="compatible"/>
       <import plugin="org.eclipse.ui" version="3.2.1" match="compatible"/>
       <import plugin="org.eclipse.ui.ide" version="3.2.0" match="compatible"/>
@@ -161,10 +101,6 @@
       <import plugin="org.eclipse.ui.workbench.texteditor" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.jface.databinding" version="1.1.0" match="compatible"/>
       <import plugin="org.eclipse.ui.workbench" version="3.0.0" match="compatible"/>
-      <import plugin="org.eclipse.update.configurator" version="3.1.0" match="compatible"/>
-      <import plugin="org.eclipse.update.core" version="3.0.0" match="compatible"/>
-      <import plugin="org.eclipse.update.core" version="3.1.0" match="compatible"/>
-      <import plugin="org.eclipse.update.ui" version="3.1.0" match="compatible"/>
       <import feature="org.thanlwinsoft.languagetest.feature" version="2.0.0"/>
    </requires>
 
@@ -176,38 +112,11 @@
          unpack="false"/>
 
    <plugin
-         id="com.jcraft.jsch"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="javax.servlet"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="javax.servlet.jsp"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="javax.xml"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
-   <plugin
-         id="org.apache.ant"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
 
    <plugin
          id="org.apache.batik.bridge"
@@ -245,13 +154,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.apache.batik.extension"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.apache.batik.parser"
          download-size="0"
          install-size="0"
@@ -259,21 +161,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.apache.batik.pdf"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.apache.batik.svggen"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.batik.swing"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -315,35 +203,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.apache.commons.el"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.commons.logging"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.jasper"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.apache.lucene"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.lucene.analysis"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -398,21 +258,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.birt.chart.device.pdf"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.birt.chart.device.svg"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.birt.chart.device.swt"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -426,28 +272,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.birt.chart.engine.extension"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.birt.chart.runtime"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.birt.chart.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.birt.chart.ui.extension"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -461,21 +286,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.birt.core.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.compare"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.core.boot"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -497,13 +308,6 @@
 
    <plugin
          id="org.eclipse.core.databinding"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.core.databinding.beans"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -546,21 +350,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.core.net"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.core.net.linux.x86"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.core.resources"
          download-size="0"
          install-size="0"
@@ -590,13 +379,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.core.runtime.compatibility.auth"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.core.runtime.compatibility.registry"
          download-size="0"
          install-size="0"
@@ -608,64 +390,6 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.debug.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.debug.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ecf"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ecf.filetransfer"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ecf.identity"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ecf.provider.filetransfer"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ecf.provider.filetransfer.ssl"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ecf.ssl"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
          unpack="false"/>
 
    <plugin
@@ -711,216 +435,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.equinox.frameworkadmin"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.frameworkadmin.equinox"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.http.jetty"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.http.registry"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.http.servlet"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.jsp.jasper"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.jsp.jasper.registry"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.launcher"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.launcher.gtk.linux.x86"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"/>
-
-   <plugin
-         id="org.eclipse.equinox.p2.artifact.repository"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.p2.console"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.p2.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.p2.director"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.p2.director.app"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.p2.directorywatcher"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.p2.engine"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.p2.exemplarysetup"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.p2.extensionlocation"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.p2.garbagecollector"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.p2.jarprocessor"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.p2.metadata"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.p2.metadata.generator"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.p2.metadata.repository"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.p2.reconciler.dropins"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.p2.touchpoint.eclipse"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.p2.touchpoint.natives"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.p2.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.p2.ui.sdk"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.p2.updatechecker"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.p2.updatesite"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.equinox.preferences"
          download-size="0"
          install-size="0"
@@ -935,63 +449,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.equinox.security"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.security.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.simpleconfigurator"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.simpleconfigurator.manipulator"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.help"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.help.appserver"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.help.base"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.help.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.help.webapp"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -1019,20 +477,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.jsch.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.jsch.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.ltk.core.refactoring"
          download-size="0"
          install-size="0"
@@ -1048,40 +492,6 @@
 
    <plugin
          id="org.eclipse.osgi"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.osgi.services"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.osgi.util"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.platform"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.eclipse.platform.doc.user"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.rcp"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -1138,13 +548,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.ui.browser"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.ui.cheatsheets"
          download-size="0"
          install-size="0"
@@ -1152,21 +555,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.ui.console"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.ui.editors"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ui.externaltools"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -1187,24 +576,11 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.ui.ide.application"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.ui.intro"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ui.intro.universal"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
 
    <plugin
          id="org.eclipse.ui.navigator"
@@ -1215,20 +591,6 @@
 
    <plugin
          id="org.eclipse.ui.navigator.resources"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ui.net"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ui.presentations.r21"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -1277,60 +639,10 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.update.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.update.core.linux"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.update.scheduler"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.update.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.mortbay.jetty"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.mozilla.rhino"
          download-size="0"
          install-size="0"
          version="0.0.0"/>
-
-   <plugin
-         id="org.sat4j.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.sat4j.pb"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
    <plugin
          id="org.w3c.css.sac"
