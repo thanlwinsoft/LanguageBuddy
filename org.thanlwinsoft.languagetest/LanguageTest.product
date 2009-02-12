@@ -16,7 +16,10 @@
    <windowImages i16="/org.thanlwinsoft.languagetest/icons/languageBuddy16.png" i32="/org.thanlwinsoft.languagetest/icons/languageBuddy32.png" i48="/org.thanlwinsoft.languagetest/icons/languageBuddy48.png" i64="/org.thanlwinsoft.languagetest/icons/languageBuddy64.png"/>
 
    <splash
-      location="org.thanlwinsoft.languagetest" />
+      location="org.thanlwinsoft.languagetest"
+      startupProgressRect="5,275,445,15"
+      startupMessageRect="7,252,445,20"
+      startupForegroundColor="000000" />
    <launcher>
       <linux icon="/org.thanlwinsoft.languagetest/icons/languageBuddy32.xpm"/>
       <solaris/>
@@ -136,6 +139,7 @@
       <feature id="org.eclipse.birt.chart.runtime" version="2.3.1.v20080630-7X8n6EMNbos-rAPIYtmR1"/>
       <feature id="org.thanlwinsoft.languagetest.feature" version="2.0.0"/>
       <feature id="org.thanlwinsoft.languagetest.extra.feature" version="1.0.0"/>
+      <feature id="org.thanlwinsoft.languagetest.feature.eclipse" version="1.0.0"/>
    </features>
 
 </product>

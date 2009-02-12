@@ -18,4 +18,6 @@ org.thanlwinsoft.languagetest.update/plugins/*.jar
 org.thanlwinsoft.languagetest.update/features/*.jar
 org.thanlwinsoft.languagetest.update/headless-build/build.properties
 org.thanlwinsoft.languagetest/libs/LanguageTestTypes.jar
+org.thanlwinsoft.languagetest/bin
+org.thanlwinsoft.languagetest.chart/bin
 
