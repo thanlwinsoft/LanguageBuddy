@@ -3,7 +3,8 @@
       id="org.thanlwinsoft.languagetest.feature.eclipse"
       label="Language Buddy - Extra Plugins needed for Standalone deployment"
       version="1.0.0"
-      provider-name="ThanLwinSoft.org">
+      provider-name="ThanLwinSoft.org"
+      image="ThanLwin.jpg">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -19,6 +20,10 @@
 
    <includes
          id="org.eclipse.rcp"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.platform"
          version="0.0.0"/>
 
    <requires>
