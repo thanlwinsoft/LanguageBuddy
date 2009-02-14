@@ -2,29 +2,26 @@
 <introContent>
     <page id="standby">
     	<title style-id="intro-header">Welcome to Language Buddy</title>
-    	<link label="Overview" url="http://org.eclipse.ui.intro/showPage?id=intro" 
-    		id="intro" style-id="left">
-            <text>Find out what Language Buddy is all about</text>
+    	<link url="http://org.eclipse.ui.intro/showPage?id=intro" 
+    		id="overview" style-id="left">
+            <img id="overviewIcon" src="../../icons/languageBuddy16.png" alt=""/>
+            <text>Getting Started</text>
         </link>
-        <link label="GettingStarted" url="gettingStarted.xhtml" 
-    		id="intro" style-id="left">
-            <text>Getting started</text>
-        </link>
-            <link label="New User" id="newUser" style-id="left"
-                url="http://org.eclipse.ui.intro/runAction?pluginId=org.thanlwinsoft.languagetest&amp;class=org.thanlwinsoft.languagetest.eclipse.wizards.NewUserProjectAction&amp;id=org.thanlwinsoft.languagetest.NewUserProjectAction">
-                <text>Add a new user</text>
-                <img id="newUserIcon" src="icons/newUser.png" alt="New User"/>
-            </link>
-        <link label="Contents" url="http://org.eclipse.ui.intro/showPage?id=index" 
+        <link url="http://org.eclipse.ui.intro/showPage?id=index" 
     		id="root" style-id="left">
-            <text>Contents</text>
+            <img id="startedIcon" src="../../icons/languageBuddy16.png" alt=""/>
+            <text>More Information</text>
         </link>
+        <!-- 
         <link label="Troubleshooting" url="http://org.eclipse.ui.intro/showPage?id=trouble" 
     		id="trouble" style-id="left">
+            <img id="overviewIcon" src="../../icons/languageBuddy16.png" alt=""/>
             <text>Troubleshooting</text>
         </link>
-        <link label="ThanLwinSoft" url="http://www.thanlwinsoft.org/" 
+         -->
+        <link url="http://www.thanlwinsoft.org/" 
     		id="thanlwinsoft" style-id="left">
+            <img id="tlsIcon" src="../../icons/ThanLwinSoft16.png" alt=""/>
             <text>ThanLwinSoft.org Web page</text>
         </link>
     </page>
@@ -33,25 +30,29 @@
     <page id="intro">
     	<title>Getting Started</title>
     	<group>
-	    	<link label="New User" id="newUser" style-id="left"
+	    	<link id="newUser" style-id="left"
 	    		url="http://org.eclipse.ui.intro/runAction?pluginId=org.thanlwinsoft.languagetest&amp;class=org.thanlwinsoft.languagetest.eclipse.wizards.NewUserProjectAction&amp;id=org.thanlwinsoft.languagetest.NewUserProjectAction">
-	    		<text>Add a new user</text>
-	    		<img id="newUserIcon" src="icons/newUser.png" alt="New User"/>
+	    		<img id="newUserIcon" src="../../icons/newUser.png" alt="New User"/>
+	    		<text>1. Add a new user. </text>
 	    	</link>
-	    	<link label="New Module" id="newModule" style-id="left"
+	    	<text>You will be asked first for your own language, then the language you want to learn. Please specify the script (e.g. Latin for English) and a Font if necessary.</text>
+	    	<link id="newModule" style-id="left"
 	    		url="http://org.eclipse.ui.intro/runAction?pluginId=org.thanlwinsoft.languagetest&amp;class=org.thanlwinsoft.languagetest.eclipse.wizards.NewLangModuleAction&amp;id=org.thanlwinsoft.languagetest.NewLangModuleAction">
-	    		<text>Create a Language Module</text>
-				<img id="newModuleIcon" src="newModule.png"/>
+	    		<text>2. Create a Language Module. </text>
+				<img id="newModuleIcon" src="../../icons/newModule.png" alt="New Module"/>
 	    	</link>
-	    	<text>Right click in the Module editor and choose Insert Item After to add a new Test Item.</text>
+	    	<text>Language Modules are used to store words and phrases that you want to learn.</text>
+	    	<text>Click in the Module editor to enter the Test Item in both your own language and the foreign language.</text>
+	    	<link><img id="recordIcon" src="../../icons/recordMini.png"/></link>
+	    	<text>Click on the "Record Audio" tab to record the word that you have just entered.</text>
 	    	<text>Add more modules as desired. You can organise your modules into folders: Right click in the Navigator view and choose New Folder...</text>
-	    	<link label="Start Test" id="startTest" style-id="left"
+	    	<link id="startTest" style-id="left"
 	    		url="http://org.eclipse.ui.intro/runAction?pluginId=org.thanlwinsoft.languagetest&amp;class=org.thanlwinsoft.languagetest.eclipse.wizards.StartTestAction&amp;id=org.thanlwinsoft.languagetest.StartTestAction">
 	    		<text>Start a Test</text>
 	    		<img id="startTestIcon" src="../../icons/startTest.png"/>
 	    	</link>
 	    	<text>You need to have created at least one Test Module before you can run a test.</text>
-	    	<img id="newModuleIcon" src="newModule.png" alt="test"/>
+	    	<text>For more information try the Quick Tips (also called Cheatsheets, but they don't help pass language tests!)</text>
     	</group>
     </page>
 </introContent>

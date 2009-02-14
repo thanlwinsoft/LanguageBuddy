@@ -51,6 +51,10 @@
                name="preferenceCustomization"
                value="plugin_customization.ini">
          </property>
+         <property
+               name="aboutText"
+               value="%LanguageTest.desc">
+         </property>
       </product>
    </extension>
    <extension
@@ -490,7 +494,8 @@ wizardId=
             standby-page-id="standby">
          <implementation
                kind="html"
-               os="win32,linux,macosx"/>
+               os="win32,linux,macosx"
+               style="docs/styles/LanguageBuddy.css"/>
       </presentation>
    </config>
 </extension>

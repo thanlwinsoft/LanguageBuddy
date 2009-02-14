@@ -221,7 +221,10 @@
 			<arg value="-jxf"/>
 			<arg value="${buildDirectory}/I.${languagetest.productName}/${languagetest.productName}-linux.gtk.${osgi.arch}.tar.bz2"/>
 		</exec>
-		<exec executable="/tmp/${languagetest.productName}/eclipse/launcher"/>
+		<exec executable="/tmp/${languagetest.productName}/eclipse/launcher" >
+			<arg value="-data"/>
+			<arg value="${user.home}/LanguageBuddy-workspace"/>
+		</exec>
 		<delete file="/tmp/${languagetest.productName}"/>
 	</target>
 
