@@ -4,7 +4,8 @@
       label="Language Buddy Feature"
       version="2.0.0"
       provider-name="ThanLwinSoft.org"
-      plugin="org.thanlwinsoft.languagetest" image="ThanLwin.jpg">
+      plugin="org.thanlwinsoft.languagetest"
+      image="ThanLwin.jpg">
 
    <description url="http://www.thanlwinsoft.org/ThanLwinSoft/">
       Language Buddy is a tool to help learn a foreign language.
@@ -638,7 +639,7 @@ END OF TERMS AND CONDITIONS
 
    <url>
       <update label="ThanLwinSoft.org" url="http://www.thanlwinsoft.org/ThanLwinSoft/Downloads/updates/"/>
-      <discovery label="ThanLwinSoft.org Updates" url="http://www.thanlwinsoft.org/ThanLwinSoft/Downloads/updates/"/>
+      <discovery label="ThanLwinSoft LanguageBuddy Updates" url="http://www.thanlwinsoft.co.uk/LanguageBuddy/updates/"/>
    </url>
 
    <requires>
