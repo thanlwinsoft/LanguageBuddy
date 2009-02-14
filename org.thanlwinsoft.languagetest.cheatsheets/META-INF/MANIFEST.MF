@@ -4,6 +4,7 @@ Bundle-Name: Language Buddy Quick Tips
 Bundle-SymbolicName: org.thanlwinsoft.languagetest.cheatsheets; singleton:=true
 Bundle-Version: 0.0.1.qualifier
 Bundle-Localization: plugin
-Require-Bundle: org.eclipse.ui.cheatsheets
+Require-Bundle: org.eclipse.ui.cheatsheets,
+ org.eclipse.help.ui;bundle-version="3.3.101"
 Eclipse-LazyStart: true
 Bundle-Vendor: www.ThanLwinSoft.org

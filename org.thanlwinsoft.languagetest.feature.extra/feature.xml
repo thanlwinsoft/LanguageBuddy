@@ -4,7 +4,7 @@
       label="Language Test Extra Functionality"
       version="1.0.0"
       provider-name="www.ThanLwinSoft.org"
-      plugin="org.thanlwinsoft.languagetest">
+      plugin="org.thanlwinsoft.languagetest" image="ThanLwin.jpg">
 
    <description url="http://www.thanlwinsoft.org/ThanLwinSoft/">
       Language Buddy is a tool to help learn a foreign language.
