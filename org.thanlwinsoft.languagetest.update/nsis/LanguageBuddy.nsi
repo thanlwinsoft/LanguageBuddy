@@ -9,6 +9,7 @@
 
 !define APP_NAME 'LanguageBuddy'
 !define INSTALL_SUFFIX "ThanLwinSoft.org"
+!define WORKSPACE 'LanguageBuddyWorkspace'
 
 ;--------------------------------
 ;Include Modern UI
@@ -134,7 +135,7 @@ NoOverwrite:
   ; set up shortcuts
   CreateDirectory "$SMPROGRAMS\${APP_NAME}"
   CreateShortCut "$SMPROGRAMS\${APP_NAME}\${APP_NAME}.lnk" \
-	"$INSTDIR\${APP_NAME}\eclipse.exe" '-vm "$JAVA_HOME\bin\javaw.exe" -product org.thanlwinsoft.languagetest.LanguageTest' \
+	"$INSTDIR\${APP_NAME}\eclipse\launcher.exe" '-vm "$JAVA_HOME\bin\javaw.exe" -product org.thanlwinsoft.languagetest.LanguageTest -data "${APPDATA}/${WORKSPACE}"' \
 	"$INSTDIR\${APP_NAME}\languageBuddy.ico" 0 SW_SHOWNORMAL \
 	"" "${APP_NAME}"
 ;  CreateShortCut "$SMPROGRAMS\${APP_NAME}\${APP_NAME}Uninstall.lnk" \
@@ -143,7 +144,7 @@ NoOverwrite:
 ;	"" "Uninstall ${APP_NAME}"
 
   CreateShortCut "$DESKTOP\${APP_NAME}.lnk" \
-	"$INSTDIR\${APP_NAME}\eclipse.exe" '-vm "$JAVA_HOME\bin\javaw.exe" -product org.thanlwinsoft.languagetest.LanguageTest' \
+	"$INSTDIR\${APP_NAME}\eclipse\launcher.exe" '-vm "$JAVA_HOME\bin\javaw.exe" -product org.thanlwinsoft.languagetest.LanguageTest -data "${APPDATA}/${WORKSPACE}"' \
 	"$INSTDIR\${APP_NAME}\languageBuddy.ico" 0 SW_SHOWNORMAL \
 	"" "${APP_NAME}"
 	
@@ -189,7 +190,7 @@ FunctionEnd
 
 Function .onInstSuccess
 
-	Exec '"$INSTDIR\${APP_NAME}\eclipse.exe" -vm "$JAVA_HOME\bin\javaw.exe"  -product org.thanlwinsoft.languagetest.LanguageTest'
+	Exec '"$INSTDIR\${APP_NAME}\eclipse\launcher.exe" -vm "$JAVA_HOME\bin\javaw.exe"  -product org.thanlwinsoft.languagetest.LanguageTest -data "${APPDATA}/${WORKSPACE}"'
 
 FunctionEnd
 
@@ -206,8 +207,8 @@ AppFound:
   RMDir /r "$INSTDIR\configuration"
   RMDir /REBOOTOK /r "$INSTDIR\plugins"
   RMDir /REBOOTOK /r "$INSTDIR\features"
-  Delete /REBOOTOK "$INSTDIR\eclipse.ini"
-  Delete /REBOOTOK "$INSTDIR\eclipse.exe"
+  Delete /REBOOTOK "$INSTDIR\launcher.ini"
+  Delete /REBOOTOK "$INSTDIR\launcher.exe"
   Delete /REBOOTOK "$INSTDIR\setJavaHome.bat"
   Delete /REBOOTOK "$INSTDIR\lgpl-2.1.txt"
   
